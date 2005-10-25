@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+
+   <extension
+         id="application"
+         point="org.eclipse.core.runtime.applications">
+      <application>
+         <run
+               class="org.eclipse.ecf.example.rcpchat.Application">
+         </run>
+      </application>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            name="Rcpchat Perspective"
+            class="org.eclipse.ecf.example.rcpchat.Perspective"
+            id="org.eclipse.ecf.example.rcpchat.perspective">
+      </perspective>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ecf.example.rcpchat.application"
+            name="RCP Product">
+         <property
+               name="aboutText"
+               value="%aboutText">
+         </property>
+         <property
+               name="windowImages"
+               value="icons/person.gif">
+         </property>
+         <property
+               name="aboutImage"
+               value="product_lg.gif">
+         </property>
+      </product>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="ECF"
+            visible="true"
+            id="org.eclipse.ecf.example.rcpchat.actionSet">
+         <action
+               toolbarPath="org.eclipse.ecf.example.rcpchat.topseparator"
+               label="Connect..."
+               class="org.eclipse.ecf.example.rcpchat.actions.WorkbenchAction"
+               tooltip="Connect to Server"
+               icon="icons/person.gif"
+               style="push"
+               menubarPath="org.eclipse.ecf.example.rcpchat.topmenu/org.eclipse.ecf.example.rcpchat.topseparator"
+               id="org.eclipse.ecf.example.rcpchat.joingroupaction"/>
+      </actionSet>
+   </extension>
+
+</plugin>
