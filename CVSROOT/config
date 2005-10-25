@@ -15,7 +15,7 @@
 #TopLevelAdmin=no
 
 # Put CVS lock files in this directory rather than directly in the repository.
-#LockDir=/var/lock
+LockDir=/var/lock
 
 # Set `LogHistory' to `all' or `TOEFWUPCGMAR' to log all transactions to the
 # history file, or a subset as needed (ie `TMAR' logs all write operations)
