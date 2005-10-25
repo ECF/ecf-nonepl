@@ -1,0 +1,7 @@
+org.eclipse.ecf.provider.jms/debug = true
+org.eclipse.ecf.provider.jms/debug/filter = *
+org.eclipse.ecf.provider.jms/debug/flag = true
+org.eclipse.ecf.provider.jms/debug/channel = true
+org.eclipse.ecf.provider.jms/debug/brokercontainer = true
+org.eclipse.ecf.provider.jms/debug/clientcontainer = true
+org.eclipse.ecf.provider.jms/debug/servercontainer = true

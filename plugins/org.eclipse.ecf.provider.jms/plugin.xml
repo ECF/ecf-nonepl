@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.provider.jms.container.Instantiator"
+            description="JMS"
+            name="org.eclipse.ecf.provider.jms.TCPClient">
+         <property
+               value="tcp://&lt;server&gt;:&lt;port&gt;/&lt;topicname&gt;"
+               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.examplegroupid"/>
+         <property
+               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.defaultgroupid"
+               value=""/>
+         <property
+               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.namespace"
+               value="jms.activemq"/>
+      </containerFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.namespace">
+      <namespace
+            class="org.eclipse.ecf.provider.jms.identity.JMSNamespace"
+            description="JMS Namespace"
+            name="jms.activemq"/>
+   </extension>
+
+</plugin>
