@@ -15,12 +15,10 @@ import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 import javax.security.auth.callback.NameCallback;
 import javax.security.auth.callback.UnsupportedCallbackException;
-import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.security.ObjectCallback;
 import org.eclipse.ecf.presence.IPresenceContainer;
@@ -44,40 +42,23 @@ public class Client {
 	public void createAndConnectClient(final String containerType, String uri,
 			String nickname, final Object connectData)
 			throws Exception {
-		// First create the new container instance
-		final IContainer newClient = ContainerFactory
+		// Create the new container 
+		final IContainer client = ContainerFactory
 				.getDefault().makeContainer(containerType);
-		
-		// Get the target namespace, so we can create a target ID of appropriate type
-		Namespace targetNamespace = newClient.getConnectNamespace();
-		// Create the targetID instance
-		ID targetID = IDFactory.getDefault().makeID(targetNamespace, uri);
-		
+		// Create the targetID 
+		ID targetID = IDFactory.getDefault().makeID(client.getConnectNamespace(), uri);
 		// Setup username
 		String username = setupUsername(targetID,nickname);
-		// Create a new client entry to hold onto container once created
-		
 	     // Check for IPresenceContainer....if it is, setup presence UI, if not setup shared object container
-		IPresenceContainer pc = (IPresenceContainer) newClient
+		IPresenceContainer pc = (IPresenceContainer) client
 				.getAdapter(IPresenceContainer.class);
 		if (pc != null) {
 			// Setup presence UI
 			presenceContainerUI = new PresenceContainerUI(pc);
-			presenceContainerUI.setup(newClient, targetID, username);
-		} else {
-			// throw
-		}
-		
+			presenceContainerUI.setup(client, targetID, username);
+		} else throw new NullPointerException("IPresenceContainer interface not exposed by client with type "+containerType);
 		// Now connect
-		try {
-			newClient.connect(targetID, getJoinContext(username, connectData));
-		} catch (ContainerConnectException e) {
-			// If we have a connect exception then we remove any previously added shared object
-			throw e;
-		}
-		
-		// only add client if the connect was successful
-		//addClientForResource(newClientEntry, resource);
+		client.connect(targetID, getJoinContext(username, connectData));
 	}
 
 
