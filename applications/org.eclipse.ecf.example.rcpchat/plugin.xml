@@ -23,19 +23,16 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.eclipse.ecf.example.rcpchat.application"
-            name="RCP Product">
+            name="ECF RCPChat">
          <property
                name="aboutText"
-               value="%aboutText">
-         </property>
+               value="%aboutText"/>
          <property
                name="windowImages"
-               value="icons/person.gif">
-         </property>
+               value="icons/person.gif,,,,"/>
          <property
                name="aboutImage"
-               value="product_lg.gif">
-         </property>
+               value="product_lg.gif"/>
       </product>
    </extension>
    <extension
