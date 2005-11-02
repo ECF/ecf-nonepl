@@ -12,7 +12,17 @@
 
    <configIni use="default"/>
 
+   <launcherArgs>
+   </launcherArgs>
+
    <windowImages i16="icons/person.gif"/>
+
+   <launcher name="rcpchat">
+      <solaris/>
+      <win useIco="false">
+         <bmp/>
+      </win>
+   </launcher>
 
    <plugins>
       <plugin id="org.eclipse.ant.core"/>
