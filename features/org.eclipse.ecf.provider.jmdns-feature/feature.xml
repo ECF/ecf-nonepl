@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.ecf.provider.jmdns_feature"
-      label="org.eclipse.ecf.provider.jmdns-feature"
+      label="ECF JmDNS Provider"
       version="0.5.0"
       provider-name="Eclipse.org">
 
