@@ -46,7 +46,7 @@ public class WorkbenchAction extends ActionDelegate implements IWorkbenchWindowA
      * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
      */
     public void run(IAction action) {
-    	String namespaceName = "xmpp.jive";
+    	String namespaceName = "ecf.xmpp";
     	String namespaceDescription = "XMPP (Jabber)";
     	Map namespaceProps = new HashMap();
     	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword","true");
@@ -57,7 +57,7 @@ public class WorkbenchAction extends ActionDelegate implements IWorkbenchWindowA
     	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",namespaceName);
     	ContainerDescription desc1 = new ContainerDescription(namespaceName,namespaceDescription,namespaceProps);
     	
-    	String snamespaceName = "xmpps.jive";
+    	String snamespaceName = "ecf.xmpps";
     	String snamespaceDescription = "XMPP SSL (Secure Jabber)";
     	
     	Map snamespaceProps = new HashMap();
