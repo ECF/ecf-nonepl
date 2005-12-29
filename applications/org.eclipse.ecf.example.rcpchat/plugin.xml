@@ -29,7 +29,7 @@
                value="%aboutText"/>
          <property
                name="windowImages"
-               value="icons/person.gif,,,,"/>
+               value="icons/person.gif"/>
          <property
                name="aboutImage"
                value="product_lg.gif"/>
@@ -38,18 +38,23 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
+            id="org.eclipse.ecf.example.rcpchat.actionSet1"
             label="ECF"
-            visible="true"
-            id="org.eclipse.ecf.example.rcpchat.actionSet">
+            visible="true">
          <action
-               toolbarPath="org.eclipse.ecf.example.rcpchat.topseparator"
-               label="Connect..."
                class="org.eclipse.ecf.example.rcpchat.actions.WorkbenchAction"
-               tooltip="Connect to Server"
                icon="icons/person.gif"
+               id="org.eclipse.ecf.example.collab.joingroupaction"
+               label="Connect..."
+               menubarPath="org.eclipse.ecf.example.collab.topmenu/org.eclipse.ecf.example.collab.topseparator"
                style="push"
-               menubarPath="org.eclipse.ecf.example.rcpchat.topmenu/org.eclipse.ecf.example.rcpchat.topseparator"
-               id="org.eclipse.ecf.example.rcpchat.joingroupaction"/>
+               toolbarPath="org.eclipse.ecf.example.collab.topseparator"
+               tooltip="Connect Workspace to ECF Group"/>
+         <menu
+               id="org.eclipse.ecf.example.collab.topmenu"
+               label="ECF">
+            <separator name="org.eclipse.ecf.example.collab.topseparator"/>
+         </menu>
       </actionSet>
    </extension>
 

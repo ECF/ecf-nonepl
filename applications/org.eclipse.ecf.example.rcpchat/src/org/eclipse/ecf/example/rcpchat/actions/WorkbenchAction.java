@@ -57,14 +57,14 @@ public class WorkbenchAction extends ActionDelegate implements IWorkbenchWindowA
     	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",namespaceName);
     	ContainerDescription desc1 = new ContainerDescription(namespaceName,namespaceDescription,namespaceProps);
     	
-    	String snamespaceName = "ecf.xmpp.smack";
+    	String snamespaceName = "ecf.xmpps.smack";
     	String snamespaceDescription = "XMPP SSL (Secure Jabber)";
     	
     	Map snamespaceProps = new HashMap();
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword","true");
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.examplegroupid","<user>@<xmppserver>");
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage..defaultgroupid","");
-    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix","xmpp:");
+    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix","xmpps:");
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel","Account:");
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",snamespaceName);
     	ContainerDescription desc2 = new ContainerDescription(snamespaceName,snamespaceDescription,snamespaceProps);
