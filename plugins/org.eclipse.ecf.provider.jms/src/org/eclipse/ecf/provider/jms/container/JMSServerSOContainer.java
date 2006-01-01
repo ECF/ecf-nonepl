@@ -26,7 +26,7 @@ import org.eclipse.ecf.core.ISharedObjectContainerConfig;
 import org.eclipse.ecf.core.comm.IConnection;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.core.comm.SynchConnectionEvent;
-import org.eclipse.ecf.core.events.SharedObjectContainerConnectedEvent;
+import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.security.IConnectPolicy;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
@@ -251,7 +251,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 				}
 			}
 			// notify listeners
-			fireContainerEvent(new SharedObjectContainerConnectedEvent(this
+			fireContainerEvent(new ContainerConnectedEvent(this
 					.getID(), remoteID));
 
 			messages[0] = serializeObject(ContainerMessage

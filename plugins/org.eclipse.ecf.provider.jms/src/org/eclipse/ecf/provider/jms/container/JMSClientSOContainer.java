@@ -14,7 +14,7 @@ import java.net.ConnectException;
 import org.eclipse.ecf.core.comm.ConnectionInstantiationException;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.core.comm.SynchConnectionEvent;
-import org.eclipse.ecf.core.events.SharedObjectContainerDisconnectedEvent;
+import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
@@ -114,7 +114,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 		ISynchAsynchConnection conn = getConnection();
 		memberLeave(fromID, conn);
 		// Notify listeners
-		fireContainerEvent(new SharedObjectContainerDisconnectedEvent(getID(),
+		fireContainerEvent(new ContainerDisconnectedEvent(getID(),
 				fromID));
 	}
 
