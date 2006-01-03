@@ -54,17 +54,17 @@ public class JMSClientSOContainer extends ClientSOContainer {
 	}
 
 	public JMSClientSOContainer(int ka) throws Exception {
-		super(new SOContainerConfig(IDFactory.getDefault().makeGUID()));
+		super(new SOContainerConfig(IDFactory.getDefault().createGUID()));
 		keepAlive = ka;
 	}
 
 	public JMSClientSOContainer(String userhost, int ka) throws Exception {
-		super(new SOContainerConfig(IDFactory.getDefault().makeStringID(
+		super(new SOContainerConfig(IDFactory.getDefault().createStringID(
 				userhost)));
 		keepAlive = ka;
 	}
 
-	protected ISynchAsynchConnection makeConnection(ID remoteSpace, Object data)
+	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data)
 			throws ConnectionInstantiationException {
 		ISynchAsynchConnection c = new ClientChannel(getReceiver(), keepAlive);
 		return c;
@@ -90,7 +90,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 		}
 	}
 
-	protected SOContext makeSharedObjectContext(SOConfig soconfig,
+	protected SOContext createSharedObjectContext(SOConfig soconfig,
 			IQueueEnqueue queue) {
 		return new JMSContainerContext(soconfig.getSharedObjectID(), soconfig
 				.getHomeContainerID(), this, soconfig.getProperties(), queue);

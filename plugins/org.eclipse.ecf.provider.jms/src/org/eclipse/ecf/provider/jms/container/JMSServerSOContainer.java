@@ -181,7 +181,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		return null;
 	}
 
-	protected ClientChannelProxy makeClientChannelProxy(BrokerClient client,
+	protected ClientChannelProxy createClientChannelProxy(BrokerClient client,
 			ServerChannel channel, ID remoteID) {
 		return new ClientChannelProxy(this, channel, remoteID);
 	}
@@ -231,14 +231,14 @@ public class JMSServerSOContainer extends ServerSOContainer {
 					removeIDMap(remoteID);
 					throw new ConnectException("broker client is null");
 				}
-				ClientChannelProxy clientProxy = makeClientChannelProxy(client,
+				ClientChannelProxy clientProxy = createClientChannelProxy(client,
 						channel, remoteID);
 				if (addNewRemoteMember(remoteID, clientProxy)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
 					messages[1] = serializeObject(ContainerMessage
-							.makeViewChangeMessage(getID(), null,
+							.createViewChangeMessage(getID(), null,
 									getNextSequenceNumber(),
 									new ID[] { remoteID }, true, null));
 					// Start messaging to new member
@@ -255,7 +255,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 					.getID(), remoteID));
 
 			messages[0] = serializeObject(ContainerMessage
-					.makeViewChangeMessage(getID(), remoteID,
+					.createViewChangeMessage(getID(), remoteID,
 							getNextSequenceNumber(), memberIDs, true, null));
 
 			return messages;
@@ -299,7 +299,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		if (removeRemoteMember(target)) {
 			try {
 				queueContainerMessage(ContainerMessage
-						.makeViewChangeMessage(getID(), null,
+						.createViewChangeMessage(getID(), null,
 								getNextSequenceNumber(), new ID[] { target },
 								false, null));
 			} catch (IOException e) {

@@ -15,7 +15,7 @@ public class JMSNamespace extends Namespace {
 	public JMSNamespace() {
 		super(JMS_NAMESPACE_NAME,null);
 	}
-	public ID makeInstance(Class[] argTypes, Object[] args)
+	public ID createInstance(Class[] argTypes, Object[] args)
 			throws IDInstantiationException {
 		try {
 			if (args.length == 1) {

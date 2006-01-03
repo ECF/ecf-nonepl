@@ -44,9 +44,9 @@ public class Client {
 			throws Exception {
 		// Create the new container 
 		final IContainer client = ContainerFactory
-				.getDefault().makeContainer(containerType);
+				.getDefault().createContainer(containerType);
 		// Create the targetID 
-		ID targetID = IDFactory.getDefault().makeID(client.getConnectNamespace(), uri);
+		ID targetID = IDFactory.getDefault().createID(client.getConnectNamespace(), uri);
 		// Setup username
 		String username = setupUsername(targetID,nickname);
 	     // Check for IPresenceContainer....if it is, setup presence UI, if not setup shared object container
