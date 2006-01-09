@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ECF Yahoo IM Plug-in
+Bundle-SymbolicName: org.eclipse.ecf.provider.yahoo; singleton:=true
+Bundle-Version: 0.6.0
+Bundle-Activator: org.eclipse.ecf.provider.yahoo.Activator
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ecf,
+ org.eclipse.ecf.presence,
+ org.eclipse.ecf.provider
+Eclipse-AutoStart: true
+Bundle-ClassPath: ymsg_network_v0_61.jar

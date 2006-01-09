@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.0"?>
+<plugin>
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.provider.yahoo.container.YahooContainerInstantiator"
+            description="Yahoo Messaging Provider (YMSG)"
+            name="ecf.yahoo.jymsg">
+         <property
+               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.usepassword"
+               value="true"/>
+         <property
+               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.examplegroupid"
+               value="&lt;user&gt;"/>
+         <property
+               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.groupIDLabel"
+               value="Account:"/>
+      </containerFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.namespace">
+      <namespace
+            class="org.eclipse.ecf.provider.yahoo.identity.YahooNamespace"
+            description="Yahoo Namespace"
+            name="ecf.yahoo"/>
+   </extension>
+
+</plugin>
