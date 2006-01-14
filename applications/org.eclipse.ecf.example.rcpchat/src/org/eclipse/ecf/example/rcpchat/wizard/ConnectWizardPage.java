@@ -8,12 +8,12 @@
  ******************************************************************************/
 package org.eclipse.ecf.example.rcpchat.wizard;
 
-import org.eclipse.ecf.core.ContainerDescription;
+import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.example.rcpchat.RcpChatPlugin;
 import org.eclipse.ecf.ui.wizards.JoinGroupWizardPage;
 
 public class ConnectWizardPage extends JoinGroupWizardPage {
-	public ConnectWizardPage(ContainerDescription[] descriptions) {
+	public ConnectWizardPage(ContainerTypeDescription[] descriptions) {
 		super(descriptions);
         setTitle(RcpChatPlugin.CONNECT_WIZARD_PAGE_TITLE);
         setDescription(RcpChatPlugin.CONNECT_WIZARD_PAGE_DESCRIPTION);

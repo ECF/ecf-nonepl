@@ -15,7 +15,7 @@
 
 package org.eclipse.ecf.provider.yahoo.container;
 
-import org.eclipse.ecf.core.ContainerDescription;
+import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.ContainerInstantiationException;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
@@ -26,7 +26,7 @@ import org.eclipse.ecf.provider.yahoo.Tracer;
 
 public class YahooContainerInstantiator implements IContainerInstantiator {
 	
-	public IContainer createInstance(ContainerDescription description, Class[] argTypes, Object[] args) throws ContainerInstantiationException {
+	public IContainer createInstance(ContainerTypeDescription description, Class[] argTypes, Object[] args) throws ContainerInstantiationException {
 		Tracer.trace(this, "creating container!");
 		ID guid;
 		try {

@@ -8,7 +8,7 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jms.container;
 
-import org.eclipse.ecf.core.ContainerDescription;
+import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.ContainerInstantiationException;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
@@ -50,11 +50,11 @@ public class Instantiator implements IContainerInstantiator {
     /*
      * (non-Javadoc)
      * 
-     * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerDescription,
+     * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription,
      *      java.lang.Class[], java.lang.Object[])
      */
     public IContainer createInstance(
-            ContainerDescription description, Class[] argTypes,
+            ContainerTypeDescription description, Class[] argTypes,
             Object[] args)
             throws ContainerInstantiationException {
         try {

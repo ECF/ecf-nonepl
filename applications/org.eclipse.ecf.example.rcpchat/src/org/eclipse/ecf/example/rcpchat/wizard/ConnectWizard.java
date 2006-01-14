@@ -11,14 +11,14 @@ package org.eclipse.ecf.example.rcpchat.wizard;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ecf.core.ContainerDescription;
+import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.example.rcpchat.RcpChatPlugin;
 import org.eclipse.ecf.example.rcpchat.actions.URIClientConnectAction;
 import org.eclipse.ecf.ui.wizards.JoinGroupWizard;
 import org.eclipse.ui.IWorkbench;
 
 public class ConnectWizard extends JoinGroupWizard {
-	public ConnectWizard(IWorkbench wb, String title, ContainerDescription [] descriptions) {
+	public ConnectWizard(IWorkbench wb, String title, ContainerTypeDescription [] descriptions) {
 		super(wb,title,descriptions);
 	}
 	

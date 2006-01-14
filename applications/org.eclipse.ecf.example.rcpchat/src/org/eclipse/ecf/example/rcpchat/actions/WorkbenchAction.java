@@ -10,7 +10,7 @@ package org.eclipse.ecf.example.rcpchat.actions;
 
 import java.util.HashMap;
 import java.util.Map;
-import org.eclipse.ecf.core.ContainerDescription;
+import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.example.rcpchat.wizard.ConnectWizard;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
@@ -55,7 +55,7 @@ public class WorkbenchAction extends ActionDelegate implements IWorkbenchWindowA
     	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix","xmpp:");
     	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel","Account:");
     	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",namespaceName);
-    	ContainerDescription desc1 = new ContainerDescription(namespaceName,namespaceDescription,namespaceProps);
+    	ContainerTypeDescription desc1 = new ContainerTypeDescription(namespaceName,namespaceDescription,namespaceProps);
     	
     	String snamespaceName = "ecf.xmpps.smack";
     	String snamespaceDescription = "XMPP SSL (Secure Jabber)";
@@ -67,10 +67,10 @@ public class WorkbenchAction extends ActionDelegate implements IWorkbenchWindowA
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix","xmpps:");
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel","Account:");
     	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",snamespaceName);
-    	ContainerDescription desc2 = new ContainerDescription(snamespaceName,snamespaceDescription,snamespaceProps);
+    	ContainerTypeDescription desc2 = new ContainerTypeDescription(snamespaceName,snamespaceDescription,snamespaceProps);
     	
         ConnectWizard wizard = new ConnectWizard(getWorkbench(), "Connect to Server",
-				new ContainerDescription[] { desc1, desc2 });
+				new ContainerTypeDescription[] { desc1, desc2 });
         // Create the wizard dialog
         WizardDialog dialog = new WizardDialog
          (getWorkbench().getActiveWorkbenchWindow().getShell(),wizard);
