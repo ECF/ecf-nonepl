@@ -19,6 +19,8 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.util.IQueueEnqueue;
+import org.eclipse.ecf.datashare.IChannelContainer;
+import org.eclipse.ecf.provider.datashare.DatashareContainerAdapter;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOConfig;
@@ -34,12 +36,23 @@ public class JMSClientSOContainer extends ClientSOContainer {
 	public static final int DEFAULT_KEEPALIVE = JMSServerSOContainer.DEFAULT_KEEPALIVE;
 	int keepAlive = 0;
 
+	DatashareContainerAdapter adapter = null;
+	
 	public void trace(String msg) {
 		if (trace != null && Trace.ON) {
 			trace.msg(msg);
 		}
 	}
-
+	public Object getAdapter(Class clazz) {
+		if (clazz.equals(IChannelContainer.class)) {
+			synchronized (this) {
+				if (adapter == null) {
+					adapter = new DatashareContainerAdapter(this);
+				}
+			}
+			return adapter;
+		} else return super.getAdapter(clazz);
+	}
 	public Namespace getConnectNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(JMSNamespace.JMS_NAMESPACE_NAME);
 	}
@@ -51,17 +64,20 @@ public class JMSClientSOContainer extends ClientSOContainer {
 
 	public JMSClientSOContainer() throws Exception {
 		this(DEFAULT_KEEPALIVE);
+		this.adapter = new DatashareContainerAdapter(this);
 	}
 
 	public JMSClientSOContainer(int ka) throws Exception {
 		super(new SOContainerConfig(IDFactory.getDefault().createGUID()));
 		keepAlive = ka;
+		this.adapter = new DatashareContainerAdapter(this);
 	}
 
 	public JMSClientSOContainer(String userhost, int ka) throws Exception {
 		super(new SOContainerConfig(IDFactory.getDefault().createStringID(
 				userhost)));
 		keepAlive = ka;
+		this.adapter = new DatashareContainerAdapter(this);
 	}
 
 	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data)

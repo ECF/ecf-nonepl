@@ -355,32 +355,24 @@ public abstract class Channel extends SocketAddress implements
 					if (o instanceof ECFMessage) {
 						ECFMessage ecfmsg = (ECFMessage) o;
 						ID fromID = ecfmsg.getSenderID();
+						if (fromID == null) {
+							trace("onMessage.msg invalid null sender");
+							return;
+						}
 						if (fromID.equals(getLocalID())) {
-							trace("onMessage.msg from "+fromID+" discarding");
+							trace("onMessage.msg from "+fromID+" discarding message from us");
 							return;
 						}
 						ID targetID = ecfmsg.getTargetID();
-						if (targetID != null && targetID.equals(getLocalID())) {
-							if (o instanceof SynchRequest) {
-								respondToRequest(omg, ecfmsg);
-							} else if (o instanceof SynchResponse) {
-								handleSynchMessage(omg, ecfmsg);
-							} else {
-								trace("onMessage.msg invalid synch message received: "
-										+ ecfmsg);
-							}
+						if (targetID == null) {
+							if (ecfmsg instanceof JMSMessage) handleTopicMessage(msg, (JMSMessage) ecfmsg);
+							else trace("onMessage.received invalid message to group");
 						} else {
-							if (targetID == null
-									|| targetID.equals(getLocalID())) {
-								if (ecfmsg instanceof JMSMessage) {
-									handleTopicMessage(msg, (JMSMessage) o);
-								} else {
-									trace("onMessage.received asynch message not for us: "
-											+ ecfmsg);
-								}
-							} else {
-								trace("onMessage.received message not for us: "
-										+ ecfmsg);
+							if (targetID.equals(getLocalID())) {
+								if (ecfmsg instanceof JMSMessage) handleTopicMessage(msg, (JMSMessage) ecfmsg);
+								else if (ecfmsg instanceof SynchRequest) respondToRequest(omg,ecfmsg);
+								else if (ecfmsg instanceof SynchResponse) handleSynchMessage(omg,ecfmsg);
+								else trace("onMessage.msg invalid message to "+targetID);
 							}
 						}
 					} else {
