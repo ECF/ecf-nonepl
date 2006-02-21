@@ -96,7 +96,7 @@ public abstract class Channel extends SocketAddress implements
 	public abstract Object connect(ID remote, Object data, int timeout)
 			throws IOException;
 
-	protected void onException(JMSException except) {
+	protected void onJMSException(JMSException except) {
 		trace("onException(" + except + ")");
 		if (isConnected() && isStarted()) {
 			handler.handleDisconnectEvent(new DisconnectConnectionEvent(this,
@@ -112,7 +112,7 @@ public abstract class Channel extends SocketAddress implements
 			connection = factory.createConnection();
 			connection.setExceptionListener(new ExceptionListener() {
 				public void onException(JMSException arg0) {
-					onException(arg0);
+					onJMSException(arg0);
 				}
 			});
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
