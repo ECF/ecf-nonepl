@@ -11,3 +11,6 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.provider
 Eclipse-AutoStart: true
 Bundle-ClassPath: ymsg_network_v0_61.jar
+Export-Package: META-INF,
+ ymsg.network,
+ ymsg.network.event
