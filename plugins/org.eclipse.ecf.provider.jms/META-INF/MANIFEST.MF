@@ -21,7 +21,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.provider,
  org.eclipse.ecf.datashare,
  org.eclipse.ecf.provider.datashare
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Export-Package: org.eclipse.ecf.provider.jms.app,
  org.eclipse.ecf.provider.jms.channel,
  org.eclipse.ecf.provider.jms.container,

@@ -9,7 +9,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf,
  org.eclipse.ecf.presence,
  org.eclipse.ecf.provider
-Eclipse-AutoStart: true
+Eclipse-LazyStart: true
 Bundle-ClassPath: ymsg_network_v0_61.jar
 Export-Package: META-INF,
  ymsg.network,
