@@ -15,19 +15,17 @@
 package org.eclipse.ecf.provider.yahoo.container;
 
 import java.io.IOException;
-import java.util.Vector;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.presence.AbstractPresenceContainer;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IMessageListener;
 import org.eclipse.ecf.presence.IMessageSender;
 import org.eclipse.ecf.presence.IPresence;
-import org.eclipse.ecf.presence.IPresenceContainer;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.IRosterEntry;
-import org.eclipse.ecf.presence.ISubscribeListener;
 import org.eclipse.ecf.presence.IMessageListener.Type;
 import org.eclipse.ecf.presence.chat.IChatRoomManager;
 import org.eclipse.ecf.presence.impl.Presence;
@@ -39,27 +37,12 @@ import ymsg.network.YahooUser;
 import ymsg.network.event.SessionEvent;
 import ymsg.network.event.SessionFriendEvent;
 
-public class YahooPresenceContainer implements IPresenceContainer {
+public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	private Session session;
-    private Vector messageListeners = new Vector();
-    private Vector presenceListeners = new Vector();
-    private Vector subscribeListeners = new Vector();
-	
+ 
 	public YahooPresenceContainer(Session session) {
 		this.session = session;
-	}
-
-	public void addSubscribeListener(ISubscribeListener listener) {
-		subscribeListeners.add(listener);
-	}
-
-	public void addPresenceListener(IPresenceListener listener) {
-		presenceListeners.add(listener);
-	}
-
-	public void addMessageListener(IMessageListener listener) {
-		messageListeners.add(listener);
 	}
 
 	public IPresenceSender getPresenceSender() {
@@ -93,16 +76,14 @@ public class YahooPresenceContainer implements IPresenceContainer {
 		return null;
 	}
 
-	public Object getAdapter(Class adapter) { return null; }
-
 	/**
 	 * Notifies any listeners that a message has been received from a yahoo user
 	 * 
 	 * @param event
 	 */
 	public void handleMessageReceived(SessionEvent event) {
-		for(int i = 0; i < messageListeners.size(); i++) {
-			IMessageListener l = (IMessageListener) messageListeners.get(i);
+		for(int i = 0; i < getMessageListeners().size(); i++) {
+			IMessageListener l = (IMessageListener) getMessageListeners().get(i);
 			ID from = makeIDFromName(event.getFrom());
 			ID to = makeIDFromName(event.getTo());
 			l.handleMessage(
@@ -121,8 +102,8 @@ public class YahooPresenceContainer implements IPresenceContainer {
 	 * @param event
 	 */
 	public void handleFriendsUpdateReceived(SessionFriendEvent event) {
-		for(int i = 0; i < presenceListeners.size(); i++) {
-			IPresenceListener l = (IPresenceListener) presenceListeners.get(i);
+		for(int i = 0; i < getPresenceListeners().size(); i++) {
+			IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
 			ID from = makeIDFromName(event.getFrom());
 			IPresence presence = createPresence(from.getName());
 			l.handlePresence(from, presence);
@@ -147,22 +128,22 @@ public class YahooPresenceContainer implements IPresenceContainer {
     }
 
     protected void fireRosterEntry(IRosterEntry entry) {
-        for (int i = 0; i < presenceListeners.size(); i++) {
-            IPresenceListener l = (IPresenceListener) presenceListeners.get(i);
+        for (int i = 0; i < getPresenceListeners().size(); i++) {
+            IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
             l.handleRosterEntry(entry);
         }
     }
     
     protected void fireContainerJoined(ID container) {
-        for (int i = 0; i < presenceListeners.size(); i++) {
-            IPresenceListener l = (IPresenceListener) presenceListeners.get(i);
+        for (int i = 0; i < getPresenceListeners().size(); i++) {
+            IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
             l.handleContainerJoined(container);
         }
     }
     
     protected void fireContainerDeparted(ID container) {
-        for (int i = 0; i < presenceListeners.size(); i++) {
-            IPresenceListener l = (IPresenceListener) presenceListeners.get(i);
+        for (int i = 0; i < getPresenceListeners().size(); i++) {
+            IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
             l.handleContainerDeparted(container);
         }
     }
