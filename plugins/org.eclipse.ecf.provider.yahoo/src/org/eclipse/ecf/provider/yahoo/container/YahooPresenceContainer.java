@@ -19,15 +19,12 @@ import java.io.IOException;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.presence.AbstractPresenceContainer;
-import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IMessageListener;
 import org.eclipse.ecf.presence.IMessageSender;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
-import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.IMessageListener.Type;
-import org.eclipse.ecf.presence.chat.IChatRoomManager;
 import org.eclipse.ecf.presence.impl.Presence;
 import org.eclipse.ecf.provider.yahoo.Activator;
 
@@ -43,10 +40,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
  
 	public YahooPresenceContainer(Session session) {
 		this.session = session;
-	}
-
-	public IPresenceSender getPresenceSender() {
-		return null;
 	}
 
 	public IMessageSender getMessageSender() {
@@ -66,14 +59,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 				}
 			}
 		};
-	}
-
-	public IAccountManager getAccountManager() {
-		return null;
-	}
-
-	public IChatRoomManager getChatRoomManager() {
-		return null;
 	}
 
 	/**
