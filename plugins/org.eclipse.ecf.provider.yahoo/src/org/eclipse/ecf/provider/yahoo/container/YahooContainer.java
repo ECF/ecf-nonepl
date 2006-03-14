@@ -19,10 +19,8 @@ import java.io.IOException;
 import javax.security.auth.callback.Callback;
 import javax.security.auth.callback.CallbackHandler;
 
-import org.eclipse.core.runtime.Platform;
+import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;
-import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.IDInstantiationException;
@@ -45,7 +43,7 @@ import ymsg.network.Session;
 import ymsg.network.YahooGroup;
 import ymsg.network.YahooUser;
 
-public class YahooContainer implements IContainer {
+public class YahooContainer extends AbstractContainer {
 	
 	/** Represents the YMSG session object provided by the ymsg library */
 	private Session session;
@@ -54,7 +52,7 @@ public class YahooContainer implements IContainer {
 	private ID localID;
 	
 	/** Entity identifier within the Yahoo! namespace for the target server or group entity */
-	private YahooID targetID;
+	private YahooID targetYahooID;
 	
 	/** Presence container instance used for adapting this container to a present container */
 	private YahooPresenceContainer presenceContainer;
@@ -67,9 +65,9 @@ public class YahooContainer implements IContainer {
 
 	public void connect(ID targetID, IConnectContext connectContext) throws ContainerConnectException {
 		String password = getPassword(connectContext);
-		this.targetID = (YahooID) targetID;
+		this.targetYahooID = (YahooID) targetID;
 		try {
-			session.login(this.targetID.getUsername(), password);
+			session.login(targetYahooID.getUsername(), password);
 		} catch (AccountLockedException e) {
 			e.printStackTrace();
 		} catch (IllegalStateException e) {
@@ -108,8 +106,8 @@ public class YahooContainer implements IContainer {
 		ID userID;
 		IRosterEntry entry;
 			try {
-				userID = IDFactory.getDefault().createID(targetID.getNamespace(), userName);
-				entry = new RosterEntry(targetID, userID, userName);
+				userID = IDFactory.getDefault().createID(targetYahooID.getNamespace(), userName);
+				entry = new RosterEntry(targetYahooID, userID, userName);
 				IPresence presence = presenceContainer.createPresence(userID.getName());
 				entry.setPresenceState(presence);
 				return entry;
@@ -120,7 +118,7 @@ public class YahooContainer implements IContainer {
 	}
 
 	public ID getConnectedID() {
-		return this.targetID;
+		return this.targetYahooID;
 	}
 
 	public Namespace getConnectNamespace() {
@@ -142,12 +140,11 @@ public class YahooContainer implements IContainer {
 		if (serviceType.equals(IPresenceContainer.class)) {
 			return presenceContainer;
 		}
-		return Platform.getAdapterManager().getAdapter(this, serviceType);
+		return super.getAdapter(serviceType);
 	}
-
-	public void dispose() {
-	}
-
+	
+	public void dispose() {};
+	
 	public ID getID() {
 		return this.localID;
 	}
@@ -170,16 +167,6 @@ public class YahooContainer implements IContainer {
 			System.out.println(e.getStackTrace());
 		}
 		return pw;
-	}
-
-	public void addListener(IContainerListener l, String filter) {
-		// TODO Auto-generated method stub
-		
-	}
-
-	public void removeListener(IContainerListener l) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }
