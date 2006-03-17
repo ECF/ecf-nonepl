@@ -10,7 +10,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.presence,
  org.eclipse.ecf.provider
 Eclipse-LazyStart: true
-Bundle-ClassPath: ymsg_network_v0_61.jar
+Bundle-ClassPath: ymsg_network_v0_61.jar,
+ yahoocontainer.jar
 Export-Package: META-INF,
  ymsg.network,
  ymsg.network.event
