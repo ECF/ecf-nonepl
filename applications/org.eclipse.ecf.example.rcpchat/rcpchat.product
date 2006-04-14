@@ -17,14 +17,12 @@
 
    <windowImages i16="icons/person.gif"/>
 
-
    <launcher name="rcpchat">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
-
 
    <plugins>
       <plugin id="org.eclipse.ant.core"/>
@@ -39,6 +37,7 @@
       <plugin id="org.eclipse.core.resources.win32"/>
       <plugin id="org.eclipse.core.runtime"/>
       <plugin id="org.eclipse.core.runtime.compatibility"/>
+      <plugin id="org.eclipse.core.runtime.compatibility.registry"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.discovery"/>
@@ -60,6 +59,7 @@
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.update.configurator"/>
+      <plugin id="org.jivesoftware.smack"/>
    </plugins>
 
 </product>
