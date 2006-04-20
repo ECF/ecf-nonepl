@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.ecf.provider.yahoo_feature"
       label="org.eclipse.ecf.provider.yahoo-feature"
-      version="0.7.7"
+      version="0.7.8"
       provider-name="Eclipse.org">
 
    <description url="http://www.example.com/description">
