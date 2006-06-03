@@ -11,6 +11,7 @@ package org.eclipse.ecf.example.rcpchat.client;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.ISharedObjectContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.example.rcpchat.RcpChatPlugin;
 import org.eclipse.ecf.presence.IAccountManager;
@@ -39,6 +40,7 @@ public class PresenceContainerUI {
     protected IPresenceSender presenceSender = null;
 	protected IAccountManager accountManager = null;
 	protected IPresenceContainer pc = null;
+	protected ISharedObjectContainer soContainer = null;
 	
 	protected org.eclipse.ecf.core.user.User localUser = null;
 	protected ID groupID = null;
@@ -53,7 +55,8 @@ public class PresenceContainerUI {
 	
     protected void setup(final IContainer container, final ID localUser, final String nick) {
     	this.container = container;
-        Display.getDefault().syncExec(new Runnable() {
+    	this.soContainer = (ISharedObjectContainer) this.container.getAdapter(ISharedObjectContainer.class);
+       Display.getDefault().syncExec(new Runnable() {
             public void run() {
                 try {
                     IWorkbenchWindow ww = PlatformUI.getWorkbench()
@@ -113,7 +116,7 @@ public class PresenceContainerUI {
     						}
                         };
                         PresenceContainerUI.this.groupID = joinedContainer;
-                        rosterView.addAccount(joinedContainer,PresenceContainerUI.this.localUser,handler,pc);
+                        rosterView.addAccount(joinedContainer,PresenceContainerUI.this.localUser,handler,pc,soContainer);
                     }
                 });
             }
