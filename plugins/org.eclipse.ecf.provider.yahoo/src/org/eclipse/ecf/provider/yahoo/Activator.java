@@ -23,6 +23,9 @@ import org.osgi.framework.BundleContext;
  */
 public class Activator extends Plugin {
 
+	/**
+	 * Namespace identifier
+	 */
 	public static final String NAMESPACE_IDENTIFIER = "ecf.yahoo";
 	
 	//The shared instance.
