@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ecf.provider.irc_feature_0.8.5.jar" id="org.eclipse.ecf.provider.irc_feature" version="0.8.5">
+   <feature url="features/org.eclipse.ecf.provider.irc_feature_0.8.6.jar" id="org.eclipse.ecf.provider.irc_feature" version="0.8.6">
       <category name="ECF Extras"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.provider.jms_feature_0.8.5.jar" id="org.eclipse.ecf.provider.jms_feature" version="0.8.5">
+   <feature url="features/org.eclipse.ecf.provider.jms_feature_0.8.6.jar" id="org.eclipse.ecf.provider.jms_feature" version="0.8.6">
       <category name="ECF Extras"/>
    </feature>
    <category-def name="ECF Extras" label="Eclipse Communications Framework Extras Features"/>
