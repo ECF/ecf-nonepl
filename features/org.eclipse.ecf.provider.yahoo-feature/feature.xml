@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.ecf.provider.yahoo_feature"
-      label="org.eclipse.ecf.provider.yahoo-feature"
+      label="ECF YahooIM Provider"
       version="0.8.6"
       provider-name="Eclipse.org">
 
