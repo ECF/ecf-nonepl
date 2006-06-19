@@ -5,7 +5,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.provider.yahoo.container.YahooContainerInstantiator"
-            description="Yahoo Messaging Provider (YMSG)"
+            description="Yahoo IM"
             name="ecf.yahoo.jymsg">
          <property
                name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.usepassword"
