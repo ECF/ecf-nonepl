@@ -14,6 +14,7 @@
  */
 package org.eclipse.ecf.provider.yahoo.util;
 
+import org.eclipse.ecf.provider.yahoo.container.YahooContainer;
 import org.eclipse.ecf.provider.yahoo.container.YahooPresenceContainer;
 
 import ymsg.network.event.SessionChatEvent;
@@ -32,15 +33,22 @@ import ymsg.network.event.SessionNotifyEvent;
  */
 public class YahooSessionListener implements SessionListener {
 
+	YahooContainer container;
 	YahooPresenceContainer presenceContainer;
 	
-	public YahooSessionListener(YahooPresenceContainer container) {
-		this.presenceContainer = container;
+	public YahooSessionListener(YahooContainer container, YahooPresenceContainer presenceContainer) {
+		this.container = container;
+		this.presenceContainer = presenceContainer;
 	}
 	
 	public void fileTransferReceived(SessionFileTransferEvent arg0) {}
 
-	public void connectionClosed(SessionEvent arg0) {}
+	public void connectionClosed(SessionEvent arg0) {
+		if (container != null) {
+			container.disconnect();
+			container = null;
+		}
+	}
 
 	public void listReceived(SessionEvent arg0) {}
 

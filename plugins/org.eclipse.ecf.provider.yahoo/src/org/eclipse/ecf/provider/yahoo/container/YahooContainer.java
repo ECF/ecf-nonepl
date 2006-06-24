@@ -77,7 +77,7 @@ public class YahooContainer extends AbstractContainer {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		session.addSessionListener(new YahooSessionListener(presenceContainer));
+		session.addSessionListener(new YahooSessionListener(this,presenceContainer));
 		presenceContainer.fireContainerJoined(getConnectedID());
 		populateRoster(session.getGroups());
 	}
@@ -128,12 +128,12 @@ public class YahooContainer extends AbstractContainer {
 	public void disconnect() {
 		try {
 			session.logout();
-			presenceContainer.fireContainerDeparted(getConnectedID());
 		} catch (IllegalStateException e) {
 			e.printStackTrace();
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
+		presenceContainer.fireContainerDeparted(getConnectedID());
 	}
 
 	public Object getAdapter(Class serviceType) {
@@ -143,7 +143,9 @@ public class YahooContainer extends AbstractContainer {
 		return super.getAdapter(serviceType);
 	}
 	
-	public void dispose() {};
+	public void dispose() {
+		disconnect();
+	};
 	
 	public ID getID() {
 		return this.localID;
