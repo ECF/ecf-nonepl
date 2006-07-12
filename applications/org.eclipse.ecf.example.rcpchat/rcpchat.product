@@ -17,7 +17,6 @@
 
    <windowImages i16="icons/person.gif"/>
 
-
    <launcher name="rcpchat">
       <solaris/>
       <win useIco="false">
@@ -25,9 +24,9 @@
       </win>
    </launcher>
 
-
    <plugins>
       <plugin id="com.ibm.icu"/>
+      <plugin id="org.apache.xerces"/>
       <plugin id="org.eclipse.ant.core"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
