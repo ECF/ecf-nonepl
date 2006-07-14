@@ -10,5 +10,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf,
  org.eclipse.ecf.presence
 Eclipse-LazyStart: true
-Bundle-ClassPath: lib/jaimlib.jar,
- .
+Bundle-ClassPath: aim.jar

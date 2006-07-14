@@ -23,12 +23,8 @@ import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.ISubscribeListener;
 import org.eclipse.ecf.presence.chat.IChatRoomManager;
 
-import com.wilko.jaim.JaimConnection;
-
 public class JaimContainer implements IContainer, IPresenceContainer {
 
-	JaimConnection connection;
-	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.IContainer#addListener(org.eclipse.ecf.core.IContainerListener, java.lang.String)
 	 */
