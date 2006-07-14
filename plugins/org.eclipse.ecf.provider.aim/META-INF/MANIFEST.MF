@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ECF AIM Provider
+Bundle-SymbolicName: org.eclipse.ecf.provider.aim
+Bundle-Version: 0.8.9
+Bundle-Activator: org.eclipse.ecf.provider.aim.Activator
+Bundle-Vendor: Eclipse.org
+Bundle-Localization: plugin
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ecf,
+ org.eclipse.ecf.presence
+Eclipse-LazyStart: true
+Bundle-ClassPath: lib/jaimlib.jar,
+ .
