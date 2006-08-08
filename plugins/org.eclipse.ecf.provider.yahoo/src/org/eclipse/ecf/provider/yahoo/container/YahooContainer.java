@@ -69,13 +69,13 @@ public class YahooContainer extends AbstractContainer {
 		try {
 			session.login(targetYahooID.getUsername(), password);
 		} catch (AccountLockedException e) {
-			e.printStackTrace();
+			throw new ContainerConnectException("Account locked",e);
 		} catch (IllegalStateException e) {
-			e.printStackTrace();
+			throw new IllegalStateException("Illegal state",e);
 		} catch (LoginRefusedException e) {
-			e.printStackTrace();
+			throw new ContainerConnectException("Login refused",e);
 		} catch (IOException e) {
-			e.printStackTrace();
+			throw new ContainerConnectException("Unknown IOException",e);
 		}
 		session.addSessionListener(new YahooSessionListener(this,presenceContainer));
 		presenceContainer.fireContainerJoined(getConnectedID());
@@ -127,10 +127,10 @@ public class YahooContainer extends AbstractContainer {
 
 	public void disconnect() {
 		try {
-			session.logout();
-		} catch (IllegalStateException e) {
-			e.printStackTrace();
-		} catch (IOException e) {
+			if (session != null) session.logout();
+			session = null;
+		} catch (Exception e) {
+			session = null;
 			e.printStackTrace();
 		}
 		presenceContainer.fireContainerDeparted(getConnectedID());
