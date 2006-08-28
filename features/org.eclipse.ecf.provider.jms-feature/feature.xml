@@ -261,6 +261,14 @@ and
 limitations under the License.
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ecf"/>
+      <import plugin="org.eclipse.ecf.provider"/>
+      <import plugin="org.eclipse.ecf.datashare"/>
+      <import plugin="org.eclipse.ecf.provider.datashare"/>
+   </requires>
+
    <plugin
          id="org.eclipse.ecf.provider.jms"
          download-size="0"

@@ -17,6 +17,13 @@
       [Enter License Description here.]
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ecf"/>
+      <import plugin="org.eclipse.ecf.presence"/>
+      <import plugin="org.eclipse.ecf.provider"/>
+   </requires>
+
    <plugin
          id="org.eclipse.ecf.provider.yahoo"
          download-size="0"
