@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ecf.provider.irc_feature_0.9.1.jar" id="org.eclipse.ecf.provider.irc_feature" version="0.9.1">
-      <category name="ECF Extras"/>
-   </feature>
    <feature url="features/org.eclipse.ecf.provider.jms_feature_0.9.1.jar" id="org.eclipse.ecf.provider.jms_feature" version="0.9.1">
       <category name="ECF Extras"/>
    </feature>
