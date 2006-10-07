@@ -45,6 +45,7 @@
       <plugin id="org.eclipse.ecf"/>
       <plugin id="org.eclipse.ecf.discovery"/>
       <plugin id="org.eclipse.ecf.example.rcpchat"/>
+      <plugin id="org.eclipse.ecf.fileshare"/>
       <plugin id="org.eclipse.ecf.presence"/>
       <plugin id="org.eclipse.ecf.provider"/>
       <plugin id="org.eclipse.ecf.provider.xmpp"/>
