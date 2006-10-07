@@ -12,7 +12,5 @@ Require-Bundle: org.eclipse.core.runtime,
 Eclipse-LazyStart: true
 Bundle-ClassPath: yahoo.jar,
  lib/ymsg_network_v0_61.jar
-Export-Package: META-INF,
- ymsg.network,
- ymsg.network.event
+Export-Package: ymsg.network, ymsg.network.event
 Bundle-Vendor: Eclipse.org
