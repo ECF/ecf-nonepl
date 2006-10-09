@@ -90,7 +90,7 @@ public class PresenceContainerUI {
         });
         pc.addPresenceListener(new IPresenceListener() {
 
-            public void handleContainerJoined(final ID joinedContainer) {
+            public void handleConnected(final ID joinedContainer) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
                         ILocalInputHandler handler = new ILocalInputHandler() {
@@ -121,10 +121,10 @@ public class PresenceContainerUI {
                 });
             }
 
-            public void handleRosterEntry(final IRosterEntry entry) {
+            public void handleRosterEntryAdd(final IRosterEntry entry) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        rosterView.handleRosterEntry(PresenceContainerUI.this.groupID,entry);
+                        rosterView.handleRosterEntryAdd(PresenceContainerUI.this.groupID,entry);
                     }
                 });
             }
@@ -137,7 +137,7 @@ public class PresenceContainerUI {
                 });
             }
 
-            public void handleContainerDeparted(final ID departedContainer) {
+            public void handleDisconnected(final ID departedContainer) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
 						if (rosterView != null) {
@@ -149,10 +149,18 @@ public class PresenceContainerUI {
                 rosterView = null;
             }
 
-			public void handleSetRosterEntry(final IRosterEntry entry) {
+			public void handleRosterEntryUpdate(final IRosterEntry entry) {
                 Display.getDefault().syncExec(new Runnable() {
                     public void run() {
-                        rosterView.handleSetRosterEntry(PresenceContainerUI.this.groupID,entry);
+                        rosterView.handleRosterEntryAdd(PresenceContainerUI.this.groupID,entry);
+                    }
+                });
+			}
+
+			public void handleRosterEntryRemove(final IRosterEntry entry) {
+                Display.getDefault().syncExec(new Runnable() {
+                    public void run() {
+                        rosterView.handleRosterEntryRemove(PresenceContainerUI.this.groupID,entry);
                     }
                 });
 			}

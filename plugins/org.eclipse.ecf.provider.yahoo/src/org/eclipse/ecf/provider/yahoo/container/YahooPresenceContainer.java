@@ -115,21 +115,21 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
     protected void fireRosterEntry(IRosterEntry entry) {
         for (int i = 0; i < getPresenceListeners().size(); i++) {
             IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
-            l.handleRosterEntry(entry);
+            l.handleRosterEntryAdd(entry);
         }
     }
     
     protected void fireContainerJoined(ID container) {
         for (int i = 0; i < getPresenceListeners().size(); i++) {
             IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
-            l.handleContainerJoined(container);
+            l.handleConnected(container);
         }
     }
     
     protected void fireContainerDeparted(ID container) {
         for (int i = 0; i < getPresenceListeners().size(); i++) {
             IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
-            l.handleContainerDeparted(container);
+            l.handleDisconnected(container);
         }
     }
     
