@@ -8,19 +8,15 @@
  ******************************************************************************/
 package org.eclipse.ecf.example.rcpchat.client;
 
-import java.io.IOException;
 import java.net.URISyntaxException;
 import java.util.Hashtable;
-import javax.security.auth.callback.Callback;
-import javax.security.auth.callback.CallbackHandler;
-import javax.security.auth.callback.NameCallback;
-import javax.security.auth.callback.UnsupportedCallbackException;
+
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.core.security.ObjectCallback;
 import org.eclipse.ecf.presence.IPresenceContainer;
 
 public class Client {
@@ -64,26 +60,7 @@ public class Client {
 
 	protected IConnectContext getJoinContext(final String username,
 			final Object password) {
-		return new IConnectContext() {
-			public CallbackHandler getCallbackHandler() {
-				return new CallbackHandler() {
-					public void handle(Callback[] callbacks)
-							throws IOException, UnsupportedCallbackException {
-						if (callbacks == null)
-							return;
-						for (int i = 0; i < callbacks.length; i++) {
-							if (callbacks[i] instanceof NameCallback) {
-								NameCallback ncb = (NameCallback) callbacks[i];
-								ncb.setName(username);
-							} else if (callbacks[i] instanceof ObjectCallback) {
-								ObjectCallback ocb = (ObjectCallback) callbacks[i];
-								ocb.setObject(password);
-							}
-						}
-					}
-				};
-			}
-		};
+		return ConnectContextFactory.createUsernamePasswordConnectContext(username, password);
 	}
 	protected String setupUsername(ID targetID, String nickname) throws URISyntaxException {
 		String username = null;
