@@ -15,7 +15,7 @@
 package org.eclipse.ecf.provider.yahoo.identity;
 
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDInstantiationException;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
 
 public class YahooNamespace extends Namespace {
@@ -32,11 +32,11 @@ public class YahooNamespace extends Namespace {
 	 * the arguments provided. In this case, the args is expected
 	 * to include a single string argument representing the username
 	 */
-	public ID createInstance(Class[] argTypes, Object[] args) throws IDInstantiationException {
+	public ID createInstance(Class[] argTypes, Object[] args) throws IDCreateException {
 		try {
 			return new YahooID(this, (String) args[0]);
 		} catch (Exception e) {
-			throw new IDInstantiationException("Yahoo ID creation exception", e);
+			throw new IDCreateException("Yahoo ID creation exception", e);
 		}
 	}
 	

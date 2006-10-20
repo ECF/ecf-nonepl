@@ -2,7 +2,7 @@ package org.eclipse.ecf.provider.jms.identity;
 
 import java.net.URI;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDInstantiationException;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.provider.jms.JmsPlugin;
 
@@ -16,7 +16,7 @@ public class JMSNamespace extends Namespace {
 		super(JMS_NAMESPACE_NAME,null);
 	}
 	public ID createInstance(Class[] argTypes, Object[] args)
-			throws IDInstantiationException {
+			throws IDCreateException {
 		try {
 			if (args.length == 1) {
 				if (args[0] instanceof String) {
@@ -28,7 +28,7 @@ public class JMSNamespace extends Namespace {
 			throw new IllegalArgumentException(
 					"XMPP ID constructor arguments invalid");
 		} catch (Exception e) {
-			throw new IDInstantiationException("XMPP ID creation exception", e);
+			throw new IDCreateException("XMPP ID creation exception", e);
 		}
 	}
 

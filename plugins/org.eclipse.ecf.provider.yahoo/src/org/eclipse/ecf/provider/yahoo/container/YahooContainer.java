@@ -20,7 +20,7 @@ import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.IDInstantiationException;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.Callback;
 import org.eclipse.ecf.core.security.CallbackHandler;
@@ -110,7 +110,7 @@ public class YahooContainer extends AbstractContainer {
 				IPresence presence = presenceContainer.createPresence(userID.getName());
 				entry.setPresenceState(presence);
 				return entry;
-			} catch (IDInstantiationException e) {
+			} catch (IDCreateException e) {
 				e.printStackTrace();
 			}
 			return null;

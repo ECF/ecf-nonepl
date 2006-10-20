@@ -15,22 +15,22 @@
 
 package org.eclipse.ecf.provider.yahoo.container;
 
-import org.eclipse.ecf.core.ContainerInstantiationException;
+import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.IDInstantiationException;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.provider.IContainerInstantiator;
 
 public class YahooContainerInstantiator implements IContainerInstantiator {
 	
-	public IContainer createInstance(ContainerTypeDescription description, Class[] argTypes, Object[] args) throws ContainerInstantiationException {
+	public IContainer createInstance(ContainerTypeDescription description, Class[] argTypes, Object[] args) throws ContainerCreateException {
 		ID guid;
 		try {
 			guid = IDFactory.getDefault().createGUID();
-		} catch (IDInstantiationException e) {
-			throw new ContainerInstantiationException("Exception creating ID",e);
+		} catch (IDCreateException e) {
+			throw new ContainerCreateException("Exception creating ID",e);
 		}
 		return new YahooContainer(guid);
 	}
