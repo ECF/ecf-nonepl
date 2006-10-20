@@ -19,7 +19,7 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.util.IQueueEnqueue;
-import org.eclipse.ecf.datashare.IChannelContainer;
+import org.eclipse.ecf.datashare.IChannelContainerAdapter;
 import org.eclipse.ecf.provider.datashare.DatashareContainerAdapter;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
@@ -44,7 +44,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 		}
 	}
 	public Object getAdapter(Class clazz) {
-		if (clazz.equals(IChannelContainer.class)) {
+		if (clazz.equals(IChannelContainerAdapter.class)) {
 			synchronized (this) {
 				if (adapter == null) {
 					adapter = new DatashareContainerAdapter(this);

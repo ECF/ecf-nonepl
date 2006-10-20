@@ -27,7 +27,7 @@ import org.eclipse.ecf.core.security.CallbackHandler;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.security.ObjectCallback;
 import org.eclipse.ecf.presence.IPresence;
-import org.eclipse.ecf.presence.IPresenceContainer;
+import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.IRosterGroup;
 import org.eclipse.ecf.presence.impl.RosterEntry;
@@ -136,7 +136,7 @@ public class YahooContainer extends AbstractContainer {
 	}
 
 	public Object getAdapter(Class serviceType) {
-		if (serviceType.equals(IPresenceContainer.class)) {
+		if (serviceType.equals(IPresenceContainerAdapter.class)) {
 			return presenceContainer;
 		}
 		return super.getAdapter(serviceType);

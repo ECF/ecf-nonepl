@@ -17,7 +17,7 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.presence.IPresenceContainer;
+import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 
 public class Client {
 	public static final String WORKSPACE_NAME = "<workspace>";
@@ -45,14 +45,14 @@ public class Client {
 		ID targetID = IDFactory.getDefault().createID(client.getConnectNamespace(), uri);
 		// Setup username
 		String username = setupUsername(targetID,nickname);
-	     // Check for IPresenceContainer....if it is, setup presence UI, if not setup shared object container
-		IPresenceContainer pc = (IPresenceContainer) client
-				.getAdapter(IPresenceContainer.class);
+	     // Check for IPresenceContainerAdapter....if it is, setup presence UI, if not setup shared object container
+		IPresenceContainerAdapter pc = (IPresenceContainerAdapter) client
+				.getAdapter(IPresenceContainerAdapter.class);
 		if (pc != null) {
 			// Setup presence UI
 			presenceContainerUI = new PresenceContainerUI(pc);
 			presenceContainerUI.setup(client, targetID, username);
-		} else throw new NullPointerException("IPresenceContainer interface not exposed by client with type "+containerType);
+		} else throw new NullPointerException("IPresenceContainerAdapter interface not exposed by client with type "+containerType);
 		// Now connect
 		client.connect(targetID, getJoinContext(username, connectData));
 	}

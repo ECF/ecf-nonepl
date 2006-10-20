@@ -17,13 +17,13 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IMessageListener;
 import org.eclipse.ecf.presence.IMessageSender;
-import org.eclipse.ecf.presence.IPresenceContainer;
+import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.ISubscribeListener;
 import org.eclipse.ecf.presence.chat.IChatRoomManager;
 
-public class JaimContainer implements IContainer, IPresenceContainer {
+public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.IContainer#addListener(org.eclipse.ecf.core.IContainerListener, java.lang.String)
