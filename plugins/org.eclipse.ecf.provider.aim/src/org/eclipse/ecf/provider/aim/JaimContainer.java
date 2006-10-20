@@ -133,4 +133,19 @@ public class JaimContainer implements IContainer, IPresenceContainer {
 		return null;
 	}
 
+	public void removeMessageListener(IMessageListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removePresenceListener(IPresenceListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void removeSubscribeListener(ISubscribeListener listener) {
+		// TODO Auto-generated method stub
+		
+	}
+
 }
