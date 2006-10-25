@@ -43,9 +43,12 @@
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.core.variables"/>
       <plugin id="org.eclipse.ecf"/>
+      <plugin id="org.eclipse.ecf.call"/>
+      <plugin id="org.eclipse.ecf.core.sharedobject"/>
       <plugin id="org.eclipse.ecf.discovery"/>
       <plugin id="org.eclipse.ecf.example.rcpchat"/>
       <plugin id="org.eclipse.ecf.fileshare"/>
+      <plugin id="org.eclipse.ecf.identity"/>
       <plugin id="org.eclipse.ecf.presence"/>
       <plugin id="org.eclipse.ecf.provider"/>
       <plugin id="org.eclipse.ecf.provider.xmpp"/>
@@ -64,6 +67,7 @@
       <plugin id="org.eclipse.ui.workbench"/>
       <plugin id="org.eclipse.update.configurator"/>
       <plugin id="org.jivesoftware.smack"/>
+      <plugin id="org.jivesoftware.smack.jingle" fragment="true"/>
    </plugins>
 
 </product>
