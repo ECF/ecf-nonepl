@@ -17,12 +17,12 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import org.activemq.ActiveMQConnectionFactory;
-import org.eclipse.ecf.core.comm.AsynchEvent;
-import org.eclipse.ecf.core.comm.DisconnectEvent;
-import org.eclipse.ecf.core.comm.IConnectionListener;
-import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.core.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.provider.comm.AsynchEvent;
+import org.eclipse.ecf.provider.comm.DisconnectEvent;
+import org.eclipse.ecf.provider.comm.IConnectionListener;
+import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
+import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.jms.Trace;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 

@@ -10,10 +10,10 @@ import java.net.ConnectException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import javax.jms.ObjectMessage;
-import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.core.comm.ISynchAsynchEventHandler;
-import org.eclipse.ecf.core.comm.SynchEvent;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
+import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
+import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 public class ClientChannel extends Channel implements ISynchAsynchConnection {
