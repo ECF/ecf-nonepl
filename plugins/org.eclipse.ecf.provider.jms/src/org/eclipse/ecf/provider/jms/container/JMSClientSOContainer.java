@@ -11,9 +11,9 @@ package org.eclipse.ecf.provider.jms.container;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
-import org.eclipse.ecf.core.comm.ConnectionInstantiationException;
+import org.eclipse.ecf.core.comm.ConnectionCreateException;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.core.comm.SynchConnectionEvent;
+import org.eclipse.ecf.core.comm.SynchEvent;
 import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
@@ -81,7 +81,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 	}
 
 	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data)
-			throws ConnectionInstantiationException {
+			throws ConnectionCreateException {
 		ISynchAsynchConnection c = new ClientChannel(getReceiver(), keepAlive);
 		return c;
 	}
@@ -112,7 +112,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 				.getHomeContainerID(), this, soconfig.getProperties(), queue);
 	}
 
-	protected Serializable processSynch(SynchConnectionEvent e)
+	protected Serializable processSynch(SynchEvent e)
 			throws IOException {
 		debug("processSynch(" + e + ")");
 		Object req = e.getData();

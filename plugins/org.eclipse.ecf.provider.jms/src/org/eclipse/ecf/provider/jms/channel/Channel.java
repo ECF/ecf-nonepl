@@ -17,11 +17,11 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import org.activemq.ActiveMQConnectionFactory;
-import org.eclipse.ecf.core.comm.AsynchConnectionEvent;
-import org.eclipse.ecf.core.comm.DisconnectConnectionEvent;
-import org.eclipse.ecf.core.comm.IConnectionEventHandler;
+import org.eclipse.ecf.core.comm.AsynchEvent;
+import org.eclipse.ecf.core.comm.DisconnectEvent;
+import org.eclipse.ecf.core.comm.IConnectionListener;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.core.comm.ISynchAsynchConnectionEventHandler;
+import org.eclipse.ecf.core.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.jms.Trace;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
@@ -44,11 +44,11 @@ public abstract class Channel extends SocketAddress implements
 	protected ID containerID;
 	boolean connected = false;
 	boolean started = false;
-	protected ISynchAsynchConnectionEventHandler handler;
+	protected ISynchAsynchEventHandler handler;
 	protected int keepAlive = -1;
 	String topicName;
 
-	public Channel(ISynchAsynchConnectionEventHandler hand, int keepAlive) {
+	public Channel(ISynchAsynchEventHandler hand, int keepAlive) {
 		this.handler = hand;
 		this.containerID = hand.getEventHandlerID();
 		this.keepAlive = keepAlive;
@@ -99,7 +99,7 @@ public abstract class Channel extends SocketAddress implements
 	protected void onJMSException(JMSException except) {
 		trace("onException(" + except + ")");
 		if (isConnected() && isStarted()) {
-			handler.handleDisconnectEvent(new DisconnectConnectionEvent(this,
+			handler.handleDisconnectEvent(new DisconnectEvent(this,
 					except, null));
 		}
 	}
@@ -159,7 +159,7 @@ public abstract class Channel extends SocketAddress implements
 	protected void onTopicException(JMSException except) {
 		trace("onTopicException(" + except + ")");
 		if (isConnected() && isStarted()) {
-			handler.handleDisconnectEvent(new DisconnectConnectionEvent(this,
+			handler.handleDisconnectEvent(new DisconnectEvent(this,
 					except, null));
 		}
 	}
@@ -201,17 +201,17 @@ public abstract class Channel extends SocketAddress implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#addCommEventListener(org.eclipse.ecf.core.comm.IConnectionEventHandler)
+	 * @see org.eclipse.ecf.core.comm.IConnection#addCommEventListener(org.eclipse.ecf.core.comm.IConnectionListener)
 	 */
-	public void addCommEventListener(IConnectionEventHandler listener) {
+	public void addListener(IConnectionListener listener) {
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#removeCommEventListener(org.eclipse.ecf.core.comm.IConnectionEventHandler)
+	 * @see org.eclipse.ecf.core.comm.IConnection#removeCommEventListener(org.eclipse.ecf.core.comm.IConnectionListener)
 	 */
-	public void removeCommEventListener(IConnectionEventHandler listener) {
+	public void removeListener(IConnectionListener listener) {
 	}
 
 	/*
@@ -267,7 +267,7 @@ public abstract class Channel extends SocketAddress implements
 		if (isConnected() && isStarted()) {
 			try {
 				Object o = jmsmsg.getData();
-				handler.handleAsynchEvent(new AsynchConnectionEvent(this, o));
+				handler.handleAsynchEvent(new AsynchEvent(this, o));
 			} catch (IOException e) {
 				dumpStack("Exception in handleAsynchEvent", e);
 				hardDisconnect();

@@ -10,8 +10,8 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.jms.ObjectMessage;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.core.comm.ISynchAsynchConnectionEventHandler;
-import org.eclipse.ecf.core.comm.SynchConnectionEvent;
+import org.eclipse.ecf.core.comm.ISynchAsynchEventHandler;
+import org.eclipse.ecf.core.comm.SynchEvent;
 import org.eclipse.ecf.core.identity.ID;
 
 /**
@@ -21,7 +21,7 @@ import org.eclipse.ecf.core.identity.ID;
 public class ServerChannel extends Channel implements ISynchAsynchConnection {
 	private static final long serialVersionUID = -4762123821387039176L;
 
-	public ServerChannel(ISynchAsynchConnectionEventHandler handler,
+	public ServerChannel(ISynchAsynchEventHandler handler,
 			int keepAlive) throws IOException, URISyntaxException {
 		super(handler, keepAlive);
 		URI aURI = containerID.toURI();
@@ -39,7 +39,7 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 		trace("respondToRequest(" + o + ")");
 		try {
 			Serializable[] resp = (Serializable[]) handler
-					.handleSynchEvent(new SynchConnectionEvent(this, o));
+					.handleSynchEvent(new SynchEvent(this, o));
 			// this resp is an Serializable[] with two messages, one for the
 			// connect response and the other for everyone else
 			if (o instanceof ConnectRequest) {

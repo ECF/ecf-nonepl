@@ -7,7 +7,7 @@ import java.io.IOException;
 import java.util.Map;
 
 import org.activemq.transport.TransportChannel;
-import org.eclipse.ecf.core.comm.IConnectionEventHandler;
+import org.eclipse.ecf.core.comm.IConnectionListener;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.jms.container.JMSServerSOContainer;
@@ -71,10 +71,10 @@ public class ClientChannelProxy implements ISynchAsynchConnection {
 		return null;
 	}
 
-	public void addCommEventListener(IConnectionEventHandler listener) {
+	public void addListener(IConnectionListener listener) {
 	}
 
-	public void removeCommEventListener(IConnectionEventHandler listener) {
+	public void removeListener(IConnectionListener listener) {
 	}
 
 	public Object getAdapter(Class clazz) {

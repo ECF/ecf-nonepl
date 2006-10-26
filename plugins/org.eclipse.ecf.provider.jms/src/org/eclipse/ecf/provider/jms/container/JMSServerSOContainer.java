@@ -24,7 +24,7 @@ import java.util.Map;
 import org.activemq.broker.BrokerClient;
 import org.eclipse.ecf.core.comm.IConnection;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.core.comm.SynchConnectionEvent;
+import org.eclipse.ecf.core.comm.SynchEvent;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.security.IConnectPolicy;
@@ -155,7 +155,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		serverChannel.stop();
 	}
 
-	protected Serializable processSynch(SynchConnectionEvent e)
+	protected Serializable processSynch(SynchEvent e)
 			throws IOException {
 		debug("processSynch(" + e + ")");
 		Object req = e.getData();

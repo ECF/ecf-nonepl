@@ -11,15 +11,15 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import javax.jms.ObjectMessage;
 import org.eclipse.ecf.core.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.core.comm.ISynchAsynchConnectionEventHandler;
-import org.eclipse.ecf.core.comm.SynchConnectionEvent;
+import org.eclipse.ecf.core.comm.ISynchAsynchEventHandler;
+import org.eclipse.ecf.core.comm.SynchEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 public class ClientChannel extends Channel implements ISynchAsynchConnection {
 	private static final long serialVersionUID = -1381571376210849678L;
 
-	public ClientChannel(ISynchAsynchConnectionEventHandler handler,
+	public ClientChannel(ISynchAsynchEventHandler handler,
 			int keepAlive) {
 		super(handler, keepAlive);
 	}
@@ -81,7 +81,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 			trace("CLIENT.respondToConnectRequest:sending:" + first);
 			topicProducer.send(first);
 			handler
-					.handleSynchEvent(new SynchConnectionEvent(this, o
+					.handleSynchEvent(new SynchEvent(this, o
 							.getData()));
 		} catch (Exception e) {
 			// disconnect
