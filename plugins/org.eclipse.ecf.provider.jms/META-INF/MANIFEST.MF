@@ -27,4 +27,5 @@ Export-Package: org.eclipse.ecf.provider.jms.app,
  org.eclipse.ecf.provider.jms.channel,
  org.eclipse.ecf.provider.jms.container,
  org.eclipse.ecf.provider.jms.identity
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.4,
+ CDC-1.1/Foundation-1.1

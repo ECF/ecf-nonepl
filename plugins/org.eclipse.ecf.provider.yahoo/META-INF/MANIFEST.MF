@@ -14,4 +14,5 @@ Bundle-ClassPath: yahoo.jar,
  lib/ymsg_network_v0_61.jar
 Export-Package: ymsg.network, ymsg.network.event
 Bundle-Vendor: Eclipse.org
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
+Bundle-RequiredExecutionEnvironment: J2SE-1.4,
+ CDC-1.1/Foundation-1.1
