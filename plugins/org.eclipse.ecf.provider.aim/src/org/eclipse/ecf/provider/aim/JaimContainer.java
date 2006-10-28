@@ -28,7 +28,7 @@ public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.IContainer#addListener(org.eclipse.ecf.core.IContainerListener, java.lang.String)
 	 */
-	public void addListener(IContainerListener listener, String filter) {
+	public void addListener(IContainerListener listener) {
 		// TODO Auto-generated method stub
 
 	}

@@ -24,8 +24,8 @@ import org.eclipse.ecf.presence.IMessageSender;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IRosterEntry;
+import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.IMessageListener.Type;
-import org.eclipse.ecf.presence.impl.Presence;
 import org.eclipse.ecf.provider.yahoo.Activator;
 
 import ymsg.network.Session;

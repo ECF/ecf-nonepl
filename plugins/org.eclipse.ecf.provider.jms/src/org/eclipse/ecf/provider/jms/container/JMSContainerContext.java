@@ -11,7 +11,7 @@ package org.eclipse.ecf.provider.jms.container;
 import java.util.Map;
 
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.util.IQueueEnqueue;
+import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.generic.SOContext;
 

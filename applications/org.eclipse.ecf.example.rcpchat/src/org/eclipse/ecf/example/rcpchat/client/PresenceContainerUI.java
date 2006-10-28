@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.example.rcpchat.RcpChatPlugin;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IMessageListener;
@@ -23,7 +24,7 @@ import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.ISubscribeListener;
-import org.eclipse.ecf.presence.impl.Presence;
+import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.ui.dialogs.ReceiveAuthorizeRequestDialog;
 import org.eclipse.ecf.ui.views.ILocalInputHandler;
 import org.eclipse.ecf.ui.views.RosterView;
@@ -35,6 +36,7 @@ import org.eclipse.ui.PlatformUI;
 
 public class PresenceContainerUI {
 	
+	protected static final int SEND_ERRORCODE = 2001;
     protected RosterView rosterView = null;
     protected IMessageSender messageSender = null;
     protected IPresenceSender presenceSender = null;
@@ -95,7 +97,17 @@ public class PresenceContainerUI {
                     public void run() {
                         ILocalInputHandler handler = new ILocalInputHandler() {
                             public void inputText(ID userID, String text) {
-                                messageSender.sendMessage(localUser,userID,null,null,text);
+                                try {
+									messageSender.sendMessage(localUser,userID,null,null,text);
+								} catch (ECFException e) {
+									RcpChatPlugin.getDefault().getLog().log(
+											new Status(IStatus.ERROR,
+													RcpChatPlugin.getDefault()
+															.getBundle()
+															.getSymbolicName(),
+													SEND_ERRORCODE,
+													"Error in sendMessage", e));
+								}
                             }
                             public void startTyping(ID userID) {
                                 //System.out.println("handleStartTyping("+userID+")");
@@ -105,14 +117,44 @@ public class PresenceContainerUI {
                                 PresenceContainerUI.this.groupID = null;
                             }
     						public void updatePresence(ID userID, IPresence presence) {
-    							presenceSender.sendPresenceUpdate(localUser,userID,presence);
+    							try {
+									presenceSender.sendPresenceUpdate(localUser,userID,presence);
+								} catch (ECFException e) {
+									RcpChatPlugin.getDefault().getLog().log(
+											new Status(IStatus.ERROR,
+													RcpChatPlugin.getDefault()
+															.getBundle()
+															.getSymbolicName(),
+													SEND_ERRORCODE,
+													"Error in sendPresenceUpdate", e));
+								}
     						}
     						public void sendRosterAdd(String user, String name, String[] groups) {
     							// Send roster add
-    							presenceSender.sendRosterAdd(localUser, user,name,groups);
+    							try {
+									presenceSender.sendRosterAdd(localUser, user,name,groups);
+								} catch (ECFException e) {
+									RcpChatPlugin.getDefault().getLog().log(
+											new Status(IStatus.ERROR,
+													RcpChatPlugin.getDefault()
+															.getBundle()
+															.getSymbolicName(),
+													SEND_ERRORCODE,
+													"Error in sendRosterAdd", e));
+								}
     						}
     						public void sendRosterRemove(ID userID) {
-    							presenceSender.sendRosterRemove(localUser, userID);
+    							try {
+									presenceSender.sendRosterRemove(localUser, userID);
+								} catch (ECFException e) {
+									RcpChatPlugin.getDefault().getLog().log(
+											new Status(IStatus.ERROR,
+													RcpChatPlugin.getDefault()
+															.getBundle()
+															.getSymbolicName(),
+													SEND_ERRORCODE,
+													"Error in sendRosterRemove", e));
+								}
     						}
                         };
                         PresenceContainerUI.this.groupID = joinedContainer;
@@ -193,8 +235,16 @@ public class PresenceContainerUI {
 								// do nothing
 							}
 						} catch (Exception e) {
-		                    IStatus status = new Status(IStatus.ERROR,RcpChatPlugin.PLUGIN_ID,IStatus.OK,"Exception showing authorization dialog",e);
-		                    RcpChatPlugin.getDefault().getLog().log(status);
+		                    RcpChatPlugin
+									.getDefault()
+									.getLog()
+									.log(
+											new Status(
+													IStatus.ERROR,
+													RcpChatPlugin.PLUGIN_ID,
+													SEND_ERRORCODE,
+													"Exception showing authorization dialog",
+													e));
 						}
 		            }
 		        });
@@ -202,7 +252,17 @@ public class PresenceContainerUI {
 
 			public void handleUnsubscribeRequest(ID fromID, IPresence presence) {
 				if (presenceSender != null) {
-					presenceSender.sendPresenceUpdate(localUser,fromID,new Presence(IPresence.Type.UNSUBSCRIBED));
+					try {
+						presenceSender.sendPresenceUpdate(localUser,fromID,new Presence(IPresence.Type.UNSUBSCRIBED));
+					} catch (ECFException e) {
+						RcpChatPlugin.getDefault().getLog().log(
+								new Status(IStatus.ERROR,
+										RcpChatPlugin.getDefault()
+												.getBundle()
+												.getSymbolicName(),
+										SEND_ERRORCODE,
+										"Error in sendPresenceUpdate", e));
+					}
 				}
 			}
 
