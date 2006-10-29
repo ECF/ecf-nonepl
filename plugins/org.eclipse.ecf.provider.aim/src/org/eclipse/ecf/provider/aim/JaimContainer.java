@@ -20,7 +20,7 @@ import org.eclipse.ecf.presence.IMessageSender;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
-import org.eclipse.ecf.presence.ISubscribeListener;
+import org.eclipse.ecf.presence.IRosterSubscribeListener;
 import org.eclipse.ecf.presence.chat.IChatRoomManager;
 
 public class JaimContainer implements IContainer, IPresenceContainerAdapter {
@@ -108,7 +108,7 @@ public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 		
 	}
 
-	public void addSubscribeListener(ISubscribeListener listener) {
+	public void addRosterSubscribeListener(IRosterSubscribeListener listener) {
 		// TODO Auto-generated method stub
 		
 	}
@@ -143,7 +143,7 @@ public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 		
 	}
 
-	public void removeSubscribeListener(ISubscribeListener listener) {
+	public void removeSubscribeListener(IRosterSubscribeListener listener) {
 		// TODO Auto-generated method stub
 		
 	}

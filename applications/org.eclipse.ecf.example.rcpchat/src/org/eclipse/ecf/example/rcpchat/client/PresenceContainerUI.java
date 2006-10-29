@@ -23,7 +23,7 @@ import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.IRosterEntry;
-import org.eclipse.ecf.presence.ISubscribeListener;
+import org.eclipse.ecf.presence.IRosterSubscribeListener;
 import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.ui.dialogs.ReceiveAuthorizeRequestDialog;
 import org.eclipse.ecf.ui.views.ILocalInputHandler;
@@ -208,7 +208,7 @@ public class PresenceContainerUI {
 			}
             
         });
-		pc.addSubscribeListener(new ISubscribeListener() {
+		pc.addRosterSubscribeListener(new IRosterSubscribeListener() {
 
 			public void handleSubscribeRequest(final ID fromID, IPresence presence) {
 		        Display.getDefault().syncExec(new Runnable() {
