@@ -32,7 +32,7 @@ public class YahooNamespace extends Namespace {
 	 * the arguments provided. In this case, the args is expected
 	 * to include a single string argument representing the username
 	 */
-	public ID createInstance(Class[] argTypes, Object[] args) throws IDCreateException {
+	public ID createInstance(Object[] args) throws IDCreateException {
 		try {
 			return new YahooID(this, (String) args[0]);
 		} catch (Exception e) {

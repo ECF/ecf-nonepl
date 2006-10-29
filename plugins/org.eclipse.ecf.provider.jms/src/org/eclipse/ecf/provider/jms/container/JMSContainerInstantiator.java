@@ -17,11 +17,11 @@ import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.provider.IContainerInstantiator;
 
 
-public class Instantiator implements IContainerInstantiator {
-    public Instantiator() {
+public class JMSContainerInstantiator implements IContainerInstantiator {
+    public JMSContainerInstantiator() {
         
     }
-    protected ID getIDFromArg(Class type, Object arg)
+    protected ID getIDFromArg(Object arg)
             throws IDCreateException {
         if (arg instanceof ID)
             return (ID) arg;
@@ -37,7 +37,7 @@ public class Instantiator implements IContainerInstantiator {
             return IDFactory.getDefault().createGUID();
     }
 
-    protected Integer getIntegerFromArg(Class type, Object arg)
+    protected Integer getIntegerFromArg(Object arg)
             throws NumberFormatException {
         if (arg instanceof Integer)
             return (Integer) arg;
@@ -54,8 +54,7 @@ public class Instantiator implements IContainerInstantiator {
      *      java.lang.Class[], java.lang.Object[])
      */
     public IContainer createInstance(
-            ContainerTypeDescription description, Class[] argTypes,
-            Object[] args)
+            ContainerTypeDescription description, Object[] args)
             throws ContainerCreateException {
         try {
             Integer ka = new Integer(JMSClientSOContainer.DEFAULT_KEEPALIVE);
@@ -64,7 +63,7 @@ public class Instantiator implements IContainerInstantiator {
                 if (args.length > 0) {
                     name = (String) args[0];
                     if (args.length > 1) {
-                        ka = getIntegerFromArg(argTypes[1], args[1]);
+                        ka = getIntegerFromArg(args[1]);
                     }
                 }
             }

@@ -25,7 +25,7 @@ import org.eclipse.ecf.core.provider.IContainerInstantiator;
 
 public class YahooContainerInstantiator implements IContainerInstantiator {
 	
-	public IContainer createInstance(ContainerTypeDescription description, Class[] argTypes, Object[] args) throws ContainerCreateException {
+	public IContainer createInstance(ContainerTypeDescription description, Object[] args) throws ContainerCreateException {
 		ID guid;
 		try {
 			guid = IDFactory.getDefault().createGUID();
