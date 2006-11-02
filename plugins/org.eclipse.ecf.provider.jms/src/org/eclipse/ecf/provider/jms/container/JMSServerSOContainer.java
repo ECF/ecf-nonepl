@@ -24,7 +24,7 @@ import java.util.Map;
 import org.activemq.broker.BrokerClient;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.security.IConnectPolicy;
+import org.eclipse.ecf.core.security.IConnectHandlerPolicy;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
 import org.eclipse.ecf.provider.comm.IConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
@@ -47,7 +47,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 	protected boolean isSingle = false;
 
-	protected IConnectPolicy joinPolicy = null;
+	protected IConnectHandlerPolicy joinPolicy = null;
 
 	protected int getKeepAlive() {
 		return keepAlive;
