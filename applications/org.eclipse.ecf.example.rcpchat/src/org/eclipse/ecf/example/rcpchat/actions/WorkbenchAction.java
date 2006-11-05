@@ -21,66 +21,108 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.actions.ActionDelegate;
 
-public class WorkbenchAction extends ActionDelegate implements IWorkbenchWindowActionDelegate {
-    
-    public void run() {
-    }
+public class WorkbenchAction extends ActionDelegate implements
+		IWorkbenchWindowActionDelegate {
 
-    protected IWorkbench getWorkbench() {
-        return PlatformUI.getWorkbench();
-    }
+	public void run() {
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
-     */
-    public void dispose() {
-    }
+	protected IWorkbench getWorkbench() {
+		return PlatformUI.getWorkbench();
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
-     */
-    public void init(IWorkbenchWindow window) {
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#dispose()
+	 */
+	public void dispose() {
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
-     */
-    public void run(IAction action) {
-    	String namespaceName = "ecf.xmpp.smack";
-    	String namespaceDescription = "XMPP (Jabber)";
-    	Map namespaceProps = new HashMap();
-    	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword","true");
-    	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.examplegroupid","<user>@<xmppserver>");
-    	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage..defaultgroupid","");
-    	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix","xmpp:");
-    	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel","Account:");
-    	namespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",namespaceName);
-    	ContainerTypeDescription desc1 = new ContainerTypeDescription(namespaceName,namespaceDescription,namespaceProps);
-    	
-    	String snamespaceName = "ecf.xmpps.smack";
-    	String snamespaceDescription = "XMPP SSL (Secure Jabber)";
-    	
-    	Map snamespaceProps = new HashMap();
-    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword","true");
-    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.examplegroupid","<user>@<xmppserver>");
-    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage..defaultgroupid","");
-    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix","xmpps:");
-    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel","Account:");
-    	snamespaceProps.put("org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",snamespaceName);
-    	ContainerTypeDescription desc2 = new ContainerTypeDescription(snamespaceName,snamespaceDescription,snamespaceProps);
-    	
-        ConnectWizard wizard = new ConnectWizard(getWorkbench(), "Connect to Server",
-				new ContainerTypeDescription[] { desc1, desc2 });
-        // Create the wizard dialog
-        WizardDialog dialog = new WizardDialog
-         (getWorkbench().getActiveWorkbenchWindow().getShell(),wizard);
-        // Open the wizard dialog
-        dialog.open();
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
+	 */
+	public void init(IWorkbenchWindow window) {
+	}
 
-    /* (non-Javadoc)
-     * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction, org.eclipse.jface.viewers.ISelection)
-     */
-    public void selectionChanged(IAction action, ISelection selection) {
-    }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
+	 */
+	public void run(IAction action) {
+		String namespaceName = "ecf.xmpp.smack";
+		String namespaceDescription = "XMPP (Jabber)";
+		Map namespaceProps = new HashMap();
+		namespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword",
+				"true");
+		namespaceProps
+				.put(
+						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.examplegroupid",
+						"<user>@<xmppserver>");
+		namespaceProps
+				.put(
+						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage..defaultgroupid",
+						"");
+		namespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix",
+				"xmpp:");
+		namespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel",
+				"Account:");
+		namespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",
+				namespaceName);
+		ContainerTypeDescription desc1 = new ContainerTypeDescription(this
+				.getClass().getClassLoader(), namespaceName, "",
+				namespaceDescription, null, namespaceProps);
+
+		String snamespaceName = "ecf.xmpps.smack";
+		String snamespaceDescription = "XMPP SSL (Secure Jabber)";
+
+		Map snamespaceProps = new HashMap();
+		snamespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword",
+				"true");
+		snamespaceProps
+				.put(
+						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.examplegroupid",
+						"<user>@<xmppserver>");
+		snamespaceProps
+				.put(
+						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage..defaultgroupid",
+						"");
+		snamespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix",
+				"xmpps:");
+		snamespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel",
+				"Account:");
+		snamespaceProps.put(
+				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",
+				snamespaceName);
+		ContainerTypeDescription desc2 = new ContainerTypeDescription(this
+				.getClass().getClassLoader(), snamespaceName, "",
+				snamespaceDescription, null, snamespaceProps);
+		ConnectWizard wizard = new ConnectWizard(getWorkbench(),
+				"Connect to Server", new ContainerTypeDescription[] { desc1,
+						desc2 });
+		// Create the wizard dialog
+		WizardDialog dialog = new WizardDialog(getWorkbench()
+				.getActiveWorkbenchWindow().getShell(), wizard);
+		// Open the wizard dialog
+		dialog.open();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.IActionDelegate#selectionChanged(org.eclipse.jface.action.IAction,
+	 *      org.eclipse.jface.viewers.ISelection)
+	 */
+	public void selectionChanged(IAction action, ISelection selection) {
+	}
 }
