@@ -219,7 +219,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 					throw e;
 				}
 				// Now check to see if this request is going to be allowed
-				URI uri = request.getTargetID().toURI();
+				URI uri = new URI(request.getTargetID().getName());
 				String path = new URI(uri.getSchemeSpecificPart()).getPath();
 				Serializable d = jgm.getData();
 				checkJoin(channel, remoteID, path, d);

@@ -57,8 +57,8 @@ public class ServerApplication {
 		for (int i = 0; i < urls.length; i++) {
 			String serverid = urls[i];
 			ID groupID = IDFactory.getDefault().createID(JMSNamespace.JMS_NAMESPACE_NAME,
-					new URI(serverid));
-			URI aURI = groupID.toURI();
+					serverid);
+			URI aURI = new URI(groupID.getName());
 			String groupName = removeLeadingSlashes(new URI(aURI
 					.getSchemeSpecificPart()));
 			SOContainerConfig newConfig = new SOContainerConfig(groupID);

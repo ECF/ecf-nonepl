@@ -52,7 +52,7 @@ public class JMSID extends BaseID {
 
 	public URI getNameURI() {
 		try {
-			URI uri = toURI();
+			URI uri = new URI(getName());
 			return new URI(uri.getSchemeSpecificPart());
 		} catch (URISyntaxException e) {
 			return null;

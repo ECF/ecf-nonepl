@@ -15,7 +15,6 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 
 /**
- * @author slewis
  * 
  */
 public class ServerChannel extends Channel implements ISynchAsynchConnection {
@@ -24,7 +23,7 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 	public ServerChannel(ISynchAsynchEventHandler handler,
 			int keepAlive) throws IOException, URISyntaxException {
 		super(handler, keepAlive);
-		URI aURI = containerID.toURI();
+		URI aURI = new URI(containerID.getName());
 		url = aURI.getSchemeSpecificPart();
 		topicName = removeLeadingSlashes(new URI(url));
 		setup();

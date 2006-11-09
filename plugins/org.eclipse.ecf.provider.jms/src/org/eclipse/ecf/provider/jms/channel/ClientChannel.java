@@ -41,7 +41,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 					+ " not JMS ID");
 		managerID = (JMSID) remote;
 		try {
-			URI aURI = managerID.toURI();
+			URI aURI = new URI(managerID.getName());
 			url = aURI.getSchemeSpecificPart();
 			topicName = removeLeadingSlashes(new URI(url));
 		} catch (URISyntaxException e) {

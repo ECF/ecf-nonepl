@@ -8,6 +8,7 @@
  ******************************************************************************/
 package org.eclipse.ecf.example.rcpchat.client;
 
+import java.net.URI;
 import java.net.URISyntaxException;
 import java.util.Hashtable;
 
@@ -67,7 +68,7 @@ public class Client {
 		if (nickname != null) {
 			username = nickname;
 		} else {
-			username = targetID.toURI().getUserInfo();
+			username = new URI(targetID.getName()).getUserInfo();
 			if (username == null || username.equals(""))
 				username = System.getProperty("user.name");
 		}
