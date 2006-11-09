@@ -18,6 +18,7 @@ import java.io.IOException;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.AbstractPresenceContainer;
 import org.eclipse.ecf.presence.IMessageListener;
 import org.eclipse.ecf.presence.IMessageSender;
@@ -26,7 +27,6 @@ import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.IMessageListener.Type;
-import org.eclipse.ecf.provider.yahoo.Activator;
 
 import ymsg.network.Session;
 import ymsg.network.StatusConstants;

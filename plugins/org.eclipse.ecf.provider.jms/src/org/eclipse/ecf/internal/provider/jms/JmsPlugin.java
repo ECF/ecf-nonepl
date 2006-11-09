@@ -1,4 +1,4 @@
-package org.eclipse.ecf.provider.jms;
+package org.eclipse.ecf.internal.provider.jms;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;
@@ -64,7 +64,7 @@ public class JmsPlugin extends Plugin {
 	public ResourceBundle getResourceBundle() {
 		try {
 			if (resourceBundle == null)
-				resourceBundle = ResourceBundle.getBundle("org.eclipse.ecf.provider.jms.JmsPluginResources");
+				resourceBundle = ResourceBundle.getBundle("org.eclipse.ecf.internal.provider.jms.JmsPluginResources");
 		} catch (MissingResourceException x) {
 			resourceBundle = null;
 		}

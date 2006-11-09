@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: ECF AIM Provider
 Bundle-SymbolicName: org.eclipse.ecf.provider.aim
 Bundle-Version: 0.9.3
-Bundle-Activator: org.eclipse.ecf.provider.aim.Activator
+Bundle-Activator: org.eclipse.ecf.internal.provider.aim.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.core.runtime,

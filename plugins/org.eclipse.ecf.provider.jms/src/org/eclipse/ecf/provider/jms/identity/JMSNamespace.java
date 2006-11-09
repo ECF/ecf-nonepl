@@ -4,7 +4,7 @@ import java.net.URI;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.provider.jms.JmsPlugin;
+import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
 
 public class JMSNamespace extends Namespace {
 	private static final long serialVersionUID = 3761689000414884151L;

@@ -13,7 +13,7 @@ Bundle-ClassPath: jmsprovider.jar,
  lib/activemq3.1M5/geronimo-spec-jms-1.1-rc4.jar,
  lib/activemq3.1M5/geronimo-spec-jta-1.0.1B-rc4.jar,
  lib/activemq3.1M5/log4j-1.2.8.jar
-Bundle-Activator: org.eclipse.ecf.provider.jms.JmsPlugin
+Bundle-Activator: org.eclipse.ecf.internal.provider.jms.JmsPlugin
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
 Eclipse-LazyStart: true
@@ -98,7 +98,7 @@ Export-Package: EDU.oswego.cs.dl.util.concurrent,
  org.apache.log4j.spi,
  org.apache.log4j.varia,
  org.apache.log4j.xml,
- org.eclipse.ecf.provider.jms,
+ org.eclipse.ecf.internal.provider.jms,
  org.eclipse.ecf.provider.jms.app,
  org.eclipse.ecf.provider.jms.channel,
  org.eclipse.ecf.provider.jms.container,

@@ -16,7 +16,7 @@ import org.activemq.message.ConsumerInfo;
 import org.activemq.message.ProducerInfo;
 import org.activemq.message.SessionInfo;
 import org.activemq.store.PersistenceAdapter;
-import org.eclipse.ecf.provider.jms.Trace;
+import org.eclipse.ecf.internal.provider.jms.Trace;
 import org.eclipse.ecf.provider.jms.container.JMSServerSOContainer;
 
 public class ECFBrokerContainerImpl extends BrokerContainerImpl {

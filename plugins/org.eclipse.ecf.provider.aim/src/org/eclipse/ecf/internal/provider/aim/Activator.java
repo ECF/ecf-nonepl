@@ -1,4 +1,4 @@
-package org.eclipse.ecf.provider.aim;
+package org.eclipse.ecf.internal.provider.aim;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;

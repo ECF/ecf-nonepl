@@ -1,4 +1,4 @@
-package org.eclipse.ecf.provider.jms;
+package org.eclipse.ecf.internal.provider.jms;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,7 +27,7 @@ public class Trace {
             }
         } catch (Exception e) {
             try {
-                String val = System.getProperty("org.eclipse.ecf.provider.jms.Trace");
+                String val = System.getProperty("org.eclipse.ecf.internal.provider.jms.Trace");
                 if (val != null) {
                     setTrace(true);
                     isEclipse = false;

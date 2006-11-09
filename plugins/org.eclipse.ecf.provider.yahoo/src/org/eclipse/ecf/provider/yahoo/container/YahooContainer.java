@@ -26,13 +26,13 @@ import org.eclipse.ecf.core.security.Callback;
 import org.eclipse.ecf.core.security.CallbackHandler;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.security.ObjectCallback;
+import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.IRosterGroup;
 import org.eclipse.ecf.presence.RosterEntry;
 import org.eclipse.ecf.presence.RosterGroup;
-import org.eclipse.ecf.provider.yahoo.Activator;
 import org.eclipse.ecf.provider.yahoo.identity.YahooID;
 import org.eclipse.ecf.provider.yahoo.util.YahooSessionListener;
 

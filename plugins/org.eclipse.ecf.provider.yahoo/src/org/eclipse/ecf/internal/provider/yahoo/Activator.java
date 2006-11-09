@@ -10,10 +10,10 @@
  *  	- Chris Aniszczyk <zx@us.ibm.com>
  *   	- Borna Safabakhsh <borna@us.ibm.com> 
  *   
- * $Id$
+ * $Id: Activator.java,v 1.1 2006/11/09 22:11:19 slewis Exp $
  */
 
-package org.eclipse.ecf.provider.yahoo;
+package org.eclipse.ecf.internal.provider.yahoo;
 
 import org.eclipse.core.runtime.Plugin;
 import org.osgi.framework.BundleContext;

@@ -18,12 +18,12 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 import org.activemq.ActiveMQConnectionFactory;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.internal.provider.jms.Trace;
 import org.eclipse.ecf.provider.comm.AsynchEvent;
 import org.eclipse.ecf.provider.comm.DisconnectEvent;
 import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
-import org.eclipse.ecf.provider.jms.Trace;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 public abstract class Channel extends SocketAddress implements
