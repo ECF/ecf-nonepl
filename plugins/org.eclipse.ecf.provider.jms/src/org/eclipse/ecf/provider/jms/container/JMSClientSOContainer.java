@@ -17,7 +17,6 @@ import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.datashare.IChannelContainerAdapter;
-import org.eclipse.ecf.internal.provider.jms.Trace;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
@@ -32,17 +31,12 @@ import org.eclipse.ecf.provider.jms.channel.DisconnectRequest;
 import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 
 public class JMSClientSOContainer extends ClientSOContainer {
-	public static final Trace trace = Trace.create("clientcontainer");
 	public static final int DEFAULT_KEEPALIVE = JMSServerSOContainer.DEFAULT_KEEPALIVE;
+
 	int keepAlive = 0;
 
 	DatashareContainerAdapter adapter = null;
-	
-	public void trace(String msg) {
-		if (trace != null && Trace.ON) {
-			trace.msg(msg);
-		}
-	}
+
 	public Object getAdapter(Class clazz) {
 		if (clazz.equals(IChannelContainerAdapter.class)) {
 			synchronized (this) {
@@ -51,15 +45,12 @@ public class JMSClientSOContainer extends ClientSOContainer {
 				}
 			}
 			return adapter;
-		} else return super.getAdapter(clazz);
+		} else
+			return super.getAdapter(clazz);
 	}
+
 	public Namespace getConnectNamespace() {
-		return IDFactory.getDefault().getNamespaceByName(JMSNamespace.JMS_NAMESPACE_NAME);
-	}
-	public void dumpStack(String msg, Throwable t) {
-		if (trace != null && Trace.ON) {
-			trace.dumpStack(t, msg);
-		}
+		return IDFactory.getDefault().getNamespaceByName(JMSNamespace.NAME);
 	}
 
 	public JMSClientSOContainer() throws Exception {
@@ -80,8 +71,8 @@ public class JMSClientSOContainer extends ClientSOContainer {
 		this.adapter = new DatashareContainerAdapter(this);
 	}
 
-	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data)
-			throws ConnectionCreateException {
+	protected ISynchAsynchConnection createConnection(ID remoteSpace,
+			Object data) throws ConnectionCreateException {
 		ISynchAsynchConnection c = new ClientChannel(getReceiver(), keepAlive);
 		return c;
 	}
@@ -112,8 +103,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 				.getHomeContainerID(), this, soconfig.getProperties(), queue);
 	}
 
-	protected Serializable processSynch(SynchEvent e)
-			throws IOException {
+	protected Serializable processSynch(SynchEvent e) throws IOException {
 		debug("processSynch(" + e + ")");
 		Object req = e.getData();
 		if (req instanceof DisconnectRequest) {
@@ -130,8 +120,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 		ISynchAsynchConnection conn = getConnection();
 		memberLeave(fromID, conn);
 		// Notify listeners
-		fireContainerEvent(new ContainerDisconnectedEvent(getID(),
-				fromID));
+		fireContainerEvent(new ContainerDisconnectedEvent(getID(), fromID));
 	}
 
 	protected ID handleConnectResponse(ID originalTarget, Object serverData)

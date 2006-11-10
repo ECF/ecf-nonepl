@@ -1,3 +1,13 @@
+/****************************************************************************
+ * Copyright (c) 2004 Composent, Inc. and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Composent, Inc. - initial API and implementation
+ *****************************************************************************/
 package org.eclipse.ecf.provider.jms.identity;
 
 import java.net.URI;
@@ -9,19 +19,21 @@ import org.eclipse.ecf.core.identity.Namespace;
 public class JMSID extends BaseID {
 
 	private static final long serialVersionUID = 3979266962767753264L;
-    
+
 	URI uri;
-	
+
 	protected JMSID(Namespace namespace, String url) throws URISyntaxException {
 		super(namespace);
-		this.uri = new URI(namespace.getName()+":"+url);
+		this.uri = new URI(namespace.getName() + ":" + url);
 	}
+
 	protected JMSID(Namespace namespace, URI uri) throws URISyntaxException {
 		super(namespace);
-		this.uri = new URI(namespace.getName()+":"+uri.toString());
+		this.uri = new URI(namespace.getName() + ":" + uri.toString());
 	}
+
 	protected int namespaceCompareTo(BaseID o) {
-        return getName().compareTo(o.getName());
+		return getName().compareTo(o.getName());
 	}
 
 	protected boolean namespaceEquals(BaseID o) {
@@ -43,7 +55,7 @@ public class JMSID extends BaseID {
 	protected URI namespaceToURI() throws URISyntaxException {
 		return uri;
 	}
-	
+
 	public String toString() {
 		StringBuffer sb = new StringBuffer("JMSID[");
 		sb.append(uri.toString()).append("]");

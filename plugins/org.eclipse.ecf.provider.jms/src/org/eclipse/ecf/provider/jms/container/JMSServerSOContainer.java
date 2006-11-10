@@ -8,7 +8,6 @@
  * Contributors:
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
-
 package org.eclipse.ecf.provider.jms.container;
 
 import java.io.IOException;
@@ -22,11 +21,15 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import org.activemq.broker.BrokerClient;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.security.IConnectHandlerPolicy;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
-import org.eclipse.ecf.internal.provider.jms.Trace;
+import org.eclipse.ecf.core.util.Trace;
+import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
+import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
 import org.eclipse.ecf.provider.comm.IConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
@@ -38,9 +41,11 @@ import org.eclipse.ecf.provider.jms.channel.ServerChannel;
 
 public class JMSServerSOContainer extends ServerSOContainer {
 
-	public static final Trace trace = Trace.create("servercontainer");
-
 	public static final int DEFAULT_KEEPALIVE = 30000;
+
+	private static final int HANDLE_CONNECT_REQUEST_EXCEPTION = 36001;
+
+	private static final int MEMBER_LEAVE_ERROR_CODE = 36002;
 
 	// Keep alive value
 	protected int keepAlive = DEFAULT_KEEPALIVE;
@@ -60,18 +65,6 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 	// ECF ID -> JMS client ID
 	Map idMap = new HashMap();
-
-	public void trace(String msg) {
-		if (trace != null && Trace.ON) {
-			trace.msg(msg);
-		}
-	}
-
-	public void dumpStack(String msg, Throwable t) {
-		if (trace != null && Trace.ON) {
-			trace.dumpStack(t, msg);
-		}
-	}
 
 	public void addClient(BrokerClient client) {
 		synchronized (getGroupMembershipLock()) {
@@ -155,8 +148,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		serverChannel.stop();
 	}
 
-	protected Serializable processSynch(SynchEvent e)
-			throws IOException {
+	protected Serializable processSynch(SynchEvent e) throws IOException {
 		debug("processSynch(" + e + ")");
 		Object req = e.getData();
 		if (req instanceof ConnectRequest) {
@@ -166,10 +158,25 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		return null;
 	}
 
+	protected void traceAndLogExceptionCatch(int code, String method,
+			Throwable e) {
+		Trace
+				.catching(JmsPlugin.getDefault(),
+						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+						method, e);
+		JmsPlugin.getDefault().getLog()
+				.log(
+						new Status(IStatus.ERROR, JmsPlugin.PLUGIN_ID, code,
+								method, e));
+	}
+
 	protected void handleConnectException(ContainerMessage mess,
 			ServerChannel serverChannel, Exception e) {
-		dumpStack("connect exception with message " + mess + " from channel "
-				+ serverChannel, e);
+		/*
+		 * traceAndLogExceptionCatch(HANDLE_CONNECT_EXCEPTION, method, e)
+		 * dumpStack("connect exception with message " + mess + " from channel " +
+		 * serverChannel, e);
+		 */
 	}
 
 	protected Object checkJoin(SocketAddress saddr, ID fromID, String target,
@@ -196,6 +203,9 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 	protected Serializable handleConnectRequest(ConnectRequest request,
 			ServerChannel channel) {
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"handleConnectRequest", new Object[] { request, channel });
 		Object data = request.getData();
 		ContainerMessage mess = null;
 		try {
@@ -231,8 +241,8 @@ public class JMSServerSOContainer extends ServerSOContainer {
 					removeIDMap(remoteID);
 					throw new ConnectException("broker client is null");
 				}
-				ClientChannelProxy clientProxy = createClientChannelProxy(client,
-						channel, remoteID);
+				ClientChannelProxy clientProxy = createClientChannelProxy(
+						client, channel, remoteID);
 				if (addNewRemoteMember(remoteID, clientProxy)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
@@ -251,8 +261,8 @@ public class JMSServerSOContainer extends ServerSOContainer {
 				}
 			}
 			// notify listeners
-			fireContainerEvent(new ContainerConnectedEvent(this
-					.getID(), remoteID));
+			fireContainerEvent(new ContainerConnectedEvent(this.getID(),
+					remoteID));
 
 			messages[0] = serializeObject(ContainerMessage
 					.createViewChangeMessage(getID(), remoteID,
@@ -261,7 +271,8 @@ public class JMSServerSOContainer extends ServerSOContainer {
 			return messages;
 
 		} catch (Exception e) {
-			handleConnectException(mess, channel, e);
+			traceAndLogExceptionCatch(HANDLE_CONNECT_REQUEST_EXCEPTION,
+					"handleConnectRequest", e);
 			return null;
 		}
 	}
@@ -278,37 +289,43 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 	protected void queueContainerMessage(ContainerMessage mess)
 			throws IOException {
-		trace("queueContainerMessage(" + mess + ")");
 		serverChannel.sendAsynch(mess.toContainerID, serializeObject(mess));
 	}
 
 	public void clientRemoved(BrokerClient client) {
-		trace("clientRemoved(" + client + ")");
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"clientRemoved", new Object[] { client });
 		// OK, get ID for client...
 		ID remoteID = getIDForClientID(client.getClientID());
 		if (remoteID != null) {
 			IConnection conn = getConnectionForID(remoteID);
 			memberLeave(remoteID, conn);
 		}
+		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_ENTERING,
+				this.getClass(), "clientRemoved");
 	}
-	
+
 	protected void memberLeave(ID target, IConnection conn) {
-		debug("memberLeave(" + target + "," + conn +")");
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"memberLeave", new Object[] { target, conn });
 		if (target == null)
 			return;
 		if (removeRemoteMember(target)) {
 			try {
-				queueContainerMessage(ContainerMessage
-						.createViewChangeMessage(getID(), null,
-								getNextSequenceNumber(), new ID[] { target },
-								false, null));
+				queueContainerMessage(ContainerMessage.createViewChangeMessage(
+						getID(), null, getNextSequenceNumber(),
+						new ID[] { target }, false, null));
 			} catch (IOException e) {
-				logException("Exception in memberLeave.forwardExcluding", e);
+				traceAndLogExceptionCatch(MEMBER_LEAVE_ERROR_CODE,
+						"memberLeave", e);
 			}
 		}
 		if (conn != null)
 			killConnection(conn);
+		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+				this.getClass(), "memberLeave");
 	}
-
 
 }

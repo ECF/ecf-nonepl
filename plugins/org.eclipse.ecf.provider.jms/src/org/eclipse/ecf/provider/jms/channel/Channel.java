@@ -1,9 +1,18 @@
+/*******************************************************************************
+ * Copyright (c) 2004 Composent, Inc. and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ * 
+ * Contributors: Composent, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.ecf.provider.jms.channel;
 
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.SocketAddress;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.jms.Connection;
@@ -18,8 +27,12 @@ import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
 import org.activemq.ActiveMQConnectionFactory;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.internal.provider.jms.Trace;
+import org.eclipse.ecf.core.util.Trace;
+import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
+import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
 import org.eclipse.ecf.provider.comm.AsynchEvent;
 import org.eclipse.ecf.provider.comm.DisconnectEvent;
 import org.eclipse.ecf.provider.comm.IConnectionListener;
@@ -29,25 +42,58 @@ import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 public abstract class Channel extends SocketAddress implements
 		ISynchAsynchConnection {
-	public static final Trace trace = Trace.create("channel");
+
 	public static final String DEFAULT_USER = "defaultUser";
+
 	public static final String DEFAULT_PASSWORD = "defaultPassword";
+
+	private static final int HARD_DISCONNECT_ERROR_CODE = 31001;
+
+	private static final int CLOSE_ERROR_CODE = 31002;
+
+	private static final int HANDLE_ASYNCH_ERROR_CODE = 31003;
+
+	private static final int INTERRUPTED_ERROR_CODE = 31004;
+
+	private static final int HANDLE_SYNCH_ERROR_CODE = 31005;
+
+	private static final int GET_CONNECTIONID_ERROR_CODE = 31006;
+
+	private static final int ONMESSAGE_ERROR_CODE = 0;
+
 	protected static long correlationID = 0;
+
 	String username = DEFAULT_USER;
+
 	String password = DEFAULT_PASSWORD;
+
 	String url = null;
+
 	Connection connection = null;
+
 	Session session = null;
+
 	Destination topicDest = null;
+
 	MessageConsumer topicConsumer = null;
+
 	MessageProducer topicProducer = null;
+
 	protected JMSID managerID = null;
+
 	protected ID containerID;
+
 	boolean connected = false;
+
 	boolean started = false;
+
 	protected ISynchAsynchEventHandler handler;
+
 	protected int keepAlive = -1;
+
 	String topicName;
+
+	Map properties = new HashMap();
 
 	public Channel(ISynchAsynchEventHandler hand, int keepAlive) {
 		this.handler = hand;
@@ -76,19 +122,7 @@ public abstract class Channel extends SocketAddress implements
 		return correlationID++;
 	}
 
-	public void trace(String msg) {
-		if (trace != null && Trace.ON) {
-			trace.msg(msg);
-		}
-	}
-
-	public void dumpStack(String msg, Throwable t) {
-		if (trace != null && Trace.ON) {
-			trace.dumpStack(t, msg);
-		}
-	}
-
-	/*
+	/**
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ecf.core.comm.IConnection#connect(org.eclipse.ecf.core.identity.ID,
@@ -98,15 +132,15 @@ public abstract class Channel extends SocketAddress implements
 			throws IOException;
 
 	protected void onJMSException(JMSException except) {
-		trace("onException(" + except + ")");
 		if (isConnected() && isStarted()) {
-			handler.handleDisconnectEvent(new DisconnectEvent(this,
-					except, null));
+			handler.handleDisconnectEvent(new DisconnectEvent(this, except,
+					null));
 		}
 	}
 
 	protected void setup() throws IOException {
-		trace("setup()");
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(), "setup");
 		try {
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
 					username, password, url);
@@ -123,26 +157,36 @@ public abstract class Channel extends SocketAddress implements
 			topicConsumer.setMessageListener(new TopicReceiver());
 			connected = true;
 			connection.start();
-			trace("channel url=" + url + ",topic=" + topicName + ",clientid="
-					+ connection.getClientID());
 		} catch (JMSException e) {
-			dumpStack("Exception in setup", e);
+			Trace.catching(JmsPlugin.getDefault(),
+					JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+					"setup", e);
 			hardDisconnect();
-			throwIOException("Exception in channel setup", e);
+			throwIOException("setup", "Exception in channel setup", e);
 		}
+		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+				this.getClass(), "setup");
 	}
 
 	public void sendAsynch(ID recipient, Object obj) throws IOException {
 		queueObject(recipient, (Serializable) obj);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.comm.IAsynchConnection#sendAsynch(org.eclipse.ecf.core.identity.ID,
+	 *      byte[])
+	 */
 	public void sendAsynch(ID recipient, byte[] obj) throws IOException {
 		queueObject(recipient, obj);
 	}
 
 	public synchronized void queueObject(ID recipient, Serializable obj)
 			throws IOException {
-		trace("queueObject(" + recipient + "," + obj + ")");
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"queueObject", new Object[] { recipient, obj });
 		if (!isConnected())
 			throw new ConnectException("Not connected");
 		ObjectMessage msg = null;
@@ -151,31 +195,43 @@ public abstract class Channel extends SocketAddress implements
 					getLocalID(), recipient, obj));
 			topicProducer.send(msg);
 		} catch (JMSException e) {
-			dumpStack("Exception publishing message", e);
+			Trace.catching(JmsPlugin.getDefault(),
+					JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+					"queueObject", e);
 			disconnect();
-			throwIOException("Exception in queueObject", e);
+			throwIOException("queueObject", "Exception in queueObject", e);
 		}
+		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+				this.getClass(), "queueObject");
 	}
 
 	protected void onTopicException(JMSException except) {
-		trace("onTopicException(" + except + ")");
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"onTopicException", new Object[] { except });
 		if (isConnected() && isStarted()) {
-			handler.handleDisconnectEvent(new DisconnectEvent(this,
-					except, null));
+			handler.handleDisconnectEvent(new DisconnectEvent(this, except,
+					null));
 		}
+		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+				this.getClass(), "onTopicException");
 	}
 
-	public void throwIOException(String msg, Throwable t) throws IOException {
+	protected void throwIOException(String method, String msg, Throwable t)
+			throws IOException {
+		Trace
+				.throwing(JmsPlugin.getDefault(),
+						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+						method, t);
 		IOException except = new IOException(msg + ": " + t.getMessage());
 		except.setStackTrace(t.getStackTrace());
-		dumpStack("Exception setting up topic", except);
 		throw except;
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#isConnected()
+	 * @see org.eclipse.ecf.provider.comm.IConnection#isConnected()
 	 */
 	public synchronized boolean isConnected() {
 		return connected;
@@ -184,7 +240,7 @@ public abstract class Channel extends SocketAddress implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#isStarted()
+	 * @see org.eclipse.ecf.provider.comm.IConnection#isStarted()
 	 */
 	public synchronized boolean isStarted() {
 		return started;
@@ -193,10 +249,10 @@ public abstract class Channel extends SocketAddress implements
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#getProperties()
+	 * @see org.eclipse.ecf.provider.comm.IConnection#getProperties()
 	 */
 	public Map getProperties() {
-		return null;
+		return properties;
 	}
 
 	/*
@@ -226,7 +282,10 @@ public abstract class Channel extends SocketAddress implements
 
 	// protected abstract void handleQueueMessage(Message msg);
 	public synchronized void disconnect() throws IOException {
-		trace("disconnect()");
+		Trace
+				.entering(JmsPlugin.getDefault(),
+						JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+						"disconnect");
 		connected = false;
 		stop();
 		notifyAll();
@@ -235,8 +294,9 @@ public abstract class Channel extends SocketAddress implements
 	protected void hardDisconnect() {
 		try {
 			disconnect();
-		} catch (Exception e1) {
-			dumpStack("Exception in disconnect", e1);
+		} catch (Exception e) {
+			traceAndLogExceptionCatch(HARD_DISCONNECT_ERROR_CODE,
+					"hardDisconnect", e);
 		}
 	}
 
@@ -248,37 +308,56 @@ public abstract class Channel extends SocketAddress implements
 				connection = null;
 			}
 		} catch (Exception e) {
-			dumpStack("Exception in close", e);
+			traceAndLogExceptionCatch(CLOSE_ERROR_CODE, "close", e);
 		}
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.comm.IConnection#stop()
+	 */
 	public synchronized void stop() {
-		// closeTopic();
-		// closeQueue();
 		close();
 		started = false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.comm.IConnection#start()
+	 */
 	public synchronized void start() {
 		started = true;
 	}
 
 	protected void handleTopicMessage(Message msg, JMSMessage jmsmsg) {
-		trace("handleTopicMessage(" + msg + "," + jmsmsg + ")");
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"handleTopicMessage", new Object[] { msg, jmsmsg });
 		if (isConnected() && isStarted()) {
 			try {
 				Object o = jmsmsg.getData();
 				handler.handleAsynchEvent(new AsynchEvent(this, o));
 			} catch (IOException e) {
-				dumpStack("Exception in handleAsynchEvent", e);
+				Trace.catching(JmsPlugin.getDefault(),
+						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+						"handleTopicMessage", e);
+				JmsPlugin.getDefault().getLog().log(
+						new Status(IStatus.ERROR, JmsPlugin.PLUGIN_ID,
+								HANDLE_ASYNCH_ERROR_CODE,
+								"Exception on handleTopicMessage", e));
 				hardDisconnect();
 			}
-		} else {
-			trace("Not started...discarding message " + jmsmsg);
 		}
+		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+				this.getClass(), "handleTopicMessage");
 	}
+
 	protected Object synch = new Object();
+
 	protected String correlation = null;
+
 	protected Serializable reply = null;
 
 	protected Serializable getReply() {
@@ -291,6 +370,9 @@ public abstract class Channel extends SocketAddress implements
 
 	protected Serializable sendAndWait(Serializable obj, int waitDuration)
 			throws IOException {
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"sendAndWait", new Object[] { obj, new Integer(waitDuration) });
 		synchronized (synch) {
 			try {
 				ObjectMessage msg = session.createObjectMessage(obj);
@@ -299,11 +381,18 @@ public abstract class Channel extends SocketAddress implements
 				topicProducer.send(msg);
 				synch.wait(waitDuration);
 			} catch (JMSException e) {
-				dumpStack("exception in sendAndWait", e);
-				throwIOException("JMSException in sendAndWait", e);
-			} catch (InterruptedException e1) {
-				dumpStack("Interrupted in sendAndWait", e1);
+				Trace.catching(JmsPlugin.getDefault(),
+						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+						"sendAndWait", e);
+				throwIOException("sendAndWait", "JMSException in sendAndWait",
+						e);
+			} catch (InterruptedException e) {
+				traceAndLogExceptionCatch(INTERRUPTED_ERROR_CODE,
+						"handleTopicMessage", e);
 			}
+			Trace.exiting(JmsPlugin.getDefault(),
+					JmsDebugOptions.METHODS_EXITING, this.getClass(),
+					"sendAndWait", reply);
 			return reply;
 		}
 	}
@@ -316,7 +405,9 @@ public abstract class Channel extends SocketAddress implements
 	}
 
 	protected void handleSynchMessage(ObjectMessage msg, ECFMessage ecfmsg) {
-		trace("handleSynchMessage(" + ecfmsg + ")");
+		Trace.entering(JmsPlugin.getDefault(),
+				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"handleSynchMessage", new Object[] { msg, ecfmsg });
 		synchronized (synch) {
 			if (correlation == null)
 				return;
@@ -326,9 +417,24 @@ public abstract class Channel extends SocketAddress implements
 					synch.notify();
 				}
 			} catch (JMSException e) {
-				dumpStack("JMSException in handleSynchMessage", e);
+				traceAndLogExceptionCatch(HANDLE_SYNCH_ERROR_CODE,
+						"handleTopicMessage", e);
 			}
 		}
+		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+				this.getClass(), "handleSynchMessage");
+	}
+
+	protected void traceAndLogExceptionCatch(int code, String method,
+			Throwable e) {
+		Trace
+				.catching(JmsPlugin.getDefault(),
+						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+						method, e);
+		JmsPlugin.getDefault().getLog()
+				.log(
+						new Status(IStatus.ERROR, JmsPlugin.PLUGIN_ID, code,
+								method, e));
 	}
 
 	protected String getConnectionID() {
@@ -337,7 +443,8 @@ public abstract class Channel extends SocketAddress implements
 			res = connection.getClientID();
 			return res;
 		} catch (Exception e) {
-			dumpStack("Exception in getConnectionID", e);
+			traceAndLogExceptionCatch(GET_CONNECTIONID_ERROR_CODE,
+					"getConnectionID", e);
 			return null;
 		}
 	}
@@ -345,9 +452,13 @@ public abstract class Channel extends SocketAddress implements
 	public abstract Object sendSynch(ID target, byte[] data) throws IOException;
 
 	protected abstract void respondToRequest(ObjectMessage omsg, ECFMessage o);
+
 	class TopicReceiver implements MessageListener {
+
 		public void onMessage(Message msg) {
-			trace("onMessage(" + msg + ")");
+			Trace.entering(JmsPlugin.getDefault(),
+					JmsDebugOptions.METHODS_ENTERING, this.getClass(),
+					"handleSynchMessage", new Object[] { msg });
 			try {
 				if (msg instanceof ObjectMessage) {
 					ObjectMessage omg = (ObjectMessage) msg;
@@ -356,38 +467,57 @@ public abstract class Channel extends SocketAddress implements
 						ECFMessage ecfmsg = (ECFMessage) o;
 						ID fromID = ecfmsg.getSenderID();
 						if (fromID == null) {
-							trace("onMessage.msg invalid null sender");
+							Trace.exiting(JmsPlugin.getDefault(),
+									JmsDebugOptions.METHODS_ENTERING, this
+											.getClass(),
+									"onMessage.fromID=null");
 							return;
 						}
 						if (fromID.equals(getLocalID())) {
-							trace("onMessage.msg from "+fromID+" discarding message from us");
+							Trace.exiting(JmsPlugin.getDefault(),
+									JmsDebugOptions.METHODS_ENTERING, this
+											.getClass(),
+									"onMessage.fromID=getLocalID()");
 							return;
 						}
 						ID targetID = ecfmsg.getTargetID();
 						if (targetID == null) {
-							if (ecfmsg instanceof JMSMessage) handleTopicMessage(msg, (JMSMessage) ecfmsg);
-							else trace("onMessage.received invalid message to group");
+							if (ecfmsg instanceof JMSMessage)
+								handleTopicMessage(msg, (JMSMessage) ecfmsg);
+							else
+								Trace
+										.trace(JmsPlugin.getDefault(),
+												"onMessage.received invalid message to group");
 						} else {
 							if (targetID.equals(getLocalID())) {
-								if (ecfmsg instanceof JMSMessage) handleTopicMessage(msg, (JMSMessage) ecfmsg);
-								else if (ecfmsg instanceof SynchRequest) respondToRequest(omg,ecfmsg);
-								else if (ecfmsg instanceof SynchResponse) handleSynchMessage(omg,ecfmsg);
-								else trace("onMessage.msg invalid message to "+targetID);
+								if (ecfmsg instanceof JMSMessage)
+									handleTopicMessage(msg, (JMSMessage) ecfmsg);
+								else if (ecfmsg instanceof SynchRequest)
+									respondToRequest(omg, ecfmsg);
+								else if (ecfmsg instanceof SynchResponse)
+									handleSynchMessage(omg, ecfmsg);
+								else
+									Trace.trace(JmsPlugin.getDefault(),
+											"onMessage.msg invalid message to "
+													+ targetID);
 							}
 						}
-					} else {
+					} else
 						// received bogus message...ignore
-						trace("onMessage received non-ECFMessage...ignoring: "
-								+ o);
-					}
-				} else {
-					trace("onMessage.non object message received: " + msg);
-				}
+						Trace.trace(JmsPlugin.getDefault(),
+								"onMessage received non-ECFMessage...ignoring: "
+										+ o);
+				} else
+					Trace.trace(JmsPlugin.getDefault(),
+							"onMessage.non object message received: " + msg);
 			} catch (Exception e) {
-				dumpStack("Exception handling topic message: " + msg
-						+ ". Disconnecting", e);
+				traceAndLogExceptionCatch(ONMESSAGE_ERROR_CODE, "onMessage", e);
 				hardDisconnect();
 			}
+			Trace.exiting(JmsPlugin.getDefault(),
+					JmsDebugOptions.METHODS_EXITING, this.getClass(),
+					"onMessage");
+
 		}
 	}
 }

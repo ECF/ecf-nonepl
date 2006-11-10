@@ -15,14 +15,11 @@ import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.generic.SOContext;
 
-/**
- * @author slewis
- *
- */
 public class JMSContainerContext extends SOContext {
 
-    public JMSContainerContext(ID objID, ID homeID, SOContainer cont, Map props, IQueueEnqueue queue) {
-        super(objID, homeID, cont, props, queue);
-    }
-    
+	public JMSContainerContext(ID objID, ID homeID, SOContainer cont,
+			Map props, IQueueEnqueue queue) {
+		super(objID, homeID, cont, props, queue);
+	}
+
 }

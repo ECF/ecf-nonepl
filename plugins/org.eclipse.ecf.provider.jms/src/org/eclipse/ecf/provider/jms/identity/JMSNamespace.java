@@ -1,22 +1,33 @@
+/****************************************************************************
+ * Copyright (c) 2004 Composent, Inc. and others.
+ * All rights reserved. This program and the accompanying materials
+ * are made available under the terms of the Eclipse Public License v1.0
+ * which accompanies this distribution, and is available at
+ * http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *    Composent, Inc. - initial API and implementation
+ *****************************************************************************/
 package org.eclipse.ecf.provider.jms.identity;
 
 import java.net.URI;
+
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
 
 public class JMSNamespace extends Namespace {
 	private static final long serialVersionUID = 3761689000414884151L;
-	private static final String JMS_SCHEME = "jms";
-	
-	public static final String JMS_NAMESPACE_NAME = JmsPlugin.NAMESPACE_NAME;
-	
+
+	private static final String SCHEME = "jms";
+
+	public static final String NAME = "jms.activemq";
+
 	public JMSNamespace() {
-		super(JMS_NAMESPACE_NAME,null);
+		super(NAME, null);
 	}
-	public ID createInstance(Object[] args)
-			throws IDCreateException {
+
+	public ID createInstance(Object[] args) throws IDCreateException {
 		try {
 			if (args.length == 1) {
 				if (args[0] instanceof String) {
@@ -33,6 +44,6 @@ public class JMSNamespace extends Namespace {
 	}
 
 	public String getScheme() {
-		return JMS_SCHEME;
+		return SCHEME;
 	}
 }
