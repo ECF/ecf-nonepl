@@ -7,9 +7,9 @@ import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.Serializable;
 import java.net.ConnectException;
-import java.net.URI;
-import java.net.URISyntaxException;
+
 import javax.jms.ObjectMessage;
+
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
@@ -40,14 +40,9 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 			throw new ConnectException("remote " + remote.getName()
 					+ " not JMS ID");
 		managerID = (JMSID) remote;
-		try {
-			URI aURI = new URI(managerID.getName());
-			url = aURI.getSchemeSpecificPart();
-			topicName = removeLeadingSlashes(new URI(url));
-		} catch (URISyntaxException e) {
-			throw new ConnectException("remote " + remote
-					+ " does not have URI syntax");
-		}
+		url = managerID.getName();
+		topicName = removeLeadingSlashes(url);
+
 		if (!(data instanceof Serializable)) {
 			throw new NotSerializableException("data are not serializable");
 		}

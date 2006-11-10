@@ -6,9 +6,10 @@ package org.eclipse.ecf.provider.jms.channel;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
-import java.net.URI;
 import java.net.URISyntaxException;
+
 import javax.jms.ObjectMessage;
+
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
@@ -23,9 +24,8 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 	public ServerChannel(ISynchAsynchEventHandler handler,
 			int keepAlive) throws IOException, URISyntaxException {
 		super(handler, keepAlive);
-		URI aURI = new URI(containerID.getName());
-		url = aURI.getSchemeSpecificPart();
-		topicName = removeLeadingSlashes(new URI(url));
+		url = containerID.getName();
+		topicName = removeLeadingSlashes(url);
 		setup();
 	}
 

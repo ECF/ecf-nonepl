@@ -4,8 +4,8 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.SocketAddress;
-import java.net.URI;
 import java.util.Map;
+
 import javax.jms.Connection;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
@@ -16,6 +16,7 @@ import javax.jms.MessageListener;
 import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
+
 import org.activemq.ActiveMQConnectionFactory;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.internal.provider.jms.Trace;
@@ -307,12 +308,11 @@ public abstract class Channel extends SocketAddress implements
 		}
 	}
 
-	protected String removeLeadingSlashes(URI uri) {
-		String name = uri.getPath();
-		while (name.indexOf('/') != -1) {
-			name = name.substring(1);
+	protected String removeLeadingSlashes(String path) {
+		while (path.indexOf('/') != -1) {
+			path = path.substring(1);
 		}
-		return name;
+		return path;
 	}
 
 	protected void handleSynchMessage(ObjectMessage msg, ECFMessage ecfmsg) {
