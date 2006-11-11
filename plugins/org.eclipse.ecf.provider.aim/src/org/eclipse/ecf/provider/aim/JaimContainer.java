@@ -143,7 +143,7 @@ public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 		
 	}
 
-	public void removeSubscribeListener(IRosterSubscribeListener listener) {
+	public void removeRosterSubscribeListener(IRosterSubscribeListener listener) {
 		// TODO Auto-generated method stub
 		
 	}
