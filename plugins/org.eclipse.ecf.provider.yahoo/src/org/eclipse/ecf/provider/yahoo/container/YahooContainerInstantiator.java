@@ -22,6 +22,7 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.provider.IContainerInstantiator;
+import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 
 public class YahooContainerInstantiator implements IContainerInstantiator {
 	
@@ -33,6 +34,15 @@ public class YahooContainerInstantiator implements IContainerInstantiator {
 			throw new ContainerCreateException("Exception creating ID",e);
 		}
 		return new YahooContainer(guid);
+	}
+
+	public String[] getSupportedAdapterTypes(ContainerTypeDescription description) {
+		return new String[] { IPresenceContainerAdapter.class.getName() };
+	}
+
+	public Class[][] getSupportedParameterTypes(
+			ContainerTypeDescription description) {
+		return new Class[0][0];
 	}
 	
 }
