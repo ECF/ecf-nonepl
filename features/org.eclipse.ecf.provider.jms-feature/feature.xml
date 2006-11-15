@@ -267,13 +267,14 @@ limitations under the License.
       <import plugin="org.eclipse.ecf.provider"/>
       <import plugin="org.eclipse.ecf.datashare"/>
       <import plugin="org.eclipse.ecf.provider.datashare"/>
-      <import feature="org.eclipse.ecf.collab" version="0.9.3"/>
+      <import plugin="org.eclipse.ecf.sharedobject"/>
    </requires>
 
    <plugin
          id="org.eclipse.ecf.provider.jms"
          download-size="0"
          install-size="0"
-         version="0.0.0"/>
+         version="0.0.0"
+         unpack="false"/>
 
 </feature>
