@@ -2,12 +2,11 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ECF AIM Provider
 Bundle-SymbolicName: org.eclipse.ecf.provider.aim
-Bundle-Version: 0.9.3
+Bundle-Version: 0.9.4
 Bundle-Activator: org.eclipse.ecf.internal.provider.aim.Activator
 Bundle-Vendor: Eclipse.org
 Bundle-Localization: plugin
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ecf,
+Require-Bundle: org.eclipse.ecf,
  org.eclipse.ecf.presence
 Eclipse-LazyStart: true
 Bundle-ClassPath: aim.jar
@@ -15,3 +14,5 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.4,
  CDC-1.1/Foundation-1.1
 Export-Package: org.eclipse.ecf.internal.provider.aim;x-internal:=true,
  org.eclipse.ecf.provider.aim
+Import-Package: org.eclipse.core.runtime,
+ org.osgi.framework;version="1.3.0"

@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ECF JMS Provider
 Bundle-SymbolicName: org.eclipse.ecf.provider.jms;singleton:=true
-Bundle-Version: 0.9.3
+Bundle-Version: 0.9.4
 Bundle-ClassPath: activemqjmsprovider.jar,
  lib/activemq3.1M5/activeio-1.1.jar,
  lib/activemq3.1M5/activemq-core-3.1-M5.jar,
@@ -25,9 +25,10 @@ Export-Package: org.eclipse.ecf.internal.provider.jms;x-internal:=true,
  org.eclipse.ecf.provider.jms.identity
 Bundle-RequiredExecutionEnvironment: J2SE-1.4,
  CDC-1.1/Foundation-1.1
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ecf,
+Require-Bundle: org.eclipse.ecf,
  org.eclipse.ecf.provider,
  org.eclipse.ecf.datashare,
  org.eclipse.ecf.sharedobject,
  org.eclipse.ecf.provider.datashare
+Import-Package: org.eclipse.core.runtime,
+ org.osgi.framework;version="1.3.0"
