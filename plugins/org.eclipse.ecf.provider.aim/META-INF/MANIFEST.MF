@@ -9,7 +9,6 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ecf,
  org.eclipse.ecf.presence
 Eclipse-LazyStart: true
-Bundle-ClassPath: aim.jar
 Bundle-RequiredExecutionEnvironment: J2SE-1.4,
  CDC-1.1/Foundation-1.1
 Export-Package: org.eclipse.ecf.internal.provider.aim;x-internal:=true,

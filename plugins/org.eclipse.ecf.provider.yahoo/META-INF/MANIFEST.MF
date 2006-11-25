@@ -8,8 +8,7 @@ Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ecf,
  org.eclipse.ecf.presence
 Eclipse-LazyStart: true
-Bundle-ClassPath: yahooprovider.jar,
- lib/ymsg_network_v0_61.jar
+Bundle-ClassPath: lib/ymsg_network_v0_61.jar
 Export-Package: org.eclipse.ecf.internal.provider.yahoo;x-internal:=true,
  org.eclipse.ecf.provider.yahoo.container,
  org.eclipse.ecf.provider.yahoo.identity,
