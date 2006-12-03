@@ -262,12 +262,15 @@ limitations under the License.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ecf"/>
       <import plugin="org.eclipse.ecf.provider"/>
       <import plugin="org.eclipse.ecf.datashare"/>
-      <import plugin="org.eclipse.ecf.provider.datashare"/>
       <import plugin="org.eclipse.ecf.sharedobject"/>
+      <import plugin="org.eclipse.ecf.provider.datashare"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import feature="org.eclipse.ecf.core" version="0.9.4"/>
+      <import feature="org.eclipse.ecf.examples" version="0.9.4"/>
    </requires>
 
    <plugin
