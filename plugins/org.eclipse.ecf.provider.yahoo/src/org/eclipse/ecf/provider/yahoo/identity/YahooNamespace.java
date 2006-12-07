@@ -39,5 +39,12 @@ public class YahooNamespace extends Namespace {
 			throw new IDCreateException("Yahoo ID creation exception", e);
 		}
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.core.identity.Namespace#getSupportedParameterTypesForCreateInstance()
+	 */
+	public Class[][] getSupportedParameterTypesForCreateInstance() {
+		return new Class[][] { { String.class } };
+	}
 	
 }
