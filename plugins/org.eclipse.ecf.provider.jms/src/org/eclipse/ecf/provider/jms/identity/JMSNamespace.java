@@ -52,7 +52,7 @@ public class JMSNamespace extends Namespace {
 	 * 
 	 * @see org.eclipse.ecf.core.identity.Namespace#getSupportedParameterTypesForCreateInstance()
 	 */
-	public Class[][] getSupportedParameterTypesForCreateInstance() {
+	public Class[][] getSupportedParameterTypes() {
 		return new Class[][] { { String.class }, { URI.class } };
 	}
 }
