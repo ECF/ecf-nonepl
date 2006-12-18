@@ -98,7 +98,7 @@ public class PresenceContainerUI {
                         ILocalInputHandler handler = new ILocalInputHandler() {
                             public void inputText(ID userID, String text) {
                                 try {
-									messageSender.sendMessage(localUser,userID,null,null,text);
+									messageSender.sendMessage(userID,null,null,text);
 								} catch (ECFException e) {
 									RcpChatPlugin.getDefault().getLog().log(
 											new Status(IStatus.ERROR,
@@ -118,7 +118,7 @@ public class PresenceContainerUI {
                             }
     						public void updatePresence(ID userID, IPresence presence) {
     							try {
-									presenceSender.sendPresenceUpdate(localUser,userID,presence);
+									presenceSender.sendPresenceUpdate(userID,presence);
 								} catch (ECFException e) {
 									RcpChatPlugin.getDefault().getLog().log(
 											new Status(IStatus.ERROR,
@@ -132,7 +132,7 @@ public class PresenceContainerUI {
     						public void sendRosterAdd(String user, String name, String[] groups) {
     							// Send roster add
     							try {
-									presenceSender.sendRosterAdd(localUser, user,name,groups);
+									presenceSender.sendRosterAdd(user,name,groups);
 								} catch (ECFException e) {
 									RcpChatPlugin.getDefault().getLog().log(
 											new Status(IStatus.ERROR,
@@ -145,7 +145,7 @@ public class PresenceContainerUI {
     						}
     						public void sendRosterRemove(ID userID) {
     							try {
-									presenceSender.sendRosterRemove(localUser, userID);
+									presenceSender.sendRosterRemove(userID);
 								} catch (ECFException e) {
 									RcpChatPlugin.getDefault().getLog().log(
 											new Status(IStatus.ERROR,
@@ -222,12 +222,12 @@ public class PresenceContainerUI {
 							int res = authRequest.getButtonPressed();
 							if (res == ReceiveAuthorizeRequestDialog.AUTHORIZE_AND_ADD) {								
 								if (presenceSender != null) {
-									presenceSender.sendPresenceUpdate(localUser,fromID,new Presence(IPresence.Type.SUBSCRIBED));
+									presenceSender.sendPresenceUpdate(fromID,new Presence(IPresence.Type.SUBSCRIBED));
 									if (rosterView != null) rosterView.sendRosterAdd(localUser, fromID.getName(), null);
 								} 
 							} else if (res == ReceiveAuthorizeRequestDialog.AUTHORIZE_ID) {
 								if (presenceSender != null) {
-									presenceSender.sendPresenceUpdate(localUser,fromID,new Presence(IPresence.Type.SUBSCRIBED));
+									presenceSender.sendPresenceUpdate(fromID,new Presence(IPresence.Type.SUBSCRIBED));
 								} 
 							} else if (res == ReceiveAuthorizeRequestDialog.REFUSE_ID) {
 								// do nothing
@@ -253,7 +253,7 @@ public class PresenceContainerUI {
 			public void handleUnsubscribeRequest(ID fromID) {
 				if (presenceSender != null) {
 					try {
-						presenceSender.sendPresenceUpdate(localUser,fromID,new Presence(IPresence.Type.UNSUBSCRIBED));
+						presenceSender.sendPresenceUpdate(fromID,new Presence(IPresence.Type.UNSUBSCRIBED));
 					} catch (ECFException e) {
 						RcpChatPlugin.getDefault().getLog().log(
 								new Status(IStatus.ERROR,
