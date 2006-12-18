@@ -16,8 +16,10 @@ package org.eclipse.ecf.provider.yahoo.container;
 
 import java.io.IOException;
 
+import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.AbstractPresenceContainer;
 import org.eclipse.ecf.presence.IMessageListener;
@@ -27,6 +29,7 @@ import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.IMessageListener.Type;
+import org.eclipse.ecf.presence.roster.IRosterManager;
 
 import ymsg.network.Session;
 import ymsg.network.StatusConstants;
@@ -37,7 +40,7 @@ import ymsg.network.event.SessionFriendEvent;
 public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	private Session session;
- 
+	
 	public YahooPresenceContainer(Session session) {
 		this.session = session;
 	}
@@ -45,10 +48,9 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	public IMessageSender getMessageSender() {
 		return new IMessageSender() {
 			public void sendMessage(
-					ID fromID, 
 					ID toID, 
 					Type type, 
-					String subject,
+					String subject, 
 					String messageBody) {
 				try {
 					session.sendMessage(toID.getName(), messageBody);
@@ -149,6 +151,16 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			presence = new Presence(IPresence.Type.UNAVAILABLE, "User is away", IPresence.Mode.AWAY);
 		} 
 		return presence;
+	}
+
+	public IRosterManager getRosterManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IUser getUser() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

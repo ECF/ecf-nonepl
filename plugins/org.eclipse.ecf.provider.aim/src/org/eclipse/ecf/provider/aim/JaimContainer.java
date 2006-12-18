@@ -14,6 +14,7 @@ import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IMessageListener;
 import org.eclipse.ecf.presence.IMessageSender;
@@ -22,6 +23,7 @@ import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.IRosterSubscriptionListener;
 import org.eclipse.ecf.presence.chat.IChatRoomManager;
+import org.eclipse.ecf.presence.roster.IRosterManager;
 
 public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 
@@ -146,6 +148,16 @@ public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 	public void removeRosterSubscriptionListener(IRosterSubscriptionListener listener) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	public IRosterManager getRosterManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IUser getUser() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

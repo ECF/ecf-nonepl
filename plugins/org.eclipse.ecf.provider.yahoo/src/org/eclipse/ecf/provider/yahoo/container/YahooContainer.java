@@ -19,8 +19,8 @@ import java.io.IOException;
 import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.IDCreateException;
+import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.Callback;
 import org.eclipse.ecf.core.security.CallbackHandler;
@@ -106,10 +106,8 @@ public class YahooContainer extends AbstractContainer {
 		IRosterEntry entry;
 			try {
 				userID = IDFactory.getDefault().createID(targetYahooID.getNamespace(), userName);
-				entry = new RosterEntry(targetYahooID, userID, userName);
 				IPresence presence = presenceContainer.createPresence(userID.getName());
-				entry.setPresenceState(presence);
-				return entry;
+				return new RosterEntry(targetYahooID, userID, userName, presence);
 			} catch (IDCreateException e) {
 				e.printStackTrace();
 			}
