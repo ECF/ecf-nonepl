@@ -15,8 +15,9 @@
 package org.eclipse.ecf.provider.yahoo.container;
 
 import java.io.IOException;
+import java.util.List;
+import java.util.Vector;
 
-import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.user.IUser;
@@ -27,6 +28,7 @@ import org.eclipse.ecf.presence.IMessageSender;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IRosterEntry;
+import org.eclipse.ecf.presence.IRosterSubscriptionListener;
 import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 
@@ -80,6 +82,33 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		}
 	}
 	
+	Vector presenceListeners = new Vector();
+	
+	protected List getPresenceListeners() {
+		return presenceListeners;
+	}
+	
+	public void addPresenceListener(IPresenceListener l) {
+		presenceListeners.add(l);
+	}
+	
+	public void removePresenceListener(IPresenceListener l) {
+		presenceListeners.remove(l);
+	}
+	
+	Vector rosterSubscriptionListeners = new Vector();
+	
+	protected List getRosterSubscriptionListeners() {
+		return rosterSubscriptionListeners;
+	}
+	
+	public void addRosterSubscriptionListener(IRosterSubscriptionListener l) {
+		rosterSubscriptionListeners.add(l);
+	}
+	
+	public void removeRosterSubscriptionListener(IRosterSubscriptionListener l) {
+		rosterSubscriptionListeners.remove(l);
+	}
 
 	/**
 	 * Notifies any listeners that a friends status has changed
