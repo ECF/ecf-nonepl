@@ -28,7 +28,6 @@ import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.Presence;
-import org.eclipse.ecf.presence.IMessageListener.Type;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 
 import ymsg.network.Session;
@@ -49,7 +48,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		return new IMessageSender() {
 			public void sendMessage(
 					ID toID, 
-					Type type, 
 					String subject, 
 					String messageBody) {
 				try {
