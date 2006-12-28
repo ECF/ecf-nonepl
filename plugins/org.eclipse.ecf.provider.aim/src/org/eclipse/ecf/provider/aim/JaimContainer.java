@@ -22,7 +22,8 @@ import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.IRosterSubscriptionListener;
-import org.eclipse.ecf.presence.chat.IChatRoomManager;
+import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
+import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 
 public class JaimContainer implements IContainer, IPresenceContainerAdapter {
@@ -156,6 +157,14 @@ public class JaimContainer implements IContainer, IPresenceContainerAdapter {
 	}
 
 	public IUser getUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.presence.IPresenceContainerAdapter#getChatManager()
+	 */
+	public IChatManager getChatManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}

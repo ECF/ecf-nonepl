@@ -30,6 +30,7 @@ import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.IRosterSubscriptionListener;
 import org.eclipse.ecf.presence.Presence;
+import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 
 import ymsg.network.Session;
@@ -186,6 +187,14 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	}
 
 	public IUser getUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.presence.IPresenceContainerAdapter#getChatManager()
+	 */
+	public IChatManager getChatManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}
