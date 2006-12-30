@@ -13,6 +13,9 @@ package org.eclipse.ecf.example.rcpchat.client;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerListener;
+import org.eclipse.ecf.core.events.IContainerConnectedEvent;
+import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
 import org.eclipse.ecf.core.util.ECFException;
@@ -24,13 +27,13 @@ import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
-import org.eclipse.ecf.presence.IRosterEntry;
 import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessageEvent;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageEvent;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
+import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterSubscriptionListener;
 import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
 import org.eclipse.ecf.presence.ui.MultiRosterView;
@@ -82,7 +85,6 @@ public class PresenceContainerUI {
 		this.chatMessageSender = this.chatManager.getChatMessageSender();
 		this.typingMessageSender = this.chatManager.getTypingMessageSender();
 	}
-
 
 	protected void setup(final IContainer container, final ID localUser,
 			final String nick) {
@@ -138,106 +140,121 @@ public class PresenceContainerUI {
 				});
 			}});
 
-		pc.addPresenceListener(new IPresenceListener() {
-
-			public void handleConnected(final ID joinedContainer) {
-				Display.getDefault().syncExec(new Runnable() {
-					public void run() {
-						ILocalInputHandler handler = new ILocalInputHandler() {
-							public void inputText(ID userID, String text) {
-								try {
-									messageSender.sendChatMessage(userID, text);
-								} catch (ECFException e) {
-									RcpChatPlugin.getDefault().getLog().log(
-											new Status(IStatus.ERROR,
-													RcpChatPlugin.getDefault()
-															.getBundle()
-															.getSymbolicName(),
-													SEND_ERRORCODE,
-													"Error in sendMessage", e));
+		container.addListener(new IContainerListener() {
+			public void handleEvent(IContainerEvent event) {
+				if (event instanceof IContainerConnectedEvent) {
+					IContainerConnectedEvent cce = (IContainerConnectedEvent) event;
+					final ID joinedContainer = cce.getTargetID();
+					Display.getDefault().syncExec(new Runnable() {
+						public void run() {
+							ILocalInputHandler handler = new ILocalInputHandler() {
+								public void inputText(ID userID, String text) {
+									try {
+										chatMessageSender.sendChatMessage(userID, text);
+									} catch (ECFException e) {
+										RcpChatPlugin.getDefault().getLog().log(
+												new Status(IStatus.ERROR,
+														RcpChatPlugin.getDefault()
+																.getBundle()
+																.getSymbolicName(),
+														SEND_ERRORCODE,
+														"Error in sendMessage", e));
+									}
 								}
-							}
 
-							public void startTyping(ID userID) {
-								// System.out.println("handleStartTyping("+userID+")");
-							}
-
-							public void disconnect() {
-								container.disconnect();
-								PresenceContainerUI.this.groupID = null;
-							}
-
-							public void updatePresence(ID userID,
-									IPresence presence) {
-								try {
-									presenceSender.sendPresenceUpdate(
-											userID, presence);
-								} catch (ECFException e) {
-									RcpChatPlugin
-											.getDefault()
-											.getLog()
-											.log(
-													new Status(
-															IStatus.ERROR,
-															RcpChatPlugin
-																	.getDefault()
-																	.getBundle()
-																	.getSymbolicName(),
-															SEND_ERRORCODE,
-															"Error in sendPresenceUpdate",
-															e));
+								public void startTyping(ID userID) {
+									try {
+										typingMessageSender.sendTypingMessage(userID, true, "");
+									} catch (ECFException e) {
+										RcpChatPlugin.getDefault().getLog().log(
+												new Status(IStatus.ERROR,
+														RcpChatPlugin.getDefault()
+																.getBundle()
+																.getSymbolicName(),
+														SEND_ERRORCODE,
+														"Error in startTyping", e));
+									}
 								}
-							}
 
-							public void sendRosterAdd(String user, String name,
-									String[] groups) {
-								// Send roster add
-								try {
-									rosterSubscriptionSender.sendRosterAdd(user, name, groups);
-								} catch (ECFException e) {
-									RcpChatPlugin
-											.getDefault()
-											.getLog()
-											.log(
-													new Status(
-															IStatus.ERROR,
-															RcpChatPlugin
-																	.getDefault()
-																	.getBundle()
-																	.getSymbolicName(),
-															SEND_ERRORCODE,
-															"Error in sendRosterAdd",
-															e));
+								public void disconnect() {
+									container.disconnect();
 								}
-							}
 
-							public void sendRosterRemove(ID userID) {
-								try {
-									rosterSubscriptionSender.sendRosterRemove(userID);
-								} catch (ECFException e) {
-									RcpChatPlugin
-											.getDefault()
-											.getLog()
-											.log(
-													new Status(
-															IStatus.ERROR,
-															RcpChatPlugin
-																	.getDefault()
-																	.getBundle()
-																	.getSymbolicName(),
-															SEND_ERRORCODE,
-															"Error in sendRosterRemove",
-															e));
+								public void updatePresence(ID userID,
+										IPresence presence) {
+									try {
+										presenceSender.sendPresenceUpdate(
+												userID, presence);
+									} catch (ECFException e) {
+										RcpChatPlugin
+												.getDefault()
+												.getLog()
+												.log(
+														new Status(
+																IStatus.ERROR,
+																RcpChatPlugin
+																		.getDefault()
+																		.getBundle()
+																		.getSymbolicName(),
+																SEND_ERRORCODE,
+																"Error in sendPresenceUpdate",
+																e));
+									}
 								}
-							}
-						};
-						PresenceContainerUI.this.groupID = joinedContainer;
-						rosterView.addAccount(joinedContainer,
-								PresenceContainerUI.this.localUser, handler,
-								pc, soContainer);
-					}
-				});
-			}
+
+								public void sendRosterAdd(String user, String name,
+										String[] groups) {
+									// Send roster add
+									try {
+										rosterSubscriptionSender.sendRosterAdd(user, name, groups);
+									} catch (ECFException e) {
+										RcpChatPlugin
+												.getDefault()
+												.getLog()
+												.log(
+														new Status(
+																IStatus.ERROR,
+																RcpChatPlugin
+																		.getDefault()
+																		.getBundle()
+																		.getSymbolicName(),
+																SEND_ERRORCODE,
+																"Error in sendRosterAdd",
+																e));
+									}
+								}
+
+								public void sendRosterRemove(ID userID) {
+									try {
+										rosterSubscriptionSender.sendRosterRemove(userID);
+									} catch (ECFException e) {
+										RcpChatPlugin
+												.getDefault()
+												.getLog()
+												.log(
+														new Status(
+																IStatus.ERROR,
+																RcpChatPlugin
+																		.getDefault()
+																		.getBundle()
+																		.getSymbolicName(),
+																SEND_ERRORCODE,
+																"Error in sendRosterRemove",
+																e));
+									}
+								}
+							};
+							PresenceContainerUI.this.groupID = joinedContainer;
+							rosterView.addAccount(joinedContainer,
+									PresenceContainerUI.this.localUser, handler,
+									pc, soContainer);
+						}
+					});
+					
+				}			
+			}});
+		
+		pc.getRosterManager().addPresenceListener(new IPresenceListener() {
 
 			public void handleRosterEntryAdd(final IRosterEntry entry) {
 				Display.getDefault().syncExec(new Runnable() {
@@ -256,18 +273,6 @@ public class PresenceContainerUI {
 								presence);
 					}
 				});
-			}
-
-			public void handleDisconnected(final ID departedContainer) {
-				Display.getDefault().syncExec(new Runnable() {
-					public void run() {
-						if (rosterView != null) {
-							rosterView.accountDeparted(departedContainer);
-						}
-					}
-				});
-				messageSender = null;
-				rosterView = null;
 			}
 
 			public void handleRosterEntryUpdate(final IRosterEntry entry) {
@@ -289,6 +294,7 @@ public class PresenceContainerUI {
 			}
 
 		});
+		
 		pc.getRosterManager().addRosterSubscriptionListener(new IRosterSubscriptionListener() {
 
 			public void handleSubscribeRequest(final ID fromID) {
@@ -339,20 +345,6 @@ public class PresenceContainerUI {
 				});
 			}
 
-			public void handleUnsubscribeRequest(ID fromID) {
-				if (presenceSender != null) {
-					try {
-						presenceSender.sendPresenceUpdate(fromID, new Presence(IPresence.Type.UNSUBSCRIBED));
-					} catch (ECFException e) {
-						RcpChatPlugin.getDefault().getLog().log(
-								new Status(IStatus.ERROR, RcpChatPlugin
-										.getDefault().getBundle()
-										.getSymbolicName(), SEND_ERRORCODE,
-										"Error in sendPresenceUpdate", e));
-					}
-				}
-			}
-
 			public void handleSubscribed(ID fromID) {
 				// System.out.println("subscribed from "+fromID);
 			}
@@ -361,6 +353,7 @@ public class PresenceContainerUI {
 				// System.out.println("unsubscribed from "+fromID);
 			}
 			});
+		
 	}
 
 }

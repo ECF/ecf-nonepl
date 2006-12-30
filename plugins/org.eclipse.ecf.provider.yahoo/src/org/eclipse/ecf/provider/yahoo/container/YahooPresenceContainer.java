@@ -30,7 +30,7 @@ import org.eclipse.ecf.presence.AbstractPresenceContainer;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
-import org.eclipse.ecf.presence.IRosterEntry;
+import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.im.ChatMessage;
 import org.eclipse.ecf.presence.im.ChatMessageEvent;
@@ -39,7 +39,13 @@ import org.eclipse.ecf.presence.im.IChatMessage;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
+import org.eclipse.ecf.presence.roster.IRoster;
+import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.roster.IRosterSubscriptionListener;
+import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
+import org.eclipse.ecf.presence.roster.IRosterUpdateListener;
+import org.eclipse.ecf.presence.roster.Roster;
 
 import ymsg.network.Session;
 import ymsg.network.StatusConstants;
@@ -114,14 +120,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		return presenceListeners;
 	}
 	
-	public void addPresenceListener(IPresenceListener l) {
-		presenceListeners.add(l);
-	}
-	
-	public void removePresenceListener(IPresenceListener l) {
-		presenceListeners.remove(l);
-	}
-	
 	/**
 	 * Notifies any listeners that a friends status has changed
 	 * 
@@ -160,20 +158,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
         }
     }
     
-    protected void fireContainerJoined(ID container) {
-        for (int i = 0; i < getPresenceListeners().size(); i++) {
-            IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
-            l.handleConnected(container);
-        }
-    }
-    
-    protected void fireContainerDeparted(ID container) {
-        for (int i = 0; i < getPresenceListeners().size(); i++) {
-            IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
-            l.handleDisconnected(container);
-        }
-    }
-    
 	/**
 	 * Note: This method is simplistic
 	 * 
@@ -192,9 +176,52 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		return presence;
 	}
 
+	IRoster roster = new Roster();
+	
+	IRosterManager rosterManger = new IRosterManager() {
+
+		public void addPresenceListener(IPresenceListener listener) {
+			presenceListeners.add(listener);
+		}
+
+		public void addRosterSubscriptionListener(
+				IRosterSubscriptionListener listener) {
+		}
+
+		public void addRosterUpdateListener(IRosterUpdateListener listener) {
+		}
+
+		public IPresenceSender getPresenceSender() {
+			return null;
+		}
+
+		public IRoster getRoster() {
+			return roster;
+		}
+
+		public IRosterSubscriptionSender getRosterSubscriptionSender() {
+			return null;
+		}
+
+		public void removePresenceListener(IPresenceListener listener) {
+			presenceListeners.remove(listener);
+		}
+
+		public void removeRosterSubscriptionListener(
+				IRosterSubscriptionListener listener) {
+		}
+
+		public void removeRosterUpdateListener(IRosterUpdateListener listener) {
+		}
+
+		public Object getAdapter(Class adapter) {
+			return null;
+		}
+		
+	};
+	
 	public IRosterManager getRosterManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return rosterManger;
 	}
 
 	public IUser getUser() {
@@ -207,6 +234,13 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 */
 	public IChatManager getChatManager() {
 		return chatManager;
+	}
+
+	/**
+	 * @return
+	 */
+	protected Object getRoster() {
+		return roster;
 	}
 
 }

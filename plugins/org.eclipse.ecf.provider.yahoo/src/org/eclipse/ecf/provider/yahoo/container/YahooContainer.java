@@ -18,6 +18,10 @@ import java.io.IOException;
 
 import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;
+import org.eclipse.ecf.core.events.ContainerConnectedEvent;
+import org.eclipse.ecf.core.events.ContainerConnectingEvent;
+import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
+import org.eclipse.ecf.core.events.ContainerDisconnectingEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
@@ -26,13 +30,14 @@ import org.eclipse.ecf.core.security.Callback;
 import org.eclipse.ecf.core.security.CallbackHandler;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.security.ObjectCallback;
+import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
-import org.eclipse.ecf.presence.IRosterEntry;
-import org.eclipse.ecf.presence.IRosterGroup;
-import org.eclipse.ecf.presence.RosterEntry;
-import org.eclipse.ecf.presence.RosterGroup;
+import org.eclipse.ecf.presence.roster.IRosterEntry;
+import org.eclipse.ecf.presence.roster.IRosterGroup;
+import org.eclipse.ecf.presence.roster.RosterEntry;
+import org.eclipse.ecf.presence.roster.RosterGroup;
 import org.eclipse.ecf.provider.yahoo.identity.YahooID;
 import org.eclipse.ecf.provider.yahoo.util.YahooSessionListener;
 
@@ -43,75 +48,88 @@ import ymsg.network.YahooGroup;
 import ymsg.network.YahooUser;
 
 public class YahooContainer extends AbstractContainer {
-	
+
 	/** Represents the YMSG session object provided by the ymsg library */
 	private Session session;
-	
+
 	/** Entity identifier within the ECF namespace for the local Container entity */
 	private ID localID;
-	
-	/** Entity identifier within the Yahoo! namespace for the target server or group entity */
+
+	/**
+	 * Entity identifier within the Yahoo! namespace for the target server or
+	 * group entity
+	 */
 	private YahooID targetYahooID;
-	
-	/** Presence container instance used for adapting this container to a present container */
+
+	/**
+	 * Presence container instance used for adapting this container to a present
+	 * container
+	 */
 	private YahooPresenceContainer presenceContainer;
-	
+
 	public YahooContainer(ID id) {
 		this.localID = id;
 		session = new Session();
 		presenceContainer = new YahooPresenceContainer(session);
 	}
 
-	public void connect(ID targetID, IConnectContext connectContext) throws ContainerConnectException {
+	public void connect(ID targetID, IConnectContext connectContext)
+			throws ContainerConnectException {
 		String password = getPassword(connectContext);
+		fireContainerEvent(new ContainerConnectingEvent(this.getID(), targetID,
+				connectContext));
 		this.targetYahooID = (YahooID) targetID;
 		try {
 			session.login(targetYahooID.getUsername(), password);
 		} catch (AccountLockedException e) {
-			throw new ContainerConnectException("Account locked",e);
+			throw new ContainerConnectException("Account locked", e);
 		} catch (IllegalStateException e) {
-			throw new IllegalStateException("Illegal state",e);
+			throw new IllegalStateException("Illegal state", e);
 		} catch (LoginRefusedException e) {
-			throw new ContainerConnectException("Login refused",e);
+			throw new ContainerConnectException("Login refused", e);
 		} catch (IOException e) {
-			throw new ContainerConnectException("Unknown IOException",e);
+			throw new ContainerConnectException("Unknown IOException", e);
 		}
-		session.addSessionListener(new YahooSessionListener(this,presenceContainer));
-		presenceContainer.fireContainerJoined(getConnectedID());
+		session.addSessionListener(new YahooSessionListener(this,
+				presenceContainer));
+		fireContainerEvent(new ContainerConnectedEvent(this.getID(), targetID));
 		populateRoster(session.getGroups());
 	}
-	
+
 	private void populateRoster(YahooGroup[] groups) {
-		for(int i = 0; i < groups.length; i++) {
-			IRosterGroup group = new RosterGroup(groups[i].getName());
-			for(int j = 0; j < groups[i].getMembers().size(); j++) {
+		for (int i = 0; i < groups.length; i++) {
+			IRosterGroup group = new RosterGroup(presenceContainer.getRoster(),
+					groups[i].getName());
+			for (int j = 0; j < groups[i].getMembers().size(); j++) {
 				YahooUser u = (YahooUser) groups[i].getMembers().get(j);
-				IRosterEntry entry = makeRosterEntry(u);
-				entry.add(group);
+				IRosterEntry entry = makeRosterEntry(group, u);
 				presenceContainer.fireRosterEntry(entry);
 			}
 		}
 	}
-	
+
 	/**
-	 * Creates a Roster entry in the YMSG Buddy List for each buddy.
-	 * Each roster entry includes the targetID (representing this session),
-	 * the userID (created to represent the buddy in ECF), and the userName 
-	 * @param user YahooUser to add to ECF buddy list
+	 * Creates a Roster entry in the YMSG Buddy List for each buddy. Each roster
+	 * entry includes the targetID (representing this session), the userID
+	 * (created to represent the buddy in ECF), and the userName
+	 * 
+	 * @param user
+	 *            YahooUser to add to ECF buddy list
 	 * @return returns roster entry representing this user in the buddy list
 	 */
-	protected IRosterEntry makeRosterEntry(YahooUser user) { 
+	protected IRosterEntry makeRosterEntry(IRosterGroup group, YahooUser user) {
 		String userName = user.getId();
 		ID userID;
-		IRosterEntry entry;
-			try {
-				userID = IDFactory.getDefault().createID(targetYahooID.getNamespace(), userName);
-				IPresence presence = presenceContainer.createPresence(userID.getName());
-				return new RosterEntry(targetYahooID, userID, userName, presence);
-			} catch (IDCreateException e) {
-				e.printStackTrace();
-			}
+		try {
+			userID = IDFactory.getDefault().createID(
+					targetYahooID.getNamespace(), userName);
+			IPresence presence = presenceContainer.createPresence(userID
+					.getName());
+			return new RosterEntry(group, new User(userID, userName), presence);
+		} catch (IDCreateException e) {
+			e.printStackTrace();
 			return null;
+		}
 	}
 
 	public ID getConnectedID() {
@@ -119,18 +137,24 @@ public class YahooContainer extends AbstractContainer {
 	}
 
 	public Namespace getConnectNamespace() {
-		return IDFactory.getDefault().getNamespaceByName(Activator.NAMESPACE_IDENTIFIER);
+		return IDFactory.getDefault().getNamespaceByName(
+				Activator.NAMESPACE_IDENTIFIER);
 	}
 
 	public void disconnect() {
+		fireContainerEvent(new ContainerDisconnectingEvent(this.getID(),
+				targetYahooID));
 		try {
-			if (session != null) session.logout();
+			if (session != null)
+				session.logout();
 			session = null;
 		} catch (Exception e) {
 			session = null;
 			e.printStackTrace();
 		}
-		presenceContainer.fireContainerDeparted(getConnectedID());
+		// notify listeners
+		fireContainerEvent(new ContainerDisconnectedEvent(this.getID(),
+				targetYahooID));
 	}
 
 	public Object getAdapter(Class serviceType) {
@@ -139,15 +163,15 @@ public class YahooContainer extends AbstractContainer {
 		}
 		return super.getAdapter(serviceType);
 	}
-	
+
 	public void dispose() {
 		disconnect();
 	};
-	
+
 	public ID getID() {
 		return this.localID;
 	}
-	
+
 	private String getPassword(IConnectContext connectContext) {
 		// Get password via callback in connectContext
 		String pw = null;
