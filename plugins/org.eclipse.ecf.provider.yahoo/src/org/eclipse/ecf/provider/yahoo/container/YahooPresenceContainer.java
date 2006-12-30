@@ -15,22 +15,30 @@
 package org.eclipse.ecf.provider.yahoo.container;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.user.IUser;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.AbstractPresenceContainer;
-import org.eclipse.ecf.presence.IMessageListener;
-import org.eclipse.ecf.presence.IMessageSender;
+import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IRosterEntry;
-import org.eclipse.ecf.presence.IRosterSubscriptionListener;
 import org.eclipse.ecf.presence.Presence;
+import org.eclipse.ecf.presence.im.ChatMessage;
+import org.eclipse.ecf.presence.im.ChatMessageEvent;
 import org.eclipse.ecf.presence.im.IChatManager;
+import org.eclipse.ecf.presence.im.IChatMessage;
+import org.eclipse.ecf.presence.im.IChatMessageSender;
+import org.eclipse.ecf.presence.im.ITypingMessageSender;
+import org.eclipse.ecf.presence.im.IChatMessage.Type;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 
 import ymsg.network.Session;
@@ -43,43 +51,60 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	private Session session;
 	
+	List listeners = new ArrayList();
+	
 	public YahooPresenceContainer(Session session) {
 		this.session = session;
 	}
 
-	public IMessageSender getMessageSender() {
-		return new IMessageSender() {
-			public void sendMessage(
-					ID toID, 
-					String subject, 
-					String messageBody) {
-				try {
-					session.sendMessage(toID.getName(), messageBody);
-				} catch (IllegalStateException e) {
-					e.printStackTrace();
-				} catch (IOException e) {
-					e.printStackTrace();
-				}
+	IChatMessageSender chatSender = new IChatMessageSender() {
+		public void sendChatMessage(ID toID, ID threadID, Type type,
+				String subject, String body, Map properties)
+				throws ECFException {
+			try {
+				session.sendMessage(toID.getName(), body);
+			} catch (IllegalStateException e) {
+				e.printStackTrace();
+			} catch (IOException e) {
+				e.printStackTrace();
 			}
-		};
-	}
+		}
 
+		public void sendChatMessage(ID toID, String body) throws ECFException {
+			sendChatMessage(toID, null, IChatMessage.Type.CHAT, null, body, null);
+		}
+		
+	};
+	
+	IChatManager chatManager = new IChatManager() {
+		public void addMessageListener(IIMMessageListener listener) {
+			listeners.add(listener);
+		}
+
+		public IChatMessageSender getChatMessageSender() {
+			return chatSender;
+		}
+
+		public ITypingMessageSender getTypingMessageSender() {
+			return null;
+		}
+
+		public void removeMessageListener(IIMMessageListener listener) {
+			listeners.remove(listener);
+		}
+		
+	};
+	
 	/**
 	 * Notifies any listeners that a message has been received from a yahoo user
 	 * 
 	 * @param event
 	 */
 	public void handleMessageReceived(SessionEvent event) {
-		for(int i = 0; i < getMessageListeners().size(); i++) {
-			IMessageListener l = (IMessageListener) getMessageListeners().get(i);
-			ID from = makeIDFromName(event.getFrom());
-			ID to = makeIDFromName(event.getTo());
-			l.handleMessage(
-					from, 
-					to, 
-					IMessageListener.Type.NORMAL, 
-					event.getFrom(), 
-					event.getMessage());
+		for(Iterator i=listeners.iterator(); i.hasNext(); ) {
+			IIMMessageListener l = (IIMMessageListener) i.next();
+			ID fromID = makeIDFromName(event.getFrom());
+			l.handleMessageEvent(new ChatMessageEvent(fromID, new ChatMessage(fromID,event.getMessage())));
 		}
 	}
 	
@@ -97,20 +122,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		presenceListeners.remove(l);
 	}
 	
-	Vector rosterSubscriptionListeners = new Vector();
-	
-	protected List getRosterSubscriptionListeners() {
-		return rosterSubscriptionListeners;
-	}
-	
-	public void addRosterSubscriptionListener(IRosterSubscriptionListener l) {
-		rosterSubscriptionListeners.add(l);
-	}
-	
-	public void removeRosterSubscriptionListener(IRosterSubscriptionListener l) {
-		rosterSubscriptionListeners.remove(l);
-	}
-
 	/**
 	 * Notifies any listeners that a friends status has changed
 	 * 
@@ -195,8 +206,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 * @see org.eclipse.ecf.presence.IPresenceContainerAdapter#getChatManager()
 	 */
 	public IChatManager getChatManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return chatManager;
 	}
 
 }
