@@ -34,6 +34,7 @@ import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageEvent;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
+import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.ecf.presence.roster.IRosterSubscriptionListener;
 import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
 import org.eclipse.ecf.presence.ui.MultiRosterView;
@@ -256,11 +257,13 @@ public class PresenceContainerUI {
 		
 		pc.getRosterManager().addPresenceListener(new IPresenceListener() {
 
-			public void handleRosterEntryAdd(final IRosterEntry entry) {
+			public void handleRosterEntryAdd(final IRosterItem entry) {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						rosterView.handleRosterEntryAdd(
-								PresenceContainerUI.this.groupID, entry);
+						if (entry instanceof IRosterEntry)
+							rosterView.handleRosterEntryAdd(
+									PresenceContainerUI.this.groupID,
+									(IRosterEntry) entry);
 					}
 				});
 			}
@@ -275,20 +278,24 @@ public class PresenceContainerUI {
 				});
 			}
 
-			public void handleRosterEntryUpdate(final IRosterEntry entry) {
+			public void handleRosterEntryUpdate(final IRosterItem entry) {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						rosterView.handleRosterEntryAdd(
-								PresenceContainerUI.this.groupID, entry);
+						if (entry instanceof IRosterEntry)
+							rosterView.handleRosterEntryAdd(
+									PresenceContainerUI.this.groupID,
+									(IRosterEntry) entry);
 					}
 				});
 			}
 
-			public void handleRosterEntryRemove(final IRosterEntry entry) {
+			public void handleRosterEntryRemove(final IRosterItem entry) {
 				Display.getDefault().syncExec(new Runnable() {
 					public void run() {
-						rosterView.handleRosterEntryRemove(
-								PresenceContainerUI.this.groupID, entry);
+						if (entry instanceof IRosterEntry)
+							rosterView.handleRosterEntryRemove(
+									PresenceContainerUI.this.groupID,
+									(IRosterEntry) entry);
 					}
 				});
 			}
