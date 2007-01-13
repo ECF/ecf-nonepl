@@ -6,5 +6,5 @@
    <feature url="features/org.eclipse.ecf.provider.yahoo_feature_0.9.6.jar" id="org.eclipse.ecf.provider.yahoo_feature" version="0.9.6">
       <category name="ECF Extras"/>
    </feature>
-   <category-def name="ECF Extras" label="Eclipse Communication Framework Extras Features"/>
+   <category-def name="ECF Extras" label="Eclipse Communication Framework Extras"/>
 </site>
