@@ -18,8 +18,9 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.eclipse.ecf.core.identity.BaseID;
+import org.eclipse.ecf.presence.im.IChatID;
 
-public class YahooID extends BaseID {
+public class YahooID extends BaseID implements IChatID {
 
 	private static final long serialVersionUID = -5949609561932558417L;
 	private String username;
@@ -71,5 +72,11 @@ public class YahooID extends BaseID {
 		sb.append(uri.toString()).append("]");
 		return sb.toString();
 	}
-	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.core.identity.BaseID#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class clazz) {
+		if (clazz.isInstance(this)) return this;
+		else return super.getAdapter(clazz);
+	}
 }
