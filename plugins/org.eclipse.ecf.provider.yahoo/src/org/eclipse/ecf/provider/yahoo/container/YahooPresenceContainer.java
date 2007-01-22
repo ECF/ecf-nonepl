@@ -239,7 +239,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	/**
 	 * @return
 	 */
-	protected Object getRoster() {
+	protected IRoster getRoster() {
 		return roster;
 	}
 
