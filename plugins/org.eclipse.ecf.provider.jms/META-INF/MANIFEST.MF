@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: ECF JMS Provider
 Bundle-SymbolicName: org.eclipse.ecf.provider.jms;singleton:=true
-Bundle-Version: 1.0.0.M5
+Bundle-Version: 1.0.0.M5v20070205
 Bundle-ClassPath: ., lib/activemq3.1M5/activeio-1.1.jar,
  lib/activemq3.1M5/activemq-core-3.1-M5.jar,
  lib/activemq3.1M5/commons-logging-1.0.3.jar,
