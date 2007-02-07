@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <site>
-   <feature url="features/org.eclipse.ecf.provider.jms_feature_1.0.0.M5v20070205.jar" id="org.eclipse.ecf.provider.jms_feature" version="1.0.0.M5v20070205">
+   <feature url="features/org.eclipse.ecf.provider.jms_feature_1.0.0.v20070206.jar" id="org.eclipse.ecf.provider.jms_feature" version="1.0.0.v20070206">
       <category name="ECF Extras"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.provider.yahoo_feature_1.0.0.M5v20070205.jar" id="org.eclipse.ecf.provider.yahoo_feature" version="1.0.0.M5v20070205">
+   <feature url="features/org.eclipse.ecf.provider.yahoo_feature_1.0.0.v20070206.jar" id="org.eclipse.ecf.provider.yahoo_feature" version="1.0.0.v20070206">
       <category name="ECF Extras"/>
    </feature>
    <category-def name="ECF Extras" label="Eclipse Communication Framework Extras"/>
