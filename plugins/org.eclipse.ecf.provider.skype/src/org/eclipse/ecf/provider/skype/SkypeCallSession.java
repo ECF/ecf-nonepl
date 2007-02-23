@@ -11,7 +11,6 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallDescription;
 import org.eclipse.ecf.call.ICallSession;
@@ -20,8 +19,11 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
+
+import com.skype.Call;
 
 /**
  * 
@@ -31,17 +33,20 @@ public class SkypeCallSession implements ICallSession {
 	SharedObjectCallContainerAdapter adapter;
 	ID callSessionID;
 
-	ID initiator = null;
-	ID receiver = null;
+	SkypeUserID initiator = null;
+	SkypeUserID receiver = null;
 
 	State callState = ICallSession.State.PREPENDING;
 
+	Call skypeCall;
+	
 	/**
 	 * @param sharedObjectCallContainerAdapter
 	 */
-	public SkypeCallSession(
+	public SkypeCallSession(SkypeUserID initiator,
 			SharedObjectCallContainerAdapter sharedObjectCallContainerAdapter,
 			ID callSessionID) throws IDCreateException {
+		this.initiator = initiator;
 		this.adapter = sharedObjectCallContainerAdapter;
 		this.callSessionID = (callSessionID == null) ? IDFactory.getDefault()
 				.createGUID() : callSessionID;
@@ -85,8 +90,11 @@ public class SkypeCallSession implements ICallSession {
 	public void sendInitiate(ID initiator, ID receiver,
 			ICallDescription[] descriptions,
 			ICallTransportCandidate[] transports) throws CallException {
-		if (receiver instanceof SkypeUserID) adapter.sendInitiateCall((SkypeUserID)receiver);
-		else throw new CallException("Invalid receiver");
+		if (receiver instanceof SkypeUserID) {
+			this.receiver = (SkypeUserID) receiver;
+			adapter.sendInitiateCall(this.receiver);
+		}
+		else throw new CallException(Messages.SkypeCallSession_Exception_Invalid_Receiver);
 	}
 
 	/*
@@ -127,4 +135,7 @@ public class SkypeCallSession implements ICallSession {
 				SkypeUserNamespace.NAMESPACE_NAME);
 	}
 
+	protected void setCall(Call call) {
+		this.skypeCall = call;
+	}
 }

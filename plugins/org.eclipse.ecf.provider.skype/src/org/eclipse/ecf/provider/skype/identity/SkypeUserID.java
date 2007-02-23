@@ -11,13 +11,26 @@
 
 package org.eclipse.ecf.provider.skype.identity;
 
+import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.identity.StringID;
+
+import com.skype.User;
 
 public class SkypeUserID extends StringID {
 
 	private static final long serialVersionUID = 5023965255941333692L;
 
+	public SkypeUserID(User skypeUser) {
+		super(IDFactory.getDefault().getNamespaceByName(
+				SkypeUserNamespace.NAMESPACE_NAME), skypeUser.getId());
+	}
+	
+	public SkypeUserID(String s) {
+		this(IDFactory.getDefault().getNamespaceByName(
+				SkypeUserNamespace.NAMESPACE_NAME),s);
+	}
+	
 	/**
 	 * @param n
 	 * @param s

@@ -38,6 +38,7 @@ import com.skype.Call;
 import com.skype.CallListener;
 import com.skype.ChatMessage;
 import com.skype.ChatMessageListener;
+import com.skype.Profile;
 import com.skype.Skype;
 import com.skype.SkypeException;
 import com.skype.connector.Connector;
@@ -52,7 +53,11 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	String skypeVersion;
 
 	Map callSessions = new HashMap();
-
+	
+	Profile userProfile;
+	
+	SkypeUserID userID;
+	
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
 			Trace.trace(Activator.getDefault(), "callMade(" + makedCall + ")"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -104,6 +109,10 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	};
 
+	protected SkypeUserID getUserID() {
+		return userID;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -114,6 +123,9 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		try {
 			Connector.getInstance().addConnectorListener(connectorListener);
 			skypeVersion = Skype.getVersion();
+			
+			userProfile = Skype.getProfile();
+			userID = new SkypeUserID(userProfile.getId());
 			Skype.setDeamon(true);
 			Trace
 					.trace(
@@ -169,7 +181,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#createCallSession()
 	 */
 	public ICallSession createCallSession() throws ECFException {
-		SkypeCallSession callSession = new SkypeCallSession(this, IDFactory
+		SkypeCallSession callSession = new SkypeCallSession(getUserID(), this, IDFactory
 				.getDefault().createGUID());
 		callSessions.put(callSession.getID(), callSession);
 		return callSession;
@@ -181,7 +193,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#createCallSession(org.eclipse.ecf.core.identity.ID)
 	 */
 	public ICallSession createCallSession(ID sessionID) throws ECFException {
-		SkypeCallSession callSession = new SkypeCallSession(this, sessionID);
+		SkypeCallSession callSession = new SkypeCallSession(getUserID(), this, sessionID);
 		callSessions.put(callSession.getID(), callSession);
 		return callSession;
 	}
@@ -227,7 +239,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	/**
 	 * @param receiver
 	 */
-	public void sendInitiateCall(SkypeUserID receiver) throws CallException {
+	protected void sendInitiateCall(SkypeUserID receiver) throws CallException {
 		try {
 			Skype.call(receiver.getUser());
 		} catch (SkypeException e) {
