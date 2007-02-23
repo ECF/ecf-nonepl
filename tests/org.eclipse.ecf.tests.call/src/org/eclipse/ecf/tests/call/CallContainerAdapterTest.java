@@ -12,6 +12,7 @@
 package org.eclipse.ecf.tests.call;
 
 import org.eclipse.ecf.call.ICallContainerAdapter;
+import org.eclipse.ecf.call.ICallSession;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
 
@@ -24,10 +25,20 @@ public class CallContainerAdapterTest extends TestCase {
 
 	private static final String DEFAULT_CLIENT = "ecf.generic.client"; //$NON-NLS-1$
 
-	public void testCallContainerAdapterAccess() throws Exception {
+	protected ICallContainerAdapter getCallContainerAdapter() throws Exception {
 		IContainer container = ContainerFactory.getDefault().createContainer(DEFAULT_CLIENT);
-		ICallContainerAdapter adapter = (ICallContainerAdapter) container.getAdapter(ICallContainerAdapter.class);
-		assertNotNull(adapter);
-		Thread.sleep(20000);
+		return (ICallContainerAdapter) container.getAdapter(ICallContainerAdapter.class);
 	}
+	
+	public void testCallContainerAdapterAccess() throws Exception {
+		assertNotNull(getCallContainerAdapter());
+	}
+	
+    public void testCreateCallSession() throws Exception {
+    	ICallContainerAdapter adapter = getCallContainerAdapter();
+    	assertNotNull(adapter);
+    	ICallSession callSession = adapter.createCallSession();
+    	assertNotNull(callSession);
+    	
+    }
 }
