@@ -11,6 +11,7 @@
 
 package org.eclipse.ecf.provider.skype;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallDescription;
 import org.eclipse.ecf.call.ICallSession;
@@ -19,7 +20,8 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.provider.skype.identity.SkypeCallNamespace;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 
 /**
  * 
@@ -83,8 +85,8 @@ public class SkypeCallSession implements ICallSession {
 	public void sendInitiate(ID initiator, ID receiver,
 			ICallDescription[] descriptions,
 			ICallTransportCandidate[] transports) throws CallException {
-		// TODO
-
+		if (receiver instanceof SkypeUserID) adapter.sendInitiateCall((SkypeUserID)receiver);
+		else throw new CallException("Invalid receiver");
 	}
 
 	/*
@@ -122,7 +124,7 @@ public class SkypeCallSession implements ICallSession {
 	 */
 	public Namespace getCallPartyNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(
-				SkypeCallNamespace.NAMESPACE_NAME);
+				SkypeUserNamespace.NAMESPACE_NAME);
 	}
 
 }

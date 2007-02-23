@@ -17,6 +17,7 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSession;
 import org.eclipse.ecf.call.ICallSessionListener;
@@ -28,8 +29,10 @@ import org.eclipse.ecf.core.sharedobject.SharedObjectInitException;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionNamespace;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Call;
 import com.skype.CallListener;
@@ -52,12 +55,12 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
-			Trace.trace(Activator.getDefault(), "callMade(" + makedCall + ")");
+			Trace.trace(Activator.getDefault(), "callMade(" + makedCall + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 
 		public void callReceived(Call receivedCall) throws SkypeException {
-			Trace.trace(Activator.getDefault(), "callReceived(" + receivedCall
-					+ ")");
+			Trace.trace(Activator.getDefault(), "callReceived(" + receivedCall //$NON-NLS-1$
+					+ ")"); //$NON-NLS-1$
 		}
 	};
 
@@ -66,15 +69,15 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		public void chatMessageReceived(ChatMessage receivedChatMessage)
 				throws SkypeException {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), "chatMessageReceived("
-					+ receivedChatMessage + ")");
+			Trace.trace(Activator.getDefault(), "chatMessageReceived(" //$NON-NLS-1$
+					+ receivedChatMessage + ")"); //$NON-NLS-1$
 		}
 
 		public void chatMessageSent(ChatMessage sentChatMessage)
 				throws SkypeException {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), "chatMessageSent("
-					+ sentChatMessage + ")");
+			Trace.trace(Activator.getDefault(), "chatMessageSent(" //$NON-NLS-1$
+					+ sentChatMessage + ")"); //$NON-NLS-1$
 		}
 
 	};
@@ -83,20 +86,20 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 		public void messageReceived(ConnectorMessageEvent event) {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), "messageReceived("
-					+ event.getMessage() + ")");
+			Trace.trace(Activator.getDefault(), "messageReceived(" //$NON-NLS-1$
+					+ event.getMessage() + ")"); //$NON-NLS-1$
 		}
 
 		public void messageSent(ConnectorMessageEvent event) {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), "messageSent("
-					+ event.getMessage() + ")");
+			Trace.trace(Activator.getDefault(), "messageSent(" //$NON-NLS-1$
+					+ event.getMessage() + ")"); //$NON-NLS-1$
 		}
 
 		public void statusChanged(ConnectorStatusEvent event) {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), "statusChanged("
-					+ event.getStatus() + ")");
+			Trace.trace(Activator.getDefault(), "statusChanged(" //$NON-NLS-1$
+					+ event.getStatus() + ")"); //$NON-NLS-1$
 		}
 
 	};
@@ -126,7 +129,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 									throws IOException {
 								// XXX TODO
 								Trace.trace(Activator.getDefault(),
-										"SKYPEDEBUG."
+										"SKYPEDEBUG." //$NON-NLS-1$
 												+ new String(cbuf, off, len));
 							}
 
@@ -219,6 +222,24 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	public void removeListener(ICallSessionListener listener) {
 		// TODO Auto-generated method stub
 
+	}
+
+	/**
+	 * @param receiver
+	 */
+	public void sendInitiateCall(SkypeUserID receiver) throws CallException {
+		try {
+			Skype.call(receiver.getUser());
+		} catch (SkypeException e) {
+			Trace.catching(Activator.getDefault(),
+					SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this
+							.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
+			Trace.throwing(Activator.getDefault(),
+					SkypeProviderDebugOptions.EXCEPTIONS_THROWING, this
+							.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
+			throw new CallException(
+					Messages.SharedObjectCallContainerAdapter_Exception_Skype);
+		}
 	}
 
 }

@@ -9,24 +9,21 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.provider.skype.identity;
+package org.eclipse.ecf.internal.provider.skype;
 
-import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.identity.StringID;
+import org.eclipse.osgi.util.NLS;
 
-public class SkypeCallID extends StringID {
-
-	private static final long serialVersionUID = 5023965255941333692L;
-
-	/**
-	 * @param n
-	 * @param s
-	 */
-	public SkypeCallID(Namespace n, String s) {
-		super(n, s);
+/**
+ *
+ */
+public class Messages extends NLS {
+	private static final String BUNDLE_NAME = "org.eclipse.ecf.internal.provider.skype.messages"; //$NON-NLS-1$
+	public static String SharedObjectCallContainerAdapter_Exception_Skype;
+	static {
+		// initialize resource bundle
+		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
-	public String getCallID() {
-		return getName();
+	private Messages() {
 	}
 }
