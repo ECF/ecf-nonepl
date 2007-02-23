@@ -19,37 +19,44 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.core.util.Trace;
+import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.Messages;
+import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
+import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 
 import com.skype.Call;
+import com.skype.CallStatusChangedListener;
+import com.skype.Skype;
+import com.skype.SkypeException;
+import com.skype.Call.Status;
 
-/**
- * 
- */
 public class SkypeCallSession implements ICallSession {
 
 	SharedObjectCallContainerAdapter adapter;
-	ID callSessionID;
-
 	SkypeUserID initiator = null;
 	SkypeUserID receiver = null;
+	SkypeCallSessionID callSession = null;
+	
+	Call skypeCall = null;
 
-	State callState = ICallSession.State.PREPENDING;
-
-	Call skypeCall;
+	CallStatusChangedListener callStatusChangeListener = new CallStatusChangedListener() {
+		public void statusChanged(Status status) throws SkypeException {
+			// TODO Auto-generated method stub
+			Trace.trace(Activator.getDefault(), getID().getName()+ ".statusChanged("+status+")");
+		}
+	};
 	
 	/**
 	 * @param sharedObjectCallContainerAdapter
 	 */
-	public SkypeCallSession(SkypeUserID initiator,
-			SharedObjectCallContainerAdapter sharedObjectCallContainerAdapter,
-			ID callSessionID) throws IDCreateException {
-		this.initiator = initiator;
+	public SkypeCallSession(
+			SharedObjectCallContainerAdapter sharedObjectCallContainerAdapter)
+			throws IDCreateException {
 		this.adapter = sharedObjectCallContainerAdapter;
-		this.callSessionID = (callSessionID == null) ? IDFactory.getDefault()
-				.createGUID() : callSessionID;
+		this.initiator = this.adapter.getUserID();
 	}
 
 	/*
@@ -57,8 +64,23 @@ public class SkypeCallSession implements ICallSession {
 	 * 
 	 * @see org.eclipse.ecf.call.ICallSession#getCallSessionState()
 	 */
-	public State getCallSessionState() {
-		return callState;
+	public synchronized State getCallSessionState() {
+		return (skypeCall == null) ? ICallSession.State.PREPENDING
+				: createCallState();
+	}
+
+	/**
+	 * @return
+	 */
+	private State createCallState() {
+		Status s = null;
+		try {
+			s = skypeCall.getStatus();
+		} catch (SkypeException e) {
+			return ICallSession.State.ENDED;
+		}
+		// XXX TODO
+		return ICallSession.State.PENDING;
 	}
 
 	/*
@@ -92,9 +114,25 @@ public class SkypeCallSession implements ICallSession {
 			ICallTransportCandidate[] transports) throws CallException {
 		if (receiver instanceof SkypeUserID) {
 			this.receiver = (SkypeUserID) receiver;
-			adapter.sendInitiateCall(this.receiver);
-		}
-		else throw new CallException(Messages.SkypeCallSession_Exception_Invalid_Receiver);
+			synchronized (this) {
+				try {
+					this.skypeCall = Skype.call(this.receiver.getUser());
+					this.skypeCall.addCallStatusChangedListener(callStatusChangeListener);
+				} catch (SkypeException e) {
+					Trace.catching(Activator.getDefault(),
+							SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this
+									.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
+					Trace.throwing(Activator.getDefault(),
+							SkypeProviderDebugOptions.EXCEPTIONS_THROWING, this
+									.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
+					throw new CallException(
+							Messages.SharedObjectCallContainerAdapter_Exception_Skype);
+				}
+				adapter.addCallSession(getID(),this);
+			}
+		} else
+			throw new CallException(
+					Messages.SkypeCallSession_Exception_Invalid_Receiver);
 	}
 
 	/*
@@ -102,9 +140,19 @@ public class SkypeCallSession implements ICallSession {
 	 * 
 	 * @see org.eclipse.ecf.call.ICallSession#sendTerminate()
 	 */
-	public void sendTerminate() throws CallException {
-		// TODO Auto-generated method stub
-
+	public synchronized void sendTerminate() throws CallException {
+		if (skypeCall == null)
+			throw new CallException(
+					Messages.SkypeCallSession_Exception_Call_Wrong_State);
+		else {
+			try {
+				skypeCall.finish();
+			} catch (SkypeException e) {
+				throw new CallException(
+						Messages.SharedObjectCallContainerAdapter_Exception_Skype,
+						e);
+			}
+		}
 	}
 
 	/*
@@ -112,8 +160,8 @@ public class SkypeCallSession implements ICallSession {
 	 * 
 	 * @see org.eclipse.ecf.core.identity.IIdentifiable#getID()
 	 */
-	public ID getID() {
-		return callSessionID;
+	public synchronized ID getID() {
+		return callSession;
 	}
 
 	/*
@@ -135,7 +183,4 @@ public class SkypeCallSession implements ICallSession {
 				SkypeUserNamespace.NAMESPACE_NAME);
 	}
 
-	protected void setCall(Call call) {
-		this.skypeCall = call;
-	}
 }

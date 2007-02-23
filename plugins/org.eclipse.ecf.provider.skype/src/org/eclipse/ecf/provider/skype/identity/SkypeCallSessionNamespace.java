@@ -30,7 +30,7 @@ public class SkypeCallSessionNamespace extends Namespace {
 	 * @see org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object[])
 	 */
 	public ID createInstance(Object[] parameters) throws IDCreateException {
-		return new SkypeCallSessionID(this);
+		return new SkypeCallSessionID(this,(String) parameters[0]);
 	}
 
 	/*

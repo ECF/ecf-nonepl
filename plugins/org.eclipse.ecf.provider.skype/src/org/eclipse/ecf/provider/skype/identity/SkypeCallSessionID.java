@@ -11,20 +11,20 @@
 
 package org.eclipse.ecf.provider.skype.identity;
 
-import org.eclipse.ecf.core.identity.GUID;
-import org.eclipse.ecf.core.identity.IDCreateException;
+import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.core.identity.StringID;
 
-public class SkypeCallSessionID extends GUID {
+public class SkypeCallSessionID extends StringID {
 
-	/**
-	 * @param n
-	 * @throws IDCreateException
-	 */
-	protected SkypeCallSessionID(Namespace n) throws IDCreateException {
-		super(n);
+	public SkypeCallSessionID(String s) {
+		this(IDFactory.getDefault().getNamespaceByName(
+				SkypeCallSessionNamespace.NAMESPACE_NAME), s);
 	}
 
+	public SkypeCallSessionID(Namespace namespace, String s) {
+		super(namespace,s);
+	}
 	private static final long serialVersionUID = -5095585845284335840L;
 
 }

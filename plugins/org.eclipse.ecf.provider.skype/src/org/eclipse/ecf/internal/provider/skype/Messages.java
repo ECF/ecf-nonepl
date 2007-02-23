@@ -19,6 +19,7 @@ import org.eclipse.osgi.util.NLS;
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.ecf.internal.provider.skype.messages"; //$NON-NLS-1$
 	public static String SharedObjectCallContainerAdapter_Exception_Skype;
+	public static String SkypeCallSession_Exception_Call_Wrong_State;
 	public static String SkypeCallSession_Exception_Invalid_Receiver;
 	static {
 		// initialize resource bundle

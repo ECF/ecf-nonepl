@@ -17,7 +17,6 @@ import java.io.Writer;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSession;
 import org.eclipse.ecf.call.ICallSessionListener;
@@ -29,7 +28,6 @@ import org.eclipse.ecf.core.sharedobject.SharedObjectInitException;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
-import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionNamespace;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
@@ -181,21 +179,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#createCallSession()
 	 */
 	public ICallSession createCallSession() throws ECFException {
-		SkypeCallSession callSession = new SkypeCallSession(getUserID(), this, IDFactory
-				.getDefault().createGUID());
-		callSessions.put(callSession.getID(), callSession);
-		return callSession;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#createCallSession(org.eclipse.ecf.core.identity.ID)
-	 */
-	public ICallSession createCallSession(ID sessionID) throws ECFException {
-		SkypeCallSession callSession = new SkypeCallSession(getUserID(), this, sessionID);
-		callSessions.put(callSession.getID(), callSession);
-		return callSession;
+		return new SkypeCallSession(this);
 	}
 
 	/*
@@ -236,22 +220,8 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	}
 
-	/**
-	 * @param receiver
-	 */
-	protected void sendInitiateCall(SkypeUserID receiver) throws CallException {
-		try {
-			Skype.call(receiver.getUser());
-		} catch (SkypeException e) {
-			Trace.catching(Activator.getDefault(),
-					SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this
-							.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
-			Trace.throwing(Activator.getDefault(),
-					SkypeProviderDebugOptions.EXCEPTIONS_THROWING, this
-							.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
-			throw new CallException(
-					Messages.SharedObjectCallContainerAdapter_Exception_Skype);
-		}
+	protected void addCallSession(ID id, SkypeCallSession skypeCallSession) {
+		callSessions.put(id,skypeCallSession);
 	}
 
 }
