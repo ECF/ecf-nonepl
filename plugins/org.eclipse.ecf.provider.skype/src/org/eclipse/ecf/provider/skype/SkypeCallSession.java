@@ -18,6 +18,8 @@ import org.eclipse.ecf.call.ICallTransportCandidate;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.provider.skype.identity.SkypeCallNamespace;
 
 /**
  * 
@@ -26,6 +28,11 @@ public class SkypeCallSession implements ICallSession {
 
 	SharedObjectCallContainerAdapter adapter;
 	ID callSessionID;
+
+	ID initiator = null;
+	ID receiver = null;
+
+	State callState = ICallSession.State.PREPENDING;
 
 	/**
 	 * @param sharedObjectCallContainerAdapter
@@ -44,8 +51,7 @@ public class SkypeCallSession implements ICallSession {
 	 * @see org.eclipse.ecf.call.ICallSession#getCallSessionState()
 	 */
 	public State getCallSessionState() {
-		// TODO Auto-generated method stub
-		return null;
+		return callState;
 	}
 
 	/*
@@ -54,8 +60,7 @@ public class SkypeCallSession implements ICallSession {
 	 * @see org.eclipse.ecf.call.ICallSession#getInitiator()
 	 */
 	public ID getInitiator() {
-		// TODO Auto-generated method stub
-		return null;
+		return initiator;
 	}
 
 	/*
@@ -64,8 +69,7 @@ public class SkypeCallSession implements ICallSession {
 	 * @see org.eclipse.ecf.call.ICallSession#getReceiver()
 	 */
 	public ID getReceiver() {
-		// TODO Auto-generated method stub
-		return null;
+		return receiver;
 	}
 
 	/*
@@ -79,7 +83,7 @@ public class SkypeCallSession implements ICallSession {
 	public void sendInitiate(ID initiator, ID receiver,
 			ICallDescription[] descriptions,
 			ICallTransportCandidate[] transports) throws CallException {
-		// TODO Auto-generated method stub
+		// TODO
 
 	}
 
@@ -99,8 +103,7 @@ public class SkypeCallSession implements ICallSession {
 	 * @see org.eclipse.ecf.core.identity.IIdentifiable#getID()
 	 */
 	public ID getID() {
-		// TODO Auto-generated method stub
-		return null;
+		return callSessionID;
 	}
 
 	/*
@@ -109,8 +112,17 @@ public class SkypeCallSession implements ICallSession {
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {
-		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.call.ICallSession#getCallPartyNamespace()
+	 */
+	public Namespace getCallPartyNamespace() {
+		return IDFactory.getDefault().getNamespaceByName(
+				SkypeCallNamespace.NAMESPACE_NAME);
 	}
 
 }

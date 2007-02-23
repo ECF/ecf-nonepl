@@ -12,7 +12,16 @@
    <extension
          point="org.eclipse.ecf.identity.namespace">
       <namespace
+            class="org.eclipse.ecf.provider.skype.identity.SkypeCallSessionNamespace"
+            description="Skype Call Session Namespace"
+            name="ecf.namespace.skype.call.session">
+      </namespace>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
             class="org.eclipse.ecf.provider.skype.identity.SkypeCallNamespace"
+            description="Skype Call Namespace"
             name="ecf.namespace.skype.call">
       </namespace>
    </extension>

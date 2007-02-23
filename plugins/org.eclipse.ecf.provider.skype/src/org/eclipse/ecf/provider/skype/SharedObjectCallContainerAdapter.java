@@ -23,14 +23,13 @@ import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.identity.StringID;
 import org.eclipse.ecf.core.sharedobject.BaseSharedObject;
 import org.eclipse.ecf.core.sharedobject.SharedObjectInitException;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
-import org.eclipse.ecf.provider.skype.identity.SkypeCallNamespace;
+import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionNamespace;
 
 import com.skype.Call;
 import com.skype.CallListener;
@@ -200,7 +199,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 */
 	public Namespace getCallSessionNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(
-				SkypeCallNamespace.NAMESPACE_NAME);
+				SkypeCallSessionNamespace.NAMESPACE_NAME);
 	}
 
 	/*
