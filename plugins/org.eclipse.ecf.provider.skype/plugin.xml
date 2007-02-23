@@ -9,6 +9,13 @@
          <adapter type="org.eclipse.ecf.call.ICallContainerAdapter"/>
       </factory>
    </extension>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
+            class="org.eclipse.ecf.provider.skype.identity.SkypeCallNamespace"
+            name="ecf.namespace.skype.call">
+      </namespace>
+   </extension>
 
 
 </plugin>

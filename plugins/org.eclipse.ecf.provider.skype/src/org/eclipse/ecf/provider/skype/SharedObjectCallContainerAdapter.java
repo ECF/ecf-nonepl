@@ -14,6 +14,8 @@ package org.eclipse.ecf.provider.skype;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSession;
@@ -28,6 +30,7 @@ import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
+import org.eclipse.ecf.provider.skype.identity.SkypeCallNamespace;
 
 import com.skype.Call;
 import com.skype.CallListener;
@@ -45,6 +48,8 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	boolean debugSkype = true;
 	String skypeVersion;
+
+	Map callSessions = new HashMap();
 
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
@@ -162,8 +167,10 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#createCallSession()
 	 */
 	public ICallSession createCallSession() throws ECFException {
-		// TODO Auto-generated method stub
-		return null;
+		SkypeCallSession callSession = new SkypeCallSession(this, IDFactory
+				.getDefault().createGUID());
+		callSessions.put(callSession.getID(), callSession);
+		return callSession;
 	}
 
 	/*
@@ -172,8 +179,9 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#createCallSession(org.eclipse.ecf.core.identity.ID)
 	 */
 	public ICallSession createCallSession(ID sessionID) throws ECFException {
-		// TODO Auto-generated method stub
-		return null;
+		SkypeCallSession callSession = new SkypeCallSession(this, sessionID);
+		callSessions.put(callSession.getID(), callSession);
+		return callSession;
 	}
 
 	/*
@@ -182,8 +190,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#getCallSession(org.eclipse.ecf.core.identity.ID)
 	 */
 	public ICallSession getCallSession(ID callSessionID) {
-		// TODO Auto-generated method stub
-		return null;
+		return (ICallSession) callSessions.get(callSessionID);
 	}
 
 	/*
@@ -193,7 +200,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 */
 	public Namespace getCallSessionNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(
-				StringID.class.getName());
+				SkypeCallNamespace.NAMESPACE_NAME);
 	}
 
 	/*
@@ -202,8 +209,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#removeCallSession(org.eclipse.ecf.core.identity.ID)
 	 */
 	public boolean removeCallSession(ID callSessionID) {
-		// TODO Auto-generated method stub
-		return false;
+		return (callSessions.remove(callSessionID) == null);
 	}
 
 	/*

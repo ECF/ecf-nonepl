@@ -18,25 +18,31 @@ import org.eclipse.ecf.core.sharedobject.ISharedObject;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
 
 /**
- *
+ * 
  */
 public class SkypeContainerAdapterFactory extends
 		AbstractSharedObjectContainerAdapterFactory {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.sharedobject.AbstractSharedObjectContainerAdapterFactory#createAdapter(org.eclipse.ecf.core.sharedobject.ISharedObjectContainer, java.lang.Class, org.eclipse.ecf.core.identity.ID)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.core.sharedobject.AbstractSharedObjectContainerAdapterFactory#createAdapter(org.eclipse.ecf.core.sharedobject.ISharedObjectContainer,
+	 *      java.lang.Class, org.eclipse.ecf.core.identity.ID)
 	 */
 	protected ISharedObject createAdapter(ISharedObjectContainer container,
 			Class adapterType, ID adapterID) {
-		if (adapterType.equals(ICallContainerAdapter.class)) return new SharedObjectCallContainerAdapter();
+		if (adapterType.equals(ICallContainerAdapter.class))
+			return new SharedObjectCallContainerAdapter();
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.core.sharedobject.AbstractSharedObjectContainerAdapterFactory#getAdapterList()
 	 */
 	public Class[] getAdapterList() {
-		return new Class [] { ICallContainerAdapter.class };
+		return new Class[] { ICallContainerAdapter.class };
 	}
 
 }
