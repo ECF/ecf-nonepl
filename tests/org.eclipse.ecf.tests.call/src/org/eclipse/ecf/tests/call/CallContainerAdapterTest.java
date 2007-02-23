@@ -11,34 +11,52 @@
 
 package org.eclipse.ecf.tests.call;
 
-import org.eclipse.ecf.call.ICallContainerAdapter;
-import org.eclipse.ecf.call.ICallSession;
-import org.eclipse.ecf.core.ContainerFactory;
-import org.eclipse.ecf.core.IContainer;
-
 import junit.framework.TestCase;
 
+import org.eclipse.ecf.call.ICallContainerAdapter;
+import org.eclipse.ecf.call.ICallSessionListener;
+import org.eclipse.ecf.call.events.ICallSessionEvent;
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.IDFactory;
+
 /**
- *
+ * 
  */
 public class CallContainerAdapterTest extends TestCase {
 
 	private static final String DEFAULT_CLIENT = "ecf.generic.client"; //$NON-NLS-1$
 
 	protected ICallContainerAdapter getCallContainerAdapter() throws Exception {
-		IContainer container = ContainerFactory.getDefault().createContainer(DEFAULT_CLIENT);
-		return (ICallContainerAdapter) container.getAdapter(ICallContainerAdapter.class);
+		IContainer container = ContainerFactory.getDefault().createContainer(
+				DEFAULT_CLIENT);
+		return (ICallContainerAdapter) container
+				.getAdapter(ICallContainerAdapter.class);
 	}
-	
+
 	public void testCallContainerAdapterAccess() throws Exception {
 		assertNotNull(getCallContainerAdapter());
 	}
+
+	protected ICallSessionListener getListener() {
+		return new ICallSessionListener() {
+			public void handleCallSessionEvent(ICallSessionEvent event) {
+				System.out.println("handleCallSessionEvent(" + event + ")");
+			}
+		};
+	}
+
+	protected String getReceiver() {
+		return "markcasimer";
+	}
 	
-    public void testCreateCallSession() throws Exception {
-    	ICallContainerAdapter adapter = getCallContainerAdapter();
-    	assertNotNull(adapter);
-    	ICallSession callSession = adapter.createCallSession();
-    	assertNotNull(callSession);
-    	
-    }
+	public void testInitiateCall() throws Exception {
+		ICallContainerAdapter adapter = getCallContainerAdapter();
+		assertNotNull(adapter);
+		adapter.initiateCall(IDFactory.getDefault().createID(
+				adapter.getReceiverNamespace(), getReceiver()), getListener(),
+				null);
+
+		Thread.sleep(30000);
+	}
 }

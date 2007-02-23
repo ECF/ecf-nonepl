@@ -23,8 +23,9 @@ public class SkypeCallSessionID extends StringID {
 	}
 
 	public SkypeCallSessionID(Namespace namespace, String s) {
-		super(namespace,s);
+		super(namespace, s);
 	}
+
 	private static final long serialVersionUID = -5095585845284335840L;
 
 }

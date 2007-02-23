@@ -16,23 +16,27 @@ import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
 
 /**
- *
+ * 
  */
 public class SkypeUserNamespace extends Namespace {
 
 	public static final String SCHEME = "ecf.namespace.skype.call";
 	public static final String NAMESPACE_NAME = SCHEME;
-	
+
 	private static final long serialVersionUID = -7848190137834330244L;
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object[])
 	 */
 	public ID createInstance(Object[] parameters) throws IDCreateException {
-		return new SkypeUserID(this,(String) parameters[0]);
+		return new SkypeUserID(this, (String) parameters[0]);
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.core.identity.Namespace#getScheme()
 	 */
 	public String getScheme() {

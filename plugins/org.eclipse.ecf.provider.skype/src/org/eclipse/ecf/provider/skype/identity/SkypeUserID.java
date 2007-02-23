@@ -25,12 +25,12 @@ public class SkypeUserID extends StringID {
 		super(IDFactory.getDefault().getNamespaceByName(
 				SkypeUserNamespace.NAMESPACE_NAME), skypeUser.getId());
 	}
-	
+
 	public SkypeUserID(String s) {
 		this(IDFactory.getDefault().getNamespaceByName(
-				SkypeUserNamespace.NAMESPACE_NAME),s);
+				SkypeUserNamespace.NAMESPACE_NAME), s);
 	}
-	
+
 	/**
 	 * @param n
 	 * @param s

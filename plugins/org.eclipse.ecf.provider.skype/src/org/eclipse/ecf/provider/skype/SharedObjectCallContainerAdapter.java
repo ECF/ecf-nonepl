@@ -14,23 +14,26 @@ package org.eclipse.ecf.provider.skype;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
-import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.core.runtime.Assert;
+import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSession;
+import org.eclipse.ecf.call.ICallSessionError;
 import org.eclipse.ecf.call.ICallSessionListener;
+import org.eclipse.ecf.call.events.ICallSessionInitiateAcknowledgeEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.sharedobject.BaseSharedObject;
 import org.eclipse.ecf.core.sharedobject.SharedObjectInitException;
-import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
-import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionNamespace;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 
 import com.skype.Call;
 import com.skype.CallListener;
@@ -48,14 +51,13 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		implements ICallContainerAdapter {
 
 	boolean debugSkype = true;
+
 	String skypeVersion;
 
-	Map callSessions = new HashMap();
-	
 	Profile userProfile;
-	
+
 	SkypeUserID userID;
-	
+
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
 			Trace.trace(Activator.getDefault(), "callMade(" + makedCall + ")"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -110,7 +112,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	protected SkypeUserID getUserID() {
 		return userID;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -121,7 +123,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		try {
 			Connector.getInstance().addConnectorListener(connectorListener);
 			skypeVersion = Skype.getVersion();
-			
+
 			userProfile = Skype.getProfile();
 			userID = new SkypeUserID(userProfile.getId());
 			Skype.setDeamon(true);
@@ -176,38 +178,11 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#createCallSession()
-	 */
-	public ICallSession createCallSession() throws ECFException {
-		return new SkypeCallSession(this);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#getCallSession(org.eclipse.ecf.core.identity.ID)
-	 */
-	public ICallSession getCallSession(ID callSessionID) {
-		return (ICallSession) callSessions.get(callSessionID);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
 	 * @see org.eclipse.ecf.call.ICallContainerAdapter#getCallSessionNamespace()
 	 */
-	public Namespace getCallSessionNamespace() {
+	public Namespace getReceiverNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(
-				SkypeCallSessionNamespace.NAMESPACE_NAME);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#removeCallSession(org.eclipse.ecf.core.identity.ID)
-	 */
-	public boolean removeCallSession(ID callSessionID) {
-		return (callSessions.remove(callSessionID) == null);
+				SkypeUserNamespace.NAMESPACE_NAME);
 	}
 
 	/*
@@ -220,8 +195,82 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	}
 
-	protected void addCallSession(ID id, SkypeCallSession skypeCallSession) {
-		callSessions.put(id,skypeCallSession);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.call.ICallContainerAdapter#initiateCall(org.eclipse.ecf.core.identity.ID[],
+	 *      org.eclipse.ecf.call.ICallSessionListener, java.util.Map)
+	 */
+	public void initiateCall(ID[] receivers, ICallSessionListener listener,
+			Map options) throws CallException {
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.call.ICallContainerAdapter#initiateCall(org.eclipse.ecf.core.identity.ID,
+	 *      org.eclipse.ecf.call.ICallSessionListener, java.util.Map)
+	 */
+	public void initiateCall(ID receiver, ICallSessionListener listener,
+			Map options) throws CallException {
+		Assert.isNotNull(listener,
+				Messages.SharedObjectCallContainerAdapter_Exception_Not_Null);
+		if (receiver instanceof SkypeUserID) {
+			SkypeUserID rcvrID = (SkypeUserID) receiver;
+			synchronized (this) {
+				try {
+					final SkypeCallSession session = new SkypeCallSession(this,
+							Skype.call(rcvrID.getUser()), listener);
+					listener
+							.handleCallSessionEvent(new ICallSessionInitiateAcknowledgeEvent() {
+
+								public ICallSession getCallSession() {
+									return session;
+								}
+
+								public void replyAcknowledge() {
+								}
+
+								public void replyError(ICallSessionError error) {
+								}
+
+								public void replyTerminate() {
+									try {
+										session.sendTerminate();
+									} catch (CallException e) {
+										Trace
+												.catching(
+														Activator.getDefault(),
+														SkypeProviderDebugOptions.EXCEPTIONS_CATCHING,
+														this.getClass(),
+														"replyTerminate", e); //$NON-NLS-1$
+									}
+								}
+
+								public String toString() {
+									StringBuffer buffer = new StringBuffer(
+											"ICallSessionInitiateAcknowledgeEvent["); //$NON-NLS-1$
+									buffer.append("sessionid=").append( //$NON-NLS-1$
+											session.getID()).append("]"); //$NON-NLS-1$
+									return buffer.toString();
+								}
+							});
+				} catch (SkypeException e) {
+					Trace.catching(Activator.getDefault(),
+							SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this
+									.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
+					Trace.throwing(Activator.getDefault(),
+							SkypeProviderDebugOptions.EXCEPTIONS_THROWING, this
+									.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
+					throw new CallException(
+							Messages.SharedObjectCallContainerAdapter_Exception_Skype,e);
+				}
+			}
+		} else
+			throw new CallException(
+					Messages.SkypeCallSession_Exception_Invalid_Receiver);
 	}
 
 }
