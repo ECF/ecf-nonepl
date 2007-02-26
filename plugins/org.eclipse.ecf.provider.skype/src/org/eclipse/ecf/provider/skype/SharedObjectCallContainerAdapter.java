@@ -32,6 +32,10 @@ import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
+import org.eclipse.ecf.presence.chatroom.ChatRoomCreateException;
+import org.eclipse.ecf.presence.chatroom.IChatRoomInfo;
+import org.eclipse.ecf.presence.chatroom.IChatRoomInvitationListener;
+import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 
@@ -48,7 +52,7 @@ import com.skype.connector.ConnectorMessageEvent;
 import com.skype.connector.ConnectorStatusEvent;
 
 public class SharedObjectCallContainerAdapter extends BaseSharedObject
-		implements ICallContainerAdapter {
+		implements ICallContainerAdapter, IChatRoomManager {
 
 	boolean debugSkype = true;
 
@@ -71,18 +75,26 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	ChatMessageListener chatMessageListener = new ChatMessageListener() {
 
-		public void chatMessageReceived(ChatMessage receivedChatMessage)
+		public void chatMessageReceived(ChatMessage chatMessageReceived)
 				throws SkypeException {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), "chatMessageReceived(" //$NON-NLS-1$
-					+ receivedChatMessage + ")"); //$NON-NLS-1$
+			Trace
+					.trace(
+							Activator.getDefault(),
+							"chatMessageReceived(id=" //$NON-NLS-1$
+									+ chatMessageReceived.getId()
+									+ ";content=" + chatMessageReceived.getContent() + ";senderid=" + chatMessageReceived.getSenderId() + ";sendername=" + chatMessageReceived.getSenderDisplayName() + ")"); //$NON-NLS-1$
 		}
 
 		public void chatMessageSent(ChatMessage sentChatMessage)
 				throws SkypeException {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), "chatMessageSent(" //$NON-NLS-1$
-					+ sentChatMessage + ")"); //$NON-NLS-1$
+			Trace
+					.trace(
+							Activator.getDefault(),
+							"chatMessageSent(id=" //$NON-NLS-1$
+									+ sentChatMessage.getId()
+									+ ";content=" + sentChatMessage.getContent() + ";senderid=" + sentChatMessage.getSenderId() + ";sendername=" + sentChatMessage.getSenderDisplayName() + ")"); //$NON-NLS-1$
 		}
 
 	};
@@ -265,12 +277,86 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 							SkypeProviderDebugOptions.EXCEPTIONS_THROWING, this
 									.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
 					throw new CallException(
-							Messages.SharedObjectCallContainerAdapter_Exception_Skype,e);
+							Messages.SharedObjectCallContainerAdapter_Exception_Skype,
+							e);
 				}
 			}
 		} else
 			throw new CallException(
 					Messages.SkypeCallSession_Exception_Invalid_Receiver);
+	}
+
+	// IChatRoomManager methods
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#addInvitationListener(org.eclipse.ecf.presence.chatroom.IChatRoomInvitationListener)
+	 */
+	public void addInvitationListener(IChatRoomInvitationListener listener) {
+		// TODO Auto-generated method stub
+
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#createChatRoom(java.lang.String,
+	 *      java.util.Map)
+	 */
+	public IChatRoomInfo createChatRoom(String roomname, Map properties)
+			throws ChatRoomCreateException {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getChatRoomInfo(java.lang.String)
+	 */
+	public IChatRoomInfo getChatRoomInfo(String roomname) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getChatRoomInfos()
+	 */
+	public IChatRoomInfo[] getChatRoomInfos() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getChildren()
+	 */
+	public IChatRoomManager[] getChildren() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getParent()
+	 */
+	public IChatRoomManager getParent() {
+		return null;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#removeInvitationListener(org.eclipse.ecf.presence.chatroom.IChatRoomInvitationListener)
+	 */
+	public void removeInvitationListener(IChatRoomInvitationListener listener) {
+		// TODO Auto-generated method stub
+
 	}
 
 }

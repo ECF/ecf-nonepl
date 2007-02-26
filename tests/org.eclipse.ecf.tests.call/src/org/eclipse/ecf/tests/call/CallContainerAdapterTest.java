@@ -53,10 +53,11 @@ public class CallContainerAdapterTest extends TestCase {
 	public void testInitiateCall() throws Exception {
 		ICallContainerAdapter adapter = getCallContainerAdapter();
 		assertNotNull(adapter);
+		/*
 		adapter.initiateCall(IDFactory.getDefault().createID(
 				adapter.getReceiverNamespace(), getReceiver()), getListener(),
 				null);
-
-		Thread.sleep(30000);
+	    */
+		Thread.sleep(300000);
 	}
 }
