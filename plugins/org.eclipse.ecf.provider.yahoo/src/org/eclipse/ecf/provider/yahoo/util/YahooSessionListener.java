@@ -28,78 +28,106 @@ import ymsg.network.event.SessionListener;
 import ymsg.network.event.SessionNewMailEvent;
 import ymsg.network.event.SessionNotifyEvent;
 
-/** 
+/**
  * Utility class to deal with yahoo session events
  */
 public class YahooSessionListener implements SessionListener {
 
 	YahooContainer container;
 	YahooPresenceContainer presenceContainer;
-	
-	public YahooSessionListener(YahooContainer container, YahooPresenceContainer presenceContainer) {
+
+	public YahooSessionListener(YahooContainer container,
+			YahooPresenceContainer presenceContainer) {
 		this.container = container;
 		this.presenceContainer = presenceContainer;
 	}
-	
-	public void fileTransferReceived(SessionFileTransferEvent arg0) {}
+
+	public void fileTransferReceived(SessionFileTransferEvent arg0) {
+	}
 
 	public void connectionClosed(SessionEvent arg0) {
+		hardClose();
+	}
+
+	protected void hardClose() {
 		if (container != null) {
 			container.disconnect();
 			container = null;
 		}
 	}
 
-	public void listReceived(SessionEvent arg0) {}
+	public void listReceived(SessionEvent arg0) {
+	}
 
 	public void messageReceived(SessionEvent event) {
 		presenceContainer.handleMessageReceived(event);
 	}
 
-	public void buzzReceived(SessionEvent arg0) {}
+	public void buzzReceived(SessionEvent arg0) {
+	}
 
-	public void offlineMessageReceived(SessionEvent arg0) {}
+	public void offlineMessageReceived(SessionEvent arg0) {
+	}
 
-	public void errorPacketReceived(SessionErrorEvent arg0) {}
+	public void errorPacketReceived(SessionErrorEvent arg0) {
+	}
 
-	public void inputExceptionThrown(SessionExceptionEvent arg0) {}
+	public void inputExceptionThrown(SessionExceptionEvent arg0) {
+		hardClose();
+	}
 
-	public void newMailReceived(SessionNewMailEvent arg0) {}
+	public void newMailReceived(SessionNewMailEvent arg0) {
+	}
 
-	public void notifyReceived(SessionNotifyEvent arg0) {}
+	public void notifyReceived(SessionNotifyEvent arg0) {
+	}
 
-	public void contactRequestReceived(SessionEvent arg0) {}
+	public void contactRequestReceived(SessionEvent arg0) {
+	}
 
-	public void contactRejectionReceived(SessionEvent arg0) {}
+	public void contactRejectionReceived(SessionEvent arg0) {
+	}
 
-	public void conferenceInviteReceived(SessionConferenceEvent arg0) {}
+	public void conferenceInviteReceived(SessionConferenceEvent arg0) {
+	}
 
-	public void conferenceInviteDeclinedReceived(SessionConferenceEvent arg0) {}
+	public void conferenceInviteDeclinedReceived(SessionConferenceEvent arg0) {
+	}
 
-	public void conferenceLogonReceived(SessionConferenceEvent arg0) {}
+	public void conferenceLogonReceived(SessionConferenceEvent arg0) {
+	}
 
-	public void conferenceLogoffReceived(SessionConferenceEvent arg0) {}
+	public void conferenceLogoffReceived(SessionConferenceEvent arg0) {
+	}
 
-	public void conferenceMessageReceived(SessionConferenceEvent arg0) {}
+	public void conferenceMessageReceived(SessionConferenceEvent arg0) {
+	}
 
 	public void friendsUpdateReceived(SessionFriendEvent event) {
 		presenceContainer.handleFriendsUpdateReceived(event);
 	}
 
-	public void friendAddedReceived(SessionFriendEvent arg0) {}
+	public void friendAddedReceived(SessionFriendEvent arg0) {
+	}
 
-	public void friendRemovedReceived(SessionFriendEvent arg0) {}
+	public void friendRemovedReceived(SessionFriendEvent arg0) {
 
-	public void chatLogonReceived(SessionChatEvent arg0) {}
+	}
 
-	public void chatLogoffReceived(SessionChatEvent arg0) {}
+	public void chatLogonReceived(SessionChatEvent arg0) {
+	}
+
+	public void chatLogoffReceived(SessionChatEvent arg0) {
+	}
 
 	public void chatMessageReceived(SessionChatEvent event) {
 		presenceContainer.handleMessageReceived(event);
 	}
 
-	public void chatUserUpdateReceived(SessionChatEvent arg0) {}
+	public void chatUserUpdateReceived(SessionChatEvent arg0) {
+	}
 
-	public void chatConnectionClosed(SessionEvent arg0) {}
+	public void chatConnectionClosed(SessionEvent arg0) {
+	}
 
 }

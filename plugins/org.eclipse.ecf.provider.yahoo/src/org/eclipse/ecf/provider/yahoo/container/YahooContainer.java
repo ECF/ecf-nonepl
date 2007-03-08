@@ -141,20 +141,20 @@ public class YahooContainer extends AbstractContainer {
 				Activator.NAMESPACE_IDENTIFIER);
 	}
 
-	public void disconnect() {
-		fireContainerEvent(new ContainerDisconnectingEvent(this.getID(),
-				targetYahooID));
-		try {
-			if (session != null)
+	public synchronized void disconnect() {
+		if (session != null) {
+			fireContainerEvent(new ContainerDisconnectingEvent(this.getID(),
+					targetYahooID));
+			try {
 				session.logout();
-			session = null;
-		} catch (Exception e) {
-			session = null;
-			e.printStackTrace();
+			} catch (Exception e) {
+			} finally {
+				session = null;
+			}
+			// notify listeners
+			fireContainerEvent(new ContainerDisconnectedEvent(this.getID(),
+					targetYahooID));
 		}
-		// notify listeners
-		fireContainerEvent(new ContainerDisconnectedEvent(this.getID(),
-				targetYahooID));
 	}
 
 	public Object getAdapter(Class serviceType) {
