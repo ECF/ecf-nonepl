@@ -139,7 +139,7 @@ public abstract class Channel extends SocketAddress implements
 	}
 
 	protected void setup() throws IOException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(), "setup");
 		try {
 			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
@@ -158,13 +158,13 @@ public abstract class Channel extends SocketAddress implements
 			connected = true;
 			connection.start();
 		} catch (JMSException e) {
-			Trace.catching(JmsPlugin.getDefault(),
+			Trace.catching(JmsPlugin.PLUGIN_ID,
 					JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 					"setup", e);
 			hardDisconnect();
 			throwIOException("setup", "Exception in channel setup", e);
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "setup");
 	}
 
@@ -184,7 +184,7 @@ public abstract class Channel extends SocketAddress implements
 
 	public synchronized void queueObject(ID recipient, Serializable obj)
 			throws IOException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"queueObject", new Object[] { recipient, obj });
 		if (!isConnected())
@@ -195,32 +195,32 @@ public abstract class Channel extends SocketAddress implements
 					getLocalID(), recipient, obj));
 			topicProducer.send(msg);
 		} catch (JMSException e) {
-			Trace.catching(JmsPlugin.getDefault(),
+			Trace.catching(JmsPlugin.PLUGIN_ID,
 					JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 					"queueObject", e);
 			disconnect();
 			throwIOException("queueObject", "Exception in queueObject", e);
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "queueObject");
 	}
 
 	protected void onTopicException(JMSException except) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"onTopicException", new Object[] { except });
 		if (isConnected() && isStarted()) {
 			handler.handleDisconnectEvent(new DisconnectEvent(this, except,
 					null));
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "onTopicException");
 	}
 
 	protected void throwIOException(String method, String msg, Throwable t)
 			throws IOException {
 		Trace
-				.throwing(JmsPlugin.getDefault(),
+				.throwing(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						method, t);
 		IOException except = new IOException(msg + ": " + t.getMessage());
@@ -283,7 +283,7 @@ public abstract class Channel extends SocketAddress implements
 	// protected abstract void handleQueueMessage(Message msg);
 	public synchronized void disconnect() throws IOException {
 		Trace
-				.entering(JmsPlugin.getDefault(),
+				.entering(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 						"disconnect");
 		connected = false;
@@ -332,7 +332,7 @@ public abstract class Channel extends SocketAddress implements
 	}
 
 	protected void handleTopicMessage(Message msg, JMSMessage jmsmsg) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"handleTopicMessage", new Object[] { msg, jmsmsg });
 		if (isConnected() && isStarted()) {
@@ -340,7 +340,7 @@ public abstract class Channel extends SocketAddress implements
 				Object o = jmsmsg.getData();
 				handler.handleAsynchEvent(new AsynchEvent(this, o));
 			} catch (IOException e) {
-				Trace.catching(JmsPlugin.getDefault(),
+				Trace.catching(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						"handleTopicMessage", e);
 				JmsPlugin.getDefault().getLog().log(
@@ -350,7 +350,7 @@ public abstract class Channel extends SocketAddress implements
 				hardDisconnect();
 			}
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "handleTopicMessage");
 	}
 
@@ -370,7 +370,7 @@ public abstract class Channel extends SocketAddress implements
 
 	protected Serializable sendAndWait(Serializable obj, int waitDuration)
 			throws IOException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"sendAndWait", new Object[] { obj, new Integer(waitDuration) });
 		synchronized (synch) {
@@ -381,7 +381,7 @@ public abstract class Channel extends SocketAddress implements
 				topicProducer.send(msg);
 				synch.wait(waitDuration);
 			} catch (JMSException e) {
-				Trace.catching(JmsPlugin.getDefault(),
+				Trace.catching(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						"sendAndWait", e);
 				throwIOException("sendAndWait", "JMSException in sendAndWait",
@@ -390,7 +390,7 @@ public abstract class Channel extends SocketAddress implements
 				traceAndLogExceptionCatch(INTERRUPTED_ERROR_CODE,
 						"handleTopicMessage", e);
 			}
-			Trace.exiting(JmsPlugin.getDefault(),
+			Trace.exiting(JmsPlugin.PLUGIN_ID,
 					JmsDebugOptions.METHODS_EXITING, this.getClass(),
 					"sendAndWait", reply);
 			return reply;
@@ -405,7 +405,7 @@ public abstract class Channel extends SocketAddress implements
 	}
 
 	protected void handleSynchMessage(ObjectMessage msg, ECFMessage ecfmsg) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"handleSynchMessage", new Object[] { msg, ecfmsg });
 		synchronized (synch) {
@@ -421,14 +421,14 @@ public abstract class Channel extends SocketAddress implements
 						"handleTopicMessage", e);
 			}
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "handleSynchMessage");
 	}
 
 	protected void traceAndLogExceptionCatch(int code, String method,
 			Throwable e) {
 		Trace
-				.catching(JmsPlugin.getDefault(),
+				.catching(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						method, e);
 		JmsPlugin.getDefault().getLog()
@@ -456,7 +456,7 @@ public abstract class Channel extends SocketAddress implements
 	class TopicReceiver implements MessageListener {
 
 		public void onMessage(Message msg) {
-			Trace.entering(JmsPlugin.getDefault(),
+			Trace.entering(JmsPlugin.PLUGIN_ID,
 					JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 					"handleSynchMessage", new Object[] { msg });
 			try {
@@ -467,14 +467,14 @@ public abstract class Channel extends SocketAddress implements
 						ECFMessage ecfmsg = (ECFMessage) o;
 						ID fromID = ecfmsg.getSenderID();
 						if (fromID == null) {
-							Trace.exiting(JmsPlugin.getDefault(),
+							Trace.exiting(JmsPlugin.PLUGIN_ID,
 									JmsDebugOptions.METHODS_ENTERING, this
 											.getClass(),
 									"onMessage.fromID=null");
 							return;
 						}
 						if (fromID.equals(getLocalID())) {
-							Trace.exiting(JmsPlugin.getDefault(),
+							Trace.exiting(JmsPlugin.PLUGIN_ID,
 									JmsDebugOptions.METHODS_ENTERING, this
 											.getClass(),
 									"onMessage.fromID=getLocalID()");
@@ -486,7 +486,7 @@ public abstract class Channel extends SocketAddress implements
 								handleTopicMessage(msg, (JMSMessage) ecfmsg);
 							else
 								Trace
-										.trace(JmsPlugin.getDefault(),
+										.trace(JmsPlugin.PLUGIN_ID,
 												"onMessage.received invalid message to group");
 						} else {
 							if (targetID.equals(getLocalID())) {
@@ -497,24 +497,24 @@ public abstract class Channel extends SocketAddress implements
 								else if (ecfmsg instanceof SynchResponse)
 									handleSynchMessage(omg, ecfmsg);
 								else
-									Trace.trace(JmsPlugin.getDefault(),
+									Trace.trace(JmsPlugin.PLUGIN_ID,
 											"onMessage.msg invalid message to "
 													+ targetID);
 							}
 						}
 					} else
 						// received bogus message...ignore
-						Trace.trace(JmsPlugin.getDefault(),
+						Trace.trace(JmsPlugin.PLUGIN_ID,
 								"onMessage received non-ECFMessage...ignoring: "
 										+ o);
 				} else
-					Trace.trace(JmsPlugin.getDefault(),
+					Trace.trace(JmsPlugin.PLUGIN_ID,
 							"onMessage.non object message received: " + msg);
 			} catch (Exception e) {
 				traceAndLogExceptionCatch(ONMESSAGE_ERROR_CODE, "onMessage", e);
 				hardDisconnect();
 			}
-			Trace.exiting(JmsPlugin.getDefault(),
+			Trace.exiting(JmsPlugin.PLUGIN_ID,
 					JmsDebugOptions.METHODS_EXITING, this.getClass(),
 					"onMessage");
 

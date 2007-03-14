@@ -161,7 +161,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 	protected void traceAndLogExceptionCatch(int code, String method,
 			Throwable e) {
 		Trace
-				.catching(JmsPlugin.getDefault(),
+				.catching(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						method, e);
 		JmsPlugin.getDefault().getLog()
@@ -203,7 +203,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 	protected Serializable handleConnectRequest(ConnectRequest request,
 			ServerChannel channel) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"handleConnectRequest", new Object[] { request, channel });
 		Object data = request.getData();
@@ -293,7 +293,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 	}
 
 	public void clientRemoved(BrokerClient client) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"clientRemoved", new Object[] { client });
 		// OK, get ID for client...
@@ -302,12 +302,12 @@ public class JMSServerSOContainer extends ServerSOContainer {
 			IConnection conn = getConnectionForID(remoteID);
 			memberLeave(remoteID, conn);
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_ENTERING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "clientRemoved");
 	}
 
 	protected void memberLeave(ID target, IConnection conn) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"memberLeave", new Object[] { target, conn });
 		if (target == null)
@@ -324,7 +324,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		}
 		if (conn != null)
 			killConnection(conn);
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "memberLeave");
 	}
 

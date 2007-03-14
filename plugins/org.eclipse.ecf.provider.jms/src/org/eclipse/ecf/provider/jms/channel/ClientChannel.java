@@ -41,7 +41,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 	 */
 	public synchronized Object connect(ID remote, Object data, int timeout)
 			throws IOException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(), "connect",
 				new Object[] { remote, data, new Integer(timeout) });
 		if (connected)
@@ -60,7 +60,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 		}
 		Serializable connectData = (Serializable) data;
 		setup();
-		Trace.trace(JmsPlugin.getDefault(), "connecting to " + remote + ","
+		Trace.trace(JmsPlugin.PLUGIN_ID, "connecting to " + remote + ","
 				+ data + "," + timeout + ")");
 		Serializable res = getConnectResult(managerID, connectData);
 		if (res != null && (!(res instanceof ConnectResponse))) {
@@ -70,7 +70,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 			throw new ConnectException("server refused connection");
 		ConnectResponse cr = (ConnectResponse) res;
 		Object result = cr.getData();
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_ENTERING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "connect", result);
 		return result;
 	}
@@ -82,7 +82,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 	}
 
 	protected void respondToRequest(ObjectMessage omsg, ECFMessage o) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"respondToRequest", new Object[] { omsg, o });
 		try {
@@ -91,7 +91,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 							getConnectionID(), o.getTargetID(),
 							o.getSenderID(), null));
 			first.setJMSCorrelationID(omsg.getJMSCorrelationID());
-			Trace.trace(JmsPlugin.getDefault(), "respondToRequest.sending="
+			Trace.trace(JmsPlugin.PLUGIN_ID, "respondToRequest.sending="
 					+ first);
 			topicProducer.send(first);
 			handler.handleSynchEvent(new SynchEvent(this, o.getData()));
@@ -99,12 +99,12 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 			traceAndLogExceptionCatch(RESPOND_TO_REQUEST_ERROR_CODE,
 					"respondToRequest", e);
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "respondToRequest");
 	}
 
 	public Object sendSynch(ID target, byte[] data) throws IOException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(), "sendSynch",
 				new Object[] { target, data });
 		Object result = null;
@@ -112,7 +112,7 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 			result = sendAndWait(new DisconnectRequest(getConnectionID(),
 					getLocalID(), target, data), keepAlive);
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "sendSynch", result);
 		return result;
 	}

@@ -42,7 +42,7 @@ public class SkypeCallSession implements ICallSession {
 	CallStatusChangedListener callStatusChangeListener = new CallStatusChangedListener() {
 		public void statusChanged(Status status) throws SkypeException {
 			// TODO Auto-generated method stub
-			Trace.trace(Activator.getDefault(), getID().getName()
+			Trace.trace(Activator.PLUGIN_ID, getID().getName()
 					+ ".statusChanged(" + status + ")");
 			if (status.equals(Status.FAILED)) fireFailedEvent();
 		}
@@ -137,7 +137,7 @@ public class SkypeCallSession implements ICallSession {
 		try {
 			sendTerminate();
 		} catch (CallException e) {
-			Trace.catching(Activator.getDefault(), SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "sendTerminate0", e);
+			Trace.catching(Activator.PLUGIN_ID, SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "sendTerminate0", e);
 		}
 	}
 	private void fireTerminate() {

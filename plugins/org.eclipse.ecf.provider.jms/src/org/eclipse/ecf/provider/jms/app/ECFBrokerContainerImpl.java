@@ -38,7 +38,7 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 	protected boolean onTheAir = false;
 
 	public void trace(String msg) {
-		Trace.trace(JmsPlugin.getDefault(), msg);
+		Trace.trace(JmsPlugin.PLUGIN_ID, msg);
 	}
 
 	public void setOnTheAir(boolean val) {
@@ -158,7 +158,7 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 
 	public void registerMessageConsumer(BrokerClient client, ConsumerInfo info)
 			throws JMSException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"registerMessageConsumer", new Object[] { client, info });
 		trace("registerMessageConsumer(" + client + "," + info + ")");
@@ -170,7 +170,7 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 			container.addClient(client);
 		}
 		super.registerMessageConsumer(client, info);
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "registerMessageConsumer");
 	}
 
@@ -187,7 +187,7 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 
 	public void registerMessageProducer(BrokerClient client, ProducerInfo info)
 			throws JMSException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"registerMessageProducer", new Object[] { client, info });
 		String dest = info.getDestination().toString();
@@ -196,13 +196,13 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 			return;
 		}
 		super.registerMessageProducer(client, info);
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "registerMessageProducer");
 	}
 
 	public void deregisterMessageProducer(BrokerClient client, ProducerInfo info)
 			throws JMSException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"deregisterMessageProducer", new Object[] { client, info });
 		String dest = info.getDestination().toString();
@@ -213,40 +213,40 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 			container.clientRemoved(client);
 		}
 		super.deregisterMessageProducer(client, info);
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "deregisterMessageProducer");
 	}
 
 	public void deregisterRemoteClientID(String remoteClientID) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"deregisterRemoteClientID", new Object[] { remoteClientID });
 		super.deregisterRemoteClientID(remoteClientID);
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "deregisterRemoteClientID");
 	}
 
 	public void registerConnection(BrokerClient client, ConnectionInfo info)
 			throws JMSException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"registerConnection", new Object[] { client, info });
 		if (!clientsEmpty()) {
 			addClient(client);
 		}
 		super.registerConnection(client, info);
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "registerConnection");
 	}
 
 	public void deregisterConnection(BrokerClient client, ConnectionInfo info)
 			throws JMSException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"deregisterConnection", new Object[] { client, info });
 		removeClient(client);
 		super.deregisterConnection(client, info);
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "deregisterConnection");
 	}
 

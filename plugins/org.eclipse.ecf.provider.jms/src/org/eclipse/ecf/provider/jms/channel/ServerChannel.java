@@ -45,7 +45,7 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 	}
 
 	protected void respondToRequest(ObjectMessage omsg, ECFMessage o) {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"respondToRequest", new Object[] { omsg, o });
 		try {
@@ -59,13 +59,13 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 								getConnectionID(), o.getTargetID(), o
 										.getSenderID(), resp[0]));
 				first.setJMSCorrelationID(omsg.getJMSCorrelationID());
-				Trace.trace(JmsPlugin.getDefault(),
+				Trace.trace(JmsPlugin.PLUGIN_ID,
 						"respondToConnectRequest.sending=" + first);
 				topicProducer.send(first);
 				ObjectMessage second = session
 						.createObjectMessage(new JMSMessage(getConnectionID(),
 								getLocalID(), null, resp[1]));
-				Trace.trace(JmsPlugin.getDefault(),
+				Trace.trace(JmsPlugin.PLUGIN_ID,
 						"respondToConnectRequest.sending=" + second);
 				topicProducer.send(second);
 			} else if (o instanceof DisconnectRequest) {
@@ -74,7 +74,7 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 								getConnectionID(), o.getTargetID(), o
 										.getSenderID(), null));
 				msg.setJMSCorrelationID(omsg.getJMSCorrelationID());
-				Trace.trace(JmsPlugin.getDefault(),
+				Trace.trace(JmsPlugin.PLUGIN_ID,
 						"SERVER.respondToDisconnectRequest:sending:" + msg);
 				topicProducer.send(msg);
 			}
@@ -86,7 +86,7 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 	}
 
 	public Object sendSynch(ID target, byte[] data) throws IOException {
-		Trace.entering(JmsPlugin.getDefault(),
+		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(), "sendSynch",
 				new Object[] { target, data });
 		Object result = null;
@@ -94,7 +94,7 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 			result = sendAndWait(new DisconnectRequest(getConnectionID(),
 					getLocalID(), target, data), keepAlive);
 		}
-		Trace.exiting(JmsPlugin.getDefault(), JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "sendSynch", result);
 		return result;
 	}
