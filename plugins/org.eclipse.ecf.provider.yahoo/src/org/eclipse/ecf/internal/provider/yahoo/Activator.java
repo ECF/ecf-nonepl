@@ -10,18 +10,18 @@
  *  	- Chris Aniszczyk <zx@us.ibm.com>
  *   	- Borna Safabakhsh <borna@us.ibm.com> 
  *   
- * $Id: Activator.java,v 1.1 2006/11/09 22:11:19 slewis Exp $
+ * $Id: Activator.java,v 1.2 2007/03/14 23:10:14 slewis Exp $
  */
 
 package org.eclipse.ecf.internal.provider.yahoo;
 
-import org.eclipse.core.runtime.Plugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 
 /**
  * The main plugin class to be used in the desktop.
  */
-public class Activator extends Plugin {
+public class Activator implements BundleActivator {
 
 	/**
 	 * Namespace identifier
@@ -42,14 +42,12 @@ public class Activator extends Plugin {
 	 * This method is called upon plug-in activation
 	 */
 	public void start(BundleContext context) throws Exception {
-		super.start(context);
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
 	 */
 	public void stop(BundleContext context) throws Exception {
-		super.stop(context);
 		plugin = null;
 	}
 

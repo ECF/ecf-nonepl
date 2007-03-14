@@ -343,7 +343,7 @@ public abstract class Channel extends SocketAddress implements
 				Trace.catching(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						"handleTopicMessage", e);
-				JmsPlugin.getDefault().getLog().log(
+				JmsPlugin.getDefault().log(
 						new Status(IStatus.ERROR, JmsPlugin.PLUGIN_ID,
 								HANDLE_ASYNCH_ERROR_CODE,
 								"Exception on handleTopicMessage", e));
@@ -431,8 +431,7 @@ public abstract class Channel extends SocketAddress implements
 				.catching(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						method, e);
-		JmsPlugin.getDefault().getLog()
-				.log(
+		JmsPlugin.getDefault().log(
 						new Status(IStatus.ERROR, JmsPlugin.PLUGIN_ID, code,
 								method, e));
 	}

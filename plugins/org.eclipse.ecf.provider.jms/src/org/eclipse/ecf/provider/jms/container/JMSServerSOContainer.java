@@ -20,6 +20,7 @@ import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.activemq.broker.BrokerClient;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -164,8 +165,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 				.catching(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						method, e);
-		JmsPlugin.getDefault().getLog()
-				.log(
+		JmsPlugin.getDefault().log(
 						new Status(IStatus.ERROR, JmsPlugin.PLUGIN_ID, code,
 								method, e));
 	}
