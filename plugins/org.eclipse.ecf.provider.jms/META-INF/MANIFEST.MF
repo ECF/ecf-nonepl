@@ -16,7 +16,6 @@ Bundle-Activator: org.eclipse.ecf.internal.provider.jms.JmsPlugin
 Bundle-Vendor: %plugin.provider
 Bundle-Localization: plugin
 Eclipse-LazyStart: true
-Eclipse-AutoStart: true
 Export-Package: org.eclipse.ecf.internal.provider.jms;x-internal:=true,
  org.eclipse.ecf.provider.jms.app,
  org.eclipse.ecf.provider.jms.channel,
