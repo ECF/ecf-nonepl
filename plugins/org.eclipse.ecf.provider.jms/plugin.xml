@@ -5,7 +5,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.provider.jms.container.JMSContainerInstantiator"
-            description="JMS Client"
+            description="ECF JMS"
             name="ecf.jms.tcp.client">
          <property
                value="tcp://&lt;server&gt;:&lt;port&gt;/&lt;topicname&gt;"
