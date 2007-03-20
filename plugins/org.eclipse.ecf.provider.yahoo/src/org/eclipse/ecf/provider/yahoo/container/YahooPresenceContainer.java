@@ -37,6 +37,8 @@ import org.eclipse.ecf.presence.im.ChatMessageEvent;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessage;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
+import org.eclipse.ecf.presence.im.IHistory;
+import org.eclipse.ecf.presence.im.IHistoryManager;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
 import org.eclipse.ecf.presence.roster.IRoster;
@@ -82,6 +84,24 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		
 	};
 	
+	protected IHistoryManager historyManager = new IHistoryManager() {
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.ecf.presence.im.IHistoryManager#getHistory(org.eclipse.ecf.core.identity.ID, java.util.Map)
+		 */
+		public IHistory getHistory(ID partnerID, Map options) {
+			// XXX TODO provide local storage (with some 
+			return null;
+		}
+
+		/* (non-Javadoc)
+		 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+		 */
+		public Object getAdapter(Class adapter) {
+			return null;
+		}
+	};
+	
 	IChatManager chatManager = new IChatManager() {
 		public void addMessageListener(IIMMessageListener listener) {
 			listeners.add(listener);
@@ -97,6 +117,10 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 		public void removeMessageListener(IIMMessageListener listener) {
 			listeners.remove(listener);
+		}
+
+		public IHistoryManager getHistoryManager() {
+			return historyManager;
 		}
 		
 	};
