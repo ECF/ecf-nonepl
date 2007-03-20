@@ -100,6 +100,13 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		public Object getAdapter(Class adapter) {
 			return null;
 		}
+
+		public boolean isActive() {
+			return false;
+		}
+
+		public void makeActive(boolean active, Map options) {
+		}
 	};
 	
 	IChatManager chatManager = new IChatManager() {
