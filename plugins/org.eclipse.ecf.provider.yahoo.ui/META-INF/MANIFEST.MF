@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ECF Yahoo UI
+Bundle-SymbolicName: org.eclipse.ecf.provider.yahoo.ui;singleton:=true
+Bundle-Version: 1.0.0.v20070322-1329
+Bundle-Activator: org.eclipse.ecf.internal.provider.yahoo.ui.Activator
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.ecf,
+ org.eclipse.ecf.ui
+Eclipse-LazyStart: true
+Export-Package: org.eclipse.ecf.internal.provider.yahoo.ui;x-internal:=true,
+ org.eclipse.ecf.internal.provider.yahoo.ui.wizards;x-internal:=true
