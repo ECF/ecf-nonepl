@@ -7,15 +7,6 @@
             class="org.eclipse.ecf.provider.yahoo.container.YahooContainerInstantiator"
             description="Yahoo IM"
             name="ecf.yahoo.jymsg">
-         <property
-               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.usepassword"
-               value="true"/>
-         <property
-               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.examplegroupid"
-               value="&lt;user&gt;"/>
-         <property
-               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.groupIDLabel"
-               value="Account:"/>
       </containerFactory>
    </extension>
    <extension

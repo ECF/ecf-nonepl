@@ -7,15 +7,6 @@
             class="org.eclipse.ecf.provider.jms.container.JMSContainerInstantiator"
             description="ECF JMS"
             name="ecf.jms.tcp.client">
-         <property
-               value="tcp://&lt;server&gt;:&lt;port&gt;/&lt;topicname&gt;"
-               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.examplegroupid"/>
-         <property
-               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.defaultgroupid"
-               value=""/>
-         <property
-               name="org.eclipse.ecf.example.collab.ui.JoinGroupWizardPage.namespace"
-               value="jms.activemq"/>
       </containerFactory>
    </extension>
    <extension
