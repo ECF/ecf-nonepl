@@ -8,11 +8,12 @@
  ******************************************************************************/
 package org.eclipse.ecf.example.rcpchat.actions;
 
-import java.util.HashMap;
-import java.util.Map;
-import org.eclipse.ecf.core.ContainerTypeDescription;
-import org.eclipse.ecf.example.rcpchat.wizard.ConnectWizard;
+import org.eclipse.ecf.core.ContainerCreateException;
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.example.rcpchat.wizard.XMPPConnectWizard;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbench;
@@ -24,6 +25,8 @@ import org.eclipse.ui.actions.ActionDelegate;
 public class WorkbenchAction extends ActionDelegate implements
 		IWorkbenchWindowActionDelegate {
 
+	IWorkbenchWindow window;
+	
 	public void run() {
 	}
 
@@ -45,6 +48,7 @@ public class WorkbenchAction extends ActionDelegate implements
 	 * @see org.eclipse.ui.IWorkbenchWindowActionDelegate#init(org.eclipse.ui.IWorkbenchWindow)
 	 */
 	public void init(IWorkbenchWindow window) {
+		this.window = window;
 	}
 
 	/*
@@ -53,66 +57,17 @@ public class WorkbenchAction extends ActionDelegate implements
 	 * @see org.eclipse.ui.IActionDelegate#run(org.eclipse.jface.action.IAction)
 	 */
 	public void run(IAction action) {
-		String namespaceName = "ecf.xmpp.smack";
-		String namespaceDescription = "XMPP (Jabber)";
-		Map namespaceProps = new HashMap();
-		namespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword",
-				"true");
-		namespaceProps
-				.put(
-						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.examplegroupid",
-						"<user>@<xmppserver>");
-		namespaceProps
-				.put(
-						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage..defaultgroupid",
-						"");
-		namespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix",
-				"xmpp:");
-		namespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel",
-				"Account:");
-		namespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",
-				namespaceName);
-		ContainerTypeDescription desc1 = new ContainerTypeDescription(this
-				.getClass().getClassLoader(), namespaceName, "",
-				namespaceDescription, null, namespaceProps);
-
-		String snamespaceName = "ecf.xmpps.smack";
-		String snamespaceDescription = "XMPP SSL (Secure Jabber)";
-
-		Map snamespaceProps = new HashMap();
-		snamespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.usepassword",
-				"true");
-		snamespaceProps
-				.put(
-						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.examplegroupid",
-						"<user>@<xmppserver>");
-		snamespaceProps
-				.put(
-						"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage..defaultgroupid",
-						"");
-		snamespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.urlprefix",
-				"xmpps:");
-		snamespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.groupIDLabel",
-				"Account:");
-		snamespaceProps.put(
-				"org.eclipse.ecf.ui.wizards.JoinGroupWizardPage.namespace",
-				snamespaceName);
-		ContainerTypeDescription desc2 = new ContainerTypeDescription(this
-				.getClass().getClassLoader(), snamespaceName, "",
-				snamespaceDescription, null, snamespaceProps);
-		ConnectWizard wizard = new ConnectWizard(getWorkbench(),
-				"Connect to Server", new ContainerTypeDescription[] { desc1,
-						desc2 });
 		// Create the wizard dialog
+		IContainer container = null;
+		try {
+			container = ContainerFactory.getDefault().createContainer("ecf.xmpp.smack");
+		} catch (ContainerCreateException e) {
+			MessageDialog.openError(this.window.getShell(), "Create Error", "Could not create XMPP container.\n\nError: "+e.getLocalizedMessage());
+		}
+		XMPPConnectWizard connectWizard = new XMPPConnectWizard();
+		connectWizard.init(getWorkbench(), container);
 		WizardDialog dialog = new WizardDialog(getWorkbench()
-				.getActiveWorkbenchWindow().getShell(), wizard);
+				.getActiveWorkbenchWindow().getShell(), connectWizard);
 		// Open the wizard dialog
 		dialog.open();
 	}

@@ -18,7 +18,7 @@ import org.osgi.framework.BundleContext;
  */
 public class RcpChatPlugin extends AbstractUIPlugin {
 
-	public static final String APPLICATION_WINDOW_TITLE = "ECF RCPChat";
+	public static final String APPLICATION_WINDOW_TITLE = "RCPChat";
 	public static final int APPLICATION_WINDOW_SIZE_X = 600;
 	public static final int APPLICATION_WINDOW_SIZE_Y = 400;
 	public static final String CONNECT_WIZARD_PAGE_TITLE = "Connect to XMPP Server";

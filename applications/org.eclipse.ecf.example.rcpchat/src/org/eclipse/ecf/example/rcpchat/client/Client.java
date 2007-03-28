@@ -18,14 +18,16 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
+import org.eclipse.ecf.presence.ui.PresenceUI;
 
 public class Client {
 	public static final String WORKSPACE_NAME = "<workspace>";
     public static final String GENERIC_CONTAINER_CLIENT_NAME = "ecf.generic.client";
 	static Hashtable clients = new Hashtable();
 
-	PresenceContainerUI presenceContainerUI = null;
+	PresenceUI presenceContainerUI = null;
 	
 	/**
 	 * Create a new container instance, and connect to a remote server or group.
@@ -49,11 +51,9 @@ public class Client {
 	     // Check for IPresenceContainerAdapter....if it is, setup presence UI, if not setup shared object container
 		IPresenceContainerAdapter pc = (IPresenceContainerAdapter) client
 				.getAdapter(IPresenceContainerAdapter.class);
-		if (pc != null) {
-			// Setup presence UI
-			presenceContainerUI = new PresenceContainerUI(pc);
-			presenceContainerUI.setup(client, targetID, username);
-		} else throw new NullPointerException("IPresenceContainerAdapter interface not exposed by client with type "+containerType);
+		// Setup presence UI
+		presenceContainerUI = new PresenceUI(client,pc);
+		presenceContainerUI.showForUser(new User(targetID,username));
 		// Now connect
 		client.connect(targetID, getJoinContext(username, connectData));
 	}

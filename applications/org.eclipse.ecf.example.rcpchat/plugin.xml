@@ -23,16 +23,17 @@
          point="org.eclipse.core.runtime.products">
       <product
             application="org.eclipse.ecf.example.rcpchat.application"
-            name="ECF RCPChat">
+            name="RCPChat">
          <property
                name="aboutText"
                value="%aboutText"/>
          <property
                name="windowImages"
-               value="icons/person.gif"/>
+               value="icons/buddy_available.gif"/>
          <property
-               name="aboutImage"
-               value="product_lg.gif"/>
+               name="appName"
+               value="RCPChat">
+         </property>
       </product>
    </extension>
    <extension
@@ -43,19 +44,28 @@
             visible="true">
          <action
                class="org.eclipse.ecf.example.rcpchat.actions.WorkbenchAction"
-               icon="icons/person.gif"
+               icon="icons/buddy_available.gif"
                id="org.eclipse.ecf.example.collab.joingroupaction"
                label="Connect..."
                menubarPath="org.eclipse.ecf.example.collab.topmenu/org.eclipse.ecf.example.collab.topseparator"
                style="push"
                toolbarPath="org.eclipse.ecf.example.collab.topseparator"
-               tooltip="Connect Workspace to ECF Group"/>
+               tooltip="Connect to XMPP Server"/>
          <menu
                id="org.eclipse.ecf.example.collab.topmenu"
                label="ECF">
             <separator name="org.eclipse.ecf.example.collab.topseparator"/>
          </menu>
       </actionSet>
+   </extension>
+
+   <extension
+         point="org.eclipse.ecf.ui.connectWizards">
+      <wizard
+            class="org.eclipse.ecf.example.rcpchat.wizard.XMPPConnectWizard"
+            containerFactoryName="ecf.xmpp.smack"
+            id="org.eclipse.ecf.provider.ui.xmpp.xmppConnect"
+            name="XMPP"/>
    </extension>
 
 </plugin>

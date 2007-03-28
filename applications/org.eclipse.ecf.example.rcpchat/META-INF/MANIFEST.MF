@@ -1,6 +1,6 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ECF RCPChat Example
+Bundle-Name: RCPChat Example
 Bundle-SymbolicName: org.eclipse.ecf.example.rcpchat; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Vendor: Eclipse.org
