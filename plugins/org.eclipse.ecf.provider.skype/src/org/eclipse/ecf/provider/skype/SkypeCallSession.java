@@ -129,25 +129,10 @@ public class SkypeCallSession implements IInitiatorCallSession {
 		return listener;
 	}
 
-	/**
-	 * @return
-	 */
-	private CallState createCallState() {
-		Status s = null;
-		try {
-			s = skypeCall.getStatus();
-		} catch (SkypeException e) {
-			return CallState.ENDED;
-		}
-		// XXX TODO
-		return CallState.PENDING;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.call.ICallSession#getState()
 	 */
 	public CallState getState() {
-		// TODO Auto-generated method stub
 		return null;
 	}
 

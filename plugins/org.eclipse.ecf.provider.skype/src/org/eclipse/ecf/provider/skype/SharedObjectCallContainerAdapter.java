@@ -32,10 +32,6 @@ import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
-import org.eclipse.ecf.presence.chatroom.ChatRoomCreateException;
-import org.eclipse.ecf.presence.chatroom.IChatRoomInfo;
-import org.eclipse.ecf.presence.chatroom.IChatRoomInvitationListener;
-import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 
@@ -52,7 +48,7 @@ import com.skype.connector.ConnectorMessageEvent;
 import com.skype.connector.ConnectorStatusEvent;
 
 public class SharedObjectCallContainerAdapter extends BaseSharedObject
-		implements ICallContainerAdapter, IChatRoomManager {
+		implements ICallContainerAdapter {
 
 	boolean debugSkype = true;
 
@@ -185,79 +181,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	public Namespace getReceiverNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(
 				SkypeUserNamespace.NAMESPACE_NAME);
-	}
-
-	// IChatRoomManager methods
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#addInvitationListener(org.eclipse.ecf.presence.chatroom.IChatRoomInvitationListener)
-	 */
-	public void addInvitationListener(IChatRoomInvitationListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#createChatRoom(java.lang.String,
-	 *      java.util.Map)
-	 */
-	public IChatRoomInfo createChatRoom(String roomname, Map properties)
-			throws ChatRoomCreateException {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getChatRoomInfo(java.lang.String)
-	 */
-	public IChatRoomInfo getChatRoomInfo(String roomname) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getChatRoomInfos()
-	 */
-	public IChatRoomInfo[] getChatRoomInfos() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getChildren()
-	 */
-	public IChatRoomManager[] getChildren() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getParent()
-	 */
-	public IChatRoomManager getParent() {
-		return null;
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#removeInvitationListener(org.eclipse.ecf.presence.chatroom.IChatRoomInvitationListener)
-	 */
-	public void removeInvitationListener(IChatRoomInvitationListener listener) {
-		// TODO Auto-generated method stub
-
 	}
 
 	/* (non-Javadoc)
