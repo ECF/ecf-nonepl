@@ -12,10 +12,10 @@
 package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.call.CallException;
-import org.eclipse.ecf.call.ICallSession;
+import org.eclipse.ecf.call.CallState;
+import org.eclipse.ecf.call.ICallSessionError;
 import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.events.ICallSessionFailedEvent;
-import org.eclipse.ecf.call.events.ICallSessionTerminateEvent;
+import org.eclipse.ecf.call.IInitiatorCallSession;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
@@ -29,7 +29,7 @@ import com.skype.CallStatusChangedListener;
 import com.skype.SkypeException;
 import com.skype.Call.Status;
 
-public class SkypeCallSession implements ICallSession {
+public class SkypeCallSession implements IInitiatorCallSession {
 
 	SharedObjectCallContainerAdapter adapter;
 	SkypeUserID initiator = null;
@@ -44,21 +44,9 @@ public class SkypeCallSession implements ICallSession {
 			// TODO Auto-generated method stub
 			Trace.trace(Activator.PLUGIN_ID, getID().getName()
 					+ ".statusChanged(" + status + ")");
-			if (status.equals(Status.FAILED)) fireFailedEvent();
 		}
 	};
 
-	protected void fireFailedEvent() {
-		listener.handleCallSessionEvent(new ICallSessionFailedEvent() {
-
-			public ICallSession getCallSession() {
-				return SkypeCallSession.this;
-			}
-
-			public void replyTerminate() {
-				sendTerminate0();
-			}});
-	}
 	/**
 	 * @param sharedObjectCallContainerAdapter
 	 */
@@ -72,30 +60,6 @@ public class SkypeCallSession implements ICallSession {
 		this.session = new SkypeCallSessionID(skypeCall.getId());
 		this.listener = listener;
 		this.skypeCall.addCallStatusChangedListener(callStatusChangeListener);
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.call.ICallSession#getCallSessionState()
-	 */
-	public synchronized State getState() {
-		return (skypeCall == null) ? ICallSession.State.PREPENDING
-				: createCallState();
-	}
-
-	/**
-	 * @return
-	 */
-	private State createCallState() {
-		Status s = null;
-		try {
-			s = skypeCall.getStatus();
-		} catch (SkypeException e) {
-			return ICallSession.State.ENDED;
-		}
-		// XXX TODO
-		return ICallSession.State.PENDING;
 	}
 
 	/*
@@ -128,8 +92,6 @@ public class SkypeCallSession implements ICallSession {
 			throw new CallException(
 					Messages.SharedObjectCallContainerAdapter_Exception_Skype,
 					e);
-		} finally {
-			fireTerminate();
 		}
 	}
 
@@ -139,15 +101,6 @@ public class SkypeCallSession implements ICallSession {
 		} catch (CallException e) {
 			Trace.catching(Activator.PLUGIN_ID, SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "sendTerminate0", e);
 		}
-	}
-	private void fireTerminate() {
-		listener.handleCallSessionEvent(new ICallSessionTerminateEvent() {
-			public ICallSession getCallSession() {
-				return SkypeCallSession.this;
-			}
-
-			public void replyTerminate() {
-			}});
 	}
 	/*
 	 * (non-Javadoc)
@@ -174,6 +127,36 @@ public class SkypeCallSession implements ICallSession {
 	 */
 	public ICallSessionListener getListener() {
 		return listener;
+	}
+
+	/**
+	 * @return
+	 */
+	private CallState createCallState() {
+		Status s = null;
+		try {
+			s = skypeCall.getStatus();
+		} catch (SkypeException e) {
+			return CallState.ENDED;
+		}
+		// XXX TODO
+		return CallState.PENDING;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.call.ICallSession#getState()
+	 */
+	public CallState getState() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.call.ICallSession#sendError(org.eclipse.ecf.call.ICallSessionError)
+	 */
+	public void sendError(ICallSessionError error) {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
