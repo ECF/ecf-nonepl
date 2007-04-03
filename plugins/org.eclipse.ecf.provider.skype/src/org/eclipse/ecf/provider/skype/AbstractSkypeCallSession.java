@@ -95,24 +95,31 @@ public class AbstractSkypeCallSession implements ICallSession {
 	 * @see org.eclipse.ecf.provider.skype.AbstractSkypeCallSession#handleStatusChanged(com.skype.Call.Status)
 	 */
 	protected void handleStatusChanged(Status status) {
-		// TODO Auto-generated method stub
-		System.out.println("handleStatusChanged("+status+")");
 		setCallState(createCallState(status));
-		fireCallSessionEvent(new ICallSessionStatusChangedEvent(){
-				public ICallSession getCallSession() {
-					return AbstractSkypeCallSession.this;
-				}
-				public String toString() {
-					StringBuffer buf = new StringBuffer("ICallSessionStatusChanged[");
-					buf.append("id="+getID());
-					buf.append(";initiator=").append(getInitiator());
-					buf.append(";receiver=").append(getReceiver());
-					buf.append(";callstatus=").append(getState());
-					buf.append(";failurereason=").append(getFailureReason()).append("]");
-					return buf.toString();
-				}
-		
+		fireCallSessionEvent(new ICallSessionStatusChangedEvent() {
+			public ICallSession getCallSession() {
+				return AbstractSkypeCallSession.this;
+			}
+
+			public String toString() {
+				return getStringBufferForEvent("ICallSessionStatusChangedEvent")
+						.toString();
+			}
+
 		});
+	}
+
+	protected StringBuffer getStringBufferForEvent(String eventType) {
+		StringBuffer buffer = new StringBuffer(eventType);
+		buffer.append("[");
+		buffer.append("id=").append( //$NON-NLS-1$
+				getID());
+		buffer.append(";init=").append(getInitiator());
+		buffer.append(";rcvr=").append(getReceiver());
+		buffer.append(";state=").append(getState());
+		buffer.append(";reason=").append(getFailureReason());
+		buffer.append("]"); //$NON-NLS-1$		
+		return buffer;
 	}
 
 	/**
