@@ -64,8 +64,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	Vector callSessionRequestListeners = new Vector();
 
-	ICallSessionListener listener;
-
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
 			Trace.trace(Activator.PLUGIN_ID, "callMade(" + makedCall + ")"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -131,6 +129,23 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		return userID;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.core.sharedobject.BaseSharedObject#dispose(org.eclipse.ecf.core.identity.ID)
+	 */
+	public void dispose(ID containerID) {
+		super.dispose(containerID);
+		Skype.removeCallListener(callListener);
+		Skype.removeChatMessageListener(chatMessageListener);
+		try {
+			Skype.setDebug(false);
+		} catch (SkypeException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+	}
+
 	/**
 	 * @param receivedCall
 	 */
@@ -146,12 +161,13 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 							ICallSessionListener listener) throws CallException {
 						try {
 							SkypeReceiverCallSession session = new SkypeReceiverCallSession(
-									userID, new SkypeUserID(receivedCall.getPartner()), receivedCall, listener);
+									userID, new SkypeUserID(receivedCall
+											.getPartner()), receivedCall,
+									listener);
 							receivedCall.answer();
 							return session;
 						} catch (SkypeException e) {
-							throw new CallException(
-									"unexpected exception", e);
+							throw new CallException("unexpected exception", e);
 						}
 					}
 
@@ -299,9 +315,8 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 			SkypeUserID rcvrID = (SkypeUserID) receiver;
 			synchronized (this) {
 				try {
-					new SkypeInitiatorCallSession(
-							userID, rcvrID, Skype.call(rcvrID.getUser()),
-							listener);
+					new SkypeInitiatorCallSession(userID, rcvrID, Skype
+							.call(rcvrID.getUser()), listener);
 				} catch (SkypeException e) {
 					Trace.catching(Activator.PLUGIN_ID,
 							SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this
