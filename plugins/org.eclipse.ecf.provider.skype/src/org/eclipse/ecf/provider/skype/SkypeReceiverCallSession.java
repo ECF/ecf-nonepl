@@ -18,6 +18,9 @@ import org.eclipse.ecf.call.CallState;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.IReceiverCallSession;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.identity.IDCreateException;
+import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Call;
 import com.skype.CallStatusChangedListener;
@@ -33,8 +36,6 @@ public class SkypeReceiverCallSession implements IReceiverCallSession {
 	Call call;
 	ICallSessionListener listener;
 	Map properties;
-	ID fromID;
-	ID sessionID;
 	
 	CallStatusChangedListener statusChangedListener = new CallStatusChangedListener() {
 		public void statusChanged(Status status) throws SkypeException {
@@ -46,25 +47,36 @@ public class SkypeReceiverCallSession implements IReceiverCallSession {
 	 * @param receiverID
 	 * @param receivedCall
 	 * @param properties
-	 * @param fromID
-	 * @param sessionID
 	 */
-	public SkypeReceiverCallSession(ID receiverID, Call receivedCall, ICallSessionListener listener, Map properties,
-			ID fromID, ID sessionID) {
+	public SkypeReceiverCallSession(ID receiverID, Call receivedCall, ICallSessionListener listener, Map properties) {
 		this.receiverID = receiverID;
 		this.call = receivedCall;
 		this.listener = listener;
 		this.properties = properties;
-		this.fromID = fromID;
-		this.sessionID = sessionID;
 		call.addCallStatusChangedListener(statusChangedListener);
+	}
+
+	protected ID getSessionIDForCall() {
+		try {
+			return IDFactory.getDefault().createStringID(call.getId());
+		} catch (IDCreateException e) {
+			return null;
+		}
+	}
+	
+	protected ID getUserIDForCall() {
+		try {
+			return new SkypeUserID(call.getPartner());
+		} catch (SkypeException e) {
+			return null;
+		}
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.call.ICallSession#getInitiator()
 	 */
 	public ID getInitiator() {
-		return fromID;
+		return getUserIDForCall();
 	}
 
 	/* (non-Javadoc)
@@ -104,7 +116,7 @@ public class SkypeReceiverCallSession implements IReceiverCallSession {
 	 * @see org.eclipse.ecf.core.identity.IIdentifiable#getID()
 	 */
 	public ID getID() {
-		return sessionID;
+		return getSessionIDForCall();
 	}
 
 	/* (non-Javadoc)

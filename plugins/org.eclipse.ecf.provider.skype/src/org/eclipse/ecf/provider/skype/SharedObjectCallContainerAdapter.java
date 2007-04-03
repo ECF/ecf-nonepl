@@ -26,10 +26,9 @@ import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
 import org.eclipse.ecf.call.IInitiatorCallSession;
 import org.eclipse.ecf.call.IReceiverCallSession;
-import org.eclipse.ecf.call.events.ICallSessionAcceptedEvent;
+import org.eclipse.ecf.call.events.ICallSessionInitiatedEvent;
 import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.sharedobject.BaseSharedObject;
@@ -143,12 +142,10 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 				l.handleCallSessionRequest(new ICallSessionRequestEvent() {
 
 					Map properties = new HashMap();
-					ID fromID = getUserIDForCall(receivedCall);
-					ID sessionID = getSessionIDForCall(receivedCall);
 					
 					public IReceiverCallSession accept(ICallSessionListener listener, Map properties)
 							throws CallException {
-						return new SkypeReceiverCallSession(userID, receivedCall,listener,properties,fromID,sessionID);
+						return new SkypeReceiverCallSession(userID, receivedCall,listener,properties);
 					}
 
 					public Map getProperties() {
@@ -162,32 +159,11 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 						}
 					}
 
-					public ID getFromID() {
-						return fromID;
-					}
-
-					public ID getSessionID() {
-						return sessionID;
-					}});
+				});
 			}
 		}
 	}
 
-	protected ID getSessionIDForCall(Call call) {
-		try {
-			return IDFactory.getDefault().createStringID(call.getId());
-		} catch (IDCreateException e) {
-			return null;
-		}
-	}
-	
-	protected ID getUserIDForCall(Call call) {
-		try {
-			return new SkypeUserID(call.getPartner());
-		} catch (SkypeException e) {
-			return null;
-		}
-	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -288,7 +264,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 					final SkypeCallSession session = new SkypeCallSession(this,
 							Skype.call(rcvrID.getUser()), listener);
 					listener
-							.handleCallSessionEvent(new ICallSessionAcceptedEvent() {
+							.handleCallSessionEvent(new ICallSessionInitiatedEvent() {
 
 								public IInitiatorCallSession getCallSession() {
 									return session;
@@ -302,13 +278,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 									return buffer.toString();
 								}
 
-								public ID getFromID() {
-									return receiver;
-								}
-
-								public ID getSessionID() {
-									return session.getID();
-								}
 							});
 				} catch (SkypeException e) {
 					Trace.catching(Activator.PLUGIN_ID,
