@@ -54,7 +54,7 @@ import com.skype.connector.ConnectorStatusEvent;
 public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		implements ICallContainerAdapter {
 
-	boolean debugSkype = true;
+	boolean debugSkype = Boolean.getBoolean(System.getProperty("debugSkype","false"));
 
 	String skypeVersion;
 
