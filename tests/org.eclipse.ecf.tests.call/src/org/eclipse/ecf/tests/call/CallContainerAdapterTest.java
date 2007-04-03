@@ -18,6 +18,7 @@ import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.IDFactory;
 
 /**
  * 
@@ -52,11 +53,9 @@ public class CallContainerAdapterTest extends TestCase {
 	public void testInitiateCall() throws Exception {
 		ICallContainerAdapter adapter = getCallContainerAdapter();
 		assertNotNull(adapter);
-		/*
-		adapter.initiateCall(IDFactory.getDefault().createID(
+		adapter.sendCallRequest(IDFactory.getDefault().createID(
 				adapter.getReceiverNamespace(), getReceiver()), getListener(),
 				null);
-	    */
 		Thread.sleep(300000);
 	}
 }
