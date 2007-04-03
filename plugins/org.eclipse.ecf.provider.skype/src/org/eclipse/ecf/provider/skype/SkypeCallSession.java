@@ -13,7 +13,6 @@ package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.CallState;
-import org.eclipse.ecf.call.ICallSessionError;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.IInitiatorCallSession;
 import org.eclipse.ecf.core.identity.ID;
@@ -134,14 +133,6 @@ public class SkypeCallSession implements IInitiatorCallSession {
 	 */
 	public CallState getState() {
 		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.call.ICallSession#sendError(org.eclipse.ecf.call.ICallSessionError)
-	 */
-	public void sendError(ICallSessionError error) {
-		// TODO Auto-generated method stub
-		
 	}
 
 }

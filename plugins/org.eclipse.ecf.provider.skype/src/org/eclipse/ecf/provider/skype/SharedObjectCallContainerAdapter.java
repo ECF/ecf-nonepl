@@ -14,7 +14,10 @@ package org.eclipse.ecf.provider.skype;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Writer;
+import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.call.CallException;
@@ -22,8 +25,11 @@ import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
 import org.eclipse.ecf.call.IInitiatorCallSession;
+import org.eclipse.ecf.call.IReceiverCallSession;
 import org.eclipse.ecf.call.events.ICallSessionAcceptedEvent;
+import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.sharedobject.BaseSharedObject;
@@ -57,7 +63,11 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	Profile userProfile;
 
 	SkypeUserID userID;
-
+	
+	Vector callSessionRequestListeners = new Vector();
+	
+	ICallSessionListener listener;
+	
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
 			Trace.trace(Activator.PLUGIN_ID, "callMade(" + makedCall + ")"); //$NON-NLS-1$ //$NON-NLS-2$
@@ -66,6 +76,8 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		public void callReceived(Call receivedCall) throws SkypeException {
 			Trace.trace(Activator.PLUGIN_ID, "callReceived(" + receivedCall //$NON-NLS-1$
 					+ ")"); //$NON-NLS-1$
+			
+			fireCallReceived(receivedCall);
 		}
 	};
 
@@ -121,6 +133,61 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		return userID;
 	}
 
+	/**
+	 * @param receivedCall
+	 */
+	protected void fireCallReceived(final Call receivedCall) {
+		synchronized (callSessionRequestListeners) {
+			for(Iterator i=callSessionRequestListeners.iterator(); i.hasNext(); ) {
+				ICallSessionRequestListener l = (ICallSessionRequestListener) i.next();
+				l.handleCallSessionRequest(new ICallSessionRequestEvent() {
+
+					Map properties = new HashMap();
+					ID fromID = getUserIDForCall(receivedCall);
+					ID sessionID = getSessionIDForCall(receivedCall);
+					
+					public IReceiverCallSession accept(ICallSessionListener listener, Map properties)
+							throws CallException {
+						return new SkypeReceiverCallSession(userID, receivedCall,listener,properties,fromID,sessionID);
+					}
+
+					public Map getProperties() {
+						return properties;
+					}
+
+					public void reject() {
+						try {
+							receivedCall.cancel();
+						} catch (SkypeException e) {
+						}
+					}
+
+					public ID getFromID() {
+						return fromID;
+					}
+
+					public ID getSessionID() {
+						return sessionID;
+					}});
+			}
+		}
+	}
+
+	protected ID getSessionIDForCall(Call call) {
+		try {
+			return IDFactory.getDefault().createStringID(call.getId());
+		} catch (IDCreateException e) {
+			return null;
+		}
+	}
+	
+	protected ID getUserIDForCall(Call call) {
+		try {
+			return new SkypeUserID(call.getPartner());
+		} catch (SkypeException e) {
+			return null;
+		}
+	}
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -188,8 +255,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 */
 	public void addCallSessionRequestListener(
 			ICallSessionRequestListener listener) {
-		// TODO Auto-generated method stub
-		
+		callSessionRequestListeners.add(listener);
 	}
 
 	/* (non-Javadoc)
@@ -197,8 +263,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 */
 	public void removeCallSessionRequestListener(
 			ICallSessionRequestListener listener) {
-		// TODO Auto-generated method stub
-		
+		callSessionRequestListeners.remove(listener);
 	}
 
 	/* (non-Javadoc)
@@ -206,8 +271,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	 */
 	public void sendCallRequest(ID[] receivers, ICallSessionListener listener,
 			Map properties) throws CallException {
-		// TODO Auto-generated method stub
-		
+		throw new CallException("conference call request not yet supported");
 	}
 
 	/* (non-Javadoc)
