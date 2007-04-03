@@ -18,7 +18,6 @@ import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.identity.IDFactory;
 
 /**
  * 
@@ -47,7 +46,7 @@ public class CallContainerAdapterTest extends TestCase {
 	}
 
 	protected String getReceiver() {
-		return "markcasimer";
+		return System.getProperty("receiver");
 	}
 	
 	public void testInitiateCall() throws Exception {
