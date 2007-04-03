@@ -29,9 +29,9 @@ public class SkypeReceiverCallSession extends AbstractSkypeCallSession
 	 * @param receiverID
 	 * @param receivedCall
 	 */
-	public SkypeReceiverCallSession(SkypeUserID receiverID, Call receivedCall,
+	public SkypeReceiverCallSession(SkypeUserID receiverID, SkypeUserID initiatorID, Call receivedCall,
 			ICallSessionListener listener) throws SkypeException {
-		super(new SkypeUserID(receivedCall.getPartner()), receiverID,
+		super(initiatorID, receiverID,
 				receivedCall, listener);
 	}
 
@@ -42,7 +42,7 @@ public class SkypeReceiverCallSession extends AbstractSkypeCallSession
 	 */
 	protected void handleStatusChanged(Status status) {
 		// TODO Auto-generated method stub
-		this.callState = getCallState(status);
+		setCallState(createCallState(status));
 	}
 
 }

@@ -24,9 +24,7 @@ import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
-import org.eclipse.ecf.call.IInitiatorCallSession;
 import org.eclipse.ecf.call.IReceiverCallSession;
-import org.eclipse.ecf.call.events.ICallSessionInitiatedEvent;
 import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
@@ -37,6 +35,7 @@ import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
+import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 
@@ -143,29 +142,50 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 						.next();
 				l.handleCallSessionRequest(new ICallSessionRequestEvent() {
 
-					Map properties = new HashMap();
-
 					public IReceiverCallSession accept(
-							ICallSessionListener listener, Map properties)
-							throws CallException {
+							ICallSessionListener listener) throws CallException {
 						try {
-							return new SkypeReceiverCallSession(userID,
-									receivedCall, listener);
+							SkypeReceiverCallSession session = new SkypeReceiverCallSession(
+									userID, new SkypeUserID(receivedCall.getPartner()), receivedCall, listener);
+							receivedCall.answer();
+							return session;
 						} catch (SkypeException e) {
 							throw new CallException(
-									"unexpected skype exception", e);
+									"unexpected exception", e);
 						}
 					}
 
 					public Map getProperties() {
-						return properties;
+						// XXX todo...get from Skype Call
+						return new HashMap();
 					}
 
 					public void reject() {
 						try {
 							receivedCall.cancel();
 						} catch (SkypeException e) {
+							// TODO log
+							e.printStackTrace();
+							return;
 						}
+					}
+
+					public ID getInitiator() {
+						try {
+							return new SkypeUserID(receivedCall.getPartner());
+						} catch (SkypeException e) {
+							// TODO log
+							e.printStackTrace();
+							return null;
+						}
+					}
+
+					public ID getReceiver() {
+						return userID;
+					}
+
+					public ID getSessionID() {
+						return new SkypeCallSessionID(receivedCall.getId());
 					}
 
 				});
@@ -279,25 +299,9 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 			SkypeUserID rcvrID = (SkypeUserID) receiver;
 			synchronized (this) {
 				try {
-					final SkypeInitiatorCallSession session = new SkypeInitiatorCallSession(
+					new SkypeInitiatorCallSession(
 							userID, rcvrID, Skype.call(rcvrID.getUser()),
 							listener);
-					listener
-							.handleCallSessionEvent(new ICallSessionInitiatedEvent() {
-
-								public IInitiatorCallSession getCallSession() {
-									return session;
-								}
-
-								public String toString() {
-									StringBuffer buffer = new StringBuffer(
-											"ICallSessionInitiatedEvent["); //$NON-NLS-1$
-									buffer.append("sessionid=").append( //$NON-NLS-1$
-											session.getID()).append("]"); //$NON-NLS-1$
-									return buffer.toString();
-								}
-
-							});
 				} catch (SkypeException e) {
 					Trace.catching(Activator.PLUGIN_ID,
 							SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this

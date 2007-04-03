@@ -13,7 +13,11 @@ package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.CallState;
+import org.eclipse.ecf.call.FailureReason;
+import org.eclipse.ecf.call.ICallSession;
 import org.eclipse.ecf.call.ICallSessionListener;
+import org.eclipse.ecf.call.events.ICallSessionEvent;
+import org.eclipse.ecf.call.events.ICallSessionStatusChangedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
@@ -27,7 +31,7 @@ import com.skype.Call.Status;
 /**
  * 
  */
-public abstract class AbstractSkypeCallSession {
+public class AbstractSkypeCallSession implements ICallSession {
 
 	protected SkypeUserID initiatorID = null;
 	protected SkypeUserID receiverID = null;
@@ -35,13 +39,20 @@ public abstract class AbstractSkypeCallSession {
 	protected SkypeCallSessionID sessionID = null;
 	protected ICallSessionListener listener = null;
 	protected CallState callState = null;
+	protected FailureReason failureReason = null;
 
 	protected CallStatusChangedListener callStatusChangedListener = new CallStatusChangedListener() {
 		public void statusChanged(Status status) throws SkypeException {
-			System.out.println(getID() + ".statusChanged(" + status + ")");
 			handleStatusChanged(status);
 		}
 	};
+
+	protected void fireCallSessionEvent(ICallSessionEvent event) {
+		ICallSessionListener listener = getListener();
+		if (listener != null) {
+			listener.handleCallSessionEvent(event);
+		}
+	}
 
 	protected AbstractSkypeCallSession(SkypeUserID initiatorID,
 			SkypeUserID receiverID, Call call, ICallSessionListener listener)
@@ -51,17 +62,64 @@ public abstract class AbstractSkypeCallSession {
 		this.receiverID = receiverID;
 		this.sessionID = new SkypeCallSessionID(call.getId());
 		this.listener = listener;
-		this.callState = getCallState(call.getStatus());
+		this.callState = createCallState(call.getStatus());
 		this.call.addCallStatusChangedListener(callStatusChangedListener);
 	}
 
-	protected abstract void handleStatusChanged(Status status);
+	protected synchronized void setFailureReason(FailureReason reason) {
+		this.failureReason = reason;
+	}
+
+	protected synchronized void setCallState(CallState callState) {
+		if (callState != null) {
+			this.callState = callState;
+			if (this.callState.equals(CallState.FAILED)) {
+				try {
+					setFailureReason(lookupFailureReason(call.getErrorCode()));
+				} catch (SkypeException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+			}
+		}
+	}
+
+	protected FailureReason lookupFailureReason(int errorCode) {
+		// XXX TODO
+		return new FailureReason(errorCode);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.skype.AbstractSkypeCallSession#handleStatusChanged(com.skype.Call.Status)
+	 */
+	protected void handleStatusChanged(Status status) {
+		// TODO Auto-generated method stub
+		System.out.println("handleStatusChanged("+status+")");
+		setCallState(createCallState(status));
+		fireCallSessionEvent(new ICallSessionStatusChangedEvent(){
+				public ICallSession getCallSession() {
+					return AbstractSkypeCallSession.this;
+				}
+				public String toString() {
+					StringBuffer buf = new StringBuffer("ICallSessionStatusChanged[");
+					buf.append("id="+getID());
+					buf.append(";initiator=").append(getInitiator());
+					buf.append(";receiver=").append(getReceiver());
+					buf.append(";callstatus=").append(getState());
+					buf.append(";failurereason=").append(getFailureReason()).append("]");
+					return buf.toString();
+				}
+		
+		});
+	}
 
 	/**
 	 * @param status
 	 * @return
 	 */
-	protected CallState getCallState(Status status) {
+	protected CallState createCallState(Status status) {
 		if (status.equals(Status.BUSY))
 			return CallState.BUSY;
 		else if (status.equals(Status.CANCELLED))
@@ -159,4 +217,7 @@ public abstract class AbstractSkypeCallSession {
 		return callState;
 	}
 
+	public FailureReason getFailureReason() {
+		return failureReason;
+	}
 }
