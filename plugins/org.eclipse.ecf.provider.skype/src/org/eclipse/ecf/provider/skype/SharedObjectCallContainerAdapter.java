@@ -272,7 +272,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 								public String toString() {
 									StringBuffer buffer = new StringBuffer(
-											"ICallSessionAcceptedEvent["); //$NON-NLS-1$
+											"ICallSessionInitiatedEvent["); //$NON-NLS-1$
 									buffer.append("sessionid=").append( //$NON-NLS-1$
 											session.getID()).append("]"); //$NON-NLS-1$
 									return buffer.toString();
