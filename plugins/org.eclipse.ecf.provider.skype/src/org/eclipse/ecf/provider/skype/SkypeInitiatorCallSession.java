@@ -12,27 +12,23 @@
 package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.IReceiverCallSession;
+import org.eclipse.ecf.call.IInitiatorCallSession;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Call;
 import com.skype.SkypeException;
 import com.skype.Call.Status;
 
-/**
- * 
- */
-public class SkypeReceiverCallSession extends AbstractSkypeCallSession
-		implements IReceiverCallSession {
+public class SkypeInitiatorCallSession extends AbstractSkypeCallSession
+		implements IInitiatorCallSession {
 
 	/**
-	 * @param receiverID
-	 * @param receivedCall
+	 * @param sharedObjectCallContainerAdapter
 	 */
-	public SkypeReceiverCallSession(SkypeUserID receiverID, Call receivedCall,
-			ICallSessionListener listener) throws SkypeException {
-		super(new SkypeUserID(receivedCall.getPartner()), receiverID,
-				receivedCall, listener);
+	public SkypeInitiatorCallSession(SkypeUserID initiatorID,
+			SkypeUserID receiverID, Call call, ICallSessionListener listener)
+			throws SkypeException {
+		super(initiatorID, receiverID, call, listener);
 	}
 
 	/*
@@ -42,6 +38,7 @@ public class SkypeReceiverCallSession extends AbstractSkypeCallSession
 	 */
 	protected void handleStatusChanged(Status status) {
 		// TODO Auto-generated method stub
+
 		this.callState = getCallState(status);
 	}
 

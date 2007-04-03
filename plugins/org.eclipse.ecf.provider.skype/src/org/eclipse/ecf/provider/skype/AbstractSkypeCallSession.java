@@ -14,12 +14,8 @@ package org.eclipse.ecf.provider.skype;
 import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.CallState;
 import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.IInitiatorCallSession;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.util.Trace;
-import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.Messages;
-import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
@@ -28,37 +24,70 @@ import com.skype.CallStatusChangedListener;
 import com.skype.SkypeException;
 import com.skype.Call.Status;
 
-public class SkypeCallSession implements IInitiatorCallSession {
+/**
+ * 
+ */
+public abstract class AbstractSkypeCallSession {
 
-	SharedObjectCallContainerAdapter adapter;
-	SkypeUserID initiator = null;
-	Call skypeCall = null;
+	protected SkypeUserID initiatorID = null;
+	protected SkypeUserID receiverID = null;
+	protected Call call = null;
+	protected SkypeCallSessionID sessionID = null;
+	protected ICallSessionListener listener = null;
+	protected CallState callState = null;
 
-	SkypeUserID receiver = null;
-	SkypeCallSessionID session = null;
-	ICallSessionListener listener = null;
-
-	CallStatusChangedListener callStatusChangeListener = new CallStatusChangedListener() {
+	protected CallStatusChangedListener callStatusChangedListener = new CallStatusChangedListener() {
 		public void statusChanged(Status status) throws SkypeException {
-			// TODO Auto-generated method stub
-			Trace.trace(Activator.PLUGIN_ID, getID().getName()
-					+ ".statusChanged(" + status + ")");
+			System.out.println(getID() + ".statusChanged(" + status + ")");
+			handleStatusChanged(status);
 		}
 	};
 
-	/**
-	 * @param sharedObjectCallContainerAdapter
-	 */
-	public SkypeCallSession(
-			SharedObjectCallContainerAdapter sharedObjectCallContainerAdapter,
-			Call call, ICallSessionListener listener) throws SkypeException {
-		this.adapter = sharedObjectCallContainerAdapter;
-		this.initiator = this.adapter.getUserID();
-		this.skypeCall = call;
-		this.receiver = new SkypeUserID(skypeCall.getPartnerId());
-		this.session = new SkypeCallSessionID(skypeCall.getId());
+	protected AbstractSkypeCallSession(SkypeUserID initiatorID,
+			SkypeUserID receiverID, Call call, ICallSessionListener listener)
+			throws SkypeException {
+		this.initiatorID = initiatorID;
+		this.call = call;
+		this.receiverID = receiverID;
+		this.sessionID = new SkypeCallSessionID(call.getId());
 		this.listener = listener;
-		this.skypeCall.addCallStatusChangedListener(callStatusChangeListener);
+		this.callState = getCallState(call.getStatus());
+		this.call.addCallStatusChangedListener(callStatusChangedListener);
+	}
+
+	protected abstract void handleStatusChanged(Status status);
+
+	/**
+	 * @param status
+	 * @return
+	 */
+	protected CallState getCallState(Status status) {
+		if (status.equals(Status.BUSY))
+			return CallState.BUSY;
+		else if (status.equals(Status.CANCELLED))
+			return CallState.CANCELLED;
+		else if (status.equals(Status.EARLYMEDIA))
+			return CallState.PREPENDING;
+		else if (status.equals(Status.FAILED))
+			return CallState.FAILED;
+		else if (status.equals(Status.FINISHED))
+			return CallState.FINISHED;
+		else if (status.equals(Status.INPROGRESS))
+			return CallState.ACTIVE;
+		else if (status.equals(Status.MISSED))
+			return CallState.MISSED;
+		else if (status.equals(Status.ONHOLD))
+			return CallState.ONHOLD;
+		else if (status.equals(Status.REFUSED))
+			return CallState.REFUSED;
+		else if (status.equals(Status.RINGING))
+			return CallState.PENDING;
+		else if (status.equals(Status.ROUTING))
+			return CallState.ROUTING;
+		else if (status.equals(Status.UNPLACED))
+			return CallState.UNPLACED;
+		else
+			return CallState.UNKNOWN;
 	}
 
 	/*
@@ -67,7 +96,7 @@ public class SkypeCallSession implements IInitiatorCallSession {
 	 * @see org.eclipse.ecf.call.ICallSession#getInitiator()
 	 */
 	public ID getInitiator() {
-		return initiator;
+		return initiatorID;
 	}
 
 	/*
@@ -76,7 +105,7 @@ public class SkypeCallSession implements IInitiatorCallSession {
 	 * @see org.eclipse.ecf.call.ICallSession#getReceiver()
 	 */
 	public ID getReceiver() {
-		return receiver;
+		return receiverID;
 	}
 
 	/*
@@ -86,7 +115,7 @@ public class SkypeCallSession implements IInitiatorCallSession {
 	 */
 	public void sendTerminate() throws CallException {
 		try {
-			skypeCall.finish();
+			call.finish();
 		} catch (SkypeException e) {
 			throw new CallException(
 					Messages.SharedObjectCallContainerAdapter_Exception_Skype,
@@ -94,20 +123,13 @@ public class SkypeCallSession implements IInitiatorCallSession {
 		}
 	}
 
-	protected void sendTerminate0() {
-		try {
-			sendTerminate();
-		} catch (CallException e) {
-			Trace.catching(Activator.PLUGIN_ID, SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "sendTerminate0", e);
-		}
-	}
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ecf.core.identity.IIdentifiable#getID()
 	 */
 	public synchronized ID getID() {
-		return session;
+		return sessionID;
 	}
 
 	/*
@@ -128,11 +150,13 @@ public class SkypeCallSession implements IInitiatorCallSession {
 		return listener;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.call.ICallSession#getState()
 	 */
 	public CallState getState() {
-		return null;
+		return callState;
 	}
 
 }
