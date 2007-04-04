@@ -85,8 +85,7 @@ public class AbstractSkypeCallSession implements ICallSession {
 	}
 
 	protected FailureReason lookupFailureReason(int errorCode) {
-		// XXX TODO
-		return new FailureReason(errorCode);
+		return new SkypeFailureReason(errorCode);
 	}
 
 	/*
