@@ -15,7 +15,9 @@ import junit.framework.TestCase;
 
 import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
+import org.eclipse.ecf.call.ICallSessionRequestListener;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
+import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.IDFactory;
@@ -38,6 +40,16 @@ public class CallContainerAdapterTest extends TestCase {
 		assertNotNull(getCallContainerAdapter());
 	}
 
+	protected ICallSessionRequestListener getRequestListener() {
+		return new ICallSessionRequestListener() {
+
+			public void handleCallSessionRequest(ICallSessionRequestEvent event) {
+				// TODO Auto-generated method stub
+				System.out.println("handleCallSessionRequest("+event+")");
+			}
+			
+		};
+	}
 	protected ICallSessionListener getListener() {
 		return new ICallSessionListener() {
 			public void handleCallSessionEvent(ICallSessionEvent event) {
