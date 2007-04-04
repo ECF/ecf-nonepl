@@ -22,6 +22,19 @@ public class Messages extends NLS {
 	public static String SharedObjectCallContainerAdapter_Exception_Skype;
 	public static String SkypeCallSession_Exception_Call_Wrong_State;
 	public static String SkypeCallSession_Exception_Invalid_Receiver;
+	public static String SkypeFailureReason_IO_Error;
+	public static String SkypeFailureReason_Micellaneous;
+	public static String SkypeFailureReason_No_Codec_Found;
+	public static String SkypeFailureReason_No_Proxy;
+	public static String SkypeFailureReason_Not_Authorized;
+	public static String SkypeFailureReason_Not_Friend;
+	public static String SkypeFailureReason_Offline;
+	public static String SkypeFailureReason_Recipient_Blocked;
+	public static String SkypeFailureReason_Recording_Error;
+	public static String SkypeFailureReason_Remote_Sound_Problem;
+	public static String SkypeFailureReason_Session_Terminated;
+	public static String SkypeFailureReason_Unknown;
+	public static String SkypeFailureReason_User_Not_Exist;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

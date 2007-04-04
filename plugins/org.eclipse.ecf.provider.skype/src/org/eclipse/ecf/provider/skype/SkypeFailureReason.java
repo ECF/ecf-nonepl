@@ -12,36 +12,37 @@
 package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.call.FailureReason;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 
 /**
- *
+ * 
  */
 public class SkypeFailureReason extends FailureReason {
 
 	/**
-	 * See https://developer.skype.com/Docs/Skype4COMLib/TCallFailureReason
+	 * See https://developer.skype.com/Docs/ApiDoc/src
 	 */
-	public static final String [] reasons = new String[] {
-		"unknown",
-		"miscellaneous error",
-		"user or phone number does not exist",
-		"user is offline",
-		"no proxy found",
-		"session terminated",
-		"no common codec found",
-		"audio I/O error",
-		"problem with remote sound device",
-		"recipient blocked call",
-		"recipient not friend",
-		"user not authorized by recipient",
-		"sound recording error"
-	};
-	
+	public static final String[] reasons = new String[] {
+			Messages.SkypeFailureReason_Unknown,
+			Messages.SkypeFailureReason_Micellaneous,
+			Messages.SkypeFailureReason_User_Not_Exist,
+			Messages.SkypeFailureReason_Offline,
+			Messages.SkypeFailureReason_No_Proxy,
+			Messages.SkypeFailureReason_Session_Terminated,
+			Messages.SkypeFailureReason_No_Codec_Found,
+			Messages.SkypeFailureReason_IO_Error,
+			Messages.SkypeFailureReason_Remote_Sound_Problem,
+			Messages.SkypeFailureReason_Recipient_Blocked,
+			Messages.SkypeFailureReason_Not_Friend,
+			Messages.SkypeFailureReason_Not_Authorized,
+			Messages.SkypeFailureReason_Recording_Error };
+
 	/**
 	 * @param code
 	 */
 	public SkypeFailureReason(int code) {
-		super(code,reasons[code]);
+		super(code, (code >= 0 && code < reasons.length) ? reasons[code]
+				: reasons[0]);
 	}
 
 }
