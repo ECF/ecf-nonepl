@@ -16,8 +16,12 @@ import org.eclipse.ecf.call.CallState;
 import org.eclipse.ecf.call.FailureReason;
 import org.eclipse.ecf.call.ICallSession;
 import org.eclipse.ecf.call.ICallSessionListener;
+import org.eclipse.ecf.call.events.ICallSessionAcceptedEvent;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
-import org.eclipse.ecf.call.events.ICallSessionStatusChangedEvent;
+import org.eclipse.ecf.call.events.ICallSessionFailedEvent;
+import org.eclipse.ecf.call.events.ICallSessionPendingEvent;
+import org.eclipse.ecf.call.events.ICallSessionStateChangedEvent;
+import org.eclipse.ecf.call.events.ICallSessionTerminatedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
@@ -31,7 +35,7 @@ import com.skype.Call.Status;
 /**
  * 
  */
-public class AbstractSkypeCallSession implements ICallSession {
+public class SkypeCallSession  implements ICallSession {
 
 	protected SkypeUserID initiatorID = null;
 	protected SkypeUserID receiverID = null;
@@ -40,7 +44,8 @@ public class AbstractSkypeCallSession implements ICallSession {
 	protected ICallSessionListener listener = null;
 	protected CallState callState = null;
 	protected FailureReason failureReason = null;
-
+	protected SharedObjectCallContainerAdapter adapter = null;
+	
 	protected CallStatusChangedListener callStatusChangedListener = new CallStatusChangedListener() {
 		public void statusChanged(Status status) throws SkypeException {
 			handleStatusChanged(status);
@@ -54,15 +59,20 @@ public class AbstractSkypeCallSession implements ICallSession {
 		}
 	}
 
-	protected AbstractSkypeCallSession(SkypeUserID initiatorID,
+	protected SharedObjectCallContainerAdapter getAdapter() {
+		return adapter;
+	}
+	
+	protected SkypeCallSession(SharedObjectCallContainerAdapter adapter, SkypeUserID initiatorID,
 			SkypeUserID receiverID, Call call, ICallSessionListener listener)
 			throws SkypeException {
+		this.adapter = null;
 		this.initiatorID = initiatorID;
 		this.call = call;
 		this.receiverID = receiverID;
 		this.sessionID = new SkypeCallSessionID(call.getId());
 		this.listener = listener;
-		this.callState = createCallState(call.getStatus());
+		this.callState = CallState.PENDING;
 		this.call.addCallStatusChangedListener(callStatusChangedListener);
 	}
 
@@ -77,8 +87,6 @@ public class AbstractSkypeCallSession implements ICallSession {
 				try {
 					setFailureReason(lookupFailureReason(call.getErrorCode()));
 				} catch (SkypeException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
 				}
 			}
 		}
@@ -91,21 +99,87 @@ public class AbstractSkypeCallSession implements ICallSession {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.provider.skype.AbstractSkypeCallSession#handleStatusChanged(com.skype.Call.Status)
+	 * @see org.eclipse.ecf.provider.skype.SkypeCallSession#handleStatusChanged(com.skype.Call.Status)
 	 */
 	protected void handleStatusChanged(Status status) {
 		setCallState(createCallState(status));
-		fireCallSessionEvent(new ICallSessionStatusChangedEvent() {
+		fireCallSessionEvent(new ICallSessionStateChangedEvent() {
 			public ICallSession getCallSession() {
-				return AbstractSkypeCallSession.this;
+				return SkypeCallSession.this;
 			}
 
 			public String toString() {
-				return getStringBufferForEvent("ICallSessionStatusChangedEvent")
+				return getStringBufferForEvent("ICallSessionStateChangedEvent")
 						.toString();
 			}
 
 		});
+		CallState callState = getState();
+		if (callState.equals(CallState.PENDING))
+			fireCallSessionEvent(new ICallSessionPendingEvent() {
+				public ICallSession getCallSession() {
+					return SkypeCallSession.this;
+				}
+
+				public String toString() {
+					return getStringBufferForEvent("ICallSessionPendingEvent")
+							.toString();
+				}
+
+			});
+		else if (callState.equals(CallState.ACTIVE))
+			fireCallSessionEvent(new ICallSessionAcceptedEvent() {
+
+				public ICallSession getCallSession() {
+					return SkypeCallSession.this;
+				}
+
+				public String toString() {
+					return getStringBufferForEvent("ICallSessionAcceptedEvent")
+							.toString();
+				}
+
+			});
+		else if (callState.equals(CallState.FINISHED))
+			fireCallSessionEvent(new ICallSessionTerminatedEvent() {
+
+				public ICallSession getCallSession() {
+					return SkypeCallSession.this;
+				}
+
+				public String toString() {
+					return getStringBufferForEvent(
+							"ICallSessionTerminatedEvent").toString();
+				}
+
+			});
+		else if (callState.equals(CallState.FAILED))
+			fireCallSessionEvent(new ICallSessionFailedEvent() {
+
+				public ICallSession getCallSession() {
+					return SkypeCallSession.this;
+				}
+
+				public String toString() {
+					return getStringBufferForEvent("ICallSessionFailedEvent")
+							.toString();
+				}
+
+			});
+		else if (callState.equals(CallState.CANCELLED)) 
+			fireCallSessionEvent(new ICallSessionTerminatedEvent() {
+
+				public ICallSession getCallSession() {
+					return SkypeCallSession.this;
+				}
+
+				public String toString() {
+					return getStringBufferForEvent(
+							"ICallSessionTerminatedEvent").toString();
+				}
+
+			});
+
 	}
 
 	protected StringBuffer getStringBufferForEvent(String eventType) {

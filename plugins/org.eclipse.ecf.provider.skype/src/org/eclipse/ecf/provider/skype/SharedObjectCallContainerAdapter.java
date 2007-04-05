@@ -54,7 +54,8 @@ import com.skype.connector.ConnectorStatusEvent;
 public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		implements ICallContainerAdapter {
 
-	boolean debugSkype = Boolean.getBoolean(System.getProperty("debugSkype","false"));
+	boolean debugSkype = Boolean.getBoolean(System.getProperty("debugSkype",
+			"false"));
 
 	String skypeVersion;
 
@@ -64,15 +65,32 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	Vector callSessionRequestListeners = new Vector();
 
+	HashMap initiatedCalls = new HashMap();
+
+	HashMap receivedCalls = new HashMap();
+
+	protected void addInitiatedCall(SkypeInitiatorCallSession callSession) {
+		initiatedCalls.put(callSession.getID(), callSession);
+	}
+
+	protected void removeInitiatedCall(SkypeInitiatorCallSession callSession) {
+		initiatedCalls.remove(callSession.getID());
+	}
+
+	protected void addReceivedCall(SkypeReceiverCallSession callSession) {
+		receivedCalls.put(callSession.getID(), callSession);
+	}
+
+	protected void removeReceivedCall(SkypeReceiverCallSession callSession) {
+		receivedCalls.remove(callSession.getID());
+	}
+
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
-			Trace.trace(Activator.PLUGIN_ID, "callMade(" + makedCall + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+			fireCallMade(makedCall);
 		}
 
 		public void callReceived(Call receivedCall) throws SkypeException {
-			Trace.trace(Activator.PLUGIN_ID, "callReceived(" + receivedCall //$NON-NLS-1$
-					+ ")"); //$NON-NLS-1$
-
 			fireCallReceived(receivedCall);
 		}
 	};
@@ -106,19 +124,16 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	ConnectorListener connectorListener = new ConnectorListener() {
 
 		public void messageReceived(ConnectorMessageEvent event) {
-			// TODO Auto-generated method stub
 			Trace.trace(Activator.PLUGIN_ID, "messageReceived(" //$NON-NLS-1$
 					+ event.getMessage() + ")"); //$NON-NLS-1$
 		}
 
 		public void messageSent(ConnectorMessageEvent event) {
-			// TODO Auto-generated method stub
 			Trace.trace(Activator.PLUGIN_ID, "messageSent(" //$NON-NLS-1$
 					+ event.getMessage() + ")"); //$NON-NLS-1$
 		}
 
 		public void statusChanged(ConnectorStatusEvent event) {
-			// TODO Auto-generated method stub
 			Trace.trace(Activator.PLUGIN_ID, "statusChanged(" //$NON-NLS-1$
 					+ event.getStatus() + ")"); //$NON-NLS-1$
 		}
@@ -141,9 +156,11 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		try {
 			Skype.setDebug(false);
 		} catch (SkypeException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
+		initiatedCalls.clear();
+		initiatedCalls = null;
+		receivedCalls.clear();
+		receivedCalls = null;
 	}
 
 	/**
@@ -161,10 +178,12 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 							ICallSessionListener listener) throws CallException {
 						try {
 							SkypeReceiverCallSession session = new SkypeReceiverCallSession(
+									SharedObjectCallContainerAdapter.this,
 									userID, new SkypeUserID(receivedCall
 											.getPartner()), receivedCall,
 									listener);
 							receivedCall.answer();
+							addReceivedCall(session);
 							return session;
 						} catch (SkypeException e) {
 							throw new CallException("unexpected exception", e);
@@ -180,8 +199,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 						try {
 							receivedCall.cancel();
 						} catch (SkypeException e) {
-							// TODO log
-							e.printStackTrace();
 							return;
 						}
 					}
@@ -190,8 +207,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 						try {
 							return new SkypeUserID(receivedCall.getPartner());
 						} catch (SkypeException e) {
-							// TODO log
-							e.printStackTrace();
 							return null;
 						}
 					}
@@ -209,6 +224,10 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		}
 	}
 
+	protected void fireCallMade(Call call) {
+		System.out.println("fireCallMade(" + call.getId() + ")");
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -222,11 +241,8 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 			userProfile = Skype.getProfile();
 			userID = new SkypeUserID(userProfile.getId());
-			Skype.setDeamon(true);
-			Trace
-					.trace(
-							Activator.PLUGIN_ID,
-							"ECF Skype Adapter initializing with version: " + skypeVersion); //$NON-NLS-1$
+			Skype.setDebug(true);
+			Skype.setDeamon(false);
 			Skype.addCallListener(callListener);
 			Skype.addChatMessageListener(chatMessageListener);
 
@@ -235,7 +251,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 						new PrintWriter(new Writer() {
 							public void write(char[] cbuf, int off, int len)
 									throws IOException {
-								// XXX TODO
 								Trace.trace(Activator.PLUGIN_ID, "SKYPEDEBUG." //$NON-NLS-1$
 										+ new String(cbuf, off, len));
 							}
@@ -249,6 +264,14 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 				Connector.getInstance().setDebug(true);
 
 			}
+
+			Trace
+					.trace(
+							Activator.PLUGIN_ID,
+							"ECF Skype Adapter initializing with version: " + skypeVersion); //$NON-NLS-1$
+			Trace.trace(Activator.PLUGIN_ID,
+					"UserID is: '" + userID.getName() + "'"); //$NON-NLS-1$
+
 		} catch (Exception e) {
 			Trace.catching(Activator.PLUGIN_ID,
 					SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this
@@ -313,21 +336,14 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 				Messages.SharedObjectCallContainerAdapter_Exception_Not_Null);
 		if (receiver instanceof SkypeUserID) {
 			SkypeUserID rcvrID = (SkypeUserID) receiver;
-			synchronized (this) {
-				try {
-					new SkypeInitiatorCallSession(userID, rcvrID, Skype
-							.call(rcvrID.getUser()), listener);
-				} catch (SkypeException e) {
-					Trace.catching(Activator.PLUGIN_ID,
-							SkypeProviderDebugOptions.EXCEPTIONS_CATCHING, this
-									.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
-					Trace.throwing(Activator.PLUGIN_ID,
-							SkypeProviderDebugOptions.EXCEPTIONS_THROWING, this
-									.getClass(), "sendInitiateCall", e); //$NON-NLS-1$
-					throw new CallException(
-							Messages.SharedObjectCallContainerAdapter_Exception_Skype,
-							e);
-				}
+			try {
+				addInitiatedCall(new SkypeInitiatorCallSession(this, userID,
+						rcvrID, Skype.call(rcvrID.getUser()), listener));
+
+			} catch (SkypeException e) {
+				throw new CallException(
+						Messages.SharedObjectCallContainerAdapter_Exception_Skype,
+						e);
 			}
 		} else
 			throw new CallException(

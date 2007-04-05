@@ -13,6 +13,7 @@ package org.eclipse.ecf.tests.call;
 
 import junit.framework.TestCase;
 
+import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
@@ -20,12 +21,11 @@ import org.eclipse.ecf.call.events.ICallSessionEvent;
 import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.identity.IDFactory;
 
 /**
  * 
  */
-public class CallContainerAdapterTest extends TestCase {
+public class ReceiveCallTest extends TestCase {
 
 	private static final String DEFAULT_CLIENT = "ecf.generic.client"; //$NON-NLS-1$
 
@@ -43,31 +43,30 @@ public class CallContainerAdapterTest extends TestCase {
 	protected ICallSessionRequestListener getRequestListener() {
 		return new ICallSessionRequestListener() {
 
-			public void handleCallSessionRequest(ICallSessionRequestEvent event) {
-				// TODO Auto-generated method stub
-				System.out.println("handleCallSessionRequest("+event+")");
-			}
-			
-		};
-	}
-	protected ICallSessionListener getListener() {
-		return new ICallSessionListener() {
-			public void handleCallSessionEvent(ICallSessionEvent event) {
-				System.out.println("handleCallSessionEvent(" + event + ")");
-			}
-		};
+			public void handleCallSessionRequest(final ICallSessionRequestEvent event) {
+						if (event.getInitiator().getName().equals(initiator)) {
+							try {
+								event.accept(new ICallSessionListener() {
+									public void handleCallSessionEvent(
+											ICallSessionEvent event) {
+										System.out.println("receiver.handleCallSessionEvent("+event+")");
+									}
+								});
+							} catch (CallException e) {
+								e.printStackTrace();
+							}
+						} else
+							event.reject();
+
+		}};
 	}
 
-	protected String getReceiver() {
-		return System.getProperty("receiver");
-	}
+	String initiator = System.getProperty("initiator");
 	
-	public void testInitiateCall() throws Exception {
+	public void testReceiveCall() throws Exception {
 		ICallContainerAdapter adapter = getCallContainerAdapter();
 		assertNotNull(adapter);
-		adapter.sendCallRequest(IDFactory.getDefault().createID(
-				adapter.getReceiverNamespace(), getReceiver()), getListener(),
-				null);
-		Thread.sleep(300000);
+		adapter.addCallSessionRequestListener(getRequestListener());
+		System.out.println("waiting for call from "+initiator);
 	}
 }
