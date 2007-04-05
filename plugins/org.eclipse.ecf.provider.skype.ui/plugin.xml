@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            label="Skype"
+            visible="true"
+            id="org.eclipse.ecf.provider.skype.ui.actionSet">
+         <menu
+               label="Skype"
+               id="sampleMenu">
+            <separator
+                  name="sampleGroup">
+            </separator>
+         </menu>
+         <action
+               label="&amp;Open Skype"
+               icon="icons/SkypeBlue_16x16.png"
+               class="org.eclipse.ecf.provider.skype.ui.actions.SkypeOpenAction"
+               tooltip="Open Skype Roster"
+               toolbarPath="sampleGroup"
+               id="org.eclipse.ecf.provider.skype.ui.actions.SkypeOpenAction">
+         </action>
+         <action
+               allowLabelUpdate="true"
+               class="org.eclipse.ecf.provider.skype.ui.actions.SkypeCallAction"
+               icon="icons/SkypeBlue_16x16.png"
+               id="org.eclipse.ecf.provider.skype.ui.actions.SkypeCallAction"
+               label="&amp;Make Skype Call"
+               toolbarPath="sampleGroup"
+               tooltip="Make Skype Call">
+         </action>
+      </actionSet>
+   </extension>
+
+</plugin>
