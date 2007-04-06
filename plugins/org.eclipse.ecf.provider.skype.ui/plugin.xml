@@ -5,34 +5,37 @@
    <extension
          point="org.eclipse.ui.actionSets">
       <actionSet
-            label="Skype"
+            label="skypeConnect"
             visible="true"
             id="org.eclipse.ecf.provider.skype.ui.actionSet">
          <menu
-               label="Skype"
-               id="sampleMenu">
+               id="org.eclipse.ecf.provider.skype.ui.connectMenu"
+               label="skypeMenu"
+               >
             <separator
-                  name="sampleGroup">
+                  name="separator">
             </separator>
          </menu>
          <action
-               label="&amp;Open Skype"
-               icon="icons/SkypeBlue_16x16.png"
                class="org.eclipse.ecf.provider.skype.ui.actions.SkypeOpenAction"
-               tooltip="Open Skype Roster"
-               toolbarPath="sampleGroup"
-               id="org.eclipse.ecf.provider.skype.ui.actions.SkypeOpenAction">
-         </action>
-         <action
-               allowLabelUpdate="true"
-               class="org.eclipse.ecf.provider.skype.ui.actions.SkypeCallAction"
                icon="icons/SkypeBlue_16x16.png"
-               id="org.eclipse.ecf.provider.skype.ui.actions.SkypeCallAction"
-               label="&amp;Make Skype Call"
-               toolbarPath="sampleGroup"
-               tooltip="Make Skype Call">
+               id="org.eclipse.ecf.provider.skype.ui.actions.SkypeOpenAction"
+               label="&amp;Open Skype"
+               style="push"
+               toolbarPath="separator"
+               tooltip="Open Skype Roster">
          </action>
       </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="popup:org.eclipse.ecf.presence.ui.MultiRosterView?after=additions">
+         <dynamic
+               class="org.eclipse.ecf.provider.skype.ui.actions.SkypeActionContributionItems"
+               id="org.eclipse.ecf.provider.skype.ui.dynamic2">
+         </dynamic>
+      </menuContribution>
    </extension>
 
 </plugin>

@@ -18,6 +18,9 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.ecf.internal.provider.skype.ui.messages"; //$NON-NLS-1$
+	public static String SkypeActionContributionItems_Call_User;
+	public static String SkypeActionContributionItems_Call_User_Tooltip;
+	public static String SkypeCallAction_Call_Image_Icon_Name;
 	public static String SkypeOpenAction_3;
 	public static String SkypeOpenAction_4;
 	public static String SkypeOpenAction_Initiate_Skype_Call_Message;

@@ -7,15 +7,18 @@ import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
 import org.eclipse.ecf.call.events.ICallSessionFailedEvent;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.internal.provider.skype.ui.Activator;
 import org.eclipse.ecf.internal.provider.skype.ui.Messages;
-import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.action.Action;
 import org.eclipse.jface.dialogs.InputDialog;
 import org.eclipse.jface.dialogs.MessageDialog;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.ui.IWorkbenchWindow;
+import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
 
 /**
  * Our sample action implements workbench action delegate. The action proxy will
@@ -25,17 +28,25 @@ import org.eclipse.ui.IWorkbenchWindowActionDelegate;
  * 
  * @see IWorkbenchWindowActionDelegate
  */
-public class SkypeCallAction implements IWorkbenchWindowActionDelegate {
+public class SkypeCallAction extends Action {
 
-	private IWorkbenchWindow window;
+	static ImageDescriptor skypeIcon = AbstractUIPlugin
+			.imageDescriptorFromPlugin(Activator.PLUGIN_ID,
+					Messages.SkypeCallAction_Call_Image_Icon_Name);
 
-	protected static IContainer getContainer() {
-		return SkypeOpenAction.getContainer();
+	ID skypeReceiver = null;
+
+	public SkypeCallAction(ID skypeReceiver, String text, String tooltip) {
+		this.skypeReceiver = skypeReceiver;
+		this.setText(text);
+		this.setToolTipText(tooltip);
+		this.setImageDescriptor(skypeIcon);
 	}
-	
+
 	protected ICallContainerAdapter getCallContainerAdapter() {
-		IContainer c = getContainer();
-		if (c == null) return null;
+		IContainer c = SkypeOpenAction.getContainer();
+		if (c == null)
+			return null;
 		return (ICallContainerAdapter) c
 				.getAdapter(ICallContainerAdapter.class);
 	}
@@ -43,52 +54,45 @@ public class SkypeCallAction implements IWorkbenchWindowActionDelegate {
 	protected ICallSessionListener getListener() {
 		return new ICallSessionListener() {
 			public void handleCallSessionEvent(final ICallSessionEvent event) {
-				System.out.println("handleCallSessionEvent(" + event + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 				if (event instanceof ICallSessionFailedEvent) {
-					window.getShell().getDisplay().syncExec(new Runnable() {
-						public void run() {
-							ICallSession callSession = event.getCallSession();
-							MessageDialog
-									.openInformation(
-											window.getShell(),
-											Messages.SkypeOpenAction_Message_Title_Call_Failed,
-											Messages.SkypeOpenAction_3
-													+ callSession.getReceiver()
-															.getName()
-													+ Messages.SkypeOpenAction_4
-													+ callSession
-															.getFailureReason()
-															.getReason());
-						}
-					});
+					Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									ICallSession callSession = event
+											.getCallSession();
+									MessageDialog
+											.openInformation(
+													null,
+													Messages.SkypeOpenAction_Message_Title_Call_Failed,
+													Messages.SkypeOpenAction_3
+															+ callSession
+																	.getReceiver()
+																	.getName()
+															+ Messages.SkypeOpenAction_4
+															+ callSession
+																	.getFailureReason()
+																	.getReason());
+								}
+							});
 				}
 			}
 		};
 	}
 
-	/**
-	 * The constructor.
-	 */
-	public SkypeCallAction() {
-	}
-
-	protected void call(String receiver) throws IDCreateException,
-			CallException {
-		ICallContainerAdapter adapter = getCallContainerAdapter();
-		adapter.sendCallRequest(IDFactory.getDefault().createID(
-				adapter.getReceiverNamespace(), receiver), getListener(), null);
-	}
-
-	protected String getReceiverFromInputDialog() {
-		InputDialog id = new InputDialog(window.getShell(),
+	protected ID getReceiverFromInputDialog(ICallContainerAdapter adapter)
+			throws IDCreateException {
+		InputDialog id = new InputDialog(Display.getDefault().getActiveShell(),
 				Messages.SkypeOpenAction_Initiate_Skype_Call_Title,
-				Messages.SkypeOpenAction_Initiate_Skype_Call_Message, "", null); //$NON-NLS-3$
+				Messages.SkypeOpenAction_Initiate_Skype_Call_Message, "", null); //$NON-NLS-3$ //$NON-NLS-1$
 		id.setBlockOnOpen(true);
 		int res = id.open();
 		String receiver = null;
 		if (res == InputDialog.OK)
 			receiver = id.getValue();
-		return receiver;
+		if (receiver == null || receiver.equals("")) //$NON-NLS-1$
+			return null;
+		else
+			return IDFactory.getDefault().createID(
+					adapter.getReceiverNamespace(), receiver);
 	}
 
 	/**
@@ -97,9 +101,15 @@ public class SkypeCallAction implements IWorkbenchWindowActionDelegate {
 	 * 
 	 * @see IWorkbenchWindowActionDelegate#run
 	 */
-	public synchronized void run(IAction action) {
+	public void run() {
 		try {
-			call(getReceiverFromInputDialog());
+			ICallContainerAdapter adapter = getCallContainerAdapter();
+			// If we haven't been given a skypeReceiver then show input dialog
+			if (skypeReceiver == null)
+				skypeReceiver = getReceiverFromInputDialog(adapter);
+			// If the skypeReceiver now has a value...ring them up
+			if (skypeReceiver != null)
+				adapter.sendCallRequest(skypeReceiver, getListener(), null);
 		} catch (IDCreateException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -107,38 +117,7 @@ public class SkypeCallAction implements IWorkbenchWindowActionDelegate {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
-		
+
 	}
 
-	/**
-	 * Selection in the workbench has been changed. We can change the state of
-	 * the 'real' action here if we want, but this can only happen after the
-	 * delegate has been created.
-	 * 
-	 * @see IWorkbenchWindowActionDelegate#selectionChanged
-	 */
-	public void selectionChanged(IAction action, ISelection selection) {
-		action.setEnabled(false);
-		System.out.println("SkypeCallAction.selectionChanged("+action+","+selection+")");
-		action.setEnabled(getContainer() != null);
-	}
-
-	/**
-	 * We can use this method to dispose of any system resources we previously
-	 * allocated.
-	 * 
-	 * @see IWorkbenchWindowActionDelegate#dispose
-	 */
-	public void dispose() {
-	}
-
-	/**
-	 * We will cache window object in order to be able to provide parent shell
-	 * for the message dialog.
-	 * 
-	 * @see IWorkbenchWindowActionDelegate#init
-	 */
-	public void init(IWorkbenchWindow window) {
-		this.window = window;
-	}
 }
