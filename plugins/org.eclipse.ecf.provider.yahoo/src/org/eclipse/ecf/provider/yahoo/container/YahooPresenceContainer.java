@@ -209,7 +209,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		return presence;
 	}
 
-	IRoster roster = new Roster();
+	IRoster roster = new Roster(this);
 	
 	IRosterManager rosterManger = new IRosterManager() {
 
