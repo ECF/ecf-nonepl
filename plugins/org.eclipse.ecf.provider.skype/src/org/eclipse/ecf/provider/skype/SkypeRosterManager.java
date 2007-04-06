@@ -41,9 +41,11 @@ import com.skype.User;
  */
 public class SkypeRosterManager extends AbstractRosterManager implements IRosterManager {
 
-	ContactList contactList;
-	Profile skypeProfile;
-	IUser user;
+	private ContactList contactList;
+	private Profile skypeProfile;
+	private IUser user;
+	private SkypeContainer container;
+	
 
 	IPresenceSender presenceSender = new IPresenceSender() {
 		public void sendPresenceUpdate(ID targetID, IPresence presence)
@@ -63,8 +65,6 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 			// TODO Auto-generated method stub
 			
 		}};
-	private SkypeContainer container;
-	
 	protected IUser createUser(Friend f) throws SkypeException {
 		Map properties = new HashMap();
 		properties.put("Country", f.getCountry());
@@ -116,7 +116,7 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 			String fullName = skypeProfile.getFullName();
 			fullName = (fullName == null || fullName.equals(""))?userID.getUser():fullName;
 			user = new org.eclipse.ecf.core.user.User(userID, fullName);
-			roster = new Roster(user);
+			roster = new Roster(container,user);
 			Friend[] friends = contactList.getAllFriends();
 			for (int i = 0; i < friends.length; i++) {
 				((Roster) roster).addItem(new RosterEntry(roster, createUser(friends[i]),

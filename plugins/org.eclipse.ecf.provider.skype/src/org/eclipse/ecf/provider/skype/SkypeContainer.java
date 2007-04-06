@@ -14,7 +14,6 @@ package org.eclipse.ecf.provider.skype;
 import java.util.HashMap;
 import java.util.Map;
 
-import org.eclipse.ecf.core.IContainable;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
@@ -32,7 +31,7 @@ import org.eclipse.ecf.provider.generic.ClientSOContainer;
 /**
  *
  */
-public class SkypeContainer extends ClientSOContainer implements IContainer, IPresenceContainerAdapter, IContainable {
+public class SkypeContainer extends ClientSOContainer implements IContainer, IPresenceContainerAdapter {
 
 	IAccountManager accountManager = null;
 	IRosterManager rosterManager = null;
@@ -101,13 +100,6 @@ public class SkypeContainer extends ClientSOContainer implements IContainer, IPr
 	protected ISynchAsynchConnection createConnection(ID remoteSpace,
 			Object data) throws ConnectionCreateException {
 		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IContainable#getContainers()
-	 */
-	public IContainer[] getContainers() {
-		return new IContainer[] { this };
 	}
 
 }
