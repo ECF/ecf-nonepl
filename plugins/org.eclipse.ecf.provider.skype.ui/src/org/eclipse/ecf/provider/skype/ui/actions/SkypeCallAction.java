@@ -4,7 +4,7 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ecf.call.CallSessionException;
+import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.CallSessionState;
 import org.eclipse.ecf.call.ICallSession;
 import org.eclipse.ecf.call.ICallSessionContainerAdapter;
@@ -103,7 +103,7 @@ public class SkypeCallAction extends Action {
 		return null;
 	}
 
-	protected void makeCall() throws CallSessionException, IDCreateException {
+	protected void makeCall() throws CallException, IDCreateException {
 		ICallSessionContainerAdapter adapter = getCallContainerAdapter();
 		// If we haven't been given a skypeReceiver then show input dialog
 		if (skypeReceiver == null)

@@ -13,7 +13,7 @@ package org.eclipse.ecf.tests.call;
 
 import junit.framework.TestCase;
 
-import org.eclipse.ecf.call.CallSessionException;
+import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
@@ -52,7 +52,7 @@ public class ReceiveCallTest extends TestCase {
 										System.out.println("receiver.handleCallSessionEvent("+event+")");
 									}
 								});
-							} catch (CallSessionException e) {
+							} catch (CallException e) {
 								e.printStackTrace();
 							}
 						} else

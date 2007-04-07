@@ -11,8 +11,8 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.call.CallSessionError;
-import org.eclipse.ecf.call.CallSessionException;
+import org.eclipse.ecf.call.CallSessionErrorDetails;
+import org.eclipse.ecf.call.CallException;
 import org.eclipse.ecf.call.CallSessionFailureReason;
 import org.eclipse.ecf.call.CallSessionState;
 import org.eclipse.ecf.call.ICallSession;
@@ -41,7 +41,7 @@ public class SkypeCallSession  implements ICallSession {
 	protected CallSessionState callState = null;
 	protected CallSessionFailureReason failureReason = null;
 	protected SharedObjectCallContainerAdapter adapter = null;
-	protected CallSessionError callError = null;
+	protected CallSessionErrorDetails callError = null;
 	
 	protected CallStatusChangedListener callStatusChangedListener = new CallStatusChangedListener() {
 		public void statusChanged(Status status) throws SkypeException {
@@ -182,11 +182,11 @@ public class SkypeCallSession  implements ICallSession {
 	 * 
 	 * @see org.eclipse.ecf.call.ICallSession#sendTerminate()
 	 */
-	public void sendTerminate() throws CallSessionException {
+	public void sendTerminate() throws CallException {
 		try {
 			call.finish();
 		} catch (SkypeException e) {
-			throw new CallSessionException(
+			throw new CallException(
 					Messages.SharedObjectCallContainerAdapter_Exception_Skype,
 					e);
 		}
@@ -235,7 +235,7 @@ public class SkypeCallSession  implements ICallSession {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.call.ICallSession#getError()
 	 */
-	public CallSessionError getError() {
+	public CallSessionErrorDetails getError() {
 		return callError;
 	}
 }

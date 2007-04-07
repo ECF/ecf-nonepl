@@ -11,16 +11,15 @@
 
 package org.eclipse.ecf.provider.skype;
 
+import org.eclipse.ecf.call.ICallSession;
 import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.IInitiatorCallSession;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Call;
 import com.skype.SkypeException;
 
-public class SkypeInitiatorCallSession extends SkypeCallSession
-		implements IInitiatorCallSession {
+public class SkypeInitiatorCallSession extends SkypeCallSession {
 
 	/**
 	 * @param sharedObjectCallContainerAdapter
@@ -33,7 +32,7 @@ public class SkypeInitiatorCallSession extends SkypeCallSession
 		if (l != null)
 			l.handleCallSessionEvent(new ICallSessionEvent() {
 
-				public IInitiatorCallSession getCallSession() {
+				public ICallSession getCallSession() {
 					return SkypeInitiatorCallSession.this;
 				}
 

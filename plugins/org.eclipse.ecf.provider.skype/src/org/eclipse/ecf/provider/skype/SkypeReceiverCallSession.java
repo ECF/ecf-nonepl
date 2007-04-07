@@ -12,7 +12,6 @@
 package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.IReceiverCallSession;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Call;
@@ -21,8 +20,7 @@ import com.skype.SkypeException;
 /**
  * 
  */
-public class SkypeReceiverCallSession extends SkypeCallSession
-		implements IReceiverCallSession {
+public class SkypeReceiverCallSession extends SkypeCallSession {
 
 	/**
 	 * @param receiverID
