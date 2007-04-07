@@ -20,8 +20,8 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ecf.call.CallException;
-import org.eclipse.ecf.call.ICallContainerAdapter;
+import org.eclipse.ecf.call.CallSessionException;
+import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
 import org.eclipse.ecf.call.IReceiverCallSession;
@@ -52,7 +52,7 @@ import com.skype.connector.ConnectorMessageEvent;
 import com.skype.connector.ConnectorStatusEvent;
 
 public class SharedObjectCallContainerAdapter extends BaseSharedObject
-		implements ICallContainerAdapter {
+		implements ICallSessionContainerAdapter {
 
 	boolean debugSkype = Boolean.getBoolean(System.getProperty("debugSkype",
 			"false"));
@@ -175,7 +175,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 				l.handleCallSessionRequest(new ICallSessionRequestEvent() {
 
 					public IReceiverCallSession accept(
-							ICallSessionListener listener) throws CallException {
+							ICallSessionListener listener) throws CallSessionException {
 						try {
 							SkypeReceiverCallSession session = new SkypeReceiverCallSession(
 									SharedObjectCallContainerAdapter.this,
@@ -186,7 +186,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 							addReceivedCall(session);
 							return session;
 						} catch (SkypeException e) {
-							throw new CallException("unexpected exception", e);
+							throw new CallSessionException("unexpected exception", e);
 						}
 					}
 
@@ -286,7 +286,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#getCallSessionNamespace()
+	 * @see org.eclipse.ecf.call.ICallSessionContainerAdapter#getCallSessionNamespace()
 	 */
 	public Namespace getReceiverNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(
@@ -296,7 +296,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#addCallSessionRequestListener(org.eclipse.ecf.call.ICallSessionRequestListener)
+	 * @see org.eclipse.ecf.call.ICallSessionContainerAdapter#addCallSessionRequestListener(org.eclipse.ecf.call.ICallSessionRequestListener)
 	 */
 	public void addCallSessionRequestListener(
 			ICallSessionRequestListener listener) {
@@ -306,7 +306,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#removeCallSessionRequestListener(org.eclipse.ecf.call.ICallSessionRequestListener)
+	 * @see org.eclipse.ecf.call.ICallSessionContainerAdapter#removeCallSessionRequestListener(org.eclipse.ecf.call.ICallSessionRequestListener)
 	 */
 	public void removeCallSessionRequestListener(
 			ICallSessionRequestListener listener) {
@@ -316,22 +316,22 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#sendCallRequest(org.eclipse.ecf.core.identity.ID[],
+	 * @see org.eclipse.ecf.call.ICallSessionContainerAdapter#sendCallRequest(org.eclipse.ecf.core.identity.ID[],
 	 *      org.eclipse.ecf.call.ICallSessionListener, java.util.Map)
 	 */
 	public void sendCallRequest(ID[] receivers, ICallSessionListener listener,
-			Map properties) throws CallException {
-		throw new CallException("conference call request not yet supported");
+			Map properties) throws CallSessionException {
+		throw new CallSessionException("conference call request not yet supported");
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.call.ICallContainerAdapter#sendCallRequest(org.eclipse.ecf.core.identity.ID,
+	 * @see org.eclipse.ecf.call.ICallSessionContainerAdapter#sendCallRequest(org.eclipse.ecf.core.identity.ID,
 	 *      org.eclipse.ecf.call.ICallSessionListener, java.util.Map)
 	 */
 	public void sendCallRequest(final ID receiver,
-			ICallSessionListener listener, Map options) throws CallException {
+			ICallSessionListener listener, Map options) throws CallSessionException {
 		Assert.isNotNull(listener,
 				Messages.SharedObjectCallContainerAdapter_Exception_Not_Null);
 		if (receiver instanceof SkypeUserID) {
@@ -341,12 +341,12 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 						rcvrID, Skype.call(rcvrID.getUser()), listener));
 
 			} catch (SkypeException e) {
-				throw new CallException(
+				throw new CallSessionException(
 						Messages.SharedObjectCallContainerAdapter_Exception_Skype,
 						e);
 			}
 		} else
-			throw new CallException(
+			throw new CallSessionException(
 					Messages.SkypeCallSession_Exception_Invalid_Receiver);
 	}
 

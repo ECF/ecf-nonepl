@@ -4,12 +4,12 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ecf.call.CallException;
-import org.eclipse.ecf.call.ICallContainerAdapter;
+import org.eclipse.ecf.call.CallSessionException;
+import org.eclipse.ecf.call.CallSessionState;
 import org.eclipse.ecf.call.ICallSession;
+import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
-import org.eclipse.ecf.call.events.ICallSessionFailedEvent;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
@@ -45,13 +45,13 @@ public class SkypeCallAction extends Action {
 	public void setExceptionHandler(IExceptionHandler exceptionHandler) {
 		this.exceptionHandler = exceptionHandler;
 	}
-	
-	protected ICallContainerAdapter getCallContainerAdapter() {
+
+	protected ICallSessionContainerAdapter getCallContainerAdapter() {
 		IContainer c = getContainer();
 		if (c == null)
 			return null;
-		return (ICallContainerAdapter) c
-				.getAdapter(ICallContainerAdapter.class);
+		return (ICallSessionContainerAdapter) c
+				.getAdapter(ICallSessionContainerAdapter.class);
 	}
 
 	protected IContainer getContainer() {
@@ -61,10 +61,10 @@ public class SkypeCallAction extends Action {
 	protected ICallSessionListener createCallSessionListener() {
 		return new ICallSessionListener() {
 			public void handleCallSessionEvent(final ICallSessionEvent event) {
-				if (event instanceof ICallSessionFailedEvent) {
+				final ICallSession callSession = event.getCallSession();
+				if (callSession.getState().equals(CallSessionState.FAILED))
 					Display.getDefault().asyncExec(new Runnable() {
 						public void run() {
-							ICallSession callSession = event.getCallSession();
 							MessageDialog
 									.openInformation(
 											null,
@@ -78,12 +78,11 @@ public class SkypeCallAction extends Action {
 															.getReason());
 						}
 					});
-				}
 			}
 		};
 	}
 
-	protected ID getReceiverFromInputDialog(ICallContainerAdapter adapter)
+	protected ID getReceiverFromInputDialog(ICallSessionContainerAdapter adapter)
 			throws IDCreateException {
 		InputDialog id = new InputDialog(Display.getDefault().getActiveShell(),
 				Messages.SkypeOpenAction_Initiate_Skype_Call_Title,
@@ -104,8 +103,8 @@ public class SkypeCallAction extends Action {
 		return null;
 	}
 
-	protected void makeCall() throws CallException, IDCreateException {
-		ICallContainerAdapter adapter = getCallContainerAdapter();
+	protected void makeCall() throws CallSessionException, IDCreateException {
+		ICallSessionContainerAdapter adapter = getCallContainerAdapter();
 		// If we haven't been given a skypeReceiver then show input dialog
 		if (skypeReceiver == null)
 			skypeReceiver = getReceiverFromInputDialog(adapter);

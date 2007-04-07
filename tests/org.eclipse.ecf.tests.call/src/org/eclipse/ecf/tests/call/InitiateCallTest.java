@@ -13,7 +13,7 @@ package org.eclipse.ecf.tests.call;
 
 import junit.framework.TestCase;
 
-import org.eclipse.ecf.call.ICallContainerAdapter;
+import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
@@ -29,11 +29,11 @@ public class InitiateCallTest extends TestCase {
 
 	private static final String DEFAULT_CLIENT = "ecf.generic.client"; //$NON-NLS-1$
 
-	protected ICallContainerAdapter getCallContainerAdapter() throws Exception {
+	protected ICallSessionContainerAdapter getCallContainerAdapter() throws Exception {
 		IContainer container = ContainerFactory.getDefault().createContainer(
 				DEFAULT_CLIENT);
-		return (ICallContainerAdapter) container
-				.getAdapter(ICallContainerAdapter.class);
+		return (ICallSessionContainerAdapter) container
+				.getAdapter(ICallSessionContainerAdapter.class);
 	}
 
 	public void testCallContainerAdapterAccess() throws Exception {
@@ -63,7 +63,7 @@ public class InitiateCallTest extends TestCase {
 	}
 	
 	public void testInitiateCall() throws Exception {
-		ICallContainerAdapter adapter = getCallContainerAdapter();
+		ICallSessionContainerAdapter adapter = getCallContainerAdapter();
 		assertNotNull(adapter);
 		String receiver = getReceiver();
 		System.out.println("sending call request to user "+receiver);

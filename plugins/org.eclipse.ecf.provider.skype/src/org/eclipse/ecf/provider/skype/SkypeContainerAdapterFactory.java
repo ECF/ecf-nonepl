@@ -11,7 +11,7 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.call.ICallContainerAdapter;
+import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.sharedobject.AbstractSharedObjectContainerAdapterFactory;
 import org.eclipse.ecf.core.sharedobject.ISharedObject;
@@ -31,7 +31,7 @@ public class SkypeContainerAdapterFactory extends
 	 */
 	protected ISharedObject createAdapter(ISharedObjectContainer container,
 			Class adapterType, ID adapterID) {
-		if (adapterType.equals(ICallContainerAdapter.class))
+		if (adapterType.equals(ICallSessionContainerAdapter.class))
 			return new SharedObjectCallContainerAdapter();
 		return null;
 	}
@@ -42,7 +42,7 @@ public class SkypeContainerAdapterFactory extends
 	 * @see org.eclipse.ecf.core.sharedobject.AbstractSharedObjectContainerAdapterFactory#getAdapterList()
 	 */
 	public Class[] getAdapterList() {
-		return new Class[] { ICallContainerAdapter.class };
+		return new Class[] { ICallSessionContainerAdapter.class };
 	}
 
 }

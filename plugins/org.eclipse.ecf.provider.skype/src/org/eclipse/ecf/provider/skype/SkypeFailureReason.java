@@ -11,13 +11,13 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.call.FailureReason;
+import org.eclipse.ecf.call.CallSessionFailureReason;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 
 /**
  * 
  */
-public class SkypeFailureReason extends FailureReason {
+public class SkypeFailureReason extends CallSessionFailureReason {
 
 	/**
 	 * See https://developer.skype.com/Docs/ApiDoc/src

@@ -13,7 +13,7 @@ package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.IInitiatorCallSession;
-import org.eclipse.ecf.call.events.ICallSessionInitiatedEvent;
+import org.eclipse.ecf.call.events.ICallSessionEvent;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Call;
@@ -31,14 +31,14 @@ public class SkypeInitiatorCallSession extends SkypeCallSession
 		super(adapter, initiatorID, receiverID, call, listener);
 		ICallSessionListener l = getListener();
 		if (l != null)
-			l.handleCallSessionEvent(new ICallSessionInitiatedEvent() {
+			l.handleCallSessionEvent(new ICallSessionEvent() {
 
 				public IInitiatorCallSession getCallSession() {
 					return SkypeInitiatorCallSession.this;
 				}
 
 				public String toString() {
-					return getStringBufferForEvent("ICallSessionInitiatedEvent")
+					return getStringBufferForEvent("ICallSessionEvent")
 							.toString();
 				}
 

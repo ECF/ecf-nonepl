@@ -13,8 +13,8 @@ package org.eclipse.ecf.tests.call;
 
 import junit.framework.TestCase;
 
-import org.eclipse.ecf.call.CallException;
-import org.eclipse.ecf.call.ICallContainerAdapter;
+import org.eclipse.ecf.call.CallSessionException;
+import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
 import org.eclipse.ecf.call.events.ICallSessionEvent;
@@ -29,11 +29,11 @@ public class ReceiveCallTest extends TestCase {
 
 	private static final String DEFAULT_CLIENT = "ecf.generic.client"; //$NON-NLS-1$
 
-	protected ICallContainerAdapter getCallContainerAdapter() throws Exception {
+	protected ICallSessionContainerAdapter getCallContainerAdapter() throws Exception {
 		IContainer container = ContainerFactory.getDefault().createContainer(
 				DEFAULT_CLIENT);
-		return (ICallContainerAdapter) container
-				.getAdapter(ICallContainerAdapter.class);
+		return (ICallSessionContainerAdapter) container
+				.getAdapter(ICallSessionContainerAdapter.class);
 	}
 
 	public void testCallContainerAdapterAccess() throws Exception {
@@ -52,7 +52,7 @@ public class ReceiveCallTest extends TestCase {
 										System.out.println("receiver.handleCallSessionEvent("+event+")");
 									}
 								});
-							} catch (CallException e) {
+							} catch (CallSessionException e) {
 								e.printStackTrace();
 							}
 						} else
@@ -64,7 +64,7 @@ public class ReceiveCallTest extends TestCase {
 	String initiator = System.getProperty("initiator");
 	
 	public void testReceiveCall() throws Exception {
-		ICallContainerAdapter adapter = getCallContainerAdapter();
+		ICallSessionContainerAdapter adapter = getCallContainerAdapter();
 		assertNotNull(adapter);
 		adapter.addCallSessionRequestListener(getRequestListener());
 		System.out.println("waiting for call from "+initiator);
