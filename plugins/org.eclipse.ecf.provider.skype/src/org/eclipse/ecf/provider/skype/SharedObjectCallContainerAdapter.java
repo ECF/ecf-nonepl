@@ -45,6 +45,7 @@ import com.skype.ChatMessage;
 import com.skype.ChatMessageListener;
 import com.skype.Profile;
 import com.skype.Skype;
+import com.skype.SkypeClient;
 import com.skype.SkypeException;
 import com.skype.connector.Connector;
 import com.skype.connector.ConnectorListener;
@@ -243,6 +244,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 			userID = new SkypeUserID(userProfile.getId());
 			Skype.setDebug(true);
 			Skype.setDeamon(false);
+			SkypeClient.setSilentMode(true);
 			Skype.addCallListener(callListener);
 			Skype.addChatMessageListener(chatMessageListener);
 

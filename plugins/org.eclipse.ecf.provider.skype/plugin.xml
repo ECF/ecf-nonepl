@@ -6,7 +6,7 @@
       <factory
             adaptableType="org.eclipse.ecf.provider.skype.SkypeContainer"
             class="org.eclipse.ecf.provider.skype.SkypeContainerAdapterFactory">
-         <adapter type="org.eclipse.ecf.call.ICallContainerAdapter"/>
+         <adapter type="org.eclipse.ecf.call.ICallSessionContainerAdapter"/>
       </factory>
    </extension>
    <extension
@@ -14,7 +14,7 @@
       <factory
             adaptableType="org.eclipse.ecf.provider.generic.TCPClientSOContainer"
             class="org.eclipse.ecf.provider.skype.SkypeContainerAdapterFactory">
-         <adapter type="org.eclipse.ecf.call.ICallContainerAdapter"/>
+         <adapter type="org.eclipse.ecf.call.ICallSessionContainerAdapter"/>
       </factory>
    </extension>
    <extension
