@@ -51,7 +51,7 @@ public class ReceiveCallTest extends TestCase {
 											ICallSessionEvent event) {
 										System.out.println("receiver.handleCallSessionEvent("+event+")");
 									}
-								});
+								}, null);
 							} catch (CallException e) {
 								e.printStackTrace();
 							}

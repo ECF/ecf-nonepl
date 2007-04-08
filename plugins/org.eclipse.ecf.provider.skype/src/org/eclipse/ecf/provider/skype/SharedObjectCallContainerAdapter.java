@@ -175,7 +175,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 				l.handleCallSessionRequest(new ICallSessionRequestEvent() {
 
 					public ICallSession accept(
-							ICallSessionListener listener) throws CallException {
+							ICallSessionListener listener, Map properties) throws CallException {
 						try {
 							SkypeReceiverCallSession session = new SkypeReceiverCallSession(
 									SharedObjectCallContainerAdapter.this,

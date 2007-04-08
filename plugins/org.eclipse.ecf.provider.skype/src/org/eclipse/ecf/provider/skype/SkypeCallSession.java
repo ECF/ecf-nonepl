@@ -235,7 +235,7 @@ public class SkypeCallSession  implements ICallSession {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.call.ICallSession#getError()
 	 */
-	public CallSessionErrorDetails getError() {
+	public CallSessionErrorDetails getErrorDetails() {
 		return callError;
 	}
 }
