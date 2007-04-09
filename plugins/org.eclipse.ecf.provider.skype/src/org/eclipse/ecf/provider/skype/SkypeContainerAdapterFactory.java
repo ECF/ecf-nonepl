@@ -32,7 +32,7 @@ public class SkypeContainerAdapterFactory extends
 	protected ISharedObject createAdapter(ISharedObjectContainer container,
 			Class adapterType, ID adapterID) {
 		if (adapterType.equals(ICallSessionContainerAdapter.class))
-			return new SharedObjectCallContainerAdapter();
+			return new SharedObjectCallContainerAdapter(container);
 		return null;
 	}
 

@@ -26,6 +26,7 @@ import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.call.ICallSessionRequestListener;
 import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
+import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
@@ -41,16 +42,10 @@ import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 
 import com.skype.Call;
 import com.skype.CallListener;
-import com.skype.ChatMessage;
-import com.skype.ChatMessageListener;
 import com.skype.Profile;
 import com.skype.Skype;
-import com.skype.SkypeClient;
 import com.skype.SkypeException;
 import com.skype.connector.Connector;
-import com.skype.connector.ConnectorListener;
-import com.skype.connector.ConnectorMessageEvent;
-import com.skype.connector.ConnectorStatusEvent;
 
 public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		implements ICallSessionContainerAdapter {
@@ -58,6 +53,8 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	boolean debugSkype = Boolean.getBoolean(System.getProperty("debugSkype",
 			"false"));
 
+	IContainer container;
+	
 	String skypeVersion;
 
 	Profile userProfile;
@@ -70,6 +67,18 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	HashMap receivedCalls = new HashMap();
 
+	public SharedObjectCallContainerAdapter(IContainer container) {
+		this.container = container;
+	}
+	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.core.sharedobject.BaseSharedObject#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
+		if (adapter.equals(IContainer.class)) return container;
+		return super.getAdapter(adapter);
+	}
+	
 	protected void addInitiatedCall(SkypeInitiatorCallSession callSession) {
 		initiatedCalls.put(callSession.getID(), callSession);
 	}
@@ -88,57 +97,11 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	CallListener callListener = new CallListener() {
 		public void callMaked(Call makedCall) throws SkypeException {
-			fireCallMade(makedCall);
 		}
 
 		public void callReceived(Call receivedCall) throws SkypeException {
 			fireCallReceived(receivedCall);
 		}
-	};
-
-	ChatMessageListener chatMessageListener = new ChatMessageListener() {
-
-		public void chatMessageReceived(ChatMessage chatMessageReceived)
-				throws SkypeException {
-			// TODO Auto-generated method stub
-			Trace
-					.trace(
-							Activator.PLUGIN_ID,
-							"chatMessageReceived(id=" //$NON-NLS-1$
-									+ chatMessageReceived.getId()
-									+ ";content=" + chatMessageReceived.getContent() + ";senderid=" + chatMessageReceived.getSenderId() + ";sendername=" + chatMessageReceived.getSenderDisplayName() + ")"); //$NON-NLS-1$
-		}
-
-		public void chatMessageSent(ChatMessage sentChatMessage)
-				throws SkypeException {
-			// TODO Auto-generated method stub
-			Trace
-					.trace(
-							Activator.PLUGIN_ID,
-							"chatMessageSent(id=" //$NON-NLS-1$
-									+ sentChatMessage.getId()
-									+ ";content=" + sentChatMessage.getContent() + ";senderid=" + sentChatMessage.getSenderId() + ";sendername=" + sentChatMessage.getSenderDisplayName() + ")"); //$NON-NLS-1$
-		}
-
-	};
-
-	ConnectorListener connectorListener = new ConnectorListener() {
-
-		public void messageReceived(ConnectorMessageEvent event) {
-			Trace.trace(Activator.PLUGIN_ID, "messageReceived(" //$NON-NLS-1$
-					+ event.getMessage() + ")"); //$NON-NLS-1$
-		}
-
-		public void messageSent(ConnectorMessageEvent event) {
-			Trace.trace(Activator.PLUGIN_ID, "messageSent(" //$NON-NLS-1$
-					+ event.getMessage() + ")"); //$NON-NLS-1$
-		}
-
-		public void statusChanged(ConnectorStatusEvent event) {
-			Trace.trace(Activator.PLUGIN_ID, "statusChanged(" //$NON-NLS-1$
-					+ event.getStatus() + ")"); //$NON-NLS-1$
-		}
-
 	};
 
 	protected SkypeUserID getUserID() {
@@ -153,7 +116,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	public void dispose(ID containerID) {
 		super.dispose(containerID);
 		Skype.removeCallListener(callListener);
-		Skype.removeChatMessageListener(chatMessageListener);
 		try {
 			Skype.setDebug(false);
 		} catch (SkypeException e) {
@@ -225,10 +187,6 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 		}
 	}
 
-	protected void fireCallMade(Call call) {
-		System.out.println("fireCallMade(" + call.getId() + ")");
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -237,16 +195,14 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 	protected void initialize() throws SharedObjectInitException {
 		super.initialize();
 		try {
-			Connector.getInstance().addConnectorListener(connectorListener);
 			skypeVersion = Skype.getVersion();
 
 			userProfile = Skype.getProfile();
 			userID = new SkypeUserID(userProfile.getId());
 			Skype.setDebug(true);
 			Skype.setDeamon(false);
-			SkypeClient.setSilentMode(true);
+			//SkypeClient.setSilentMode(true);
 			Skype.addCallListener(callListener);
-			Skype.addChatMessageListener(chatMessageListener);
 
 			if (debugSkype) {
 				Connector.getInstance().setDebugOut(

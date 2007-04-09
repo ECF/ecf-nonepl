@@ -24,13 +24,7 @@ import org.eclipse.ecf.presence.history.IHistoryManager;
  */
 public class SkypeChatRoomManager implements IChatRoomManager {
 
-	SkypeContainer container;
-	
-	/**
-	 * @param skypeContainer
-	 */
-	public SkypeChatRoomManager(SkypeContainer skypeContainer) {
-		this.container = skypeContainer;
+	public SkypeChatRoomManager() {
 	}
 
 	/* (non-Javadoc)
@@ -104,6 +98,14 @@ public class SkypeChatRoomManager implements IChatRoomManager {
 	public Object getAdapter(Class adapter) {
 		// TODO Auto-generated method stub
 		return null;
+	}
+
+	/**
+	 * 
+	 */
+	protected void dispose() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }

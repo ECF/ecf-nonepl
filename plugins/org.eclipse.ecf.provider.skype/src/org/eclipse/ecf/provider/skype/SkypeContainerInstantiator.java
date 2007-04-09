@@ -28,7 +28,11 @@ public class SkypeContainerInstantiator implements IContainerInstantiator {
 	 */
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] parameters) throws ContainerCreateException {
-		return new SkypeContainer();
+		try {
+			return new SkypeContainer();
+		} catch (Exception e) {
+			throw new ContainerCreateException("Could not create skype container",e);
+		}
 	}
 
 	/* (non-Javadoc)

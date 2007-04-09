@@ -27,21 +27,49 @@ import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
+
+import com.skype.Profile;
+import com.skype.Skype;
+import com.skype.SkypeException;
+import com.skype.connector.ConnectorException;
 
 /**
  *
  */
 public class SkypeContainer extends ClientSOContainer implements IContainer, IPresenceContainerAdapter {
 
-	IAccountManager accountManager = null;
-	IRosterManager rosterManager = null;
-	IChatManager chatManager = null;
-	IChatRoomManager chatRoomManager = null;
+	SkypeAccountManager accountManager = null;
+	SkypeRosterManager rosterManager = null;
+	SkypeChatManager chatManager = null;
+	SkypeChatRoomManager chatRoomManager = null;
 	
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#dispose()
+	 */
+	public void dispose() {
+		super.dispose();
+		if (accountManager != null) {
+			accountManager.dispose();
+			accountManager = null;
+		}
+		if (rosterManager != null) {
+			rosterManager.dispose();
+			rosterManager = null;
+		}
+		if (chatManager != null) {
+			chatManager.dispose();
+			chatManager = null;
+		}
+		if (chatRoomManager != null) {
+			chatRoomManager.dispose();
+			chatRoomManager = null;
+		}
+	}
 	/**
 	 * @param config
 	 */
-	public SkypeContainer() {
+	public SkypeContainer() throws SkypeException, ConnectorException {
 		super(new ISharedObjectContainerConfig() {
 
 			public Object getAdapter(Class clazz) {
@@ -59,10 +87,17 @@ public class SkypeContainer extends ClientSOContainer implements IContainer, IPr
 					return null;
 				}
 			}});
-		accountManager = new SkypeAccountManager(this);
-		rosterManager = new SkypeRosterManager(this);
-		chatManager = new SkypeChatManager(this);
-		chatRoomManager = new SkypeChatRoomManager(this);
+		Profile skypeProfile = Skype.getProfile();
+		SkypeUserID userID = new SkypeUserID(
+				skypeProfile.getId());
+		String fullName = skypeProfile.getFullName();
+		fullName = (fullName == null || fullName.equals(""))?userID.getUser():fullName;
+		org.eclipse.ecf.core.user.User user = new org.eclipse.ecf.core.user.User(userID, fullName);
+
+		accountManager = new SkypeAccountManager(this,skypeProfile,userID,user);
+		rosterManager = new SkypeRosterManager(this,skypeProfile,userID,user);
+		chatManager = new SkypeChatManager();
+		chatRoomManager = new SkypeChatRoomManager();
 
 	}
 

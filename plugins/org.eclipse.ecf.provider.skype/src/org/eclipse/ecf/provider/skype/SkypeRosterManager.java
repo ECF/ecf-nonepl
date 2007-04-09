@@ -11,7 +11,6 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -35,17 +34,45 @@ import com.skype.Profile;
 import com.skype.Skype;
 import com.skype.SkypeException;
 import com.skype.User;
+import com.skype.connector.Connector;
+import com.skype.connector.ConnectorException;
+import com.skype.connector.ConnectorListener;
+import com.skype.connector.ConnectorMessageEvent;
+import com.skype.connector.ConnectorStatusEvent;
 
 /**
  * 
  */
-public class SkypeRosterManager extends AbstractRosterManager implements IRosterManager {
+public class SkypeRosterManager extends AbstractRosterManager implements
+		IRosterManager {
 
 	private ContactList contactList;
-	private Profile skypeProfile;
+	private Profile profile;
+	private SkypeUserID userID;
 	private IUser user;
 	private SkypeContainer container;
-	
+
+	private ConnectorListener connectorListener = new ConnectorListener() {
+
+		public void messageReceived(ConnectorMessageEvent event) {
+			// TODO Auto-generated method stub
+			System.out.println("SkypeRosterManager.messageReceived(time="
+					+ event.getTime() + "," + event.getSource() + ","
+					+ event.getMessage());
+		}
+
+		public void messageSent(ConnectorMessageEvent event) {
+			// TODO Auto-generated method stub
+			System.out.println("SkypeRosterManager.messageSent(time="
+					+ event.getTime() + "," + event.getSource() + ","
+					+ event.getMessage());
+
+		}
+
+		public void statusChanged(ConnectorStatusEvent event) {
+		}
+
+	};
 
 	IPresenceSender presenceSender = new IPresenceSender() {
 		public void sendPresenceUpdate(ID targetID, IPresence presence)
@@ -59,12 +86,15 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 		public void sendRosterAdd(String user, String name, String[] groups)
 				throws ECFException {
 			// TODO Auto-generated method stub
-			
+
 		}
+
 		public void sendRosterRemove(ID userID) throws ECFException {
 			// TODO Auto-generated method stub
-			
-		}};
+
+		}
+	};
+
 	protected IUser createUser(Friend f) throws SkypeException {
 		Map properties = new HashMap();
 		properties.put("Country", f.getCountry());
@@ -75,8 +105,10 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 		properties.put("Birthday", f.getBirthDay());
 		SkypeUserID userID = new SkypeUserID(f.getId());
 		String name = f.getFullName();
-		String displayName = (name == null || name.equals(""))?userID.getName():name;
-		return new org.eclipse.ecf.core.user.User(userID, displayName, properties);
+		String displayName = (name == null || name.equals("")) ? userID
+				.getName() : name;
+		return new org.eclipse.ecf.core.user.User(userID, displayName,
+				properties);
 	}
 
 	protected Map createProperties(Friend friend) throws SkypeException {
@@ -86,46 +118,48 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 		props.put("Home Page", friend.getHomePageAddress());
 		return props;
 	}
-	
-	protected IPresence createPresence(Friend friend) throws SkypeException, IOException {
+
+	protected IPresence createPresence(Friend friend) throws SkypeException {
 		User.Status status = friend.getStatus();
-		IPresence.Type type = (status.equals(User.Status.OFFLINE))?IPresence.Type.UNAVAILABLE:IPresence.Type.AVAILABLE;
+		IPresence.Type type = (status.equals(User.Status.OFFLINE)) ? IPresence.Type.UNAVAILABLE
+				: IPresence.Type.AVAILABLE;
 		IPresence.Mode mode = null;
-		if (status.equals(User.Status.AWAY)) mode = IPresence.Mode.AWAY;
-		else if (status.equals(User.Status.DND)) mode = IPresence.Mode.DND;
-		else if (status.equals(User.Status.NA)) mode = IPresence.Mode.EXTENDED_AWAY;
-		else mode = IPresence.Mode.AVAILABLE;
-		// XXX this doesn't work yet in Skype4Java apparently...getAvatar() current throws exception.
+		if (status.equals(User.Status.AWAY))
+			mode = IPresence.Mode.AWAY;
+		else if (status.equals(User.Status.DND))
+			mode = IPresence.Mode.DND;
+		else if (status.equals(User.Status.NA))
+			mode = IPresence.Mode.EXTENDED_AWAY;
+		else
+			mode = IPresence.Mode.AVAILABLE;
+		// XXX this doesn't work yet in Skype4Java apparently...getAvatar()
+		// current throws exception.
 		/*
-		BufferedImage bi = friend.getAvatar();
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ImageIO.write(bi,"jpg",bos);
-		byte [] imageBytes = bos.toByteArray();
-		*/
-		byte [] imageBytes = null;
-		return new Presence(type,type.toString(),mode,createProperties(friend),imageBytes);
+		 * BufferedImage bi = friend.getAvatar(); ByteArrayOutputStream bos =
+		 * new ByteArrayOutputStream(); ImageIO.write(bi,"jpg",bos); byte []
+		 * imageBytes = bos.toByteArray();
+		 */
+		byte[] imageBytes = null;
+		return new Presence(type, type.toString(), mode,
+				createProperties(friend), imageBytes);
 	}
-	
-	public SkypeRosterManager(SkypeContainer skypeContainer) {
+
+	public SkypeRosterManager(SkypeContainer skypeContainer,
+			Profile skypeProfile, SkypeUserID userID,
+			org.eclipse.ecf.core.user.User user) throws SkypeException, ConnectorException {
 		this.container = skypeContainer;
-		try {
-			contactList = Skype.getContactList();
-			skypeProfile = Skype.getProfile();
-			SkypeUserID userID = new SkypeUserID(
-					skypeProfile.getId());
-			String fullName = skypeProfile.getFullName();
-			fullName = (fullName == null || fullName.equals(""))?userID.getUser():fullName;
-			user = new org.eclipse.ecf.core.user.User(userID, fullName);
-			roster = new Roster(container,user);
-			Friend[] friends = contactList.getAllFriends();
-			for (int i = 0; i < friends.length; i++) {
-				((Roster) roster).addItem(new RosterEntry(roster, createUser(friends[i]),
-						createPresence(friends[i])));
-			}
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
+		contactList = Skype.getContactList();
+		this.profile = skypeProfile;
+		this.userID = userID;
+		this.user = user;
+		roster = new Roster(container, user);
+		Friend[] friends = contactList.getAllFriends();
+		for (int i = 0; i < friends.length; i++) {
+			((Roster) roster).addItem(new RosterEntry(roster,
+					createUser(friends[i]), createPresence(friends[i])));
 		}
+
+		Connector.getInstance().addConnectorListener(connectorListener);
 	}
 
 	/*
@@ -137,12 +171,14 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 		return presenceSender;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.presence.roster.IRosterManager#addPresenceListener(org.eclipse.ecf.presence.IPresenceListener)
 	 */
 	public void addPresenceListener(IPresenceListener listener) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	/*
@@ -160,9 +196,21 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 	 * 
 	 * @see org.eclipse.ecf.presence.roster.IRosterManager#getRosterSubscriptionSender()
 	 */
-	
+
 	public IRosterSubscriptionSender getRosterSubscriptionSender() {
 		return rosterSubscriptionSender;
 	}
-    
+
+	/**
+	 * 
+	 */
+	protected void dispose() {
+		contactList = null;
+		try {
+			Connector.getInstance().removeConnectorListener(connectorListener);
+		} catch (Exception e) {
+			// XXX log error
+		}
+	}
+
 }

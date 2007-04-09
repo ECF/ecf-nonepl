@@ -13,18 +13,35 @@ package org.eclipse.ecf.provider.skype;
 
 import java.util.Map;
 
+import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.IAccountManager;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
+
+import com.skype.Profile;
 
 /**
  *
  */
 public class SkypeAccountManager implements IAccountManager {
 
+	SkypeContainer container;
+	Profile profile;
+	SkypeUserID userID;
+	User user;
+	
 	/**
 	 * @param skypeContainer
+	 * @param skypeProfile
+	 * @param userID
+	 * @param user
 	 */
-	public SkypeAccountManager(SkypeContainer skypeContainer) {
+	public SkypeAccountManager(SkypeContainer skypeContainer,
+			Profile skypeProfile, SkypeUserID userID, User user) {
+		this.container = skypeContainer;
+		this.profile = skypeProfile;
+		this.userID = userID;
+		this.user = user;
 	}
 
 	/* (non-Javadoc)
@@ -82,6 +99,14 @@ public class SkypeAccountManager implements IAccountManager {
 	public boolean isAccountCreationSupported() throws ECFException {
 		// TODO Auto-generated method stub
 		return false;
+	}
+
+	/**
+	 * 
+	 */
+	protected void dispose() {
+		// TODO Auto-generated method stub
+		
 	}
 
 }
