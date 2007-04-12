@@ -1,6 +1,5 @@
 package org.eclipse.ecf.provider.skype.ui.actions;
 
-import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.presence.ui.MultiRosterView;
@@ -48,11 +47,19 @@ public class SkypeOpenAction implements IWorkbenchWindowActionDelegate {
 		IWorkbenchPage wp = window.getActivePage();
 
 		try {
+			
 			if (mrv == null) {
 				mrv = (MultiRosterView) wp.showView(MultiRosterView.VIEW_ID);
+			    container.connect(null, null);
 				mrv.addContainer(container);
 			} else
 				wp.showView(MultiRosterView.VIEW_ID);
+			
+			/*
+			PresenceUI presenceUI = new PresenceUI(container,(IPresenceContainerAdapter)container.getAdapter(IPresenceContainerAdapter.class));
+			presenceUI.showForUser(((SkypeContainer) container).getRosterManager().getRoster().getUser());
+			container.connect(null, null);
+			*/
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -92,7 +99,7 @@ public class SkypeOpenAction implements IWorkbenchWindowActionDelegate {
 		try {
 			container = ContainerFactory.getDefault().createContainer(
 					DEFAULT_CLIENT);
-		} catch (ContainerCreateException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
