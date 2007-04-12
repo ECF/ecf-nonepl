@@ -13,11 +13,11 @@ package org.eclipse.ecf.provider.skype;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collection;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
-import java.util.Vector;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.user.IUser;
@@ -35,7 +35,6 @@ import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterEntry;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
-import com.skype.ContactList;
 import com.skype.Friend;
 import com.skype.Skype;
 import com.skype.SkypeException;
@@ -53,10 +52,11 @@ import com.skype.connector.ConnectorStatusEvent;
 public class SkypeRosterManager extends AbstractRosterManager implements
 		IRosterManager {
 
-	private ContactList contactList;
+	private static final boolean debug = false;
+
 	private SkypeContainer container;
 
-	Vector presenceListeners = new Vector();
+	List presenceListeners = new ArrayList();
 
 	private ConnectorListener rosterChangeConnectorListener = new AbstractConnectorListener() {
 		/*
@@ -99,39 +99,59 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 		}
 	}
 
+	private void fireRosterEntryAdded(IRosterEntry entry) {
+		synchronized (presenceListeners) {
+			for (int i = 0; i < presenceListeners.size(); i++) {
+				((IPresenceListener) presenceListeners.get(i))
+						.handleRosterEntryAdd(entry);
+			}
+		}
+	}
+
+	private void fireRosterEntryUpdated(IRosterEntry entry) {
+		synchronized (presenceListeners) {
+			for (int i = 0; i < presenceListeners.size(); i++) {
+				((IPresenceListener) presenceListeners.get(i))
+						.handleRosterEntryUpdate(entry);
+			}
+		}
+	}
+
 	/**
 	 * @param skypeId
-	 * @param b
+	 * @param add
 	 */
-	private void fireRosterChange(String skypeId, boolean addToRoster) {
-		synchronized (presenceListeners) {
-			for (Iterator i = presenceListeners.iterator(); i.hasNext();) {
-				IPresenceListener l = (IPresenceListener) i.next();
-				if (addToRoster)
-					l.handleRosterEntryAdd(createRosterEntry(User
-							.getInstance(skypeId)));
-				else
-					l.handleRosterEntryRemove(new RosterEntry(roster,
-							new org.eclipse.ecf.core.user.User(new SkypeUserID(
-									skypeId)), new Presence()));
-			}
+	private void fireRosterChange(String skypeId, boolean add) {
+		if (add) {
+			IRosterEntry entry = addEntryToRoster(User.getInstance(skypeId));
+			fireSubscriptionListener(entry.getUser().getID(),
+					IPresence.Type.SUBSCRIBED);
+			fireRosterUpdate(entry);
+			fireRosterEntryAdded(entry);
+		} else {
+			IRosterEntry entry = getEntryForFriend(skypeId);
+			if (entry != null)
+				fireSubscriptionListener(entry.getUser().getID(),
+						IPresence.Type.UNSUBSCRIBED);
 		}
 	}
 
 	private ConnectorListener connectorListener = new ConnectorListener() {
 
 		public void messageReceived(ConnectorMessageEvent event) {
-			// TODO Auto-generated method stub
-			System.out.println("SkypeRosterManager.messageReceived(time="
-					+ event.getTime() + "," + event.getSource() + ","
-					+ event.getMessage());
+			if (debug) {
+				System.out.println("SkypeRosterManager.messageReceived(time="
+						+ event.getTime() + "," + event.getSource() + ","
+						+ event.getMessage());
+			}
 		}
 
 		public void messageSent(ConnectorMessageEvent event) {
-			// TODO Auto-generated method stub
-			System.out.println("SkypeRosterManager.messageSent(time="
-					+ event.getTime() + "," + event.getSource() + ","
-					+ event.getMessage());
+			if (debug) {
+				System.out.println("SkypeRosterManager.messageSent(time="
+						+ event.getTime() + "," + event.getSource() + ","
+						+ event.getMessage());
+			}
 
 		}
 
@@ -194,16 +214,8 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 		String moodMessage = null;
 		try {
 			User.Status status = friend.getStatus();
-			type = (status.equals(User.Status.OFFLINE)) ? IPresence.Type.UNAVAILABLE
-					: IPresence.Type.AVAILABLE;
-			if (status.equals(User.Status.AWAY))
-				mode = IPresence.Mode.AWAY;
-			else if (status.equals(User.Status.DND))
-				mode = IPresence.Mode.DND;
-			else if (status.equals(User.Status.NA))
-				mode = IPresence.Mode.EXTENDED_AWAY;
-			else
-				mode = IPresence.Mode.AVAILABLE;
+			type = createPresenceType(status);
+			mode = createPresenceMode(status);
 			properties = createProperties(friend);
 			moodMessage = friend.getMoodMessage();
 		} catch (SkypeException e) {
@@ -223,65 +235,48 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 	}
 
 	protected void handleFriendPropertyChangeEvent(PropertyChangeEvent evt) {
-		System.out.println("handlePropertyChangeEvent(source="
-				+ evt.getSource());
-		System.out.println("   propid=" + evt.getPropagationId());
-		System.out.println("   propname=" + evt.getPropertyName());
-		System.out.println("   oldvalue=" + evt.getOldValue());
-		System.out.println("   newvalue=" + evt.getNewValue());
 		Object src = evt.getSource();
 		Object newValue = evt.getNewValue();
-		if (src instanceof Friend && newValue instanceof User.Status)
-			fireUpdatePresenceListeners((Friend) src, (User.Status) evt
-					.getNewValue());
-	}
-
-	protected void fireUpdatePresenceListeners(Friend friend,
-			User.Status newstatus) {
-		IRosterEntry entry = updateRosterEntry(friend, newstatus);
-		if (entry != null) {
-			synchronized (presenceListeners) {
-				for (Iterator i = presenceListeners.iterator(); i.hasNext();) {
-					IPresenceListener l = (IPresenceListener) i.next();
-					l.handlePresence(entry.getUser().getID(), entry
-							.getPresence());
-					l.handleRosterEntryUpdate(entry);
-				}
+		if (src instanceof Friend && newValue instanceof User.Status) {
+			IRosterEntry entry = updateExistingRosterEntry((Friend) src,
+					(User.Status) evt.getNewValue());
+			if (entry != null) {
+				fireRosterUpdate(entry);
+				fireRosterEntryUpdated(entry);
 			}
 		}
 	}
 
-	protected IRosterEntry updateRosterEntry(Friend friend, User.Status status) {
-		Collection items = roster.getItems();
-		SkypeUserID friendID = new SkypeUserID(friend.getId());
-		for (Iterator i = items.iterator(); i.hasNext();) {
+	private IRosterEntry updateExistingRosterEntry(Friend friend,
+			User.Status status) {
+		IRosterEntry entry = getEntryForFriend(friend.getId());
+		if (entry != null) {
+			((RosterEntry) entry).setPresence(createPresenceForExistingEntry(
+					entry, status));
+			return entry;
+		}
+		return null;
+	}
+
+	private IRosterEntry getEntryForFriend(String friendId) {
+		SkypeUserID friendID = new SkypeUserID(friendId);
+		for (Iterator i = roster.getItems().iterator(); i.hasNext();) {
 			IRosterItem item = (IRosterItem) i.next();
 			if (item instanceof IRosterEntry) {
 				IRosterEntry entry = (IRosterEntry) item;
-				if (entry.getUser().getID().equals(friendID)) {
-					// Found it...so remove
-					((RosterEntry) entry)
-							.setPresence(createPresenceFromNewStatus(entry,
-									status));
+				if (entry.getUser().getID().equals(friendID))
 					return entry;
-				}
 			}
 		}
 		return null;
 	}
 
-	/**
-	 * @param status
-	 * @return
-	 */
-	private IPresence createPresenceFromNewStatus(IRosterEntry existingEntry,
-			User.Status status) {
-		IPresence existingPresence = existingEntry.getPresence();
-		Map props = existingPresence.getProperties();
-		String moodMessage = existingPresence.getStatus();
-		byte[] image = existingPresence.getPictureData();
-		IPresence.Type type = (status.equals(User.Status.OFFLINE)) ? IPresence.Type.UNAVAILABLE
+	private IPresence.Type createPresenceType(User.Status status) {
+		return (status.equals(User.Status.OFFLINE)) ? IPresence.Type.UNAVAILABLE
 				: IPresence.Type.AVAILABLE;
+	}
+
+	private IPresence.Mode createPresenceMode(User.Status status) {
 		IPresence.Mode mode = null;
 		if (status.equals(User.Status.AWAY))
 			mode = IPresence.Mode.AWAY;
@@ -291,9 +286,22 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 			mode = IPresence.Mode.EXTENDED_AWAY;
 		else
 			mode = IPresence.Mode.AVAILABLE;
+		return mode;
+	}
 
-		return new Presence(type, (moodMessage == null) ? "" : moodMessage,
-				mode, props, image);
+	/**
+	 * @param status
+	 * @return
+	 */
+	private IPresence createPresenceForExistingEntry(
+			IRosterEntry existingEntry, User.Status status) {
+		IPresence existingPresence = existingEntry.getPresence();
+		Map props = existingPresence.getProperties();
+		String moodMessage = existingPresence.getStatus();
+		byte[] image = existingPresence.getPictureData();
+		return new Presence(createPresenceType(status),
+				(moodMessage == null) ? "" : moodMessage,
+				createPresenceMode(status), props, image);
 	}
 
 	private IRosterEntry createRosterEntry(User friend) {
@@ -308,25 +316,30 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 		this.roster = new Roster(container, user);
 	}
 
+	private IRosterEntry addEntryToRoster(User friend) {
+		IRosterEntry entry = createRosterEntry(friend);
+		((Roster) roster).addItem(entry);
+		return entry;
+	}
+
 	protected void fillRoster() throws SkypeException, ConnectorException {
 		Connector.getInstance().addConnectorListener(connectorListener);
 		Connector.getInstance().addConnectorListener(
 				rosterChangeConnectorListener);
-		contactList = Skype.getContactList();
-		Friend[] friends = contactList.getAllFriends();
+		Friend[] friends = Skype.getContactList().getAllFriends();
 		for (int i = 0; i < friends.length; i++) {
-			final Friend friend = friends[i];
-			((Roster) roster).addItem(createRosterEntry(friend));
+			IRosterEntry entry = addEntryToRoster(friends[i]);
 			// Add property listener
-			friend.addPropertyChangeListener(new PropertyChangeListener() {
+			friends[i].addPropertyChangeListener(new PropertyChangeListener() {
 				public void propertyChange(PropertyChangeEvent evt) {
 					handleFriendPropertyChangeEvent(evt);
 				}
 			});
-			fireUpdatePresenceListeners(friend, friend.getStatus());
+			fireRosterUpdate(entry);
+			fireRosterEntryAdded(entry);
 		}
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -368,17 +381,14 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 	 * 
 	 */
 	protected void dispose() {
-		contactList = null;
 		try {
 			Connector.getInstance().removeConnectorListener(connectorListener);
 		} catch (Exception e) {
-			// XXX log error
 		}
 		try {
 			Connector.getInstance().removeConnectorListener(
 					rosterChangeConnectorListener);
 		} catch (Exception e) {
-			// XXX log error
 		}
 	}
 

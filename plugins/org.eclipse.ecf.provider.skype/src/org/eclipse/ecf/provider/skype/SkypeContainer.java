@@ -128,14 +128,7 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 		try {
 			this.remoteServerID = userID;
 			this.connectionState = CONNECTED;
-			new Thread(new Runnable() {
-				public void run() {
-					try {
-						rosterManager.fillRoster();
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-				}}).start();
+			rosterManager.fillRoster();
 			fireContainerEvent(new ContainerConnectedEvent(getID(),
 					this.remoteServerID));
 		} catch (Exception e) {
