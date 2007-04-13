@@ -52,7 +52,7 @@ import com.skype.connector.ConnectorStatusEvent;
 public class SkypeRosterManager extends AbstractRosterManager implements
 		IRosterManager {
 
-	private static final boolean debug = false;
+	private static final boolean debug = true;
 
 	private SkypeContainer container;
 
@@ -124,8 +124,6 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 	private void fireRosterChange(String skypeId, boolean add) {
 		if (add) {
 			IRosterEntry entry = addEntryToRoster(User.getInstance(skypeId));
-			fireSubscriptionListener(entry.getUser().getID(),
-					IPresence.Type.SUBSCRIBED);
 			fireRosterUpdate(entry);
 			fireRosterEntryAdded(entry);
 		} else {
