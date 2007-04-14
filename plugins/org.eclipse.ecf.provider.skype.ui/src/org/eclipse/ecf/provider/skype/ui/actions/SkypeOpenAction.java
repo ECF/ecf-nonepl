@@ -52,6 +52,7 @@ public class SkypeOpenAction implements IWorkbenchWindowActionDelegate {
 				mrv = (MultiRosterView) wp.showView(MultiRosterView.VIEW_ID);
 			    container.connect(null, null);
 				mrv.addContainer(container);
+				action.setEnabled(false);
 			} else
 				wp.showView(MultiRosterView.VIEW_ID);
 			
