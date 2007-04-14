@@ -3,21 +3,14 @@ package org.eclipse.ecf.provider.skype.ui.actions;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.internal.provider.skype.ui.Messages;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
+import org.eclipse.ecf.presence.ui.roster.AbstractRosterEntryContributionItem;
 import org.eclipse.ecf.provider.skype.SkypeContainer;
 import org.eclipse.jface.action.ActionContributionItem;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.action.IContributionItem;
-import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.osgi.util.NLS;
-import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchWindow;
-import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.actions.CompoundContributionItem;
 
-public class SkypeActionContributionItems extends CompoundContributionItem {
-
-	private Object selectedModel;
+public class SkypeActionContributionItems extends AbstractRosterEntryContributionItem {
 
 	public SkypeActionContributionItems() {
 	}
@@ -26,48 +19,27 @@ public class SkypeActionContributionItems extends CompoundContributionItem {
 		super(id);
 	}
 
-	protected void processSelection() {
-		selectedModel = null;
-		IWorkbenchWindow ww = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow();
-		if (ww != null) {
-			IWorkbenchPage p = ww.getActivePage();
-			if (p != null) {
-				ISelection selection = p.getSelection();
-				if (selection != null
-						&& selection instanceof IStructuredSelection)
-					selectedModel = ((IStructuredSelection) selection)
-							.getFirstElement();
-
-			}
-		}
-	}
-
 	private IAction[] makeActions() {
-		if (selectedModel != null && selectedModel instanceof IRosterEntry) {
-			IRosterEntry rosterEntry = (IRosterEntry) selectedModel;
-			IContainer container = (IContainer) rosterEntry.getRoster()
-					.getPresenceContainerAdapter().getAdapter(IContainer.class);
+		IRosterEntry entry = getSelectedRosterEntry();
+		IContainer c = getContainerForRosterEntry(entry);
+		if (entry != null && c != null && c instanceof SkypeContainer) {
 			IAction[] actions = new IAction[1];
-			if (container instanceof SkypeContainer) {
-				actions[0] = new SkypeCallAction(
-						rosterEntry.getUser().getID(),
+			actions[0] = new SkypeCallAction(
+						entry.getUser().getID(),
 						NLS
 								.bind(
 										Messages.SkypeActionContributionItems_Call_User,
-										rosterEntry.getName()),
+										entry.getName()),
 						NLS
 								.bind(
 										Messages.SkypeActionContributionItems_Call_User_Tooltip,
-										rosterEntry.getName()));
+										entry.getName()));
 				return actions;
 			}
-		}
 		return null;
 	}
 
 	protected IContributionItem[] getContributionItems() {
-		processSelection();
 		IAction[] actions = makeActions();
 		if (actions == null)
 			return null;
