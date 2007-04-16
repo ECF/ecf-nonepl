@@ -12,6 +12,8 @@ import org.eclipse.osgi.util.NLS;
 
 public class SkypeActionContributionItems extends AbstractRosterEntryContributionItem {
 
+	private static final IContributionItem[] EMPTY_ARRAY = new IContributionItem[0];
+
 	public SkypeActionContributionItems() {
 	}
 
@@ -42,7 +44,7 @@ public class SkypeActionContributionItems extends AbstractRosterEntryContributio
 	protected IContributionItem[] getContributionItems() {
 		IAction[] actions = makeActions();
 		if (actions == null)
-			return null;
+			return EMPTY_ARRAY;
 		IContributionItem[] items = new IContributionItem[actions.length];
 		for (int i = 0; i < actions.length; i++)
 			items[i] = new ActionContributionItem(actions[i]);

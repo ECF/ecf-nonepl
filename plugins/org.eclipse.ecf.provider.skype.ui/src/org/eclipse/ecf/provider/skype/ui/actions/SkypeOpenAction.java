@@ -25,8 +25,6 @@ public class SkypeOpenAction implements IWorkbenchWindowActionDelegate {
 
 	private static final String DEFAULT_CLIENT = "ecf.call.skype"; //$NON-NLS-1$
 
-	private MultiRosterView mrv = null;
-
 	protected static IContainer getContainer() {
 		return container;
 	}
@@ -48,19 +46,13 @@ public class SkypeOpenAction implements IWorkbenchWindowActionDelegate {
 
 		try {
 			
-			if (mrv == null) {
-				mrv = (MultiRosterView) wp.showView(MultiRosterView.VIEW_ID);
-			    container.connect(null, null);
-				mrv.addContainer(container);
-				action.setEnabled(false);
-			} else
-				wp.showView(MultiRosterView.VIEW_ID);
-			
-			/*
-			PresenceUI presenceUI = new PresenceUI(container,(IPresenceContainerAdapter)container.getAdapter(IPresenceContainerAdapter.class));
-			presenceUI.showForUser(((SkypeContainer) container).getRosterManager().getRoster().getUser());
+			container = ContainerFactory.getDefault().createContainer(
+						DEFAULT_CLIENT);
+			MultiRosterView mrv = (MultiRosterView) wp.showView(MultiRosterView.VIEW_ID);
 			container.connect(null, null);
-			*/
+			mrv.addContainer(container);
+			action.setEnabled(false);
+			
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -97,12 +89,5 @@ public class SkypeOpenAction implements IWorkbenchWindowActionDelegate {
 	 */
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
-		try {
-			container = ContainerFactory.getDefault().createContainer(
-					DEFAULT_CLIENT);
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
 	}
 }
