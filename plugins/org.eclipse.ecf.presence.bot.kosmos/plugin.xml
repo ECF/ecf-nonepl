@@ -35,7 +35,7 @@
       <handler
             chatRoomRobotId="org.hantsuki.kosmos.chatroomBot"
             class="org.eclipse.ecf.presence.bot.kosmos.ChatRoomMessageHandler"
-            filterExpression="(~bug|~bug[0-9]+|~bug[0-9]+c[0-9]+|~[0-9]+|~[0-9]+c[0-9]+|~manage|~log|~logs|~about|~paste|~pastebin|~tell .*|~snippet|~snippets|~javadoc|~api|~plugin|~bot|~wtp|~php|~svn|~news|~newsgroup|~cmd|~commands|~help|~g .*|~wiki .*|~eh .*)">
+            filterExpression="(~bug|~bug[0-9]+|~bug[0-9]+c[0-9]+|~[0-9]+|~[0-9]+c[0-9]+|~manage|~log|~logs|~about|~paste|~pastebin|~tell .*|~snippet|~snippets|~javadoc|~api|~plugin|~bot|~wtp|~php|~svn|~news|~newsgroup|~cmd|~commands|~help|~g .*|~wiki .*|~eh .*|~source)">
       </handler>
    </extension>
 

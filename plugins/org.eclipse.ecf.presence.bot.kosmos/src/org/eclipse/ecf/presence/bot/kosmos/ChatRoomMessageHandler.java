@@ -398,6 +398,14 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 		}
 	}
 
+	private void sendSource(ID roomID, String target) {
+		if (target == null) {
+			sendMessage(roomID, Messages.Source);
+		} else {
+			sendMessage(roomID, NLS.bind(Messages.Source_Reply, target));
+		}
+	}
+
 	private void send(ID roomID, String target, String msg) {
 		if (msg.equals("bug")) { //$NON-NLS-1$
 			sendBugzillaLink(roomID, target);
@@ -440,6 +448,8 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendWiki(roomID, target, msg.substring(5));
 		} else if (msg.startsWith("eh")) { //$NON-NLS-1$
 			sendEclipseHelp(roomID, target, msg.substring(3));
+		} else if (msg.equals("source")) { //$NON-NLS-1$
+			sendSource(roomID, target);
 		} else {
 			int index = msg.indexOf('c');
 			if (index == -1) {

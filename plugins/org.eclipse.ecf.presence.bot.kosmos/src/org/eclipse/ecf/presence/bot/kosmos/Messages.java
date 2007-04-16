@@ -70,6 +70,9 @@ public class Messages extends NLS {
 	public static String EclipseHelp;
 	public static String EclipseHelp_Reply;
 
+	public static String Source;
+	public static String Source_Reply;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
