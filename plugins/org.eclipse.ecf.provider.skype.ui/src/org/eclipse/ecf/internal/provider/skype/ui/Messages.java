@@ -21,6 +21,12 @@ public class Messages extends NLS {
 	public static String SkypeActionContributionItems_Call_User;
 	public static String SkypeActionContributionItems_Call_User_Tooltip;
 	public static String SkypeCallAction_Call_Image_Icon_Name;
+	public static String SkypeConnectWizard_EXCEPTION_SEE_DETAILS;
+	public static String SkypeConnectWizard_EXCEPTION_SKYPE_EXCEPTION;
+	public static String SkypeConnectWizardPage_CONNECT_WIZARD_PAGE_MESSAGE;
+	public static String SkypeConnectWizardPage_CONNECTION_WIZARD_TITLE;
+	public static String SkypeConnectWizardPage_SKYPE_WIZARD_DESCRIPTION;
+	public static String SkypeConnectWizardPage_SKYPEICON_48X48;
 	public static String SkypeOpenAction_3;
 	public static String SkypeOpenAction_4;
 	public static String SkypeOpenAction_Initiate_Skype_Call_Message;

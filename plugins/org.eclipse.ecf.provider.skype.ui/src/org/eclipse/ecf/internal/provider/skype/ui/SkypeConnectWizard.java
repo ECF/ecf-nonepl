@@ -182,8 +182,8 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 															workbench
 																	.getActiveWorkbenchWindow()
 																	.getShell(),
-															1, "See Details",
-															"Skype", exception)
+															1, Messages.SkypeConnectWizard_EXCEPTION_SEE_DETAILS,
+															Messages.SkypeConnectWizard_EXCEPTION_SKYPE_EXCEPTION, exception)
 															.open();
 												}
 											});
