@@ -2,6 +2,9 @@ package org.eclipse.ecf.internal.provider.skype.ui;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.call.ICallSessionContainerAdapter;
+import org.eclipse.ecf.call.ICallSessionRequestListener;
+import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.IContainerConnectedEvent;
@@ -169,6 +172,9 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 					}
 				});
 
+				ICallSessionContainerAdapter callAdapter = (ICallSessionContainerAdapter) container.getAdapter(ICallSessionContainerAdapter.class);
+				callAdapter.addCallSessionRequestListener(createCallSessionRequestListener());
+				
 				new AsynchContainerConnectAction(container, null, null,
 						new IExceptionHandler() {
 							public IStatus handleException(
@@ -195,6 +201,17 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 
 			}
 		return true;
+	}
+
+	/**
+	 * @return
+	 */
+	private ICallSessionRequestListener createCallSessionRequestListener() {
+		return new ICallSessionRequestListener() {
+
+			public void handleCallSessionRequest(ICallSessionRequestEvent event) {
+				System.out.println("handleCallSessionRequest("+event+")");
+			}};
 	}
 
 }
