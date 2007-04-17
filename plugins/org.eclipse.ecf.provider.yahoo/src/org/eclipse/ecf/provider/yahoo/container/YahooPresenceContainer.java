@@ -21,9 +21,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.user.IUser;
+import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.AbstractPresenceContainer;
@@ -32,8 +34,8 @@ import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
 import org.eclipse.ecf.presence.Presence;
-import org.eclipse.ecf.presence.history.IHistoryManager;
 import org.eclipse.ecf.presence.history.IHistory;
+import org.eclipse.ecf.presence.history.IHistoryManager;
 import org.eclipse.ecf.presence.im.ChatMessage;
 import org.eclipse.ecf.presence.im.ChatMessageEvent;
 import org.eclipse.ecf.presence.im.IChatManager;
@@ -43,14 +45,20 @@ import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
+import org.eclipse.ecf.presence.roster.IRosterGroup;
+import org.eclipse.ecf.presence.roster.IRosterItem;
+import org.eclipse.ecf.presence.roster.IRosterListener;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.presence.roster.IRosterSubscriptionListener;
 import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
-import org.eclipse.ecf.presence.roster.IRosterUpdateListener;
 import org.eclipse.ecf.presence.roster.Roster;
+import org.eclipse.ecf.presence.roster.RosterEntry;
+import org.eclipse.ecf.presence.roster.RosterGroup;
+import org.eclipse.ecf.provider.yahoo.identity.YahooID;
 
 import ymsg.network.Session;
 import ymsg.network.StatusConstants;
+import ymsg.network.YahooGroup;
 import ymsg.network.YahooUser;
 import ymsg.network.event.SessionEvent;
 import ymsg.network.event.SessionFriendEvent;
@@ -61,7 +69,10 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	
 	List listeners = new ArrayList();
 	
-	public YahooPresenceContainer(Session session) {
+	IContainer container;
+	
+	public YahooPresenceContainer(IContainer container, Session session) {
+		this.container = container;
 		this.session = session;
 	}
 
@@ -149,6 +160,8 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	
 	Vector presenceListeners = new Vector();
 	
+	Vector rosterListeners = new Vector();
+	
 	protected List getPresenceListeners() {
 		return presenceListeners;
 	}
@@ -184,13 +197,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
         }
     }
 
-    protected void fireRosterEntry(IRosterEntry entry) {
-        for (int i = 0; i < getPresenceListeners().size(); i++) {
-            IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
-            l.handleRosterEntryAdd(entry);
-        }
-    }
-    
 	/**
 	 * Note: This method is simplistic
 	 * 
@@ -209,7 +215,30 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		return presence;
 	}
 
-	IRoster roster = new Roster(this);
+	Roster roster = null;
+	
+	IPresenceSender presenceSender = new IPresenceSender() {
+
+		public void sendPresenceUpdate(ID targetID, IPresence presence)
+				throws ECFException {
+			// TODO Auto-generated method stub
+			
+		}
+		
+	};
+	
+	IRosterSubscriptionSender rosterSubscriptionSender = new IRosterSubscriptionSender() {
+
+		public void sendRosterAdd(String user, String name, String[] groups)
+				throws ECFException {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void sendRosterRemove(ID userID) throws ECFException {
+			// TODO Auto-generated method stub
+			
+		}};
 	
 	IRosterManager rosterManger = new IRosterManager() {
 
@@ -221,11 +250,12 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 				IRosterSubscriptionListener listener) {
 		}
 
-		public void addRosterUpdateListener(IRosterUpdateListener listener) {
+		public void addRosterListener(IRosterListener listener) {
+			rosterListeners.add(listener);
 		}
 
 		public IPresenceSender getPresenceSender() {
-			return null;
+			return presenceSender;
 		}
 
 		public IRoster getRoster() {
@@ -233,7 +263,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		}
 
 		public IRosterSubscriptionSender getRosterSubscriptionSender() {
-			return null;
+			return rosterSubscriptionSender;
 		}
 
 		public void removePresenceListener(IPresenceListener listener) {
@@ -244,7 +274,8 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 				IRosterSubscriptionListener listener) {
 		}
 
-		public void removeRosterUpdateListener(IRosterUpdateListener listener) {
+		public void removeRosterListener(IRosterListener listener) {
+			rosterListeners.remove(listener);
 		}
 
 		public Object getAdapter(Class adapter) {
@@ -256,12 +287,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	public IRosterManager getRosterManager() {
 		return rosterManger;
 	}
-
-	public IUser getUser() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.presence.IPresenceContainerAdapter#getChatManager()
 	 */
@@ -274,6 +300,66 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 */
 	protected IRoster getRoster() {
 		return roster;
+	}
+	
+	/**
+	 * Creates a Roster entry in the YMSG Buddy List for each buddy. Each roster
+	 * entry includes the targetID (representing this session), the userID
+	 * (created to represent the buddy in ECF), and the userName
+	 * 
+	 * @param user
+	 *            YahooUser to add to ECF buddy list
+	 * @return returns roster entry representing this user in the buddy list
+	 */
+	protected IRosterEntry makeRosterEntry(IRosterGroup group, YahooUser user) {
+		String userName = user.getId();
+		ID userID;
+		try {
+			userID = IDFactory.getDefault().createID(
+					container.getConnectNamespace(), userName);
+			IPresence presence = createPresence(userID
+					.getName());
+			return new RosterEntry(group, new User(userID, userName), presence);
+		} catch (IDCreateException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+
+
+	protected void populateRoster(YahooID userID, YahooGroup[] groups) {
+		roster = new Roster(this,new User(userID));
+		for (int i = 0; i < groups.length; i++) {
+			RosterGroup group = new RosterGroup(getRoster(),
+					groups[i].getName());
+			for (int j = 0; j < groups[i].getMembers().size(); j++) {
+				YahooUser u = (YahooUser) groups[i].getMembers().get(j);
+				makeRosterEntry(group, u);
+			}
+			roster.addItem(group);
+		}
+		fireRosterUpdate(roster);
+	}
+
+
+	/**
+	 * @param entry
+	 */
+	protected void fireRosterEntryAdd(IRosterEntry entry) {
+		for(Iterator i=rosterListeners.iterator(); i.hasNext(); ) {
+			IRosterListener l = (IRosterListener) i.next();
+			l.handleRosterEntryAdd(entry);
+		}
+	}
+
+	/**
+	 * @param entry
+	 */
+	public void fireRosterUpdate(IRosterItem entry) {
+		for(Iterator i=rosterListeners.iterator(); i.hasNext(); ) {
+			IRosterListener l = (IRosterListener) i.next();
+			l.handleRosterUpdate(roster,entry);
+		}
 	}
 
 }

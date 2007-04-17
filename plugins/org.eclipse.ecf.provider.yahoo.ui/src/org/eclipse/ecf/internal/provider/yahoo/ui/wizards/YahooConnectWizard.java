@@ -13,16 +13,27 @@ package org.eclipse.ecf.internal.provider.yahoo.ui.wizards;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerListener;
+import org.eclipse.ecf.core.events.IContainerConnectedEvent;
+import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.IExceptionHandler;
 import org.eclipse.ecf.internal.provider.yahoo.ui.Activator;
+import org.eclipse.ecf.presence.IIMMessageEvent;
+import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
-import org.eclipse.ecf.presence.ui.PresenceUI;
+import org.eclipse.ecf.presence.im.IChatManager;
+import org.eclipse.ecf.presence.im.IChatMessage;
+import org.eclipse.ecf.presence.im.IChatMessageEvent;
+import org.eclipse.ecf.presence.im.IChatMessageSender;
+import org.eclipse.ecf.presence.im.ITypingMessageEvent;
+import org.eclipse.ecf.presence.im.ITypingMessageSender;
+import org.eclipse.ecf.presence.ui.MessagesView;
+import org.eclipse.ecf.presence.ui.MultiRosterView;
 import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
 import org.eclipse.ecf.ui.dialogs.ContainerConnectErrorDialog;
@@ -30,6 +41,9 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
+import org.eclipse.ui.IWorkbenchPage;
+import org.eclipse.ui.PartInitException;
+import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 
@@ -67,7 +81,77 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 	public void init(IWorkbench workbench, IContainer container) {
 		shell = workbench.getActiveWorkbenchWindow().getShell();
 		this.container = container;
+		this.workbench = workbench;
 	}
+
+	private void openView() {
+		try {
+			MultiRosterView view = (MultiRosterView) workbench
+					.getActiveWorkbenchWindow().getActivePage().showView(
+							MultiRosterView.VIEW_ID);
+			view.addContainer(container);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		}
+	}
+
+	private void displayMessage(IChatMessageEvent e) {
+		final IChatMessage message = e.getChatMessage();
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MessagesView view = (MessagesView) workbench
+						.getActiveWorkbenchWindow().getActivePage().findView(
+								MessagesView.VIEW_ID);
+				if (view != null) {
+					IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) view
+							.getSite().getAdapter(
+									IWorkbenchSiteProgressService.class);
+					view.openTab(icms, itms, targetID, message.getFromID());
+					view.showMessage(message.getFromID(), message.getBody());
+					service.warnOfContentChange();
+				} else {
+					try {
+
+						IWorkbenchPage page = workbench
+								.getActiveWorkbenchWindow().getActivePage();
+						view = (MessagesView) page.showView(
+								MessagesView.VIEW_ID, null,
+								IWorkbenchPage.VIEW_CREATE);
+						if (!page.isPartVisible(view)) {
+							IWorkbenchSiteProgressService service = (IWorkbenchSiteProgressService) view
+									.getSite()
+									.getAdapter(
+											IWorkbenchSiteProgressService.class);
+							service.warnOfContentChange();
+						}
+						view.openTab(icms, itms, targetID, message.getFromID());
+						view
+								.showMessage(message.getFromID(), message
+										.getBody());
+					} catch (PartInitException e) {
+						e.printStackTrace();
+					}
+				}
+			}
+		});
+	}
+
+	private void displayTypingNotification(final ITypingMessageEvent e) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				MessagesView view = (MessagesView) workbench
+						.getActiveWorkbenchWindow().getActivePage().findView(
+								MessagesView.VIEW_ID);
+				if (view != null) {
+					view.displayTypingNotification(e);
+				}
+			}
+		});
+	}
+
+	private IWorkbench workbench;
+	private IChatMessageSender icms;
+	private ITypingMessageSender itms;
 
 	public boolean performFinish() {
 		connectContext = ConnectContextFactory
@@ -82,16 +166,53 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 			return false;
 		}
 
-		// Get presence container adapter
-		IPresenceContainerAdapter presenceAdapter = (IPresenceContainerAdapter) container
+		final IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) container
 				.getAdapter(IPresenceContainerAdapter.class);
-		// Create and show roster view user interface
-		new PresenceUI(container, presenceAdapter).showForUser(new User(
-				targetID));
+		container.addListener(new IContainerListener() {
+			public void handleEvent(IContainerEvent event) {
+				if (event instanceof IContainerConnectedEvent) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							openView();
+						}
+					});
+				}
+			}
+		});
 
-		new AsynchContainerConnectAction(this.container, this.targetID,
-				this.connectContext, exceptionHandler).run(null);
+		IChatManager icm = adapter.getChatManager();
+		icms = icm.getChatMessageSender();
+		itms = icm.getTypingMessageSender();
 
+		icm.addMessageListener(new IIMMessageListener() {
+			public void handleMessageEvent(IIMMessageEvent e) {
+				if (e instanceof IChatMessageEvent) {
+					displayMessage((IChatMessageEvent) e);
+				} else if (e instanceof ITypingMessageEvent) {
+					displayTypingNotification((ITypingMessageEvent) e);
+				}
+			}
+		});
+
+		new AsynchContainerConnectAction(container, targetID, connectContext,
+				new IExceptionHandler() {
+					public IStatus handleException(final Throwable exception) {
+						if (exception != null) {
+							exception.printStackTrace();
+							Display.getDefault().asyncExec(new Runnable() {
+								public void run() {
+									new ContainerConnectErrorDialog(workbench
+											.getActiveWorkbenchWindow()
+											.getShell(), 1, "See Details",
+											targetID.getName(), exception)
+											.open();
+								}
+							});
+						}
+						return Status.OK_STATUS;
+					}
+
+				}).run(null);
 		return true;
 	}
 

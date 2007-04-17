@@ -99,15 +99,6 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 		}
 	}
 
-	private void fireRosterEntryAdded(IRosterEntry entry) {
-		synchronized (presenceListeners) {
-			for (int i = 0; i < presenceListeners.size(); i++) {
-				((IPresenceListener) presenceListeners.get(i))
-						.handleRosterEntryAdd(entry);
-			}
-		}
-	}
-
 	/**
 	 * @param skypeId
 	 * @param add
@@ -115,13 +106,16 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 	private void fireRosterChange(String skypeId, boolean add) {
 		if (add) {
 			IRosterEntry entry = addEntryToRoster(User.getInstance(skypeId));
+			fireRosterAdd(entry);
 			fireRosterUpdate(entry);
-			fireRosterEntryAdded(entry);
 		} else {
 			IRosterEntry entry = getEntryForFriend(skypeId);
-			if (entry != null)
+			if (entry != null) {
+				fireRosterRemove(entry);
 				fireSubscriptionListener(entry.getUser().getID(),
 						IPresence.Type.UNSUBSCRIBED);
+				fireRosterUpdate(entry);
+			}
 		}
 	}
 
@@ -250,8 +244,9 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 			IRosterItem item = (IRosterItem) i.next();
 			if (item instanceof IRosterEntry) {
 				IRosterEntry entry = (IRosterEntry) item;
-				if (entry.getUser().getID().equals(friendID))
+				if (entry.getUser().getID().equals(friendID)) {
 					return entry;
+				}
 			}
 		}
 		return null;
@@ -321,8 +316,8 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 					handleFriendPropertyChangeEvent(evt);
 				}
 			});
+			fireRosterAdd(entry);
 			fireRosterUpdate(entry);
-			fireRosterEntryAdded(entry);
 		}
 	}
 
