@@ -37,11 +37,13 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 	private static final String SUM_CLOSE_TAG = "</short_desc>"; //$NON-NLS-1$
 
 	private Map messageSenders;
+	private JavadocAnalyzer analyzer;
 
 	private IContainer container;
 
 	public ChatRoomMessageHandler() {
 		messageSenders = new HashMap();
+		analyzer = new JavadocAnalyzer();
 	}
 
 	private void sendMessage(ID roomID, String message) {
@@ -404,6 +406,43 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 		} else {
 			sendMessage(roomID, NLS.bind(Messages.Source_Reply, target));
 		}
+
+	}
+
+	private void sendECF(ID roomID, String target) {
+		if (target == null) {
+			sendMessage(roomID, Messages.ECF);
+		} else {
+			sendMessage(roomID, NLS.bind(Messages.ECF_Reply, target));
+		}
+	}
+
+	private void sendJavaDoc(ID roomID, String target, String parameter) {
+		String append = target == null ? "" : target + ": ";
+		String message = null;
+		int index = parameter.indexOf("#");
+		if (index == -1) {
+			message = analyzer.getJavadocs(parameter);
+		} else {
+			String className = parameter.substring(0, index);
+			parameter = parameter.substring(index + 1);
+			index = parameter.indexOf('(');
+			if (index == -1) {
+				message = parameter + " - "
+						+ analyzer.getJavadocs(className, parameter);
+			} else {
+				String method = parameter.substring(0, index);
+				parameter = parameter.substring(index + 1);
+				parameter = parameter.substring(0, parameter.indexOf(')'));
+				String[] parameters = parameter.split(",");
+				for (int i = 0; i < parameters.length; i++) {
+					parameters[i] = parameters[i].trim();
+				}
+				message = parameter + " - "
+						+ analyzer.getJavadocs(className, method, parameters);
+			}
+		}
+		sendMessage(roomID, append + message);
 	}
 
 	private void send(ID roomID, String target, String msg) {
@@ -429,6 +468,10 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendSnippets(roomID, target);
 		} else if (msg.equals("javadoc") || msg.equals("api")) { //$NON-NLS-1$ //$NON-NLS-2$
 			sendJavaDoc(roomID, target);
+		} else if (msg.startsWith("javadoc ")) {
+			sendJavaDoc(roomID, target, msg.substring(8));
+		} else if (msg.startsWith("api ")) {
+			sendJavaDoc(roomID, target, msg.substring(4));
 		} else if (msg.equals("news") || msg.equals("newsgroup")) { //$NON-NLS-1$ //$NON-NLS-2$
 			sendNewsgroup(roomID, target);
 		} else if (msg.equals("plugin")) { //$NON-NLS-1$
@@ -450,6 +493,8 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendEclipseHelp(roomID, target, msg.substring(3));
 		} else if (msg.equals("source")) { //$NON-NLS-1$
 			sendSource(roomID, target);
+		} else if (msg.equals("ecf")) { //$NON-NLS-1$
+			sendECF(roomID, target);
 		} else {
 			int index = msg.indexOf('c');
 			if (index == -1) {

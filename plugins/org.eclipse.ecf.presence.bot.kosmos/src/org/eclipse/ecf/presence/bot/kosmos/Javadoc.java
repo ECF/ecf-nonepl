@@ -1,0 +1,77 @@
+package org.eclipse.ecf.presence.bot.kosmos;
+
+import java.util.Map;
+
+class Javadoc {
+
+	private static final String LINK_PREFIX = "http://help.eclipse.org/help32/nftopic/org.eclipse.platform.doc.isv/reference/api/"; //$NON-NLS-1$
+	private static final String LINK_SUFFIX = ".html"; //$NON-NLS-1$
+
+	private Map javadocs;
+	private String fqn;
+	private String link;
+
+	Javadoc(Map javadocs, String fullQualifiedName) {
+		this.javadocs = javadocs;
+		fqn = fullQualifiedName;
+		link = LINK_PREFIX + fqn.replaceAll("\\.", "/") + LINK_SUFFIX;
+	}
+
+	String getField(String field) {
+		return link + '#' + field;
+	}
+
+	String getMethod(String methodName, String[] array) {
+		String ret = link + '#' + methodName + '(';
+		for (int i = 0; i < array.length; i++) {
+			Object match = javadocs.get(array[i]);
+			if (match == null) {
+				if (array[i].equals("int") || array[i].equals("float")
+						|| array[i].equals("short") || array[i].equals("long")
+						|| array[i].equals("byte")
+						|| array[i].equals("boolean")
+						|| array[i].equals("double") || array[i].equals("char")) {
+					ret = ret + array[i] + ",%20";
+				} else if (array[i].equals("Object")
+						|| array[i].equals("Class")
+						|| array[i].equals("String")) {
+					ret = ret + "java.lang." + array[i] + ",%20";
+				} else if (array[i].equals("Map") || array[i].equals("List")
+						|| array[i].equals("Set")
+						|| array[i].equals("Collection")) {
+					ret = ret + "java.util." + array[i] + ",%20";
+				} else {
+					ret = ret + array[i] + ",%20";
+				}
+			} else if (match instanceof Javadoc) {
+				ret = ret + ((Javadoc) match).fqn + ",%20";
+			} else {
+				Javadoc[] docs = (Javadoc[]) match;
+				boolean found = false;
+				for (int j = 0; j < docs.length; j++) {
+					if (array[i].equals(docs[j].fqn)) {
+						ret = ret + array[i] + ",%20";
+						found = true;
+						break;
+					}
+				}
+				if (!found) {
+					return null;
+				}
+			}
+		}
+		if (ret.endsWith(",%20")) {
+			ret = ret.substring(0, ret.length() - 4);
+		}
+		return ret + ')';
+	}
+
+	String getDefault() {
+		return fqn + " - " + link; //$NON-NLS-1$
+	}
+	
+	public String toString() {
+		return fqn;
+	}
+
+}

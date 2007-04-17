@@ -73,6 +73,9 @@ public class Messages extends NLS {
 	public static String Source;
 	public static String Source_Reply;
 
+	public static String ECF;
+	public static String ECF_Reply;
+
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
