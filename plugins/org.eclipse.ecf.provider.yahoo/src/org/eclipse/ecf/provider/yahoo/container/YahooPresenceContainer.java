@@ -65,6 +65,8 @@ import ymsg.network.event.SessionFriendEvent;
 
 public class YahooPresenceContainer extends AbstractPresenceContainer {
 
+	private static final String YAHOO_ACCOUNT_NAME = " [yahoo]";
+	
 	private Session session;
 	
 	List listeners = new ArrayList();
@@ -328,7 +330,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 
 	protected void populateRoster(YahooID userID, YahooGroup[] groups) {
-		roster = new Roster(this,new User(userID));
+		roster = new Roster(this,new User(userID,userID.getName()+YAHOO_ACCOUNT_NAME));
 		for (int i = 0; i < groups.length; i++) {
 			RosterGroup group = new RosterGroup(getRoster(),
 					groups[i].getName());

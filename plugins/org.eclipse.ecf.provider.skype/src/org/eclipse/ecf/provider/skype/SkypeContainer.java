@@ -46,6 +46,8 @@ import com.skype.connector.ConnectorException;
 public class SkypeContainer extends ClientSOContainer implements IContainer,
 		IPresenceContainerAdapter {
 
+	private static final String SKYPE_ACCOUNT_NAME = " [skype]";
+	
 	SkypeAccountManager accountManager = null;
 	SkypeRosterManager rosterManager = null;
 	SkypeChatManager chatManager = null;
@@ -106,7 +108,7 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 		fullName = (fullName == null || fullName.equals("")) ? userID.getUser()
 				: fullName;
 		org.eclipse.ecf.core.user.User user = new org.eclipse.ecf.core.user.User(
-				userID, fullName);
+				userID, fullName+SKYPE_ACCOUNT_NAME);
 
 		accountManager = new SkypeAccountManager(this, skypeProfile, userID,
 				user);
