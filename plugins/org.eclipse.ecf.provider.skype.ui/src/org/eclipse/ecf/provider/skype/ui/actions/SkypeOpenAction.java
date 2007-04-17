@@ -153,8 +153,10 @@ public class SkypeOpenAction implements IWorkbenchWindowActionDelegate {
 						Display.getDefault().asyncExec(new Runnable() {
 							public void run() {
 								action.setEnabled(true);
-								container.dispose();
-								container = null;
+								if (container != null) {
+									container.dispose();
+									container = null;
+								}
 							}
 						});
 

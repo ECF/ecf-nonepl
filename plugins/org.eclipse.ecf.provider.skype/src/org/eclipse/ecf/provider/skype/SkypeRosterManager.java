@@ -108,15 +108,6 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 		}
 	}
 
-	private void fireRosterEntryUpdated(IRosterEntry entry) {
-		synchronized (presenceListeners) {
-			for (int i = 0; i < presenceListeners.size(); i++) {
-				((IPresenceListener) presenceListeners.get(i))
-						.handleRosterEntryUpdate(entry);
-			}
-		}
-	}
-
 	/**
 	 * @param skypeId
 	 * @param add
@@ -238,10 +229,7 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 		if (src instanceof Friend && newValue instanceof User.Status) {
 			IRosterEntry entry = updateExistingRosterEntry((Friend) src,
 					(User.Status) evt.getNewValue());
-			if (entry != null) {
-				fireRosterUpdate(entry);
-				fireRosterEntryUpdated(entry);
-			}
+			if (entry != null) fireRosterUpdate(entry);
 		}
 	}
 
