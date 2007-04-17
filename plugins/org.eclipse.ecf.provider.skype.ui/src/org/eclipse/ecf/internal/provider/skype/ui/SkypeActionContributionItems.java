@@ -1,7 +1,6 @@
-package org.eclipse.ecf.provider.skype.ui.actions;
+package org.eclipse.ecf.internal.provider.skype.ui;
 
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.internal.provider.skype.ui.Messages;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.ui.roster.AbstractRosterEntryContributionItem;
 import org.eclipse.ecf.provider.skype.SkypeContainer;
@@ -26,7 +25,7 @@ public class SkypeActionContributionItems extends AbstractRosterEntryContributio
 		IContainer c = getContainerForRosterEntry(entry);
 		if (entry != null && c != null && c instanceof SkypeContainer) {
 			IAction[] actions = new IAction[1];
-			actions[0] = new SkypeCallAction(
+			actions[0] = new SkypeCallAction(c,
 						entry.getUser().getID(),
 						NLS
 								.bind(

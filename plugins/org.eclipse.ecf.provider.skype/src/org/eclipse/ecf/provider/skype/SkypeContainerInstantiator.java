@@ -23,13 +23,18 @@ import org.eclipse.ecf.presence.IPresenceContainerAdapter;
  */
 public class SkypeContainerInstantiator implements IContainerInstantiator {
 
+	SkypeContainer container = null;;
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
 	 */
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] parameters) throws ContainerCreateException {
 		try {
-			return new SkypeContainer();
+			if (container == null) {
+				container = new SkypeContainer();
+			}
+			return container;
 		} catch (Exception e) {
 			throw new ContainerCreateException("Could not create skype container",e);
 		}

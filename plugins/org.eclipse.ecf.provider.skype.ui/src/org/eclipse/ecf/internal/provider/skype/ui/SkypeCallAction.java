@@ -1,10 +1,8 @@
-package org.eclipse.ecf.provider.skype.ui.actions;
+package org.eclipse.ecf.internal.provider.skype.ui;
 
 import org.eclipse.ecf.call.ui.actions.AbstractCallAction;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.internal.provider.skype.ui.Activator;
-import org.eclipse.ecf.internal.provider.skype.ui.Messages;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
@@ -14,7 +12,10 @@ public class SkypeCallAction extends AbstractCallAction {
 			.imageDescriptorFromPlugin(Activator.PLUGIN_ID,
 					Messages.SkypeCallAction_Call_Image_Icon_Name);
 
-	public SkypeCallAction(ID skypeReceiver, String text, String tooltip) {
+	IContainer container;
+	
+	public SkypeCallAction(IContainer container, ID skypeReceiver, String text, String tooltip) {
+		this.container = container;
 		this.setCallReceiver(skypeReceiver);
 		this.setText(text);
 		this.setToolTipText(tooltip);
@@ -22,7 +23,7 @@ public class SkypeCallAction extends AbstractCallAction {
 	}
 
 	protected IContainer getContainer() {
-		return SkypeOpenAction.getContainer();
+		return container;
 	}
 
 }

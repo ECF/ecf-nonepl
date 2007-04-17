@@ -117,30 +117,36 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 		chatRoomManager = new SkypeChatRoomManager();
 	}
 
+	public SkypeUserID getSkypeUserID() {
+		return userID;
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#connect(org.eclipse.ecf.core.identity.ID,
 	 *      org.eclipse.ecf.core.security.IConnectContext)
 	 */
-	public void connect(ID remote, IConnectContext joinContext)
+	public synchronized void connect(ID remote, IConnectContext joinContext)
 			throws ContainerConnectException {
-		fireContainerEvent(new ContainerConnectingEvent(getID(),
-				this.remoteServerID));
-		try {
-			this.remoteServerID = userID;
-			this.connectionState = CONNECTED;
-			rosterManager.fillRoster();
-			fireContainerEvent(new ContainerConnectedEvent(getID(),
+		if (this.connectionState != CONNECTED) {
+			fireContainerEvent(new ContainerConnectingEvent(getID(),
 					this.remoteServerID));
-		} catch (Exception e) {
-			throw new ContainerConnectException("Couldn't connect", e);
+			try {
+				this.remoteServerID = userID;
+				this.connectionState = CONNECTED;
+				rosterManager.fillRoster();
+				fireContainerEvent(new ContainerConnectedEvent(getID(),
+						this.remoteServerID));
+			} catch (Exception e) {
+				throw new ContainerConnectException("Couldn't connect", e);
+			}
 		}
 	}
     /* (non-Javadoc)
      * @see org.eclipse.ecf.provider.generic.ClientSOContainer#disconnect()
      */
-    public void disconnect() {
+    public synchronized void disconnect() {
 		fireContainerEvent(new ContainerDisconnectingEvent(getID(),
 				this.remoteServerID));
 		fireContainerEvent(new ContainerDisconnectedEvent(getID(),
