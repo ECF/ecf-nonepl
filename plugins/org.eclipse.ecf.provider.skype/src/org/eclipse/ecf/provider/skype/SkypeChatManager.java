@@ -11,6 +11,7 @@
 
 package org.eclipse.ecf.provider.skype;
 
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Vector;
@@ -31,6 +32,7 @@ import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
+import com.skype.Chat;
 import com.skype.ChatMessage;
 import com.skype.ChatMessageListener;
 import com.skype.Skype;
@@ -43,12 +45,12 @@ public class SkypeChatManager implements IChatManager {
 
 	private Vector chatListeners = new Vector();
 	
-	private Vector chatMessageIDs = new Vector();
+	private Map chats = new HashMap();
 	
 	protected void dispose() {
 		Skype.removeChatMessageListener(chatMessageListener);
 		chatListeners.clear();
-		chatMessageIDs.clear();
+		chats.clear();
 	}
 	
 	ChatMessageListener chatMessageListener = new ChatMessageListener() {
@@ -69,8 +71,8 @@ public class SkypeChatManager implements IChatManager {
 			for(Iterator i=chatListeners.iterator(); i.hasNext(); ) {
 				IIMMessageListener l = (IIMMessageListener) i.next();
 				try {
-					if (chatMessageIDs.contains(chatMessageReceived.getId())) {
-						chatMessageIDs.remove(chatMessageReceived.getId());
+					Chat chat = (Chat) chats.get(chatMessageReceived.getChat().getId());
+					if (chat != null) {
 						ID senderID = new SkypeUserID(chatMessageReceived.getSenderId());
 						final IChatMessage chatMessage = new org.eclipse.ecf.presence.im.ChatMessage(senderID,IDFactory.getDefault().createStringID(chatMessageReceived.getId()),Type.CHAT,null,chatMessageReceived.getContent(),createPropertiesForChatMessage(chatMessageReceived));
 						l.handleMessageEvent(new ChatMessageEvent(senderID,chatMessage));						
@@ -92,12 +94,10 @@ public class SkypeChatManager implements IChatManager {
 
 		public void chatMessageSent(ChatMessage sentChatMessage)
 				throws SkypeException {
-			if (sentChatMessage.getAllUsers().length == 1) {
-				// It's a 1-1 chat message...and it's ours
-				chatMessageIDs.add(sentChatMessage.getId());
-			}
-			Trace
-					.trace(
+			String chatId = sentChatMessage.getChat().getId();
+			Chat chat = (Chat) chats.get(chatId);
+			if (chat == null) chats.put(chatId, sentChatMessage.getChat());
+			Trace.trace(
 							Activator.PLUGIN_ID,
 							"chatMessageSent(id=" //$NON-NLS-1$
 									+ sentChatMessage.getId()
@@ -132,7 +132,8 @@ public class SkypeChatManager implements IChatManager {
 			if (toID == null || !(toID instanceof SkypeUserID)) throw new ECFException("Invalid Skype ID");
 			SkypeUserID skypeId = (SkypeUserID) toID;
 			try {
-				Skype.chat(skypeId.getName());
+				Chat chat = Skype.chat(skypeId.getName());
+				chat.send(body);
 			} catch (SkypeException e) {
 				throw new ECFException("Skype Exception",e);
 			}
