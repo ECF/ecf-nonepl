@@ -11,17 +11,17 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.call.CallSessionErrorDetails;
-import org.eclipse.ecf.call.CallException;
-import org.eclipse.ecf.call.CallSessionFailureReason;
-import org.eclipse.ecf.call.CallSessionState;
-import org.eclipse.ecf.call.ICallSession;
-import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.events.ICallSessionEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
+import org.eclipse.ecf.telephony.call.CallException;
+import org.eclipse.ecf.telephony.call.CallSessionErrorDetails;
+import org.eclipse.ecf.telephony.call.CallSessionFailureReason;
+import org.eclipse.ecf.telephony.call.CallSessionState;
+import org.eclipse.ecf.telephony.call.ICallSession;
+import org.eclipse.ecf.telephony.call.ICallSessionListener;
+import org.eclipse.ecf.telephony.call.events.ICallSessionEvent;
 
 import com.skype.Call;
 import com.skype.CallStatusChangedListener;

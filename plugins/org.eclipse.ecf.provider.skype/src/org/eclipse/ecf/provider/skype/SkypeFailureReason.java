@@ -11,8 +11,8 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.call.CallSessionFailureReason;
 import org.eclipse.ecf.internal.provider.skype.Messages;
+import org.eclipse.ecf.telephony.call.CallSessionFailureReason;
 
 /**
  * 

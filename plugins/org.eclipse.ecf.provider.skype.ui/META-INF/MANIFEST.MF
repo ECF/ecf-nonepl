@@ -9,11 +9,11 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ecf.provider.skype,
  org.eclipse.ecf,
- org.eclipse.ecf.call,
  org.eclipse.ecf.presence.ui,
  org.eclipse.ecf.presence,
  org.eclipse.ecf.provider,
  org.eclipse.ecf.sharedobject,
- org.eclipse.ecf.call.ui,
- org.eclipse.ecf.ui
+ org.eclipse.ecf.ui,
+ org.eclipse.ecf.telephony.call,
+ org.eclipse.ecf.telephony.call.ui
 Eclipse-LazyStart: true

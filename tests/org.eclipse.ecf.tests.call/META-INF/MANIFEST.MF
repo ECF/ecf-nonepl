@@ -7,9 +7,9 @@ Bundle-Activator: org.eclipse.ecf.tests.call.Activator
 Bundle-Vendor: eclipse.org
 Require-Bundle: org.junit,
  org.eclipse.ecf,
- org.eclipse.ecf.call,
  org.eclipse.equinox.common,
  org.eclipse.swt,
- org.eclipse.jface
+ org.eclipse.jface,
+ org.eclipse.ecf.telephony.call
 Eclipse-LazyStart: true
 Import-Package: org.osgi.framework;version="1.4.0"

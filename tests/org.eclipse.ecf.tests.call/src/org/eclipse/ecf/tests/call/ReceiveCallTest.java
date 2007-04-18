@@ -13,14 +13,14 @@ package org.eclipse.ecf.tests.call;
 
 import junit.framework.TestCase;
 
-import org.eclipse.ecf.call.CallException;
-import org.eclipse.ecf.call.ICallSessionContainerAdapter;
-import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.ICallSessionRequestListener;
-import org.eclipse.ecf.call.events.ICallSessionEvent;
-import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.telephony.call.CallException;
+import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
+import org.eclipse.ecf.telephony.call.ICallSessionListener;
+import org.eclipse.ecf.telephony.call.ICallSessionRequestListener;
+import org.eclipse.ecf.telephony.call.events.ICallSessionEvent;
+import org.eclipse.ecf.telephony.call.events.ICallSessionRequestEvent;
 
 /**
  * 

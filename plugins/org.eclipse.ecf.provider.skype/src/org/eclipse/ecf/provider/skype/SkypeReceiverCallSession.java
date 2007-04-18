@@ -11,8 +11,8 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.call.ICallSessionListener;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
+import org.eclipse.ecf.telephony.call.ICallSessionListener;
 
 import com.skype.Call;
 import com.skype.SkypeException;

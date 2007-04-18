@@ -11,12 +11,12 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.provider.IContainerInstantiator;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
+import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
 
 /**
  *

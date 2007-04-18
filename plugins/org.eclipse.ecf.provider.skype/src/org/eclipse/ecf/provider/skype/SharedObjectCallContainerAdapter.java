@@ -20,12 +20,6 @@ import java.util.Map;
 import java.util.Vector;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ecf.call.CallException;
-import org.eclipse.ecf.call.ICallSession;
-import org.eclipse.ecf.call.ICallSessionContainerAdapter;
-import org.eclipse.ecf.call.ICallSessionListener;
-import org.eclipse.ecf.call.ICallSessionRequestListener;
-import org.eclipse.ecf.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
@@ -39,6 +33,12 @@ import org.eclipse.ecf.internal.provider.skype.SkypeProviderDebugOptions;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
+import org.eclipse.ecf.telephony.call.CallException;
+import org.eclipse.ecf.telephony.call.ICallSession;
+import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
+import org.eclipse.ecf.telephony.call.ICallSessionListener;
+import org.eclipse.ecf.telephony.call.ICallSessionRequestListener;
+import org.eclipse.ecf.telephony.call.events.ICallSessionRequestEvent;
 
 import com.skype.Call;
 import com.skype.CallListener;
