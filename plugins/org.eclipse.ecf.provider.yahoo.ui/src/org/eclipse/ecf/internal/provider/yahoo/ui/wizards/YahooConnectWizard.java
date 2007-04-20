@@ -22,7 +22,6 @@ import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.util.IExceptionHandler;
-import org.eclipse.ecf.internal.provider.yahoo.ui.Activator;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
@@ -39,15 +38,12 @@ import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
 import org.eclipse.ecf.ui.dialogs.ContainerConnectErrorDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 public final class YahooConnectWizard extends Wizard implements IConnectWizard {
-
-	private Shell shell;
 
 	private YahooConnectWizardPage page;
 
@@ -57,29 +53,12 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 
 	private IConnectContext connectContext;
 
-	private IExceptionHandler exceptionHandler = new IExceptionHandler() {
-		public IStatus handleException(final Throwable exception) {
-			if (exception != null) {
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						new ContainerConnectErrorDialog(shell, IStatus.ERROR,
-								"See Details", targetID.getName(), exception)
-								.open();
-					}
-				});
-			}
-			return new Status(IStatus.OK, Activator.PLUGIN_ID, IStatus.OK,
-					"Connected", null);
-		}
-	};
-
 	public void addPages() {
 		page = new YahooConnectWizardPage();
 		addPage(page);
 	}
 
 	public void init(IWorkbench workbench, IContainer container) {
-		shell = workbench.getActiveWorkbenchWindow().getShell();
 		this.container = container;
 		this.workbench = workbench;
 	}
