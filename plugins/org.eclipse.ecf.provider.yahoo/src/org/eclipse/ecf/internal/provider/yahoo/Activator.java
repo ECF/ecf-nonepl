@@ -10,7 +10,7 @@
  *  	- Chris Aniszczyk <zx@us.ibm.com>
  *   	- Borna Safabakhsh <borna@us.ibm.com> 
  *   
- * $Id: Activator.java,v 1.2 2007/03/14 23:10:14 slewis Exp $
+ * $Id: Activator.java,v 1.3 2007/04/20 22:28:25 slewis Exp $
  */
 
 package org.eclipse.ecf.internal.provider.yahoo;
@@ -54,7 +54,10 @@ public class Activator implements BundleActivator {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static Activator getDefault() {
+	public synchronized static Activator getDefault() {
+		if (plugin == null) {
+			plugin = new Activator();
+		}
 		return plugin;
 	}
 

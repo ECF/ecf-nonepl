@@ -76,7 +76,10 @@ public class JmsPlugin implements BundleActivator {
 	/**
 	 * Returns the shared instance.
 	 */
-	public static JmsPlugin getDefault() {
+	public synchronized static JmsPlugin getDefault() {
+		if (plugin == null) {
+			plugin = new JmsPlugin();
+		}
 		return plugin;
 	}
 
