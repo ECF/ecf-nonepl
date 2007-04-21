@@ -22,7 +22,6 @@ import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.util.IExceptionHandler;
-import org.eclipse.ecf.example.rcpchat.RcpChatPlugin;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
@@ -39,7 +38,6 @@ import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
 import org.eclipse.ecf.ui.dialogs.ContainerConnectErrorDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
@@ -49,8 +47,6 @@ public class XMPPConnectWizard extends Wizard implements IConnectWizard {
 
 	XMPPConnectWizardPage page;
 
-	private Shell shell;
-
 	private IContainer container;
 
 	private ID targetID;
@@ -58,29 +54,12 @@ public class XMPPConnectWizard extends Wizard implements IConnectWizard {
 	private IConnectContext connectContext;
 
 
-	private IExceptionHandler exceptionHandler = new IExceptionHandler() {
-		public IStatus handleException(final Throwable exception) {
-			if (exception != null) {
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						new ContainerConnectErrorDialog(shell, IStatus.ERROR,
-								"See Details", targetID.getName(), exception)
-								.open();
-					}
-				});
-			}
-			return new Status(IStatus.OK, RcpChatPlugin.PLUGIN_ID, IStatus.OK,
-					"Connected", null);
-		}
-	};
-
 	public void addPages() {
 		page = new XMPPConnectWizardPage();
 		addPage(page);
 	}
 
 	public void init(IWorkbench workbench, IContainer container) {
-		shell = workbench.getActiveWorkbenchWindow().getShell();
 		this.container = container;
 		this.workbench = workbench;
 	}
