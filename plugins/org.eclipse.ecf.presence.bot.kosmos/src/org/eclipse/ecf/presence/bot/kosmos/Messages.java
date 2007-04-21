@@ -58,6 +58,9 @@ public class Messages extends NLS {
 	public static String Newsgroup;
 	public static String Newsgroup_Reply;
 
+	public static String NewsgroupSearch;
+	public static String NewsgroupSearch_Reply;
+
 	public static String Help;
 	public static String Help_Reply;
 
@@ -75,6 +78,9 @@ public class Messages extends NLS {
 
 	public static String ECF;
 	public static String ECF_Reply;
+
+	public static String TM;
+	public static String TM_Reply;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

@@ -14,10 +14,15 @@ import java.io.BufferedReader;
 import java.io.EOFException;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Properties;
 
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
@@ -37,6 +42,7 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 	private static final String SUM_CLOSE_TAG = "</short_desc>"; //$NON-NLS-1$
 
 	private Map messageSenders;
+	private Map newsgroups;
 	private JavadocAnalyzer analyzer;
 
 	private IContainer container;
@@ -44,6 +50,24 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 	public ChatRoomMessageHandler() {
 		messageSenders = new HashMap();
 		analyzer = new JavadocAnalyzer();
+		try {
+			parseNewsgroup();
+		} catch (Exception e) {
+			newsgroups = Collections.EMPTY_MAP;
+		}
+	}
+
+	private void parseNewsgroup() throws IOException {
+		Properties properties = new Properties();
+		properties.load(JavadocAnalyzer.class
+				.getResourceAsStream("newsgroup.txt"));
+		newsgroups = new HashMap();
+		for (Iterator it = properties.keySet().iterator(); it.hasNext();) {
+			Object key = it.next();
+			Object value = properties.get(key);
+			newsgroups.put(key, value);
+			newsgroups.put(value, value);
+		}
 	}
 
 	private void sendMessage(ID roomID, String message) {
@@ -362,6 +386,45 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 		}
 	}
 
+	private void sendNewsgroupSearch(ID roomID, String target, String query) {
+		String[] strings = query.split(" "); //$NON-NLS-1$
+		if (strings.length == 1) {
+			// no search terms provided
+			return;
+		}
+		for (int i = 0; i < strings.length; i++) {
+			try {
+				strings[i] = URLEncoder.encode(strings[i].trim(), "UTF-8"); //$NON-NLS-1$
+			} catch (UnsupportedEncodingException e) {
+				// technically this should never happen, but better safe than
+				// sorry
+				strings[i] = URLEncoder.encode(strings[i].trim());
+			}
+		}
+		String newsgroup = (String) newsgroups.get(strings[0]);
+		if (target == null) {
+			StringBuffer buffer = new StringBuffer();
+			synchronized (buffer) {
+				for (int i = 1; i < strings.length; i++) {
+					buffer.append(strings[i] + '+');
+				}
+				buffer.deleteCharAt(buffer.length() - 1);
+			}
+			sendMessage(roomID, NLS.bind(Messages.NewsgroupSearch, buffer
+					.toString(), newsgroup));
+		} else {
+			StringBuffer buffer = new StringBuffer();
+			synchronized (buffer) {
+				for (int i = 1; i < strings.length; i++) {
+					buffer.append(strings[i] + '+');
+				}
+				buffer.deleteCharAt(buffer.length() - 1);
+			}
+			sendMessage(roomID, NLS.bind(Messages.NewsgroupSearch_Reply,
+					new Object[] { target, buffer.toString(), newsgroup }));
+		}
+	}
+
 	private void sendHelp(ID roomID, String target) {
 		if (target == null) {
 			sendMessage(roomID, Messages.Help);
@@ -417,10 +480,18 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 		}
 	}
 
+	private void sendTM(ID roomID, String target) {
+		if (target == null) {
+			sendMessage(roomID, Messages.TM);
+		} else {
+			sendMessage(roomID, NLS.bind(Messages.TM_Reply, target));
+		}
+	}
+
 	private void sendJavaDoc(ID roomID, String target, String parameter) {
 		String append = target == null ? "" : target + ": ";
 		String message = null;
-		int index = parameter.indexOf("#");
+		int index = parameter.indexOf('#');
 		if (index == -1) {
 			message = analyzer.getJavadocs(parameter);
 		} else {
@@ -428,7 +499,7 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			parameter = parameter.substring(index + 1);
 			index = parameter.indexOf('(');
 			if (index == -1) {
-				message = parameter + " - "
+				message = className + '#' + parameter + " - "
 						+ analyzer.getJavadocs(className, parameter);
 			} else {
 				String method = parameter.substring(0, index);
@@ -438,7 +509,7 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 				for (int i = 0; i < parameters.length; i++) {
 					parameters[i] = parameters[i].trim();
 				}
-				message = parameter + " - "
+				message = className + '#' + method + " - "
 						+ analyzer.getJavadocs(className, method, parameters);
 			}
 		}
@@ -468,12 +539,16 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendSnippets(roomID, target);
 		} else if (msg.equals("javadoc") || msg.equals("api")) { //$NON-NLS-1$ //$NON-NLS-2$
 			sendJavaDoc(roomID, target);
-		} else if (msg.startsWith("javadoc ")) {
+		} else if (msg.startsWith("javadoc ")) { //$NON-NLS-1$
 			sendJavaDoc(roomID, target, msg.substring(8));
-		} else if (msg.startsWith("api ")) {
+		} else if (msg.startsWith("api ")) { //$NON-NLS-1$
 			sendJavaDoc(roomID, target, msg.substring(4));
 		} else if (msg.equals("news") || msg.equals("newsgroup")) { //$NON-NLS-1$ //$NON-NLS-2$
 			sendNewsgroup(roomID, target);
+		} else if (msg.startsWith("news ")) { //$NON-NLS-1$
+			sendNewsgroupSearch(roomID, target, msg.substring(5));
+		} else if (msg.startsWith("newsgroup ")) {
+			sendNewsgroupSearch(roomID, target, msg.substring(10));
 		} else if (msg.equals("plugin")) { //$NON-NLS-1$
 			sendPlugins(roomID, target);
 		} else if (msg.equals("wtp")) { //$NON-NLS-1$
@@ -495,6 +570,8 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendSource(roomID, target);
 		} else if (msg.equals("ecf")) { //$NON-NLS-1$
 			sendECF(roomID, target);
+		} else if (msg.equals("tm")) { //$NON-NLS-1$
+			sendTM(roomID, target);
 		} else {
 			int index = msg.indexOf('c');
 			if (index == -1) {
