@@ -41,9 +41,6 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 	IWorkbench workbench = null;
 	SkypeContainer container = null;
 
-	public SkypeConnectWizard() {
-	}
-
 	public boolean canFinish() {
 		return true;
 	}
@@ -87,7 +84,7 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 							.getSite().getAdapter(
 									IWorkbenchSiteProgressService.class);
 					view.openTab(icms, itms, localID, message.getFromID());
-					view.showMessage(message.getFromID(), message.getBody());
+					view.showMessage(message);
 					service.warnOfContentChange();
 				} else {
 					try {
@@ -105,9 +102,7 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 							service.warnOfContentChange();
 						}
 						view.openTab(icms, itms, localID, message.getFromID());
-						view
-								.showMessage(message.getFromID(), message
-										.getBody());
+						view.showMessage(message);
 					} catch (PartInitException e) {
 						e.printStackTrace();
 					}
@@ -130,76 +125,76 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 	}
 
 	public boolean performFinish() {
-			if (container.getConnectedID() != null) {
-				try {
-					workbench
-							.getActiveWorkbenchWindow().getActivePage().showView(
-									MultiRosterView.VIEW_ID);
-				} catch (PartInitException e) {
-					e.printStackTrace();
-					return false;
-				}
-
-			} else {
-				final IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) container
-						.getAdapter(IPresenceContainerAdapter.class);
-
-				container.addListener(new IContainerListener() {
-					public void handleEvent(final IContainerEvent event) {
-						if (event instanceof IContainerConnectedEvent) {
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									localID = ((IContainerConnectedEvent) event)
-											.getTargetID();
-									openView();
-								}
-							});
-						}
-					}
-				});
-
-				IChatManager icm = adapter.getChatManager();
-				icms = icm.getChatMessageSender();
-				itms = icm.getTypingMessageSender();
-
-				icm.addMessageListener(new IIMMessageListener() {
-					public void handleMessageEvent(IIMMessageEvent e) {
-						if (e instanceof IChatMessageEvent) {
-							displayMessage((IChatMessageEvent) e);
-						} else if (e instanceof ITypingMessageEvent) {
-							displayTypingNotification((ITypingMessageEvent) e);
-						}
-					}
-				});
-
-				ICallSessionContainerAdapter callAdapter = (ICallSessionContainerAdapter) container.getAdapter(ICallSessionContainerAdapter.class);
-				callAdapter.addCallSessionRequestListener(createCallSessionRequestListener());
-				
-				new AsynchContainerConnectAction(container, null, null,
-						new IExceptionHandler() {
-							public IStatus handleException(
-									final Throwable exception) {
-								if (exception != null) {
-									exception.printStackTrace();
-									Display.getDefault().asyncExec(
-											new Runnable() {
-												public void run() {
-													new ContainerConnectErrorDialog(
-															workbench
-																	.getActiveWorkbenchWindow()
-																	.getShell(),
-															1, Messages.SkypeConnectWizard_EXCEPTION_SEE_DETAILS,
-															Messages.SkypeConnectWizard_EXCEPTION_SKYPE_EXCEPTION, exception)
-															.open();
-												}
-											});
-								}
-								return Status.OK_STATUS;
-							}
-
-						}).run(null);
-
+		if (container.getConnectedID() != null) {
+			try {
+				workbench.getActiveWorkbenchWindow().getActivePage().showView(
+						MultiRosterView.VIEW_ID);
+			} catch (PartInitException e) {
+				e.printStackTrace();
+				return false;
 			}
+
+		} else {
+			final IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) container
+					.getAdapter(IPresenceContainerAdapter.class);
+
+			container.addListener(new IContainerListener() {
+				public void handleEvent(final IContainerEvent event) {
+					if (event instanceof IContainerConnectedEvent) {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								localID = ((IContainerConnectedEvent) event)
+										.getTargetID();
+								openView();
+							}
+						});
+					}
+				}
+			});
+
+			IChatManager icm = adapter.getChatManager();
+			icms = icm.getChatMessageSender();
+			itms = icm.getTypingMessageSender();
+
+			icm.addMessageListener(new IIMMessageListener() {
+				public void handleMessageEvent(IIMMessageEvent e) {
+					if (e instanceof IChatMessageEvent) {
+						displayMessage((IChatMessageEvent) e);
+					} else if (e instanceof ITypingMessageEvent) {
+						displayTypingNotification((ITypingMessageEvent) e);
+					}
+				}
+			});
+
+			ICallSessionContainerAdapter callAdapter = (ICallSessionContainerAdapter) container
+					.getAdapter(ICallSessionContainerAdapter.class);
+			callAdapter
+					.addCallSessionRequestListener(createCallSessionRequestListener());
+
+			new AsynchContainerConnectAction(container, null, null,
+					new IExceptionHandler() {
+						public IStatus handleException(final Throwable exception) {
+							if (exception != null) {
+								exception.printStackTrace();
+								Display.getDefault().asyncExec(new Runnable() {
+									public void run() {
+										new ContainerConnectErrorDialog(
+												workbench
+														.getActiveWorkbenchWindow()
+														.getShell(),
+												1,
+												Messages.SkypeConnectWizard_EXCEPTION_SEE_DETAILS,
+												Messages.SkypeConnectWizard_EXCEPTION_SKYPE_EXCEPTION,
+												exception).open();
+									}
+								});
+							}
+							return Status.OK_STATUS;
+						}
+
+					}).run(null);
+
+		}
 		return true;
 	}
 
@@ -210,8 +205,9 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 		return new ICallSessionRequestListener() {
 
 			public void handleCallSessionRequest(ICallSessionRequestEvent event) {
-				System.out.println("handleCallSessionRequest("+event+")");
-			}};
+				System.out.println("handleCallSessionRequest(" + event + ")");
+			}
+		};
 	}
 
 }
