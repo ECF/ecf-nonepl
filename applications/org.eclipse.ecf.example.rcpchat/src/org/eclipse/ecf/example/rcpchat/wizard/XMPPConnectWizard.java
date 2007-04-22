@@ -91,7 +91,7 @@ public class XMPPConnectWizard extends Wizard implements IConnectWizard {
 							.getSite().getAdapter(
 									IWorkbenchSiteProgressService.class);
 					view.openTab(icms, itms, targetID, message.getFromID());
-					view.showMessage(message.getFromID(), message.getBody());
+					view.showMessage(message);
 					service.warnOfContentChange();
 				} else {
 					try {
@@ -110,8 +110,7 @@ public class XMPPConnectWizard extends Wizard implements IConnectWizard {
 						}
 						view.openTab(icms, itms, targetID, message.getFromID());
 						view
-								.showMessage(message.getFromID(), message
-										.getBody());
+								.showMessage(message);
 					} catch (PartInitException e) {
 						e.printStackTrace();
 					}
