@@ -1,10 +1,11 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
-Bundle-Name: ECF Skype Provider Ui Plug-in
+Bundle-Name: %plugin.name
 Bundle-SymbolicName: org.eclipse.ecf.provider.skype.ui; singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.provider.skype.ui.Activator
-Bundle-Vendor: Eclilpse.org
+Bundle-Localization: plugin
+Bundle-Vendor: %plugin.provider
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.ecf.provider.skype,
