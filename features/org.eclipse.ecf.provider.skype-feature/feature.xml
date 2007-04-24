@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.ecf.provider.skype_feature"
-      label="Skype Provider Feature"
+      label="ECF Skype Provider Feature"
       version="0.1.0.qualifier"
       provider-name="Eclipse.org">
 
