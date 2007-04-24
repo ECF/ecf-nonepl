@@ -81,6 +81,9 @@ public class Messages extends NLS {
 
 	public static String TM;
 	public static String TM_Reply;
+	
+	public static String Deadlock;
+	public static String Deadlock_Reply;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);

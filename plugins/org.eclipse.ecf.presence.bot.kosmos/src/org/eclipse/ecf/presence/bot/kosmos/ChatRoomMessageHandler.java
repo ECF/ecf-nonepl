@@ -47,6 +47,48 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 
 	private IContainer container;
 
+	private static final String xmlDecode(String string) {
+		if (string.equals("")) { //$NON-NLS-1$
+			return string;
+		}
+
+		int index = string.indexOf("&amp;"); //$NON-NLS-1$
+		while (index != -1) {
+			string = string.substring(0, index) + '&'
+					+ string.substring(index + 5);
+			index = string.indexOf("&amp;", index + 1); //$NON-NLS-1$
+		}
+
+		index = string.indexOf("&quot;"); //$NON-NLS-1$
+		while (index != -1) {
+			string = string.substring(0, index) + '"'
+					+ string.substring(index + 6);
+			index = string.indexOf("&quot;", index + 1); //$NON-NLS-1$
+		}
+
+		index = string.indexOf("&apos;"); //$NON-NLS-1$
+		while (index != -1) {
+			string = string.substring(0, index) + '\''
+					+ string.substring(index + 6);
+			index = string.indexOf("&apos;", index + 1); //$NON-NLS-1$
+		}
+
+		index = string.indexOf("&lt;"); //$NON-NLS-1$
+		while (index != -1) {
+			string = string.substring(0, index) + '<'
+					+ string.substring(index + 4);
+			index = string.indexOf("&lt;", index + 1); //$NON-NLS-1$
+		}
+
+		index = string.indexOf("&gt;"); //$NON-NLS-1$
+		while (index != -1) {
+			string = string.substring(0, index) + '>'
+					+ string.substring(index + 4);
+			index = string.indexOf("&gt;", index + 1); //$NON-NLS-1$
+		}
+		return string;
+	}
+
 	public ChatRoomMessageHandler() {
 		messageSenders = new HashMap();
 		analyzer = new JavadocAnalyzer();
@@ -136,7 +178,8 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 					String summary = webPage.substring(summaryStartIndex
 							+ SUM_OPEN_TAG.length(), summaryEndIndex);
 					sendMessage(roomID, NLS.bind(Messages.BugContent,
-							new Object[] { number, summary, urlString }));
+							new Object[] { number, xmlDecode(summary),
+									urlString }));
 				} else {
 					sendMessage(roomID, NLS.bind(Messages.Bug, new Object[] {
 							number, urlString }));
@@ -183,9 +226,9 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 				if (summaryStartIndex != -1 & summaryEndIndex != -1) {
 					String summary = webPage.substring(summaryStartIndex
 							+ SUM_OPEN_TAG.length(), summaryEndIndex);
-					sendMessage(roomID, NLS
-							.bind(Messages.BugContent_Reply, new Object[] {
-									target, number, summary, urlString }));
+					sendMessage(roomID, NLS.bind(Messages.BugContent_Reply,
+							new Object[] { target, number, xmlDecode(summary),
+									urlString }));
 				} else {
 					sendMessage(roomID, NLS.bind(Messages.Bug_Reply,
 							new Object[] { target, number, urlString }));
@@ -238,7 +281,8 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 					String summary = webPage.substring(summaryStartIndex
 							+ SUM_OPEN_TAG.length(), summaryEndIndex);
 					sendMessage(roomID, NLS.bind(Messages.BugContent,
-							new Object[] { number, summary, urlString }));
+							new Object[] { number, xmlDecode(summary),
+									urlString }));
 				} else {
 					sendMessage(roomID, NLS.bind(Messages.Bug, new Object[] {
 							number, urlString }));
@@ -284,9 +328,9 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 				if (summaryStartIndex != -1 & summaryEndIndex != -1) {
 					String summary = webPage.substring(summaryStartIndex
 							+ SUM_OPEN_TAG.length(), summaryEndIndex);
-					sendMessage(roomID, NLS
-							.bind(Messages.BugContent_Reply, new Object[] {
-									target, number, summary, urlString }));
+					sendMessage(roomID, NLS.bind(Messages.BugContent_Reply,
+							new Object[] { target, number, xmlDecode(summary),
+									urlString }));
 				} else {
 					sendMessage(roomID, NLS.bind(Messages.Bug_Reply,
 							new Object[] { target, number, urlString }));
@@ -516,6 +560,14 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 		sendMessage(roomID, append + message);
 	}
 
+	private void sendDeadlock(ID roomID, String target) {
+		if (target == null) {
+			sendMessage(roomID, Messages.Deadlock);
+		} else {
+			sendMessage(roomID, NLS.bind(Messages.Deadlock_Reply, target));
+		}
+	}
+
 	private void send(ID roomID, String target, String msg) {
 		if (msg.equals("bug")) { //$NON-NLS-1$
 			sendBugzillaLink(roomID, target);
@@ -572,6 +624,8 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendECF(roomID, target);
 		} else if (msg.equals("tm")) { //$NON-NLS-1$
 			sendTM(roomID, target);
+		} else if (msg.equals("deadlock")) { //$NON-NLS-1$
+			sendDeadlock(roomID, target);
 		} else {
 			int index = msg.indexOf('c');
 			if (index == -1) {
