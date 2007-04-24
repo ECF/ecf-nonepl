@@ -1,8 +1,8 @@
 package org.eclipse.ecf.internal.provider.skype.ui;
 
-import org.eclipse.ecf.call.ui.actions.AbstractCallAction;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.telephony.call.ui.actions.AbstractCallAction;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
