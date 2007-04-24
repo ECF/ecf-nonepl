@@ -6,7 +6,7 @@
    <feature url="features/org.eclipse.ecf.provider.skype_feature_1.0.0.skypequalifier.jar" id="org.eclipse.ecf.provider.skype_feature" version="1.0.0.skypequalifier">
       <category name="ECF Extras"/>
    </feature>
-   <feature url="features/org.eclipse.ecf.provider.yahoo_feature_1.0.0.skypequalifier.jar" id="org.eclipse.ecf.provider.yahoo_feature" version="1.0.0.yahooqualifier">
+   <feature url="features/org.eclipse.ecf.provider.yahoo_feature_1.0.0.yahooqualifier.jar" id="org.eclipse.ecf.provider.yahoo_feature" version="1.0.0.yahooqualifier">
       <category name="ECF Extras"/>
    </feature>
    <category-def name="ECF Extras" label="Eclipse Communication Framework Extras"/>
