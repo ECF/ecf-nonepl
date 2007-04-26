@@ -24,7 +24,7 @@ class Javadoc {
 	Javadoc(Map javadocs, String fullQualifiedName) {
 		this.javadocs = javadocs;
 		fqn = fullQualifiedName;
-		link = LINK_PREFIX + fqn.replaceAll("\\.", "/") + LINK_SUFFIX;
+		link = LINK_PREFIX + fqn.replaceAll("\\.", "/") + LINK_SUFFIX; //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	String getField(String field) {
@@ -36,31 +36,31 @@ class Javadoc {
 		for (int i = 0; i < array.length; i++) {
 			Object match = javadocs.get(array[i]);
 			if (match == null) {
-				if (array[i].equals("int") || array[i].equals("float")
-						|| array[i].equals("short") || array[i].equals("long")
-						|| array[i].equals("byte")
-						|| array[i].equals("boolean")
-						|| array[i].equals("double") || array[i].equals("char")) {
-					ret = ret + array[i] + ",%20";
-				} else if (array[i].equals("Object")
-						|| array[i].equals("Class")
-						|| array[i].equals("String")) {
-					ret = ret + "java.lang." + array[i] + ",%20";
-				} else if (array[i].equals("Map") || array[i].equals("List")
-						|| array[i].equals("Set")
-						|| array[i].equals("Collection")) {
-					ret = ret + "java.util." + array[i] + ",%20";
+				if (array[i].equals("int") || array[i].equals("float") //$NON-NLS-1$ //$NON-NLS-2$
+						|| array[i].equals("short") || array[i].equals("long") //$NON-NLS-1$ //$NON-NLS-2$
+						|| array[i].equals("byte") //$NON-NLS-1$
+						|| array[i].equals("boolean") //$NON-NLS-1$
+						|| array[i].equals("double") || array[i].equals("char")) { //$NON-NLS-1$ //$NON-NLS-2$
+					ret = ret + array[i] + ",%20"; //$NON-NLS-1$
+				} else if (array[i].equals("Object") //$NON-NLS-1$
+						|| array[i].equals("Class") //$NON-NLS-1$
+						|| array[i].equals("String")) { //$NON-NLS-1$
+					ret = ret + "java.lang." + array[i] + ",%20"; //$NON-NLS-1$ //$NON-NLS-2$
+				} else if (array[i].equals("Map") || array[i].equals("List") //$NON-NLS-1$ //$NON-NLS-2$
+						|| array[i].equals("Set") //$NON-NLS-1$
+						|| array[i].equals("Collection")) { //$NON-NLS-1$
+					ret = ret + "java.util." + array[i] + ",%20"; //$NON-NLS-1$ //$NON-NLS-2$
 				} else {
-					ret = ret + array[i] + ",%20";
+					ret = ret + array[i] + ",%20"; //$NON-NLS-1$
 				}
 			} else if (match instanceof Javadoc) {
-				ret = ret + ((Javadoc) match).fqn + ",%20";
+				ret = ret + ((Javadoc) match).fqn + ",%20"; //$NON-NLS-1$
 			} else {
 				Javadoc[] docs = (Javadoc[]) match;
 				boolean found = false;
 				for (int j = 0; j < docs.length; j++) {
 					if (array[i].equals(docs[j].fqn)) {
-						ret = ret + array[i] + ",%20";
+						ret = ret + array[i] + ",%20"; //$NON-NLS-1$
 						found = true;
 						break;
 					}
@@ -70,7 +70,7 @@ class Javadoc {
 				}
 			}
 		}
-		if (ret.endsWith(",%20")) {
+		if (ret.endsWith(",%20")) { //$NON-NLS-1$
 			ret = ret.substring(0, ret.length() - 4);
 		}
 		return ret + ')';

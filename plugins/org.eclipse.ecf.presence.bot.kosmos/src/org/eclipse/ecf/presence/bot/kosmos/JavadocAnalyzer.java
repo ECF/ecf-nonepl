@@ -16,6 +16,8 @@ import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.osgi.util.NLS;
+
 class JavadocAnalyzer {
 
 	private final Map javadocs = new HashMap();
@@ -65,14 +67,14 @@ class JavadocAnalyzer {
 	String getJavadocs(String className) {
 		Object docs = javadocs.get(className);
 		if (docs == null) {
-			return "No javadocs found for " + className;
+			return NLS.bind(Messages.Javadoc_NotFound, className);
 		} else if (docs instanceof Javadoc) {
 			return ((Javadoc) docs).getDefault();
 		} else {
 			Javadoc[] array = (Javadoc[]) docs;
-			String reply = "";
+			String reply = ""; //$NON-NLS-1$
 			for (int i = 0; i < array.length; i++) {
-				reply += array[i].getDefault() + " ";
+				reply += array[i].getDefault() + " "; //$NON-NLS-1$
 			}
 			reply = reply.substring(0, reply.length() - 1);
 			return reply;
@@ -82,14 +84,14 @@ class JavadocAnalyzer {
 	String getJavadocs(String className, String field) {
 		Object docs = javadocs.get(className);
 		if (docs == null) {
-			return "No javadocs found for " + className;
+			return NLS.bind(Messages.Javadoc_NotFound, className);
 		} else if (docs instanceof Javadoc) {
 			return ((Javadoc) docs).getField(field);
 		} else {
 			Javadoc[] array = (Javadoc[]) docs;
-			String reply = "";
+			String reply = ""; //$NON-NLS-1$
 			for (int i = 0; i < array.length; i++) {
-				reply += array[i].getField(field) + " ";
+				reply += array[i].getField(field) + " "; //$NON-NLS-1$
 			}
 			reply = reply.substring(0, reply.length() - 1);
 			return reply;
@@ -99,22 +101,22 @@ class JavadocAnalyzer {
 	String getJavadocs(String className, String methodName, String[] parameters) {
 		Object docs = javadocs.get(className);
 		if (docs == null) {
-			return "No javadocs found for " + className;
+			return NLS.bind(Messages.Javadoc_NotFound, className);
 		} else if (docs instanceof Javadoc) {
 			String javadocs = ((Javadoc) docs)
 					.getMethod(methodName, parameters);
 			if (javadocs == null) {
-				return "The request could not be processed.";
+				return Messages.javadoc_ResultsUnknown;
 			} else {
 				return javadocs;
 			}
 		} else {
 			Javadoc[] array = (Javadoc[]) docs;
-			String reply = "";
+			String reply = ""; //$NON-NLS-1$
 			for (int i = 0; i < array.length; i++) {
 				String ret = array[i].getMethod(methodName, parameters);
 				if (ret != null) {
-					reply = reply + ret + " ";
+					reply = reply + ret + " "; //$NON-NLS-1$
 				}
 			}
 			reply = reply.substring(0, reply.length() - 1);

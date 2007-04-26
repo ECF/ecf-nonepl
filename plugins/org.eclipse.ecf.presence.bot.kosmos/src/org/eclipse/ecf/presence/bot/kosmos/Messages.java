@@ -43,6 +43,8 @@ public class Messages extends NLS {
 
 	public static String Javadoc;
 	public static String Javadoc_Reply;
+	public static String Javadoc_NotFound;
+	public static String javadoc_ResultsUnknown;
 
 	public static String Plugins;
 	public static String Plugins_Reply;
