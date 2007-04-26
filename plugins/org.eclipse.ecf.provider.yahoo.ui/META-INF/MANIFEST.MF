@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.ecf,
  org.eclipse.ecf.ui,
  org.eclipse.ecf.presence,
- org.eclipse.ecf.presence.ui
+ org.eclipse.ecf.presence.ui,
+ org.eclipse.jface.text
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.ecf.internal.provider.yahoo.ui;x-internal:=true,
  org.eclipse.ecf.internal.provider.yahoo.ui.wizards;x-internal:=true

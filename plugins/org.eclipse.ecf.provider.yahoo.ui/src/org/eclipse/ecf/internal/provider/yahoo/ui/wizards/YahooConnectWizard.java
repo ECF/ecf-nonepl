@@ -53,8 +53,18 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 
 	private IConnectContext connectContext;
 
+	private String username;
+	
+	public YahooConnectWizard() {
+		super();
+	}
+	
+	public YahooConnectWizard(String username) {
+		this();
+		this.username = username;
+	}
 	public void addPages() {
-		page = new YahooConnectWizardPage();
+		page = new YahooConnectWizardPage(username);
 		addPage(page);
 	}
 

@@ -10,4 +10,15 @@
             name="Yahoo IM"/>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.workbench.texteditor.hyperlinkDetectors">
+      <hyperlinkDetector
+            activate="true"
+            class="org.eclipse.ecf.internal.provider.yahoo.ui.hyperlink.YahooHyperlinkDetector"
+            id="org.eclipse.ecf.internal.provider.yahoo.ui.hyperlink.YahooHyperlinkDetector"
+            name="Yahoo"
+            targetId="org.eclipse.ui.DefaultTextEditor">
+      </hyperlinkDetector>
+   </extension>
+
 </plugin>

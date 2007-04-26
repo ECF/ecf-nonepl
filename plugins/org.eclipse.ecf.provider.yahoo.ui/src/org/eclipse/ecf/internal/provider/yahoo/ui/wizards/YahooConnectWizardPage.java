@@ -26,11 +26,18 @@ final class YahooConnectWizardPage extends WizardPage {
 
 	private Text passwordText;
 
+	private String username;
+
 	YahooConnectWizardPage() {
 		super("");
 		setTitle("Yahoo IM Connection Wizard");
 		setDescription("Specify a Yahoo username and password to connect to account");
 		setPageComplete(false);
+	}
+	
+	YahooConnectWizardPage(String username) {
+		this();
+		this.username = username;
 	}
 
 	public void createControl(Composite parent) {
@@ -65,6 +72,10 @@ final class YahooConnectWizardPage extends WizardPage {
 		label.setText("Password required for Yahoo accounts");
 		label.setLayoutData(endData);
 
+		if (username != null) {
+			connectText.setText(username);
+			passwordText.setFocus();
+		}
 		setControl(parent);
 	}
 
