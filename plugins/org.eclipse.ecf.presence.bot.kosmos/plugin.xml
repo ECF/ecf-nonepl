@@ -6,7 +6,7 @@
       <chatRoomRobot
             connectId="irc://KOS-MOS@irc.freenode.net"
             containerFactoryName="ecf.irc.irclib"
-            id="org.hantsuki.kosmos.chatroomBot">
+            id="org.eclipse.ecf.presence.bot.kosmos.chatroomBot">
          <chatRooms
                name="#easyeclipse">
          </chatRooms>
@@ -33,7 +33,7 @@
    <extension
          point="org.eclipse.ecf.presence.bot.chatRoomMessageHandler">
       <handler
-            chatRoomRobotId="org.hantsuki.kosmos.chatroomBot"
+            chatRoomRobotId="org.eclipse.ecf.presence.bot.kosmos.chatroomBot"
             class="org.eclipse.ecf.presence.bot.kosmos.ChatRoomMessageHandler"
             filterExpression="(~bug|~bug[0-9]+|~bug[0-9]+c[0-9]+|~[0-9]+|~[0-9]+c[0-9]+|~manage|~log|~logs|~about|~paste|~pastebin|~tell .*|~snippet|~snippets|~javadoc|~javadoc .*|~api|~api .*|~plugin|~bot|~wtp|~php|~svn|~news|~newsgroup|~news .*|~newsgroup .*|~cmd|~commands|~help|~g .*|~wiki .*|~eh .*|~source|~ecf|~tm|~deadlock|~keys)">
       </handler>
