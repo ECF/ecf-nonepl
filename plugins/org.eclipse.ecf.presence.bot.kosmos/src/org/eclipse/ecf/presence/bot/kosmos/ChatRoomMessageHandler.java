@@ -7,6 +7,7 @@
  *
  * Contributors:
  *    Remy Suen <remy.suen@gmail.com> - initial API and implementation
+ *    Markus Kuppe <mkuppe@versant.com> - Bug 1830436 - [bot] ~keys cmd to point to "ctrl+shift+l
  ******************************************************************************/
 package org.eclipse.ecf.presence.bot.kosmos;
 
@@ -567,6 +568,14 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendMessage(roomID, NLS.bind(Messages.Deadlock_Reply, target));
 		}
 	}
+	
+	private void sendKeys(ID roomID, String target) {
+		if (target == null) {
+			sendMessage(roomID, Messages.Keys);
+		} else {
+			sendMessage(roomID, NLS.bind(Messages.Keys_Reply, target));
+		}
+	}
 
 	private void send(ID roomID, String target, String msg) {
 		if (msg.equals("bug")) { //$NON-NLS-1$
@@ -626,6 +635,8 @@ public class ChatRoomMessageHandler implements IChatRoomMessageHandler {
 			sendTM(roomID, target);
 		} else if (msg.equals("deadlock")) { //$NON-NLS-1$
 			sendDeadlock(roomID, target);
+		} else if (msg.equals("keys")) { //$NON-NLS-1$
+			sendKeys(roomID, target);
 		} else {
 			int index = msg.indexOf('c');
 			if (index == -1) {

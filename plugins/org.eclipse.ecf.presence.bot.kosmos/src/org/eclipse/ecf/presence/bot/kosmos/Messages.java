@@ -16,6 +16,7 @@ public class Messages extends NLS {
 
 	private static final String BUNDLE_NAME = "org.eclipse.ecf.presence.bot.kosmos.messages"; //$NON-NLS-1$
 
+
 	public static String EclipseBugzilla;
 	public static String EclipseBugzilla_Reply;
 
@@ -84,6 +85,9 @@ public class Messages extends NLS {
 	
 	public static String Deadlock;
 	public static String Deadlock_Reply;
+
+	public static String Keys;
+	public static String Keys_Reply;
 
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
