@@ -23,8 +23,8 @@ import org.eclipse.ecf.presence.im.IChatID;
 public class YahooID extends BaseID implements IChatID {
 
 	private static final long serialVersionUID = -5949609561932558417L;
-	private String username;
-	URI uri;
+	private final String username;
+	private final URI uri;
 
 	public YahooID(YahooNamespace namespace, String username) throws URISyntaxException {
 		super(namespace);
@@ -65,6 +65,10 @@ public class YahooID extends BaseID implements IChatID {
 
 	public String getUsername() {
 		return username;
+	}
+	
+	public String getHostname() {
+		return "yahoo.com";
 	}
 
 	public String toString() {
