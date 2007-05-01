@@ -34,7 +34,7 @@ final class YahooConnectWizardPage extends WizardPage {
 		setDescription("Specify a Yahoo username and password to connect to account");
 		setPageComplete(false);
 	}
-	
+
 	YahooConnectWizardPage(String username) {
 		this();
 		this.username = username;
@@ -50,15 +50,16 @@ final class YahooConnectWizardPage extends WizardPage {
 
 		connectText = new Text(parent, SWT.SINGLE | SWT.BORDER);
 		connectText.setLayoutData(fillData);
-		connectText.addModifyListener(new ModifyListener() {
+		ModifyListener modifyListener = new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				if (!connectText.getText().equals("")) { //$NON-NLS-1$
+				if (!connectText.getText().equals("") && !passwordText.getText().equals("")) { //$NON-NLS-1$
 					updateStatus(null);
 				} else {
-					updateStatus("An connect ID must be specified.");
+					updateStatus("A Username and Password must be specified.");
 				}
 			}
-		});
+		};
+		connectText.addModifyListener(modifyListener);
 
 		label = new Label(parent, SWT.RIGHT);
 		label.setText("<user>");
@@ -68,6 +69,7 @@ final class YahooConnectWizardPage extends WizardPage {
 		label.setText("Password:");
 		passwordText = new Text(parent, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
 		passwordText.setLayoutData(fillData);
+		passwordText.addModifyListener(modifyListener);
 		label = new Label(parent, SWT.RIGHT | SWT.WRAP);
 		label.setText("Password required for Yahoo accounts");
 		label.setLayoutData(endData);
