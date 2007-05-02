@@ -149,6 +149,10 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
     public synchronized void disconnect() {
 		fireContainerEvent(new ContainerDisconnectingEvent(getID(),
 				this.remoteServerID));
+		accountManager.disconnect();
+		rosterManager.disconnect();
+		chatManager.disconnect();
+		chatRoomManager.disconnect();
 		fireContainerEvent(new ContainerDisconnectedEvent(getID(),
 				this.remoteServerID));
     	this.remoteServerID = null;

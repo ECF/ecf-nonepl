@@ -199,4 +199,10 @@ public class SkypeChatManager implements IChatManager {
 		return null;
 	}
 
+	/**
+	 * 
+	 */
+	public void disconnect() {
+	}
+
 }

@@ -109,4 +109,10 @@ public class SkypeAccountManager implements IAccountManager {
 		
 	}
 
+	/**
+	 * 
+	 */
+	public void disconnect() {
+	}
+
 }
