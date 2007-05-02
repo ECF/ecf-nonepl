@@ -25,6 +25,7 @@ import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.history.IHistory;
 import org.eclipse.ecf.presence.history.IHistoryManager;
 import org.eclipse.ecf.presence.im.ChatMessageEvent;
+import org.eclipse.ecf.presence.im.IChat;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessage;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
@@ -188,6 +189,14 @@ public class SkypeChatManager implements IChatManager {
 	 */
 	public void removeMessageListener(IIMMessageListener listener) {
 		chatListeners.remove(listener);
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.presence.im.IChatManager#createChat(org.eclipse.ecf.core.identity.ID)
+	 */
+	public IChat createChat(ID targetUser) throws ECFException {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
