@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.activemq.transport.TransportChannel;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.jms.container.JMSServerSOContainer;
@@ -53,8 +54,8 @@ public class ClientChannelProxy implements ISynchAsynchConnection {
 	}
 
 	public Object connect(ID remote, Object data, int timeout)
-			throws IOException {
-		throw new IOException("cannot connect via this proxy");
+			throws ECFException {
+		throw new ECFException("cannot connect via this proxy");
 	}
 
 	public void disconnect() throws IOException {

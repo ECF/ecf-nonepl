@@ -10,12 +10,12 @@ package org.eclipse.ecf.provider.jms.channel;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.ConnectException;
 import java.net.URISyntaxException;
 
 import javax.jms.ObjectMessage;
 
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
 import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
@@ -40,8 +40,8 @@ public class ServerChannel extends Channel implements ISynchAsynchConnection {
 	}
 
 	public synchronized Object connect(ID remote, Object data, int timeout)
-			throws IOException {
-		throw new ConnectException("server cannot connect");
+			throws ECFException {
+		throw new ECFException("server cannot connect");
 	}
 
 	protected void respondToRequest(ObjectMessage omsg, ECFMessage o) {

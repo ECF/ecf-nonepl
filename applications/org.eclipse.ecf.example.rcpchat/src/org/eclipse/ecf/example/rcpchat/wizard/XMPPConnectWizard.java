@@ -10,8 +10,6 @@
  *****************************************************************************/
 package org.eclipse.ecf.example.rcpchat.wizard;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.IContainerConnectedEvent;
@@ -21,7 +19,6 @@ import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.core.util.IExceptionHandler;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
@@ -35,7 +32,6 @@ import org.eclipse.ecf.presence.ui.MessagesView;
 import org.eclipse.ecf.presence.ui.MultiRosterView;
 import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
-import org.eclipse.ecf.ui.dialogs.ContainerConnectErrorDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
@@ -173,25 +169,7 @@ public class XMPPConnectWizard extends Wizard implements IConnectWizard {
 			}
 		});
 
-		new AsynchContainerConnectAction(container, targetID, connectContext,
-				new IExceptionHandler() {
-					public IStatus handleException(final Throwable exception) {
-						if (exception != null) {
-							exception.printStackTrace();
-							Display.getDefault().asyncExec(new Runnable() {
-								public void run() {
-									new ContainerConnectErrorDialog(workbench
-											.getActiveWorkbenchWindow()
-											.getShell(), 1, "See Details",
-											targetID.getName(), exception)
-											.open();
-								}
-							});
-						}
-						return Status.OK_STATUS;
-					}
-
-				}).run(null);
+		new AsynchContainerConnectAction(container, targetID, connectContext).run();
 
 		return true;
 	}

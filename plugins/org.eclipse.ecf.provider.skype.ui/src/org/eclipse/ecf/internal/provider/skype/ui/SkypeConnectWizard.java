@@ -1,13 +1,10 @@
 package org.eclipse.ecf.internal.provider.skype.ui;
 
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.IContainerConnectedEvent;
 import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.util.IExceptionHandler;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
@@ -26,7 +23,6 @@ import org.eclipse.ecf.telephony.call.ICallSessionRequestListener;
 import org.eclipse.ecf.telephony.call.events.ICallSessionRequestEvent;
 import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
-import org.eclipse.ecf.ui.dialogs.ContainerConnectErrorDialog;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
@@ -171,28 +167,7 @@ public class SkypeConnectWizard extends Wizard implements IConnectWizard {
 			callAdapter
 					.addCallSessionRequestListener(createCallSessionRequestListener());
 
-			new AsynchContainerConnectAction(container, null, null,
-					new IExceptionHandler() {
-						public IStatus handleException(final Throwable exception) {
-							if (exception != null) {
-								exception.printStackTrace();
-								Display.getDefault().asyncExec(new Runnable() {
-									public void run() {
-										new ContainerConnectErrorDialog(
-												workbench
-														.getActiveWorkbenchWindow()
-														.getShell(),
-												1,
-												Messages.SkypeConnectWizard_EXCEPTION_SEE_DETAILS,
-												Messages.SkypeConnectWizard_EXCEPTION_SKYPE_EXCEPTION,
-												exception).open();
-									}
-								});
-							}
-							return Status.OK_STATUS;
-						}
-
-					}).run(null);
+			new AsynchContainerConnectAction(container, null, null).run(null);
 
 		}
 		return true;

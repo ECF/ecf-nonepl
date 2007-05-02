@@ -16,6 +16,7 @@ import java.net.ConnectException;
 import javax.jms.ObjectMessage;
 
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
 import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
@@ -40,34 +41,39 @@ public class ClientChannel extends Channel implements ISynchAsynchConnection {
 	 *      java.lang.Object, int)
 	 */
 	public synchronized Object connect(ID remote, Object data, int timeout)
-			throws IOException {
+			throws ECFException {
 		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(), "connect",
 				new Object[] { remote, data, new Integer(timeout) });
 		if (connected)
-			throw new ConnectException("already connected");
+			throw new ECFException("already connected");
 		if (remote == null)
-			throw new ConnectException("remote target cannot be null");
+			throw new ECFException("remote target cannot be null");
 		if (!(remote instanceof JMSID))
-			throw new ConnectException("remote " + remote.getName()
+			throw new ECFException("remote " + remote.getName()
 					+ " not JMS ID");
 		managerID = (JMSID) remote;
 		url = managerID.getName();
 		topicName = removeLeadingSlashes(url);
 
 		if (!(data instanceof Serializable)) {
-			throw new NotSerializableException("data are not serializable");
+			throw new ECFException(new NotSerializableException("data are not serializable"));
 		}
 		Serializable connectData = (Serializable) data;
-		setup();
-		Trace.trace(JmsPlugin.PLUGIN_ID, "connecting to " + remote + ","
-				+ data + "," + timeout + ")");
-		Serializable res = getConnectResult(managerID, connectData);
-		if (res != null && (!(res instanceof ConnectResponse))) {
-			throw new ConnectException("Invalid response");
+		Serializable res;
+		try {
+			setup();
+			Trace.trace(JmsPlugin.PLUGIN_ID, "connecting to " + remote + ","
+					+ data + "," + timeout + ")");
+			res = getConnectResult(managerID, connectData);
+			if (res != null && (!(res instanceof ConnectResponse))) {
+				throw new ConnectException("Invalid response");
+			}
+			if (res == null)
+				throw new ConnectException("server refused connection");
+		} catch (Exception e) {
+			throw new ECFException("connect failed to "+remote.getName(),e);
 		}
-		if (res == null)
-			throw new ConnectException("server refused connection");
 		ConnectResponse cr = (ConnectResponse) res;
 		Object result = cr.getData();
 		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,

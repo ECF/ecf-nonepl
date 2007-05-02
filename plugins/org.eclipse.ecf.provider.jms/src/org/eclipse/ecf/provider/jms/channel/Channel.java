@@ -30,6 +30,7 @@ import org.activemq.ActiveMQConnectionFactory;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
 import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
@@ -129,7 +130,7 @@ public abstract class Channel extends SocketAddress implements
 	 *      java.lang.Object, int)
 	 */
 	public abstract Object connect(ID remote, Object data, int timeout)
-			throws IOException;
+			throws ECFException;
 
 	protected void onJMSException(JMSException except) {
 		if (isConnected() && isStarted()) {
