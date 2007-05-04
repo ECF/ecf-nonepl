@@ -282,7 +282,7 @@ public abstract class Channel extends SocketAddress implements
 	}
 
 	// protected abstract void handleQueueMessage(Message msg);
-	public synchronized void disconnect() throws IOException {
+	public synchronized void disconnect() {
 		Trace
 				.entering(JmsPlugin.PLUGIN_ID,
 						JmsDebugOptions.METHODS_ENTERING, this.getClass(),

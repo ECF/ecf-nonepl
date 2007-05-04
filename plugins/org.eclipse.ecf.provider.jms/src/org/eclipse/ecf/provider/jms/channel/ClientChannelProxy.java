@@ -58,7 +58,7 @@ public class ClientChannelProxy implements ISynchAsynchConnection {
 		throw new ECFException("cannot connect via this proxy");
 	}
 
-	public void disconnect() throws IOException {
+	public void disconnect() {
 		stop();
 		aconn = null;
 	}
