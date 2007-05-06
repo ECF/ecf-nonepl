@@ -118,7 +118,7 @@ public class JMSClientSOContainer extends ClientSOContainer {
 			return;
 		debug("handleDisconnectRequest(" + request + ")");
 		ISynchAsynchConnection conn = getConnection();
-		memberLeave(fromID, conn);
+		handleLeave(fromID, conn);
 		// Notify listeners
 		fireContainerEvent(new ContainerDisconnectedEvent(getID(), fromID));
 	}

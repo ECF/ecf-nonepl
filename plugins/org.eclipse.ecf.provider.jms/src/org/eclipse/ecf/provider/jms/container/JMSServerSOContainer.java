@@ -300,13 +300,13 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		ID remoteID = getIDForClientID(client.getClientID());
 		if (remoteID != null) {
 			IConnection conn = getConnectionForID(remoteID);
-			memberLeave(remoteID, conn);
+			handleLeave(remoteID, conn);
 		}
 		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "clientRemoved");
 	}
 
-	protected void memberLeave(ID target, IConnection conn) {
+	protected void handleLeave(ID target, IConnection conn) {
 		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
 				"memberLeave", new Object[] { target, conn });
@@ -323,7 +323,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 			}
 		}
 		if (conn != null)
-			killConnection(conn);
+			disconnectConnection(conn);
 		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "memberLeave");
 	}
