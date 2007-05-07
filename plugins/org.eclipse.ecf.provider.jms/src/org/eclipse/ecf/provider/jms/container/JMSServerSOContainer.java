@@ -247,7 +247,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
-					messages[1] = serializeObject(ContainerMessage
+					messages[1] = serialize(ContainerMessage
 							.createViewChangeMessage(getID(), null,
 									getNextSequenceNumber(),
 									new ID[] { remoteID }, true, null));
@@ -264,7 +264,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 			fireContainerEvent(new ContainerConnectedEvent(this.getID(),
 					remoteID));
 
-			messages[0] = serializeObject(ContainerMessage
+			messages[0] = serialize(ContainerMessage
 					.createViewChangeMessage(getID(), remoteID,
 							getNextSequenceNumber(), memberIDs, true, null));
 
@@ -289,7 +289,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 	protected void queueContainerMessage(ContainerMessage mess)
 			throws IOException {
-		serverChannel.sendAsynch(mess.toContainerID, serializeObject(mess));
+		serverChannel.sendAsynch(mess.toContainerID, serialize(mess));
 	}
 
 	public void clientRemoved(BrokerClient client) {
@@ -323,7 +323,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 			}
 		}
 		if (conn != null)
-			disconnectConnection(conn);
+			disconnect(conn);
 		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "memberLeave");
 	}
