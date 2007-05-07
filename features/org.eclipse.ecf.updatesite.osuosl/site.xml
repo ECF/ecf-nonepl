@@ -9,5 +9,5 @@
    <feature url="features/org.eclipse.ecf.provider.yahoo_feature_1.0.0.yahooqualifier.jar" id="org.eclipse.ecf.provider.yahoo_feature" version="1.0.0.yahooqualifier">
       <category name="ECF Extras"/>
    </feature>
-   <category-def name="ECF Extras" label="Eclipse Communication Framework Extras"/>
+   <category-def name="ECF Extras" label="Eclipse Communications Framework Extras"/>
 </site>
