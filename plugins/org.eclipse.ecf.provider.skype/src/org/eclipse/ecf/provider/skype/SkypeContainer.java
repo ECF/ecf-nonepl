@@ -25,6 +25,7 @@ import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
+import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
@@ -33,6 +34,8 @@ import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
+import org.eclipse.ecf.provider.generic.SOConfig;
+import org.eclipse.ecf.provider.generic.SOContext;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Profile;
@@ -204,6 +207,12 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 	protected ISynchAsynchConnection createConnection(ID remoteSpace,
 			Object data) throws ConnectionCreateException {
 		return null;
+	}
+
+	protected SOContext createRemoteSharedObjectContext(SOConfig soconfig,
+			IQueueEnqueue queue) {
+		return new SkypeSOContext(soconfig.getSharedObjectID(), soconfig
+				.getHomeContainerID(), this, soconfig.getProperties(), queue);
 	}
 
 }
