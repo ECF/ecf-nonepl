@@ -18,6 +18,9 @@ import org.eclipse.ecf.core.provider.IContainerInstantiator;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
 
+import com.skype.Profile;
+import com.skype.Skype;
+
 /**
  *
  */
@@ -32,7 +35,8 @@ public class SkypeContainerInstantiator implements IContainerInstantiator {
 			Object[] parameters) throws ContainerCreateException {
 		try {
 			if (container == null) {
-				container = new SkypeContainer();
+				Profile skypeProfile = Skype.getProfile();
+				container = new SkypeContainer(skypeProfile,skypeProfile.getId());
 			}
 			return container;
 		} catch (Exception e) {

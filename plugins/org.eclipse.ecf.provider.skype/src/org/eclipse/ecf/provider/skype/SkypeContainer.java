@@ -21,7 +21,6 @@ import org.eclipse.ecf.core.events.ContainerConnectingEvent;
 import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.events.ContainerDisconnectingEvent;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
@@ -39,7 +38,6 @@ import org.eclipse.ecf.provider.generic.SOContext;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Profile;
-import com.skype.Skype;
 import com.skype.SkypeException;
 import com.skype.connector.ConnectorException;
 
@@ -50,14 +48,14 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 		IPresenceContainerAdapter {
 
 	private static final String SKYPE_ACCOUNT_NAME = " [skype]";
-	
+
 	SkypeAccountManager accountManager = null;
 	SkypeRosterManager rosterManager = null;
 	SkypeChatManager chatManager = null;
 	SkypeChatRoomManager chatRoomManager = null;
 
 	SkypeUserID userID = null;
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -86,7 +84,8 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 	/**
 	 * @param config
 	 */
-	public SkypeContainer() throws SkypeException, ConnectorException {
+	public SkypeContainer(final Profile skypeProfile, final String id)
+			throws SkypeException, ConnectorException {
 		super(new ISharedObjectContainerConfig() {
 
 			public Object getAdapter(Class clazz) {
@@ -99,19 +98,18 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 
 			public ID getID() {
 				try {
-					return IDFactory.getDefault().createGUID();
-				} catch (IDCreateException e) {
+					return IDFactory.getDefault().createStringID(id);
+				} catch (Exception e) {
 					return null;
 				}
 			}
 		});
-		Profile skypeProfile = Skype.getProfile();
 		this.userID = new SkypeUserID(skypeProfile.getId());
 		String fullName = skypeProfile.getFullName();
 		fullName = (fullName == null || fullName.equals("")) ? userID.getUser()
 				: fullName;
 		org.eclipse.ecf.core.user.User user = new org.eclipse.ecf.core.user.User(
-				userID, fullName+SKYPE_ACCOUNT_NAME);
+				userID, fullName + SKYPE_ACCOUNT_NAME);
 
 		accountManager = new SkypeAccountManager(this, skypeProfile, userID,
 				user);
@@ -123,7 +121,7 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 	public SkypeUserID getSkypeUserID() {
 		return userID;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -146,10 +144,13 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 			}
 		}
 	}
-    /* (non-Javadoc)
-     * @see org.eclipse.ecf.provider.generic.ClientSOContainer#disconnect()
-     */
-    public synchronized void disconnect() {
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#disconnect()
+	 */
+	public synchronized void disconnect() {
 		fireContainerEvent(new ContainerDisconnectingEvent(getID(),
 				this.remoteServerID));
 		accountManager.disconnect();
@@ -158,10 +159,10 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 		chatRoomManager.disconnect();
 		fireContainerEvent(new ContainerDisconnectedEvent(getID(),
 				this.remoteServerID));
-    	this.remoteServerID = null;
-    	this.connectionState = DISCONNECTED;
-    }
-    
+		this.remoteServerID = null;
+		this.connectionState = DISCONNECTED;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
