@@ -12,7 +12,9 @@ Require-Bundle: org.eclipse.ecf,
  com.skype,
  org.eclipse.equinox.common,
  org.eclipse.ecf.provider,
- org.eclipse.ecf.telephony.call
+ org.eclipse.ecf.telephony.call,
+ org.eclipse.ecf.datashare,
+ org.eclipse.ecf.provider.datashare
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: global
 Import-Package: org.eclipse.osgi.util;version="1.1.0",

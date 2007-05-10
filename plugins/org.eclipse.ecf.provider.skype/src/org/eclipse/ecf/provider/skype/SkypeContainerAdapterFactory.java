@@ -12,16 +12,16 @@
 package org.eclipse.ecf.provider.skype;
 
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.sharedobject.AbstractSharedObjectContainerAdapterFactory;
 import org.eclipse.ecf.core.sharedobject.ISharedObject;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
+import org.eclipse.ecf.provider.datashare.DatashareContainerAdapterFactory;
 import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
 
 /**
  * 
  */
 public class SkypeContainerAdapterFactory extends
-		AbstractSharedObjectContainerAdapterFactory {
+		DatashareContainerAdapterFactory {
 
 	/*
 	 * (non-Javadoc)
