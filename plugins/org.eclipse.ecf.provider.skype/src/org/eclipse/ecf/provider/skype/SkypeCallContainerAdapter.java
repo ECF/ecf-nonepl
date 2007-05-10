@@ -47,7 +47,7 @@ import com.skype.Skype;
 import com.skype.SkypeException;
 import com.skype.connector.Connector;
 
-public class SharedObjectCallContainerAdapter extends BaseSharedObject
+public class SkypeCallContainerAdapter extends BaseSharedObject
 		implements ICallSessionContainerAdapter {
 
 	boolean debugSkype = Boolean.getBoolean(System.getProperty("debugSkype",
@@ -67,7 +67,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 
 	HashMap receivedCalls = new HashMap();
 
-	public SharedObjectCallContainerAdapter(IContainer container) {
+	public SkypeCallContainerAdapter(IContainer container) {
 		this.container = container;
 	}
 	
@@ -141,7 +141,7 @@ public class SharedObjectCallContainerAdapter extends BaseSharedObject
 							ICallSessionListener listener, Map properties) throws CallException {
 						try {
 							SkypeReceiverCallSession session = new SkypeReceiverCallSession(
-									SharedObjectCallContainerAdapter.this,
+									SkypeCallContainerAdapter.this,
 									userID, new SkypeUserID(receivedCall
 											.getPartner()), receivedCall,
 									listener);

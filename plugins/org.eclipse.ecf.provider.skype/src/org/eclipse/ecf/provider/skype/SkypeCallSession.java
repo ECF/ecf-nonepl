@@ -40,7 +40,7 @@ public class SkypeCallSession  implements ICallSession {
 	protected ICallSessionListener listener = null;
 	protected CallSessionState callState = null;
 	protected CallSessionFailureReason failureReason = null;
-	protected SharedObjectCallContainerAdapter adapter = null;
+	protected SkypeCallContainerAdapter adapter = null;
 	protected CallSessionErrorDetails callError = null;
 	
 	protected CallStatusChangedListener callStatusChangedListener = new CallStatusChangedListener() {
@@ -56,11 +56,11 @@ public class SkypeCallSession  implements ICallSession {
 		}
 	}
 
-	protected SharedObjectCallContainerAdapter getAdapter() {
+	protected SkypeCallContainerAdapter getAdapter() {
 		return adapter;
 	}
 	
-	protected SkypeCallSession(SharedObjectCallContainerAdapter adapter, SkypeUserID initiatorID,
+	protected SkypeCallSession(SkypeCallContainerAdapter adapter, SkypeUserID initiatorID,
 			SkypeUserID receiverID, Call call, ICallSessionListener listener)
 			throws SkypeException {
 		this.adapter = null;

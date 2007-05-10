@@ -21,6 +21,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
@@ -38,7 +39,6 @@ import org.eclipse.ecf.provider.generic.SOWrapper;
 import com.skype.Application;
 import com.skype.ApplicationListener;
 import com.skype.Friend;
-import com.skype.Skype;
 import com.skype.SkypeException;
 import com.skype.Stream;
 import com.skype.StreamListener;
@@ -134,16 +134,13 @@ public class SkypeSOContext extends SOContext {
 	 * @param props
 	 * @param queue
 	 */
-	public SkypeSOContext(ID objID, ID homeID, SOContainer cont, Map props,
+	public SkypeSOContext(Application application, ID objID, ID homeID, SOContainer cont, Map props,
 			IQueueEnqueue queue) {
 		super(objID, homeID, cont, props, queue);
-		try {
-			membership.add(cont.getID());
-			application = Skype.addApplication(objID.getName());
-			application.addApplicationListener(applicationListener);
-		} catch (SkypeException e) {
-			application = null;
-		}
+		Assert.isNotNull(application);
+		this.application = application;
+		membership.add(cont.getID());
+		this.application.addApplicationListener(applicationListener);
 	}
 
 	protected ID createIDFromName(String id) {
@@ -177,6 +174,7 @@ public class SkypeSOContext extends SOContext {
 				if (stream == null) {
 					Friend friend = (Friend) Friend.getInstance(friendID);
 					Stream [] streams = application.connect(new Friend[] { friend } );
+					if (streams.length == 0) throw new IOException("Skype friend not running application");
 					stream = streams[0];
 				}
 				stream.write(Base64.encode(serialize(data)));

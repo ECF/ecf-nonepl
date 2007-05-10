@@ -11,6 +11,7 @@ package org.eclipse.ecf.provider.jms.container;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
+
 import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
@@ -104,7 +105,6 @@ public class JMSClientSOContainer extends ClientSOContainer {
 	}
 
 	protected Serializable processSynch(SynchEvent e) throws IOException {
-		debug("processSynch(" + e + ")");
 		Object req = e.getData();
 		if (req instanceof DisconnectRequest) {
 			handleDisconnectRequest((DisconnectRequest) req);
@@ -116,7 +116,6 @@ public class JMSClientSOContainer extends ClientSOContainer {
 		ID fromID = request.getSenderID();
 		if (fromID == null)
 			return;
-		debug("handleDisconnectRequest(" + request + ")");
 		ISynchAsynchConnection conn = getConnection();
 		handleLeave(fromID, conn);
 		// Notify listeners

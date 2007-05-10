@@ -24,7 +24,7 @@ public class SkypeInitiatorCallSession extends SkypeCallSession {
 	/**
 	 * @param sharedObjectCallContainerAdapter
 	 */
-	public SkypeInitiatorCallSession(SharedObjectCallContainerAdapter adapter, SkypeUserID initiatorID,
+	public SkypeInitiatorCallSession(SkypeCallContainerAdapter adapter, SkypeUserID initiatorID,
 			SkypeUserID receiverID, Call call, ICallSessionListener listener)
 			throws SkypeException {
 		super(adapter, initiatorID, receiverID, call, listener);

@@ -23,8 +23,10 @@ import org.eclipse.ecf.core.events.ContainerDisconnectingEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.ecf.core.sharedobject.ISharedObject;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
-import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
+import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.datashare.IChannel;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
@@ -33,8 +35,7 @@ import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
-import org.eclipse.ecf.provider.generic.SOConfig;
-import org.eclipse.ecf.provider.generic.SOContext;
+import org.eclipse.ecf.provider.generic.SOWrapper;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Profile;
@@ -210,10 +211,14 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 		return null;
 	}
 
-	protected SOContext createRemoteSharedObjectContext(SOConfig soconfig,
-			IQueueEnqueue queue) {
-		return new SkypeSOContext(soconfig.getSharedObjectID(), soconfig
-				.getHomeContainerID(), this, soconfig.getProperties(), queue);
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.provider.generic.SOContainer#createSharedObjectWrapper(org.eclipse.ecf.core.identity.ID, org.eclipse.ecf.core.sharedobject.ISharedObject, java.util.Map)
+	 */
+	protected SOWrapper createSharedObjectWrapper(ID id, ISharedObject s,
+			Map props) throws ECFException {
+		if (s instanceof IChannel)
+			return new SOWrapper(new SkypeChannelSOConfig(id, getID(), this, props),s,this);
+		return super.createSharedObjectWrapper(id, s, props);
 	}
-
+	
 }

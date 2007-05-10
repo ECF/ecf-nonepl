@@ -11,25 +11,22 @@
 
 package org.eclipse.ecf.provider.skype;
 
-import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
-import org.eclipse.ecf.telephony.call.ICallSessionListener;
-
-import com.skype.Call;
-import com.skype.SkypeException;
+import org.eclipse.ecf.core.sharedobject.ISharedObjectTransactionConfig;
+import org.eclipse.ecf.datashare.IChannelListener;
+import org.eclipse.ecf.provider.datashare.BaseChannel;
 
 /**
- * 
+ *
  */
-public class SkypeReceiverCallSession extends SkypeCallSession {
+public class SkypeA2AChannel extends BaseChannel {
 
 	/**
-	 * @param receiverID
-	 * @param receivedCall
+	 * @param config
+	 * @param listener
 	 */
-	public SkypeReceiverCallSession(SkypeCallContainerAdapter adapter, SkypeUserID receiverID, SkypeUserID initiatorID, Call receivedCall,
-			ICallSessionListener listener) throws SkypeException {
-		super(adapter, initiatorID, receiverID,
-				receivedCall, listener);
+	public SkypeA2AChannel(ISharedObjectTransactionConfig config,
+			IChannelListener listener) {
+		super(config, listener);
 	}
 
 }
