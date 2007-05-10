@@ -21,18 +21,23 @@ import java.util.List;
 import java.util.Map;
 import java.util.Vector;
 
+import org.eclipse.ecf.core.events.ContainerConnectedEvent;
+import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.sharedobject.events.RemoteSharedObjectEvent;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
+import org.eclipse.ecf.core.sharedobject.util.QueueException;
 import org.eclipse.ecf.core.util.Base64;
+import org.eclipse.ecf.core.util.Event;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.generic.SOContext;
 import org.eclipse.ecf.provider.generic.SOWrapper;
 
 import com.skype.Application;
 import com.skype.ApplicationListener;
+import com.skype.Friend;
 import com.skype.Skype;
 import com.skype.SkypeException;
 import com.skype.Stream;
@@ -72,14 +77,14 @@ public class SkypeSOContext extends SOContext {
 			membership.add(memberID);
 			stream.addStreamListener(new SOContextStreamListener(memberID));
 			streams.put(memberID,stream);
-			// XXX fire containerconnected event
+			enqueue(new ContainerConnectedEvent(getLocalContainerID(),memberID));
 		}
 
 		public void disconnected(Stream stream) throws SkypeException {
-			ID member = createIDFromName(stream.getFriend().getId());
-			membership.remove(member);
-			streams.remove(createIDFromName(stream.getFriend().getId()));
-			// XXX fire containerdisconnected event
+			ID memberID = createIDFromName(stream.getFriend().getId());
+			membership.remove(memberID);
+			streams.remove(memberID);
+			enqueue(new ContainerDisconnectedEvent(getLocalContainerID(),memberID));
 		}
 	};
 
@@ -90,6 +95,14 @@ public class SkypeSOContext extends SOContext {
 	 */
 	public ID[] getGroupMemberIDs() {
 		return (ID[]) membership.toArray(new ID[] {});
+	}
+	
+	private void enqueue(Event event) {
+		try {
+			queue.enqueue(new SOWrapper.ProcEvent(event));
+		} catch (QueueException e) {
+			// Should not happen
+		}
 	}
 	
 	/**
@@ -103,7 +116,7 @@ public class SkypeSOContext extends SOContext {
 			try {
 				Object o = deserialize(Base64.decode(receivedText));
 				// Deliver to queue for processing
-				queue.enqueue(new SOWrapper.ProcEvent(new RemoteSharedObjectEvent(SkypeSOContext.this.sharedObjectID,memberID,o)));
+				enqueue(new RemoteSharedObjectEvent(sharedObjectID,memberID,o));
 			} catch (NumberFormatException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -153,18 +166,22 @@ public class SkypeSOContext extends SOContext {
 	 * @see org.eclipse.ecf.provider.generic.SOContext#sendMessage(org.eclipse.ecf.core.identity.ID,
 	 *      java.lang.Object)
 	 */
-	public void sendMessage(ID toContainerID, Object data) throws IOException {
-		if (toContainerID == null) {
+	public void sendMessage(ID targetID, Object data) throws IOException {
+		if (targetID == null) {
 			ID [] ids = getGroupMemberIDs();
 			for(int i=0; i < 0; i++) sendMessage(ids[i],data);
 		} else {
-			Stream stream = getStreamForId(toContainerID.getName());
-			if (stream != null) {
-				try {
-					stream.write(Base64.encode(serialize(data)));
-				} catch (Exception e) {
-					throw new IOException(e.getLocalizedMessage());
+			try {
+				String friendID = targetID.getName();
+				Stream stream = getStreamForId(friendID);
+				if (stream == null) {
+					Friend friend = (Friend) Friend.getInstance(friendID);
+					Stream [] streams = application.connect(new Friend[] { friend } );
+					stream = streams[0];
 				}
+				stream.write(Base64.encode(serialize(data)));
+			} catch (SkypeException e) {
+				throw new IOException(e.getLocalizedMessage());
 			}
 		}
 	}
@@ -176,7 +193,7 @@ public class SkypeSOContext extends SOContext {
 		return bos.toByteArray();
 	}
 
-	protected Object deserialize(byte[] bytes) throws Exception {
+	protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
 		ByteArrayInputStream bins = new ByteArrayInputStream(bytes);
 		ObjectInputStream oins = new ObjectInputStream(bins);
 		return oins.readObject();

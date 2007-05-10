@@ -14,6 +14,7 @@ Require-Bundle: org.eclipse.ecf,
  org.eclipse.ecf.provider,
  org.eclipse.ecf.telephony.call
 Eclipse-LazyStart: true
+Eclipse-BuddyPolicy: global
 Import-Package: org.eclipse.osgi.util;version="1.1.0",
  org.osgi.framework;version="1.4.0"
 Export-Package: org.eclipse.ecf.internal.provider.skype;x-internal:=true,
