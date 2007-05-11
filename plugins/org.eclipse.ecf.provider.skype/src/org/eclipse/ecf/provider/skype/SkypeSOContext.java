@@ -88,6 +88,22 @@ public class SkypeSOContext extends SOContext {
 		}
 	};
 
+	/**
+	 * @param objID
+	 * @param homeID
+	 * @param cont
+	 * @param props
+	 * @param queue
+	 */
+	public SkypeSOContext(Application application, ID objID, ID homeID, SOContainer cont, Map props,
+			IQueueEnqueue queue) {
+		super(objID, homeID, cont, props, queue);
+		Assert.isNotNull(application);
+		this.application = application;
+		membership.add(cont.getID());
+		this.application.addApplicationListener(applicationListener);
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -117,9 +133,6 @@ public class SkypeSOContext extends SOContext {
 				Object o = deserialize(Base64.decode(receivedText));
 				// Deliver to queue for processing
 				enqueue(new RemoteSharedObjectEvent(sharedObjectID,memberID,o));
-			} catch (NumberFormatException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
 			} catch (Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -127,21 +140,6 @@ public class SkypeSOContext extends SOContext {
 		}
 	}
 
-	/**
-	 * @param objID
-	 * @param homeID
-	 * @param cont
-	 * @param props
-	 * @param queue
-	 */
-	public SkypeSOContext(Application application, ID objID, ID homeID, SOContainer cont, Map props,
-			IQueueEnqueue queue) {
-		super(objID, homeID, cont, props, queue);
-		Assert.isNotNull(application);
-		this.application = application;
-		membership.add(cont.getID());
-		this.application.addApplicationListener(applicationListener);
-	}
 
 	protected ID createIDFromName(String id) {
 		try {
