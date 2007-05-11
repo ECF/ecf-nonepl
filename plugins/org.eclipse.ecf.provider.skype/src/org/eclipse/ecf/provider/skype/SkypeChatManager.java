@@ -48,17 +48,10 @@ public class SkypeChatManager implements IChatManager {
 	
 	private Map chats = new HashMap();
 	
-	protected void dispose() {
-		Skype.removeChatMessageListener(chatMessageListener);
-		chatListeners.clear();
-		chats.clear();
-	}
-	
-	ChatMessageListener chatMessageListener = new ChatMessageListener() {
+	private ChatMessageListener chatMessageListener = new ChatMessageListener() {
 
 		public void chatMessageReceived(ChatMessage chatMessageReceived)
 				throws SkypeException {
-			// TODO Auto-generated method stub
 			Trace
 					.trace(
 							Activator.PLUGIN_ID,
@@ -199,10 +192,20 @@ public class SkypeChatManager implements IChatManager {
 		return null;
 	}
 
+	protected void dispose() {
+		
+	}
+	
 	/**
 	 * 
 	 */
 	public void disconnect() {
+		if (chatMessageListener != null) {
+			Skype.removeChatMessageListener(chatMessageListener);
+			chatMessageListener = null;
+		}
+		chatListeners.clear();
+		chats.clear();
 	}
 
 }

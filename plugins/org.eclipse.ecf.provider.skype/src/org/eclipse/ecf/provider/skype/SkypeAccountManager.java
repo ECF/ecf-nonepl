@@ -105,8 +105,6 @@ public class SkypeAccountManager implements IAccountManager {
 	 * 
 	 */
 	protected void dispose() {
-		// TODO Auto-generated method stub
-		
 	}
 
 	/**

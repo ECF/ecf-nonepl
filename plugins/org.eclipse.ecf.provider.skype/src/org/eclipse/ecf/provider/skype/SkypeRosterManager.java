@@ -52,7 +52,7 @@ import com.skype.connector.ConnectorStatusEvent;
 public class SkypeRosterManager extends AbstractRosterManager implements
 		IRosterManager {
 
-	private static final boolean debug = true;
+	private static final boolean debug = false;
 
 	private SkypeContainer container;
 
@@ -163,6 +163,13 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 
 		}
 	};
+
+	public SkypeRosterManager(SkypeContainer skypeContainer,
+			org.eclipse.ecf.core.user.User user) throws SkypeException,
+			ConnectorException {
+		this.container = skypeContainer;
+		this.roster = new Roster(container, user);
+	}
 
 	protected IUser createUser(User f) {
 		SkypeUserID userID = new SkypeUserID(f.getId());
@@ -290,13 +297,6 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 				createPresence(friend));
 	}
 
-	public SkypeRosterManager(SkypeContainer skypeContainer,
-			org.eclipse.ecf.core.user.User user) throws SkypeException,
-			ConnectorException {
-		this.container = skypeContainer;
-		this.roster = new Roster(container, user);
-	}
-
 	private IRosterEntry addEntryToRoster(User friend) {
 		IRosterEntry entry = createRosterEntry(friend);
 		((Roster) roster).addItem(entry);
@@ -358,10 +358,7 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 		return rosterSubscriptionSender;
 	}
 
-	/**
-	 * 
-	 */
-	protected void dispose() {
+	public void disconnect() {
 		try {
 			Connector.getInstance().removeConnectorListener(connectorListener);
 		} catch (Exception e) {
@@ -371,6 +368,13 @@ public class SkypeRosterManager extends AbstractRosterManager implements
 					rosterChangeConnectorListener);
 		} catch (Exception e) {
 		}
+		presenceListeners.clear();
+		super.disconnect();
+	}
+	/**
+	 * 
+	 */
+	protected void dispose() {
 	}
 
 }

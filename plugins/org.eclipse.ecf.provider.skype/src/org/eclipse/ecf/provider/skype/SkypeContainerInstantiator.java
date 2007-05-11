@@ -22,37 +22,41 @@ import com.skype.Profile;
 import com.skype.Skype;
 
 /**
- *
+ * 
  */
 public class SkypeContainerInstantiator implements IContainerInstantiator {
 
-	SkypeContainer container = null;;
-	
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription,
+	 *      java.lang.Object[])
 	 */
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] parameters) throws ContainerCreateException {
 		try {
-			if (container == null) {
-				Profile skypeProfile = Skype.getProfile();
-				container = new SkypeContainer(skypeProfile,skypeProfile.getId());
-			}
-			return container;
+			Profile skypeProfile = Skype.getProfile();
+			return new SkypeContainer(skypeProfile, skypeProfile.getId());
 		} catch (Exception e) {
-			throw new ContainerCreateException("Could not create skype container",e);
+			throw new ContainerCreateException(
+					"Could not create skype container", e);
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#getSupportedAdapterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
 	 */
 	public String[] getSupportedAdapterTypes(
 			ContainerTypeDescription description) {
-		return new String[] { IPresenceContainerAdapter.class.getName(), ICallSessionContainerAdapter.class.getName() };
+		return new String[] { IPresenceContainerAdapter.class.getName(),
+				ICallSessionContainerAdapter.class.getName() };
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
 	 */
 	public Class[][] getSupportedParameterTypes(

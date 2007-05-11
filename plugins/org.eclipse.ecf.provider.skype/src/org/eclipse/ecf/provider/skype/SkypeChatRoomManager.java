@@ -104,7 +104,6 @@ public class SkypeChatRoomManager implements IChatRoomManager {
 	 * 
 	 */
 	protected void dispose() {
-		// TODO Auto-generated method stub	
 	}
 
 	/**
