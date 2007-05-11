@@ -139,6 +139,9 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 	private ITypingMessageSender itms;
 
 	public boolean performFinish() {
+		
+		page.saveComboText();
+		
 		connectContext = ConnectContextFactory
 				.createPasswordConnectContext(page.getPassword());
 
@@ -150,6 +153,8 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 			return false;
 		}
 
+		page.saveComboItems();
+		
 		final IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) container
 				.getAdapter(IPresenceContainerAdapter.class);
 		container.addListener(new IContainerListener() {
