@@ -9,7 +9,7 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.internal.provider.yahoo.ui.hyperlink;
+package org.eclipse.ecf.internal.provider.skype.ui.hyperlink;
 
 import java.net.URI;
 import java.util.ArrayList;
@@ -22,16 +22,16 @@ import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.internal.provider.yahoo.ui.Activator;
-import org.eclipse.ecf.internal.provider.yahoo.ui.wizards.YahooConnectWizard;
+import org.eclipse.ecf.internal.provider.skype.ui.Activator;
+import org.eclipse.ecf.internal.provider.skype.ui.SkypeConnectWizard;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.presence.ui.MessagesView;
-import org.eclipse.ecf.provider.yahoo.container.YahooContainer;
-import org.eclipse.ecf.provider.yahoo.identity.YahooID;
+import org.eclipse.ecf.provider.skype.SkypeContainer;
+import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.ecf.ui.hyperlink.AbstractURLHyperlink;
 import org.eclipse.jface.dialogs.MessageDialog;
@@ -49,9 +49,9 @@ import org.eclipse.ui.dialogs.ListDialog;
 /**
  * 
  */
-public class YahooHyperlink extends AbstractURLHyperlink {
+public class SkypeHyperlink extends AbstractURLHyperlink {
 
-	private static final String ECF_YAHOO_CONTAINER_NAME = "ecf.yahoo.jymsg"; //$NON-NLS-1$
+	private static final String ECF_SKYPE_CONTAINER_NAME = "ecf.call.skype"; //$NON-NLS-1$
 
 	private static final IContainer[] EMPTY = new IContainer[0];
 
@@ -61,7 +61,7 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	 * @param region
 	 * @param urlString
 	 */
-	public YahooHyperlink(IRegion region, URI uri) {
+	public SkypeHyperlink(IRegion region, URI uri) {
 		super(region, uri);
 	}
 
@@ -71,7 +71,7 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	 * @see org.eclipse.ecf.ui.hyperlink.AbstractURLHyperlink#createConnectWizard()
 	 */
 	protected IConnectWizard createConnectWizard() {
-		return new YahooConnectWizard(getURI().getAuthority());
+		return new SkypeConnectWizard();
 	}
 
 	/*
@@ -81,7 +81,7 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	 */
 	protected IContainer createContainer() throws ContainerCreateException {
 		return ContainerFactory.getDefault().createContainer(
-				ECF_YAHOO_CONTAINER_NAME);
+				ECF_SKYPE_CONTAINER_NAME);
 	}
 
 	protected IContainer[] getContainers() {
@@ -92,15 +92,10 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 		List results = new ArrayList();
 		IContainer[] containers = manager.getAllContainers();
 		for (int i = 0; i < containers.length; i++) {
-			ID connectedID = containers[i].getConnectedID();
 			// Must be connected
-			if (connectedID != null) {
-				IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) containers[i]
-						.getAdapter(IPresenceContainerAdapter.class);
-				// Must also be a presence container
-				if (adapter != null && containers[i] instanceof YahooContainer)
-					results.add(containers[i]);
-			}
+			if (containers[i].getConnectedID() != null
+					&& containers[i] instanceof SkypeContainer)
+				results.add(containers[i]);
 		}
 		return (IContainer[]) results.toArray(EMPTY);
 	}
@@ -134,6 +129,7 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	private void chooseAccountAndOpenMessagesView(final IContainer[] containers) {
 		// If there's only one choice then use it
 		if (containers.length == 1) {
+			// XXX This is where it should ask the user if a
 			openMessagesView((IPresenceContainerAdapter) containers[0]
 					.getAdapter(IPresenceContainerAdapter.class));
 			return;
@@ -216,7 +212,7 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 				MessagesView view = (MessagesView) ww.getActivePage().showView(
 						MessagesView.VIEW_ID);
 				ID localID = rosterManager.getRoster().getUser().getID();
-				view.selectTab(icms, itms, localID, new YahooID(localID
+				view.selectTab(icms, itms, localID, new SkypeUserID(localID
 						.getNamespace(), getURI().getAuthority()));
 			} catch (Exception e) {
 				MessageDialog.openError(null, "Error opening view", NLS.bind(
@@ -230,6 +226,5 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 			}
 		}
 	}
-
 
 }

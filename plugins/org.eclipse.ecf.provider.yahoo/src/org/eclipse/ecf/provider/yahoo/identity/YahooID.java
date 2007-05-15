@@ -18,6 +18,7 @@ import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.eclipse.ecf.core.identity.BaseID;
+import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.presence.im.IChatID;
 
 public class YahooID extends BaseID implements IChatID {
@@ -26,7 +27,7 @@ public class YahooID extends BaseID implements IChatID {
 	private final String username;
 	private final URI uri;
 
-	public YahooID(YahooNamespace namespace, String username) throws URISyntaxException {
+	public YahooID(Namespace namespace, String username) throws URISyntaxException {
 		super(namespace);
 		this.username = username;
 		uri = new URI(namespace.getScheme() + username);
