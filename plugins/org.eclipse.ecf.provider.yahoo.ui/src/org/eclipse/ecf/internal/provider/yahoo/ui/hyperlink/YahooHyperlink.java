@@ -23,6 +23,7 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.internal.provider.yahoo.ui.Activator;
+import org.eclipse.ecf.internal.provider.yahoo.ui.Messages;
 import org.eclipse.ecf.internal.provider.yahoo.ui.wizards.YahooConnectWizard;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.im.IChatManager;
@@ -118,10 +119,10 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 			if (MessageDialog
 					.openQuestion(
 							null,
-							"Connect To Account",
+							Messages.YahooHyperlink_CONNECT_DIALOG_TITLE,
 							NLS
 									.bind(
-											"You are not currently connected so messages cannot be sent.\n\nDo you want to connect and login to {0}?",
+											Messages.YahooHyperlink_CONNECT_DIALOG_MESSAGE,
 											getURI().getAuthority()))) {
 				super.open();
 			}
@@ -159,8 +160,8 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 			dialog.setInput(adapters);
 			dialog.setAddCancelButton(true);
 			dialog.setBlockOnOpen(true);
-			dialog.setTitle("Select Account");
-			dialog.setMessage("Select Account to Use");
+			dialog.setTitle(Messages.YahooHyperlink_SELECT_ACCOUNT_DIALOG_TITLE);
+			dialog.setMessage(Messages.YahooHyperlink_SELECT_ACCOUNT_DIALOG_MESSAGE);
 			dialog.setHeightInChars(adapters.length > 4 ? adapters.length : 4);
 			dialog
 					.setInitialSelections(new IPresenceContainerAdapter[] { adapters[0] });
@@ -219,14 +220,14 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 				view.selectTab(icms, itms, localID, new YahooID(localID
 						.getNamespace(), getURI().getAuthority()));
 			} catch (Exception e) {
-				MessageDialog.openError(null, "Error opening view", NLS.bind(
-						"Error opening view: {0}.  See Error Log for Details",
+				MessageDialog.openError(null, Messages.YahooHyperlink_ERROR_MESSAGE_TITLE, NLS.bind(
+						Messages.YahooHyperlink_ERROR_MESSAGE_MESSAGE,
 						e.getLocalizedMessage()));
 				Activator.getDefault().getLog()
 						.log(
 								new Status(IStatus.ERROR, Activator.PLUGIN_ID,
 										IStatus.ERROR,
-										"Error opening messages view", e));
+										Messages.YahooHyperlink_ERROR_STATUS_MESSAGE, e));
 			}
 		}
 	}
