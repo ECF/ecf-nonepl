@@ -22,6 +22,10 @@ public class SkypeCallAction extends AbstractCallAction {
 		this.setImageDescriptor(skypeIcon);
 	}
 
+	public SkypeCallAction(IContainer container, ID skypeReceiver) {
+		this(container,skypeReceiver,"","");
+	}
+	
 	protected IContainer getContainer() {
 		return container;
 	}

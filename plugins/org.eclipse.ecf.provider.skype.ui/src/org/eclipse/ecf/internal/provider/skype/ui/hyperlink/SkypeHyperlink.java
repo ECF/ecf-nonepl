@@ -23,6 +23,8 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.internal.provider.skype.ui.Activator;
+import org.eclipse.ecf.internal.provider.skype.ui.Messages;
+import org.eclipse.ecf.internal.provider.skype.ui.SkypeCallAction;
 import org.eclipse.ecf.internal.provider.skype.ui.SkypeConnectWizard;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.im.IChatManager;
@@ -227,4 +229,7 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 		}
 	}
 
+	private void call(IContainer container, ID targetUser) {
+		new SkypeCallAction(container,targetUser).run();
+	}
 }
