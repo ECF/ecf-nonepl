@@ -23,7 +23,6 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.internal.provider.skype.ui.Activator;
-import org.eclipse.ecf.internal.provider.skype.ui.Messages;
 import org.eclipse.ecf.internal.provider.skype.ui.SkypeCallAction;
 import org.eclipse.ecf.internal.provider.skype.ui.SkypeConnectWizard;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
