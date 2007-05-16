@@ -96,10 +96,8 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 			ID connectedID = containers[i].getConnectedID();
 			// Must be connected
 			if (connectedID != null) {
-				IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) containers[i]
-						.getAdapter(IPresenceContainerAdapter.class);
 				// Must also be a presence container
-				if (adapter != null && containers[i] instanceof YahooContainer)
+				if (containers[i] instanceof YahooContainer)
 					results.add(containers[i]);
 			}
 		}
