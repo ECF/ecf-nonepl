@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.ecf.presence.chatroom.ChatRoomCreateException;
 import org.eclipse.ecf.presence.chatroom.IChatRoomInfo;
 import org.eclipse.ecf.presence.chatroom.IChatRoomInvitationListener;
+import org.eclipse.ecf.presence.chatroom.IChatRoomInvitationSender;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.history.IHistoryManager;
 
@@ -110,7 +111,15 @@ public class SkypeChatRoomManager implements IChatRoomManager {
 	 * 
 	 */
 	public void disconnect() {
-		// TODO Auto-generated method stub	
+		// TODO
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.presence.chatroom.IChatRoomManager#getInvitationSender()
+	 */
+	public IChatRoomInvitationSender getInvitationSender() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
