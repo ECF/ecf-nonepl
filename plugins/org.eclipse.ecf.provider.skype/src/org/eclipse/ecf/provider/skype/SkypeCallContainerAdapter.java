@@ -199,7 +199,7 @@ public class SkypeCallContainerAdapter extends BaseSharedObject
 
 			userProfile = Skype.getProfile();
 			userID = new SkypeUserID(userProfile.getId());
-			Skype.setDebug(true);
+			Skype.setDebug(debugSkype);
 			Skype.setDeamon(false);
 			//SkypeClient.setSilentMode(true);
 			Skype.addCallListener(callListener);
