@@ -50,8 +50,7 @@ import com.skype.connector.Connector;
 public class SkypeCallContainerAdapter extends BaseSharedObject
 		implements ICallSessionContainerAdapter {
 
-	boolean debugSkype = Boolean.getBoolean(System.getProperty("debugSkype",
-			"false"));
+	boolean debugSkype = false;
 
 	IContainer container;
 	
