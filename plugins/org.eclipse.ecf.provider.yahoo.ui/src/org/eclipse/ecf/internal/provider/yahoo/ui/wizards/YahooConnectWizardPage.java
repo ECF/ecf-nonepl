@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ecf.internal.provider.yahoo.ui.Activator;
+import org.eclipse.ecf.ui.SharedImages;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
@@ -40,6 +41,7 @@ final class YahooConnectWizardPage extends WizardPage {
 		setTitle("Yahoo IM Connection Wizard");
 		setDescription("Specify a Yahoo username and password to connect to account");
 		setPageComplete(false);
+		setImageDescriptor(SharedImages.getImageDescriptor(SharedImages.IMG_CHAT_WIZARD));
 	}
 
 	YahooConnectWizardPage(String username) {
