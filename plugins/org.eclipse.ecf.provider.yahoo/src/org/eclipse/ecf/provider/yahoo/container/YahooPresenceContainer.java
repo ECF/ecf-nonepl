@@ -146,7 +146,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			return historyManager;
 		}
 
-		public IChat createChat(ID targetUser) throws ECFException {
+		public IChat createChat(ID targetUser, IIMMessageListener messageListener) throws ECFException {
 			// TODO Auto-generated method stub
 			return null;
 		}
