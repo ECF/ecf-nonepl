@@ -33,6 +33,7 @@ import org.eclipse.ecf.presence.ui.MultiRosterView;
 import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
 import org.eclipse.ecf.ui.dialogs.IDCreateErrorDialog;
+import org.eclipse.ecf.ui.util.PasswordCacheHelper;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IWorkbench;
@@ -140,16 +141,19 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 
 	public boolean performFinish() {
 		
+		final String connectID = page.getConnectID();
+		final String password = page.getPassword();
+		
 		page.saveComboText();
 		
 		connectContext = ConnectContextFactory
-				.createPasswordConnectContext(page.getPassword());
+				.createPasswordConnectContext(password);
 
 		try {
 			targetID = IDFactory.getDefault().createID(
-					container.getConnectNamespace(), page.getConnectID());
+					container.getConnectNamespace(), connectID);
 		} catch (IDCreateException e) {
-			new IDCreateErrorDialog(null,page.getConnectID(),e).open();
+			new IDCreateErrorDialog(null,connectID,e).open();
 			return false;
 		}
 
@@ -183,8 +187,19 @@ public final class YahooConnectWizard extends Wizard implements IConnectWizard {
 			}
 		});
 
-		new AsynchContainerConnectAction(container, targetID, connectContext).run();
+		new AsynchContainerConnectAction(container, targetID, connectContext, null, new Runnable() {
+			public void run() {
+				cachePassword(connectID,password);
+			}}).run();
+
 		return true;
 	}
 
+	protected void cachePassword(final String connectID, String password) {
+		if (password != null && !password.equals("")) {
+			PasswordCacheHelper pwStorage = new PasswordCacheHelper(connectID);
+			pwStorage.savePassword(password);
+		}
+	}
+	
 }

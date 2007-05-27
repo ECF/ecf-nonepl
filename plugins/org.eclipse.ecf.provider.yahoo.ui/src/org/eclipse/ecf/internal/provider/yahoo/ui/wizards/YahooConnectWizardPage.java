@@ -16,11 +16,14 @@ import java.util.List;
 
 import org.eclipse.ecf.internal.provider.yahoo.ui.Activator;
 import org.eclipse.ecf.ui.SharedImages;
+import org.eclipse.ecf.ui.util.PasswordCacheHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.ModifyEvent;
 import org.eclipse.swt.events.ModifyListener;
+import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Combo;
@@ -49,6 +52,26 @@ final class YahooConnectWizardPage extends WizardPage {
 		this.username = username;
 	}
 
+	private void verify() {
+		String text = connectText.getText();
+		passwordText.setText("");
+		if (text.equals("")) {
+			updateStatus("A valid connect ID must be specified.");
+		} else {
+			updateStatus(null);
+			restorePassword(text);
+		}
+	}
+	
+	private void restorePassword(String username) {
+		PasswordCacheHelper pwStorage = new PasswordCacheHelper(username);
+		String pw = pwStorage.retrievePassword();
+		if (pw != null) {
+			passwordText.setText(pw);
+		}
+	}
+	
+
 	public void createControl(Composite parent) {
 		parent.setLayout(new GridLayout());
 		GridData fillData = new GridData(SWT.FILL, SWT.CENTER, true, false);
@@ -59,20 +82,19 @@ final class YahooConnectWizardPage extends WizardPage {
 
 		connectText = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
 		connectText.setLayoutData(fillData);
-		ModifyListener modifyListener = new ModifyListener() {
+		connectText.addModifyListener(new ModifyListener() {
 			public void modifyText(ModifyEvent e) {
-				String text = connectText.getText();
-				if (text.equals("")) {
-					updateStatus("A valid connect ID must be specified.");
-				} else {
-					updateStatus(null);
-				}
+				verify();
 			}
-		};
-		connectText.addModifyListener(modifyListener);
+		});
+		connectText.addSelectionListener(new SelectionListener() {
+			public void widgetDefaultSelected(SelectionEvent e) {
+				verify();
+			}
+			public void widgetSelected(SelectionEvent e) {
+				verify();
+			}});
 
-		restoreCombo();
-		
 		label = new Label(parent, SWT.RIGHT);
 		label.setText("<user>");
 		label.setLayoutData(endData);
@@ -81,13 +103,15 @@ final class YahooConnectWizardPage extends WizardPage {
 		label.setText("Password:");
 		passwordText = new Text(parent, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
 		passwordText.setLayoutData(fillData);
-		passwordText.addModifyListener(modifyListener);
 		label = new Label(parent, SWT.RIGHT | SWT.WRAP);
 		label.setText("Password required for Yahoo accounts");
 		label.setLayoutData(endData);
 
+		restoreCombo();
+		
 		if (username != null) {
 			connectText.setText(username);
+			restorePassword(username);
 			passwordText.setFocus();
 		}
 		setControl(parent);

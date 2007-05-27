@@ -110,6 +110,7 @@ public class YahooContainer extends AbstractContainer {
 			fireContainerEvent(new ContainerDisconnectedEvent(this.getID(),
 					targetYahooID));
 		}
+		targetYahooID = null;
 	}
 
 	public Object getAdapter(Class serviceType) {
