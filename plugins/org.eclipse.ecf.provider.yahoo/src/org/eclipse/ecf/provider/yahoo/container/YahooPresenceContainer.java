@@ -55,6 +55,7 @@ import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
 import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterEntry;
 import org.eclipse.ecf.presence.roster.RosterGroup;
+import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.yahoo.identity.YahooID;
 
 import ymsg.network.Session;

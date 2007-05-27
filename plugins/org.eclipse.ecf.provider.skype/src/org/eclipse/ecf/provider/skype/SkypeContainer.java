@@ -28,10 +28,10 @@ import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.datashare.IChannel;
 import org.eclipse.ecf.presence.IAccountManager;
-import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
@@ -46,7 +46,7 @@ import com.skype.connector.ConnectorException;
  * 
  */
 public class SkypeContainer extends ClientSOContainer implements IContainer,
-		IPresenceContainerAdapter {
+		IPresenceService {
 
 	private static final String SKYPE_ACCOUNT_NAME = " [skype]";
 
