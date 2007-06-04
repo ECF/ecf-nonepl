@@ -16,6 +16,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.jms.Connection;
+import javax.jms.ConnectionFactory;
 import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
@@ -143,7 +144,7 @@ public abstract class Channel extends SocketAddress implements
 		Trace.entering(JmsPlugin.PLUGIN_ID,
 				JmsDebugOptions.METHODS_ENTERING, this.getClass(), "setup");
 		try {
-			ActiveMQConnectionFactory factory = new ActiveMQConnectionFactory(
+			ConnectionFactory factory = new ActiveMQConnectionFactory(
 					username, password, url);
 			connection = factory.createConnection();
 			connection.setExceptionListener(new ExceptionListener() {

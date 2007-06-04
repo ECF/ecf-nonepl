@@ -36,7 +36,6 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
-import org.eclipse.ecf.provider.jms.channel.ClientChannelProxy;
 import org.eclipse.ecf.provider.jms.channel.ConnectRequest;
 import org.eclipse.ecf.provider.jms.channel.ServerChannel;
 
@@ -188,11 +187,6 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		return null;
 	}
 
-	protected ClientChannelProxy createClientChannelProxy(BrokerClient client,
-			ServerChannel channel, ID remoteID) {
-		return new ClientChannelProxy(this, channel, remoteID);
-	}
-
 	protected String removeLeadingSlashes(String path) {
 		String name = path;
 		while (name.indexOf('/') != -1) {
@@ -241,9 +235,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 					removeIDMap(remoteID);
 					throw new ConnectException("broker client is null");
 				}
-				ClientChannelProxy clientProxy = createClientChannelProxy(
-						client, channel, remoteID);
-				if (addNewRemoteMember(remoteID, clientProxy)) {
+				if (addNewRemoteMember(remoteID, channel)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
@@ -252,7 +244,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 									getNextSequenceNumber(),
 									new ID[] { remoteID }, true, null));
 					// Start messaging to new member
-					clientProxy.start();
+					channel.start();
 				} else {
 					removeIDMap(remoteID);
 					ConnectException e = new ConnectException(
