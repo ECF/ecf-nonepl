@@ -72,9 +72,7 @@ public class SkypeChatManager implements IChatManager {
 						l.handleMessageEvent(new ChatMessageEvent(senderID,chatMessage));						
 					}
 				} catch (Exception e) {
-					// Log
-					// TODO Auto-generated catch block
-					e.printStackTrace();
+					Activator.log("fireChatMessageReceived",e);
 				}
 
 			}
@@ -91,12 +89,31 @@ public class SkypeChatManager implements IChatManager {
 			String chatId = sentChatMessage.getChat().getId();
 			Chat chat = (Chat) chats.get(chatId);
 			if (chat == null) chats.put(chatId, sentChatMessage.getChat());
+			fireChatMessageSent(sentChatMessage);
 			Trace.trace(
 							Activator.PLUGIN_ID,
 							"chatMessageSent(id=" //$NON-NLS-1$
 									+ sentChatMessage.getId()
 									+ ";content=" + sentChatMessage.getContent() + ";senderid=" + sentChatMessage.getSenderId() + ";sendername=" + sentChatMessage.getSenderDisplayName() + ")"); //$NON-NLS-1$
 		}
+
+		private void fireChatMessageSent(ChatMessage chatMessageSent) {
+			for(Iterator i=chatListeners.iterator(); i.hasNext(); ) {
+				IIMMessageListener l = (IIMMessageListener) i.next();
+				try {
+					Chat chat = (Chat) chats.get(chatMessageSent.getChat().getId());
+					if (chat != null) {
+						ID senderID = new SkypeUserID(chatMessageSent.getSenderId());
+						final IChatMessage chatMessage = new org.eclipse.ecf.presence.im.ChatMessage(senderID,IDFactory.getDefault().createStringID(chatMessageSent.getId()),Type.CHAT,null,chatMessageSent.getContent(),createPropertiesForChatMessage(chatMessageSent));
+						l.handleMessageEvent(new ChatMessageEvent(senderID,chatMessage));						
+					}
+				} catch (Exception e) {
+					Activator.log("fireChatMessageSent",e);
+				}
+
+			}
+		}
+
 
 	};
 
