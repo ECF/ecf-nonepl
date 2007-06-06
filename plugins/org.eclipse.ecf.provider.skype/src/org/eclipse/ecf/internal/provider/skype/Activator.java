@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
 	private ServiceTracker logServiceTracker = null;
 
 	private BundleContext context = null;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -94,14 +94,17 @@ public class Activator implements BundleActivator {
 	}
 
 	public static void log(String message) {
-		getDefault().log(
-				new Status(IStatus.INFO, PLUGIN_ID, IStatus.INFO, message, null));
-	}
-	public static void log(String message, Throwable e) {
-		getDefault().log(
-				new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR,
-						message, e));
+		getDefault()
+				.log(
+						new Status(IStatus.INFO, PLUGIN_ID, IStatus.INFO,
+								message, null));
 	}
 
+	public static void log(String message, Throwable e) {
+		getDefault()
+				.log(
+						new Status(IStatus.ERROR, PLUGIN_ID, IStatus.ERROR,
+								message, e));
+	}
 
 }

@@ -94,11 +94,6 @@ public class SkypeChatManager implements IChatManager {
 			} catch (SkypeException e) {
 				Activator.log("chatMessageSent",e);
 			}
-			Trace.trace(
-							Activator.PLUGIN_ID,
-							"chatMessageSent(id=" //$NON-NLS-1$
-									+ sentChatMessage.getId()
-									+ ";content=" + sentChatMessage.getContent() + ";senderid=" + sentChatMessage.getSenderId() + ";sendername=" + sentChatMessage.getSenderDisplayName() + ")"); //$NON-NLS-1$
 		}
 
 		private void fireChatMessageSent(ChatMessage chatMessageSent) {
