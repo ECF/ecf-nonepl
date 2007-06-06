@@ -86,10 +86,14 @@ public class SkypeChatManager implements IChatManager {
 
 		public void chatMessageSent(ChatMessage sentChatMessage)
 				throws SkypeException {
-			String chatId = sentChatMessage.getChat().getId();
-			Chat chat = (Chat) chats.get(chatId);
-			if (chat == null) chats.put(chatId, sentChatMessage.getChat());
-			fireChatMessageSent(sentChatMessage);
+			try {
+				String chatId = sentChatMessage.getChat().getId();
+				Chat chat = (Chat) chats.get(chatId);
+				if (chat == null) chats.put(chatId, sentChatMessage.getChat());
+				fireChatMessageSent(sentChatMessage);
+			} catch (SkypeException e) {
+				Activator.log("chatMessageSent",e);
+			}
 			Trace.trace(
 							Activator.PLUGIN_ID,
 							"chatMessageSent(id=" //$NON-NLS-1$
