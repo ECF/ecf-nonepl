@@ -48,6 +48,8 @@ public class SkypeChatManager implements IChatManager {
 	
 	private Map chats = new HashMap();
 	
+	private Chat sentChat = null;
+	
 	private ChatMessageListener chatMessageListener = new ChatMessageListener() {
 
 		public void chatMessageReceived(ChatMessage chatMessageReceived)
@@ -87,10 +89,14 @@ public class SkypeChatManager implements IChatManager {
 		public void chatMessageSent(ChatMessage sentChatMessage)
 				throws SkypeException {
 			try {
-				String chatId = sentChatMessage.getChat().getId();
-				Chat chat = (Chat) chats.get(chatId);
-				if (chat == null) chats.put(chatId, sentChatMessage.getChat());
-				fireChatMessageSent(sentChatMessage);
+				if (sentChat == null) {
+					String chatId = sentChatMessage.getChat().getId();
+					Chat chat = (Chat) chats.get(chatId);
+					if (chat == null) chats.put(chatId, sentChatMessage.getChat());
+					fireChatMessageSent(sentChatMessage);
+				} else {
+					sentChat = null;
+				}
 			} catch (SkypeException e) {
 				Activator.log("chatMessageSent",e);
 			}
@@ -144,6 +150,7 @@ public class SkypeChatManager implements IChatManager {
 			try {
 				Chat chat = Skype.chat(skypeId.getName());
 				chat.send(body);
+				sentChat = chat;
 			} catch (SkypeException e) {
 				throw new ECFException("Skype Exception",e);
 			}
