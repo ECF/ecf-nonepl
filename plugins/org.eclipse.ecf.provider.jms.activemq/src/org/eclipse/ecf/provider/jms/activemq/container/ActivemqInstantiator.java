@@ -13,9 +13,9 @@ import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 
-public class JMSContainerInstantiator extends GenericContainerInstantiator {
+public class ActivemqInstantiator extends GenericContainerInstantiator {
 
-	public JMSContainerInstantiator() {
+	public ActivemqInstantiator() {
 
 	}
 
