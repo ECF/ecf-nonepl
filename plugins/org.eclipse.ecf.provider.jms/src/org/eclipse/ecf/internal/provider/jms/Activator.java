@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004 Composent, Inc. and others. All rights reserved. This
+ * Copyright (c) 2004, 2007 Composent, Inc. and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -18,21 +18,21 @@ import org.osgi.util.tracker.ServiceTracker;
 /**
  * The main plugin class to be used in the desktop.
  */
-public class JmsPlugin implements BundleActivator {
+public class Activator implements BundleActivator {
 
 	public static final String PLUGIN_ID = "org.eclipse.ecf.provider.jms";
 
 	// The shared instance.
-	private static JmsPlugin plugin;
+	private static Activator plugin;
 
 	private BundleContext context = null;
-	
+
 	private ServiceTracker logServiceTracker = null;
 
 	/**
 	 * The constructor.
 	 */
-	public JmsPlugin() {
+	public Activator() {
 		super();
 		plugin = this;
 	}
@@ -76,9 +76,9 @@ public class JmsPlugin implements BundleActivator {
 	/**
 	 * Returns the shared instance.
 	 */
-	public synchronized static JmsPlugin getDefault() {
+	public synchronized static Activator getDefault() {
 		if (plugin == null) {
-			plugin = new JmsPlugin();
+			plugin = new Activator();
 		}
 		return plugin;
 	}

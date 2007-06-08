@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2004 Composent, Inc. and others.
+ * Copyright (c) 2004 2007 Composent, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -33,7 +33,7 @@ public class JMSNamespace extends Namespace {
 				if (args[0] instanceof String) {
 					return new JMSID(this, (String) args[0]);
 				} else if (args[0] instanceof URI) {
-					return new JMSID(this, (URI) args[0]);
+					return new JMSID(this, ((URI) args[0]).toString());
 				}
 			}
 			throw new IllegalArgumentException(

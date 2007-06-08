@@ -1,5 +1,5 @@
 /****************************************************************************
- * Copyright (c) 2004 Composent, Inc. and others.
+ * Copyright (c) 2004 2007 Composent, Inc. and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -8,6 +8,7 @@
  * Contributors:
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
+
 package org.eclipse.ecf.provider.jms.container;
 
 import java.io.IOException;
@@ -16,30 +17,32 @@ import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.SocketAddress;
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
-import org.activemq.broker.BrokerClient;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.security.IConnectHandlerPolicy;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
+import org.eclipse.ecf.internal.provider.jms.Activator;
 import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
-import org.eclipse.ecf.internal.provider.jms.JmsPlugin;
 import org.eclipse.ecf.provider.comm.IConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
-import org.eclipse.ecf.provider.jms.channel.ConnectRequest;
-import org.eclipse.ecf.provider.jms.channel.ServerChannel;
+import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
+import org.eclipse.ecf.provider.jms.channel.ConnectRequestMessage;
 
-public class JMSServerSOContainer extends ServerSOContainer {
+/**
+ * Abstract JMS Server.  Subclasses should be created to create concrete instances of
+ * a JMS Server container.
+ */
+public abstract class AbstractJMSServer extends ServerSOContainer {
 
 	public static final int DEFAULT_KEEPALIVE = 30000;
 
@@ -47,49 +50,67 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 	private static final int MEMBER_LEAVE_ERROR_CODE = 36002;
 
-	// Keep alive value
-	protected int keepAlive = DEFAULT_KEEPALIVE;
+	private IConnectHandlerPolicy joinPolicy = null;
 
-	protected boolean isSingle = false;
-
-	protected IConnectHandlerPolicy joinPolicy = null;
-
-	protected int getKeepAlive() {
-		return keepAlive;
-	}
-
-	ISynchAsynchConnection serverChannel;
+	private ISynchAsynchConnection serverChannel;
 
 	// JMS client ID -> BrokerClient
-	Map clients = new HashMap();
+	private Map clients = new HashMap();
 
 	// ECF ID -> JMS client ID
-	Map idMap = new HashMap();
+	private Map idMap = new HashMap();
 
-	public void addClient(BrokerClient client) {
+	public AbstractJMSServer(JMSContainerConfig config) {
+		super(config);
+	}
+
+	/**
+	 * Start this server.  Subclasses must override this method to start a 
+	 * JMS server.
+	 * 
+	 * @throws ECFException if some problem with starting the server (e.g. port already taken)
+	 */
+	public abstract void start() throws ECFException;
+
+	protected JMSContainerConfig getJMSContainerConfig() {
+		return (JMSContainerConfig) getConfig();
+	}
+	
+	protected void setConnection(ISynchAsynchConnection channel) {
+		this.serverChannel = channel;
+	}
+
+	protected ISynchAsynchConnection getConnection() {
+		return serverChannel;
+	}
+
+	protected IConnectHandlerPolicy getConnectHandlerPolicy() {
+		return joinPolicy;
+	}
+
+	protected void setConnectHandlerPolicy(IConnectHandlerPolicy policy) {
+		this.joinPolicy = policy;
+	}
+
+	protected Object addClient(String clientID, Object client) {
+		if (clientID == null || clientID.equals(""))
+			return null;
 		synchronized (getGroupMembershipLock()) {
-			String key = client.getClientID();
-			if (key == null)
-				return;
-			else if (!clients.containsKey(key)) {
-				clients.put(key, client);
-			}
+			return clients.put(clientID, client);
 		}
 	}
 
-	public void removeClient(BrokerClient client) {
+	protected Object removeClient(String clientID) {
+		if (clientID == null || clientID.equals(""))
+			return null;
 		synchronized (getGroupMembershipLock()) {
-			String key = client.getClientID();
-			if (key == null)
-				return;
-			else
-				clients.remove(key);
+			return clients.remove(clientID);
 		}
 	}
 
-	protected BrokerClient getClient(String clientID) {
+	protected Object getClient(String clientID) {
 		synchronized (getGroupMembershipLock()) {
-			return (BrokerClient) clients.get(clientID);
+			return clients.get(clientID);
 		}
 	}
 
@@ -126,34 +147,18 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		return null;
 	}
 
-	public BrokerClient getClient(ID clientID) {
+	protected Object getClientForID(ID clientID) {
 		synchronized (getGroupMembershipLock()) {
 			return getClient(getIDMap(clientID));
 		}
 	}
 
-	public JMSServerSOContainer(ISharedObjectContainerConfig config,
-			int keepAlive) {
-		super(config);
-		this.keepAlive = keepAlive;
-	}
-
-	public void initialize() throws IOException, URISyntaxException {
-		serverChannel = new ServerChannel(receiver, keepAlive);
-		serverChannel.start();
-	}
-
-	public void dispose() {
-		super.dispose();
-		serverChannel.stop();
-	}
-
 	protected Serializable processSynch(SynchEvent e) throws IOException {
 		debug("processSynch(" + e + ")");
 		Object req = e.getData();
-		if (req instanceof ConnectRequest) {
-			return handleConnectRequest((ConnectRequest) req, (ServerChannel) e
-					.getConnection());
+		if (req instanceof ConnectRequestMessage) {
+			return handleConnectRequest((ConnectRequestMessage) req,
+					(AbstractJMSServerChannel) e.getConnection());
 		}
 		return null;
 	}
@@ -161,21 +166,17 @@ public class JMSServerSOContainer extends ServerSOContainer {
 	protected void traceAndLogExceptionCatch(int code, String method,
 			Throwable e) {
 		Trace
-				.catching(JmsPlugin.PLUGIN_ID,
+				.catching(Activator.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						method, e);
-		JmsPlugin.getDefault().log(
-						new Status(IStatus.ERROR, JmsPlugin.PLUGIN_ID, code,
+		Activator.getDefault()
+				.log(
+						new Status(IStatus.ERROR, Activator.PLUGIN_ID, code,
 								method, e));
 	}
 
 	protected void handleConnectException(ContainerMessage mess,
-			ServerChannel serverChannel, Exception e) {
-		/*
-		 * traceAndLogExceptionCatch(HANDLE_CONNECT_EXCEPTION, method, e)
-		 * dumpStack("connect exception with message " + mess + " from channel " +
-		 * serverChannel, e);
-		 */
+			AbstractJMSServerChannel serverChannel, Exception e) {
 	}
 
 	protected Object checkJoin(SocketAddress saddr, ID fromID, String target,
@@ -195,11 +196,11 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		return name;
 	}
 
-	protected Serializable handleConnectRequest(ConnectRequest request,
-			ServerChannel channel) {
-		Trace.entering(JmsPlugin.PLUGIN_ID,
-				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
-				"handleConnectRequest", new Object[] { request, channel });
+	protected Serializable handleConnectRequest(ConnectRequestMessage request,
+			AbstractJMSServerChannel channel) {
+		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
+				this.getClass(), "handleConnectRequest", new Object[] {
+						request, channel });
 		Object data = request.getData();
 		ContainerMessage mess = null;
 		try {
@@ -230,10 +231,9 @@ public class JMSServerSOContainer extends ServerSOContainer {
 
 				// add to id map
 				addIDMap(remoteID, request.getSenderJMSID());
-				BrokerClient client = getClient(remoteID);
-				if (client == null) {
+				if (getClientForID(remoteID) == null) {
 					removeIDMap(remoteID);
-					throw new ConnectException("broker client is null");
+					throw new ConnectException("client is null");
 				}
 				if (addNewRemoteMember(remoteID, channel)) {
 					// Get current membership
@@ -256,9 +256,9 @@ public class JMSServerSOContainer extends ServerSOContainer {
 			fireContainerEvent(new ContainerConnectedEvent(this.getID(),
 					remoteID));
 
-			messages[0] = serialize(ContainerMessage
-					.createViewChangeMessage(getID(), remoteID,
-							getNextSequenceNumber(), memberIDs, true, null));
+			messages[0] = serialize(ContainerMessage.createViewChangeMessage(
+					getID(), remoteID, getNextSequenceNumber(), memberIDs,
+					true, null));
 
 			return messages;
 
@@ -284,24 +284,22 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		serverChannel.sendAsynch(mess.toContainerID, serialize(mess));
 	}
 
-	public void clientRemoved(BrokerClient client) {
-		Trace.entering(JmsPlugin.PLUGIN_ID,
-				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
-				"clientRemoved", new Object[] { client });
+	protected void clientRemoved(String clientID) {
+		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
+				this.getClass(), "clientRemoved", new Object[] { clientID });
 		// OK, get ID for client...
-		ID remoteID = getIDForClientID(client.getClientID());
+		ID remoteID = getIDForClientID(clientID);
 		if (remoteID != null) {
 			IConnection conn = getConnectionForID(remoteID);
 			handleLeave(remoteID, conn);
 		}
-		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
+		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "clientRemoved");
 	}
 
 	protected void handleLeave(ID target, IConnection conn) {
-		Trace.entering(JmsPlugin.PLUGIN_ID,
-				JmsDebugOptions.METHODS_ENTERING, this.getClass(),
-				"memberLeave", new Object[] { target, conn });
+		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
+				this.getClass(), "memberLeave", new Object[] { target, conn });
 		if (target == null)
 			return;
 		if (removeRemoteMember(target)) {
@@ -316,7 +314,7 @@ public class JMSServerSOContainer extends ServerSOContainer {
 		}
 		if (conn != null)
 			disconnect(conn);
-		Trace.exiting(JmsPlugin.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
+		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "memberLeave");
 	}
 

@@ -2,14 +2,6 @@
 <?eclipse version="3.0"?>
 <plugin>
    <extension
-         point="org.eclipse.ecf.containerFactory">
-      <containerFactory
-            class="org.eclipse.ecf.provider.jms.container.JMSContainerInstantiator"
-            description="ECF JMS"
-            name="ecf.jms.tcp.client">
-      </containerFactory>
-   </extension>
-   <extension
          point="org.eclipse.ecf.identity.namespace">
       <namespace
             class="org.eclipse.ecf.provider.jms.identity.JMSNamespace"

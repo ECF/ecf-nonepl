@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004 Composent, Inc. and others. All rights reserved. This
+ * Copyright (c) 2004 2007 Composent, Inc. and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -11,71 +11,61 @@ package org.eclipse.ecf.provider.jms.container;
 import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
+import java.util.Map;
 
 import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.datashare.IChannelContainerAdapter;
-import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.datashare.DatashareContainerAdapter;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOConfig;
+import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.generic.SOContext;
-import org.eclipse.ecf.provider.jms.channel.ClientChannel;
-import org.eclipse.ecf.provider.jms.channel.DisconnectRequest;
+import org.eclipse.ecf.provider.jms.channel.DisconnectRequestMessage;
 import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 
-public class JMSClientSOContainer extends ClientSOContainer {
-	public static final int DEFAULT_KEEPALIVE = JMSServerSOContainer.DEFAULT_KEEPALIVE;
+/**
+ * Abstract JMS Client. Subclasses should be created to create concrete
+ * instances of a JMS Client container.
+ */
+public abstract class AbstractJMSClient extends ClientSOContainer {
 
-	int keepAlive = 0;
+	private int keepAlive = 0;
 
-	DatashareContainerAdapter adapter = null;
+	private DatashareContainerAdapter adapter = null;
 
 	public Object getAdapter(Class clazz) {
 		if (clazz.equals(IChannelContainerAdapter.class)) {
-			synchronized (this) {
-				if (adapter == null) {
-					adapter = new DatashareContainerAdapter(this);
-				}
-			}
 			return adapter;
 		} else
 			return super.getAdapter(clazz);
+	}
+
+	protected int getKeepAlive() {
+		return keepAlive;
 	}
 
 	public Namespace getConnectNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(JMSNamespace.NAME);
 	}
 
-	public JMSClientSOContainer() throws Exception {
-		this(DEFAULT_KEEPALIVE);
-		this.adapter = new DatashareContainerAdapter(this);
+	public AbstractJMSClient(int keepAlive) throws Exception {
+		this(new SOContainerConfig(IDFactory.getDefault().createGUID()),
+				keepAlive);
 	}
 
-	public JMSClientSOContainer(int ka) throws Exception {
-		super(new SOContainerConfig(IDFactory.getDefault().createGUID()));
-		keepAlive = ka;
+	public AbstractJMSClient(ISharedObjectContainerConfig config, int keepAlive) {
+		super(config);
+		this.keepAlive = keepAlive;
 		this.adapter = new DatashareContainerAdapter(this);
-	}
-
-	public JMSClientSOContainer(String userhost, int ka) throws Exception {
-		super(new SOContainerConfig(IDFactory.getDefault().createStringID(
-				userhost)));
-		keepAlive = ka;
-		this.adapter = new DatashareContainerAdapter(this);
-	}
-
-	protected ISynchAsynchConnection createConnection(ID remoteSpace,
-			Object data) throws ConnectionCreateException {
-		ISynchAsynchConnection c = new ClientChannel(getReceiver(), keepAlive);
-		return c;
 	}
 
 	protected void handleContainerMessage(ContainerMessage mess)
@@ -98,6 +88,14 @@ public class JMSClientSOContainer extends ClientSOContainer {
 		}
 	}
 
+	class JMSContainerContext extends SOContext {
+
+		public JMSContainerContext(ID objID, ID homeID, SOContainer cont,
+				Map props, IQueueEnqueue queue) {
+			super(objID, homeID, cont, props, queue);
+		}
+	}
+
 	protected SOContext createSharedObjectContext(SOConfig soconfig,
 			IQueueEnqueue queue) {
 		return new JMSContainerContext(soconfig.getSharedObjectID(), soconfig
@@ -106,13 +104,13 @@ public class JMSClientSOContainer extends ClientSOContainer {
 
 	protected Serializable processSynch(SynchEvent e) throws IOException {
 		Object req = e.getData();
-		if (req instanceof DisconnectRequest) {
-			handleDisconnectRequest((DisconnectRequest) req);
+		if (req instanceof DisconnectRequestMessage) {
+			handleDisconnectRequest((DisconnectRequestMessage) req);
 		}
 		return null;
 	}
 
-	protected void handleDisconnectRequest(DisconnectRequest request) {
+	protected void handleDisconnectRequest(DisconnectRequestMessage request) {
 		ID fromID = request.getSenderID();
 		if (fromID == null)
 			return;

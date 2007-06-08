@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2004 Composent, Inc. and others. All rights reserved. This
+ * Copyright (c) 2004, 2007 Composent, Inc. and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
@@ -16,13 +16,13 @@ public class JMSMessage implements Serializable, ECFMessage {
 
 	private static final long serialVersionUID = 3256722900785707057L;
 
-	ID target;
+	private ID target;
 
-	ID sender;
+	private ID sender;
 
-	String jmsClientID;
+	private String jmsClientID;
 
-	Serializable data;
+	private Serializable data;
 
 	protected JMSMessage(String clientID, ID sender, ID target,
 			Serializable data) {
