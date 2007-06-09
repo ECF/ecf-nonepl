@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.ecf.provider.jms,
  org.eclipse.ecf.provider.datashare,
  org.eclipse.equinox.common
 Eclipse-LazyStart: true
+Eclipse-BuddyPolicy: global
 Bundle-ClassPath: lib/activemq3.1M5/activeio-1.1.jar,
  lib/activemq3.1M5/activemq-core-3.1-M5.jar,
  lib/activemq3.1M5/commons-logging-1.0.3.jar,
