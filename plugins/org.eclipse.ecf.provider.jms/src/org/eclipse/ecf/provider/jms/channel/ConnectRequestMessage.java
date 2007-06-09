@@ -11,6 +11,7 @@ package org.eclipse.ecf.provider.jms.channel;
 import java.io.Serializable;
 
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 public class ConnectRequestMessage implements Serializable, ECFMessage,
 		SynchRequestMessage {
@@ -19,21 +20,21 @@ public class ConnectRequestMessage implements Serializable, ECFMessage,
 
 	String jmsTopicClientID;
 
-	ID targetID;
+	JMSID targetID;
 
 	ID clientID;
 
 	Serializable data;
 
 	public ConnectRequestMessage(String jmsTopicClientID, ID clientID,
-			ID targetID, Serializable data) {
+			JMSID targetID, Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.jmsTopicClientID = jmsTopicClientID;
 		this.data = data;
 	}
 
-	public ID getTargetID() {
+	public JMSID getTargetID() {
 		return targetID;
 	}
 
@@ -50,9 +51,9 @@ public class ConnectRequestMessage implements Serializable, ECFMessage,
 	}
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer("ConnectRequestMessage[");
-		buf.append(clientID).append(";").append(targetID).append(";");
-		buf.append(jmsTopicClientID).append(";").append(data).append("]");
+		StringBuffer buf = new StringBuffer("ConnectRequestMessage["); //$NON-NLS-1$
+		buf.append(clientID).append(";").append(targetID).append(";"); //$NON-NLS-1$ //$NON-NLS-2$
+		buf.append(jmsTopicClientID).append(";").append(data).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		return buf.toString();
 	}
 

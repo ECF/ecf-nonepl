@@ -8,7 +8,7 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jms.activemq;
 
-public interface ActivemqDebugOptions {
+public interface ActiveMQDebugOptions {
 
 	public static final String DEBUG = Activator.PLUGIN_ID + "/debug"; //$NON-NLS-1$
 

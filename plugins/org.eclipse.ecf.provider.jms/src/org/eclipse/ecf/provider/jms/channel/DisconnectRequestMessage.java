@@ -50,9 +50,9 @@ public class DisconnectRequestMessage implements Serializable, ECFMessage,
 	}
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer("DisconnectRequestMessage[");
-		buf.append(clientID).append(";").append(targetID).append(";");
-		buf.append(jmsTopicClientID).append(";").append(data).append("]");
+		StringBuffer buf = new StringBuffer("DisconnectRequestMessage["); //$NON-NLS-1$
+		buf.append(clientID).append(";").append(targetID).append(";"); //$NON-NLS-1$ //$NON-NLS-2$
+		buf.append(jmsTopicClientID).append(";").append(data).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		return buf.toString();
 	}
 

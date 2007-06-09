@@ -26,8 +26,8 @@ public class JMSID extends StringID {
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer("JMSID[");
-		sb.append(getName()).append("]");
+		StringBuffer sb = new StringBuffer("JMSID["); //$NON-NLS-1$
+		sb.append(getName()).append("]"); //$NON-NLS-1$
 		return sb.toString();
 	}
 

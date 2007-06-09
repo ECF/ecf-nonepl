@@ -16,13 +16,13 @@ import java.io.InvalidObjectException;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.SocketAddress;
-import java.net.URI;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.security.IConnectHandlerPolicy;
@@ -30,6 +30,7 @@ import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jms.Activator;
 import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
+import org.eclipse.ecf.internal.provider.jms.Messages;
 import org.eclipse.ecf.provider.comm.IConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
@@ -39,8 +40,8 @@ import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
 import org.eclipse.ecf.provider.jms.channel.ConnectRequestMessage;
 
 /**
- * Abstract JMS Server.  Subclasses should be created to create concrete instances of
- * a JMS Server container.
+ * Abstract JMS Server. Subclasses should be created to create concrete
+ * instances of a JMS Server container.
  */
 public abstract class AbstractJMSServer extends ServerSOContainer {
 
@@ -65,17 +66,19 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 	}
 
 	/**
-	 * Start this server.  Subclasses must override this method to start a 
-	 * JMS server.
+	 * Start this server. Subclasses must override this method to start a JMS
+	 * server.
 	 * 
-	 * @throws ECFException if some problem with starting the server (e.g. port already taken)
+	 * @throws ECFException
+	 *             if some problem with starting the server (e.g. port already
+	 *             taken)
 	 */
 	public abstract void start() throws ECFException;
 
 	protected JMSContainerConfig getJMSContainerConfig() {
 		return (JMSContainerConfig) getConfig();
 	}
-	
+
 	protected void setConnection(ISynchAsynchConnection channel) {
 		this.serverChannel = channel;
 	}
@@ -93,7 +96,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 	}
 
 	protected Object addClient(String clientID, Object client) {
-		if (clientID == null || clientID.equals(""))
+		if (clientID == null || clientID.equals("")) //$NON-NLS-1$
 			return null;
 		synchronized (getGroupMembershipLock()) {
 			return clients.put(clientID, client);
@@ -101,7 +104,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 	}
 
 	protected Object removeClient(String clientID) {
-		if (clientID == null || clientID.equals(""))
+		if (clientID == null || clientID.equals("")) //$NON-NLS-1$
 			return null;
 		synchronized (getGroupMembershipLock()) {
 			return clients.remove(clientID);
@@ -154,7 +157,6 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 	}
 
 	protected Serializable processSynch(SynchEvent e) throws IOException {
-		debug("processSynch(" + e + ")");
 		Object req = e.getData();
 		if (req instanceof ConnectRequestMessage) {
 			return handleConnectRequest((ConnectRequestMessage) req,
@@ -179,63 +181,53 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 			AbstractJMSServerChannel serverChannel, Exception e) {
 	}
 
-	protected Object checkJoin(SocketAddress saddr, ID fromID, String target,
-			Serializable data) throws Exception {
-		if (joinPolicy != null) {
-			return this.joinPolicy.checkConnect(saddr, fromID, getID(), target,
-					data);
-		}
-		return null;
-	}
-
-	protected String removeLeadingSlashes(String path) {
-		String name = path;
-		while (name.indexOf('/') != -1) {
-			name = name.substring(1);
-		}
-		return name;
+	protected Object checkJoin(SocketAddress socketAddress, ID fromID,
+			String targetPath, Serializable data) throws Exception {
+		if (joinPolicy != null)
+			return joinPolicy.checkConnect(socketAddress, fromID, getID(),
+					targetPath, data);
+		else
+			return null;
 	}
 
 	protected Serializable handleConnectRequest(ConnectRequestMessage request,
 			AbstractJMSServerChannel channel) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "handleConnectRequest", new Object[] {
-						request, channel });
-		Object data = request.getData();
-		ContainerMessage mess = null;
+				this.getClass(), "handleConnectRequest", new Object[] { //$NON-NLS-1$
+				request, channel });
 		try {
-			mess = (ContainerMessage) data;
-			if (mess == null) {
-				throw new InvalidObjectException("containermessage is null");
-			}
-			ID remoteID = mess.getFromContainerID();
+			ContainerMessage containerMessage = (ContainerMessage) request
+					.getData();
+			if (containerMessage == null)
+				throw new InvalidObjectException(
+						Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL);
+			ID remoteID = containerMessage.getFromContainerID();
 			if (remoteID == null)
-				throw new InvalidObjectException("remote id is null");
-			ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) mess
+				throw new InvalidObjectException(
+						Messages.AbstractJMSServer_CONNECT_EXCEPTION_REMOTEID_NOT_NULL);
+			ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) containerMessage
 					.getData();
 			if (jgm == null)
-				throw new IOException("join group message is null");
+				throw new InvalidObjectException(
+						Messages.AbstractJMSServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
 			ID memberIDs[] = null;
 			Serializable[] messages = new Serializable[2];
 			synchronized (getGroupMembershipLock()) {
-				if (isClosing) {
-					Exception e = new InvalidObjectException(
-							"container is closing");
-					throw e;
-				}
+				if (isClosing)
+					throw new ContainerConnectException(
+							Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
 				// Now check to see if this request is going to be allowed
-				URI uri = new URI(request.getTargetID().getName());
-				String path = new URI(uri.getSchemeSpecificPart()).getPath();
-				Serializable d = jgm.getData();
-				checkJoin(channel, remoteID, path, d);
+				checkJoin(channel, remoteID, request.getTargetID().getTopic(),
+						jgm.getData());
 
 				// add to id map
 				addIDMap(remoteID, request.getSenderJMSID());
 				if (getClientForID(remoteID) == null) {
 					removeIDMap(remoteID);
-					throw new ConnectException("client is null");
+					throw new ContainerConnectException(
+							Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLIENT_NOT_FOUND);
 				}
-				if (addNewRemoteMember(remoteID, channel)) {
+				if (addNewRemoteMember(remoteID, null)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
@@ -243,12 +235,10 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 							.createViewChangeMessage(getID(), null,
 									getNextSequenceNumber(),
 									new ID[] { remoteID }, true, null));
-					// Start messaging to new member
-					channel.start();
 				} else {
 					removeIDMap(remoteID);
 					ConnectException e = new ConnectException(
-							"server refused connection");
+							Messages.AbstractJMSServer_CONNECT_EXCEPTION_REFUSED);
 					throw e;
 				}
 			}
@@ -264,7 +254,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 
 		} catch (Exception e) {
 			traceAndLogExceptionCatch(HANDLE_CONNECT_REQUEST_EXCEPTION,
-					"handleConnectRequest", e);
+					"handleConnectRequest", e); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -286,7 +276,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 
 	protected void clientRemoved(String clientID) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "clientRemoved", new Object[] { clientID });
+				this.getClass(), "clientRemoved", new Object[] { clientID }); //$NON-NLS-1$
 		// OK, get ID for client...
 		ID remoteID = getIDForClientID(clientID);
 		if (remoteID != null) {
@@ -294,12 +284,10 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 			handleLeave(remoteID, conn);
 		}
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "clientRemoved");
+				this.getClass(), "clientRemoved"); //$NON-NLS-1$
 	}
 
 	protected void handleLeave(ID target, IConnection conn) {
-		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "memberLeave", new Object[] { target, conn });
 		if (target == null)
 			return;
 		if (removeRemoteMember(target)) {
@@ -309,13 +297,11 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 						new ID[] { target }, false, null));
 			} catch (IOException e) {
 				traceAndLogExceptionCatch(MEMBER_LEAVE_ERROR_CODE,
-						"memberLeave", e);
+						"memberLeave", e); //$NON-NLS-1$
 			}
 		}
 		if (conn != null)
 			disconnect(conn);
-		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-				this.getClass(), "memberLeave");
 	}
 
 }

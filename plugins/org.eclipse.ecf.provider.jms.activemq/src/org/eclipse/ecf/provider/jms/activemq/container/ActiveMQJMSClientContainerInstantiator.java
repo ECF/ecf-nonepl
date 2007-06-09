@@ -13,9 +13,10 @@ import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 
-public class ActivemqInstantiator extends GenericContainerInstantiator {
+public class ActiveMQJMSClientContainerInstantiator extends
+		GenericContainerInstantiator {
 
-	public ActivemqInstantiator() {
+	public ActiveMQJMSClientContainerInstantiator() {
 
 	}
 
@@ -28,7 +29,8 @@ public class ActivemqInstantiator extends GenericContainerInstantiator {
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] args) throws ContainerCreateException {
 		try {
-			Integer ka = new Integer(ActivemqJMSServer.DEFAULT_KEEPALIVE);
+			Integer ka = new Integer(
+					ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
 			String name = null;
 			if (args != null) {
 				if (args.length > 0) {
@@ -40,14 +42,15 @@ public class ActivemqInstantiator extends GenericContainerInstantiator {
 			}
 			if (name == null) {
 				if (ka == null)
-					return new ActivemqJMSClient(
-							ActivemqJMSServer.DEFAULT_KEEPALIVE);
+					return new ActiveMQJMSClientContainer(
+							ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
 				else
-					return new ActivemqJMSClient(ka.intValue());
+					return new ActiveMQJMSClientContainer(ka.intValue());
 			} else {
 				if (ka == null)
-					ka = new Integer(ActivemqJMSServer.DEFAULT_KEEPALIVE);
-				return new ActivemqJMSClient(name, ka.intValue());
+					ka = new Integer(
+							ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
+				return new ActiveMQJMSClientContainer(name, ka.intValue());
 			}
 		} catch (Exception e) {
 			throw new ContainerCreateException(

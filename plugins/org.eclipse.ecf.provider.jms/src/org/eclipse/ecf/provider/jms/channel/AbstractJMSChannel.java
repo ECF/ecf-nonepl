@@ -30,6 +30,7 @@ import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
@@ -44,14 +45,14 @@ import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
+import org.eclipse.osgi.util.NLS;
 
 /**
- *
+ * Abstract JMSChannel implementation. This class is superclass to
+ * AbstractJMSServerChannel and AbstractJMSClient channel.
  */
 public abstract class AbstractJMSChannel extends SocketAddress implements
 		ISynchAsynchConnection {
-
-	private static final int HARD_DISCONNECT_ERROR_CODE = 31001;
 
 	private static final int CLOSE_ERROR_CODE = 31002;
 
@@ -95,7 +96,9 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 
 	public AbstractJMSChannel(ISynchAsynchEventHandler hand, int keepAlive) {
 		this.handler = hand;
+		Assert.isNotNull(this.handler);
 		this.containerID = hand.getEventHandlerID();
+		Assert.isNotNull(containerID);
 		this.keepAlive = keepAlive;
 	}
 
@@ -108,8 +111,11 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	public abstract Object connect(ID remote, Object data, int timeout)
 			throws ECFException;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.comm.ISynchConnection#sendSynch(org.eclipse.ecf.core.identity.ID, byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.comm.ISynchConnection#sendSynch(org.eclipse.ecf.core.identity.ID,
+	 *      byte[])
 	 */
 	public abstract Object sendSynch(ID target, byte[] data) throws IOException;
 
@@ -163,10 +169,9 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	}
 
 	protected void onJMSException(JMSException except) {
-		if (isConnected() && isStarted()) {
+		if (isConnected() && isStarted())
 			handler.handleDisconnectEvent(new DisconnectEvent(this, except,
 					null));
-		}
 	}
 
 	protected Serializable createConnectRequestData(Object data) {
@@ -177,9 +182,9 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	}
 
 	protected Serializable setupJMS(JMSID targetID, Object data)
-			throws IOException {
+			throws ECFException {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "setupJMS");
+				this.getClass(), "setupJMS"); //$NON-NLS-1$
 		try {
 			ConnectionFactory factory = createJMSConnectionFactory(targetID);
 			connection = factory.createConnection();
@@ -197,11 +202,11 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 			connection.start();
 			Serializable connectData = createConnectRequestData(data);
 			Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-					this.getClass(), "setup", connectData);
+					this.getClass(), "setup", connectData); //$NON-NLS-1$
 			return connectData;
-		} catch (JMSException e) {
-			hardDisconnect();
-			throw new IOException("setupJMS:" + e.getLocalizedMessage());
+		} catch (Exception e) {
+			disconnect();
+			throw new ECFException("setupJMS", e); //$NON-NLS-1$
 		}
 	}
 
@@ -221,36 +226,27 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 
 	private synchronized void queueObject(ID recipient, Serializable obj)
 			throws IOException {
-		Trace
-				.entering(Activator.PLUGIN_ID,
-						JmsDebugOptions.METHODS_ENTERING, this.getClass(),
-						"queueObject", new Object[] { recipient, obj });
 		if (!isConnected())
-			throw new ConnectException("Not connected");
+			throw new ConnectException("Not connected"); //$NON-NLS-1$
 		ObjectMessage msg = null;
 		try {
 			msg = session.createObjectMessage(new JMSMessage(getConnectionID(),
 					getLocalID(), recipient, obj));
 			topicProducer.send(msg);
 		} catch (JMSException e) {
-			Trace.catching(Activator.PLUGIN_ID,
-					JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
-					"queueObject", e);
 			disconnect();
-			throwIOException("queueObject", "Exception in queueObject", e);
+			throwIOException("queueObject", "Exception in queueObject", e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
-		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-				this.getClass(), "queueObject");
 	}
 
 	protected void onTopicException(JMSException except) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "onTopicException", new Object[] { except });
+				this.getClass(), "onTopicException", new Object[] { except }); //$NON-NLS-1$
 		if (isConnected() && isStarted())
 			handler.handleDisconnectEvent(new DisconnectEvent(this, except,
 					null));
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-				this.getClass(), "onTopicException");
+				this.getClass(), "onTopicException"); //$NON-NLS-1$
 	}
 
 	protected void throwIOException(String method, String msg, Throwable t)
@@ -259,7 +255,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				.throwing(Activator.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
 						method, t);
-		throw new IOException(msg + ": " + t.getMessage());
+		throw new IOException(msg + ": " + t.getMessage()); //$NON-NLS-1$
 	}
 
 	/*
@@ -316,24 +312,18 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
 	 */
 	public synchronized void disconnect() {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "disconnect");
-		connected = false;
+				this.getClass(), "disconnect"); //$NON-NLS-1$
 		stop();
+		fireListenersDisconnect(new ConnectionEvent(this, null));
+		connectionListeners.clear();
 		notifyAll();
-	}
-
-	protected void hardDisconnect() {
-		try {
-			disconnect();
-		} catch (Exception e) {
-			traceAndLogExceptionCatch(HARD_DISCONNECT_ERROR_CODE,
-					"hardDisconnect", e);
-		}
 	}
 
 	protected void close() {
@@ -342,9 +332,10 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				connection.stop();
 				connection.close();
 				connection = null;
+				connected = false;
 			}
 		} catch (Exception e) {
-			traceAndLogExceptionCatch(CLOSE_ERROR_CODE, "close", e);
+			traceAndLogExceptionCatch(CLOSE_ERROR_CODE, "close", e); //$NON-NLS-1$
 		}
 	}
 
@@ -369,7 +360,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 
 	protected void handleTopicMessage(Message msg, JMSMessage jmsmsg) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "handleTopicMessage", new Object[] { msg,
+				this.getClass(), "handleTopicMessage", new Object[] { msg, //$NON-NLS-1$
 						jmsmsg });
 		if (isConnected() && isStarted()) {
 			try {
@@ -378,16 +369,16 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 			} catch (IOException e) {
 				Trace.catching(Activator.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
-						"handleTopicMessage", e);
+						"handleTopicMessage", e); //$NON-NLS-1$
 				Activator.getDefault().log(
 						new Status(IStatus.ERROR, Activator.PLUGIN_ID,
 								HANDLE_ASYNCH_ERROR_CODE,
-								"Exception on handleTopicMessage", e));
-				hardDisconnect();
+								"Exception on handleTopicMessage", e)); //$NON-NLS-1$
+				disconnect();
 			}
 		}
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-				this.getClass(), "handleTopicMessage");
+				this.getClass(), "handleTopicMessage"); //$NON-NLS-1$
 	}
 
 	private Object synch = new Object();
@@ -407,7 +398,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	protected Serializable sendAndWait(Serializable obj, int waitDuration)
 			throws IOException {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "sendAndWait", new Object[] { obj,
+				this.getClass(), "sendAndWait", new Object[] { obj, //$NON-NLS-1$
 						new Integer(waitDuration) });
 		synchronized (synch) {
 			try {
@@ -419,22 +410,22 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 			} catch (JMSException e) {
 				Trace.catching(Activator.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
-						"sendAndWait", e);
-				throwIOException("sendAndWait", "JMSException in sendAndWait",
+						"sendAndWait", e); //$NON-NLS-1$
+				throwIOException("sendAndWait", "JMSException in sendAndWait", //$NON-NLS-1$ //$NON-NLS-2$
 						e);
 			} catch (InterruptedException e) {
 				traceAndLogExceptionCatch(INTERRUPTED_ERROR_CODE,
-						"handleTopicMessage", e);
+						"handleTopicMessage", e); //$NON-NLS-1$
 			}
 			Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-					this.getClass(), "sendAndWait", reply);
+					this.getClass(), "sendAndWait", reply); //$NON-NLS-1$
 			return reply;
 		}
 	}
 
 	protected void handleSynchMessage(ObjectMessage msg, ECFMessage ecfmsg) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "handleSynchMessage", new Object[] { msg,
+				this.getClass(), "handleSynchMessage", new Object[] { msg, //$NON-NLS-1$
 						ecfmsg });
 		synchronized (synch) {
 			if (correlation == null)
@@ -446,11 +437,11 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				}
 			} catch (JMSException e) {
 				traceAndLogExceptionCatch(HANDLE_SYNCH_ERROR_CODE,
-						"handleTopicMessage", e);
+						"handleTopicMessage", e); //$NON-NLS-1$
 			}
 		}
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-				this.getClass(), "handleSynchMessage");
+				this.getClass(), "handleSynchMessage"); //$NON-NLS-1$
 	}
 
 	protected void traceAndLogExceptionCatch(int code, String method,
@@ -472,7 +463,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 			return res;
 		} catch (Exception e) {
 			traceAndLogExceptionCatch(GET_CONNECTIONID_ERROR_CODE,
-					"getConnectionID", e);
+					"getConnectionID", e); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -482,7 +473,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		public void onMessage(Message msg) {
 			Trace.entering(Activator.PLUGIN_ID,
 					JmsDebugOptions.METHODS_ENTERING, this.getClass(),
-					"handleSynchMessage", new Object[] { msg });
+					"handleSynchMessage", new Object[] { msg }); //$NON-NLS-1$
 			try {
 				if (msg instanceof ObjectMessage) {
 					ObjectMessage omg = (ObjectMessage) msg;
@@ -494,14 +485,14 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 							Trace.exiting(Activator.PLUGIN_ID,
 									JmsDebugOptions.METHODS_ENTERING, this
 											.getClass(),
-									"onMessage.fromID=null");
+									"onMessage.fromID=null"); //$NON-NLS-1$
 							return;
 						}
 						if (fromID.equals(getLocalID())) {
 							Trace.exiting(Activator.PLUGIN_ID,
 									JmsDebugOptions.METHODS_ENTERING, this
 											.getClass(),
-									"onMessage.fromID=getLocalID()");
+									"onMessage.fromID=getLocalID()"); //$NON-NLS-1$
 							return;
 						}
 						ID targetID = ecfmsg.getTargetID();
@@ -511,7 +502,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 							else
 								Trace
 										.trace(Activator.PLUGIN_ID,
-												"onMessage.received invalid message to group");
+												"onMessage.received invalid message to group"); //$NON-NLS-1$
 						} else {
 							if (targetID.equals(getLocalID())) {
 								if (ecfmsg instanceof JMSMessage)
@@ -521,25 +512,25 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 								else if (ecfmsg instanceof SynchResponseMessage)
 									handleSynchMessage(omg, ecfmsg);
 								else
-									Trace.trace(Activator.PLUGIN_ID,
-											"onMessage.msg invalid message to "
-													+ targetID);
+									Trace.trace(Activator.PLUGIN_ID, NLS.bind(
+											"onMessage.msg invalid message to {0}" //$NON-NLS-1$
+											, targetID));
 							}
 						}
 					} else
 						// received bogus message...ignore
-						Trace.trace(Activator.PLUGIN_ID,
-								"onMessage received non-ECFMessage...ignoring: "
-										+ o);
+						Trace.trace(Activator.PLUGIN_ID, NLS.bind(
+								"onMessage received non-ECFMessage...ignoring {0}" //$NON-NLS-1$
+								, o));
 				} else
-					Trace.trace(Activator.PLUGIN_ID,
-							"onMessage.non object message received: " + msg);
+					Trace.trace(Activator.PLUGIN_ID, NLS.bind(
+							"onMessage.non object message received {0}", msg)); //$NON-NLS-1$
 			} catch (Exception e) {
-				traceAndLogExceptionCatch(ONMESSAGE_ERROR_CODE, "onMessage", e);
-				hardDisconnect();
+				traceAndLogExceptionCatch(ONMESSAGE_ERROR_CODE, "onMessage", e); //$NON-NLS-1$
+				disconnect();
 			}
 			Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-					this.getClass(), "onMessage");
+					this.getClass(), "onMessage"); //$NON-NLS-1$
 
 		}
 	}

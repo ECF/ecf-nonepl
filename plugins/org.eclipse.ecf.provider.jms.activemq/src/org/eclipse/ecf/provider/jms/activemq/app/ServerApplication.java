@@ -12,21 +12,25 @@ import javax.jms.JMSException;
 
 import org.activemq.ActiveMQConnection;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.provider.jms.activemq.container.ActivemqJMSServer;
+import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContainer;
 import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 
 /**
- * A simple command line tool which runs a JMS Message Broker on the command
+ * A simple command line tool which runs a ActiveMQ JMS server on the command
  * line
  * 
- * @version $Revision: 1.1 $
+ * Usage: org.eclipse.ecf.provider.jms.activemq.app.ServerApplication <server
+ * URL> e.g. org.eclipse.ecf.provider.jms.activemq.app.ServerApplication
+ * tcp://localhost:3240/server
+ * 
+ * @version $Revision: 1.2 $
  */
 public class ServerApplication {
 	public static final int DEFAULT_KEEPALIVE = 30000;
 
-	static ActivemqJMSServer groups[] = null;
+	static ActiveMQJMSServerContainer groups[] = null;
 
 	protected static void initializeNamespace() {
 		IDFactory.getDefault().addNamespace(new JMSNamespace());
@@ -37,12 +41,12 @@ public class ServerApplication {
 		if (urls == null || urls.length == 0)
 			throw new NullPointerException("must have at least one group url");
 		initializeNamespace();
-		groups = new ActivemqJMSServer[urls.length];
+		groups = new ActiveMQJMSServerContainer[urls.length];
 		for (int i = 0; i < urls.length; i++) {
 			String serverid = urls[i];
 			JMSID groupID = (JMSID) IDFactory.getDefault().createID(
 					JMSNamespace.NAME, serverid);
-			ActivemqJMSServer newCont = new ActivemqJMSServer(
+			ActiveMQJMSServerContainer newCont = new ActiveMQJMSServerContainer(
 					new JMSContainerConfig(groupID));
 			broker.addSOContainer(groupID.getTopic(), newCont);
 			newCont.start();

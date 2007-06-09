@@ -50,9 +50,9 @@ public class ConnectResponseMessage implements Serializable, ECFMessage,
 	}
 
 	public String toString() {
-		StringBuffer buf = new StringBuffer("ConnectResponseMessage[");
-		buf.append(clientID).append(";").append(targetID).append(";");
-		buf.append(jmsTopicClientID).append(";").append(data).append("]");
+		StringBuffer buf = new StringBuffer("ConnectResponseMessage["); //$NON-NLS-1$
+		buf.append(clientID).append(";").append(targetID).append(";"); //$NON-NLS-1$ //$NON-NLS-2$
+		buf.append(jmsTopicClientID).append(";").append(data).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		return buf.toString();
 	}
 

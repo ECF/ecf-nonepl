@@ -15,13 +15,14 @@ import java.net.URI;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.internal.provider.jms.Messages;
 
 public class JMSNamespace extends Namespace {
 	private static final long serialVersionUID = 3761689000414884151L;
 
-	private static final String SCHEME = "jms";
+	private static final String SCHEME = "jms"; //$NON-NLS-1$
 
-	public static final String NAME = "jms.activemq";
+	public static final String NAME = "jms.activemq"; //$NON-NLS-1$
 
 	public JMSNamespace() {
 		super(NAME, null);
@@ -37,9 +38,10 @@ public class JMSNamespace extends Namespace {
 				}
 			}
 			throw new IllegalArgumentException(
-					"XMPP ID constructor arguments invalid");
+					Messages.JMSNamespace_EXCEPTION_XMPP_ARGS_INVALID);
 		} catch (Exception e) {
-			throw new IDCreateException("XMPP ID creation exception", e);
+			throw new IDCreateException(
+					Messages.JMSNamespace_EXCEPTION_IDCREATION, e);
 		}
 	}
 

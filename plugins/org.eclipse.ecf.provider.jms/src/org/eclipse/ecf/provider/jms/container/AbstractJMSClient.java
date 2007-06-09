@@ -20,6 +20,7 @@ import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.datashare.IChannelContainerAdapter;
+import org.eclipse.ecf.internal.provider.jms.Messages;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.datashare.DatashareContainerAdapter;
@@ -71,7 +72,7 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 	protected void handleContainerMessage(ContainerMessage mess)
 			throws IOException {
 		if (mess == null) {
-			debug("got null container message...ignoring");
+			debug("got null container message...ignoring"); //$NON-NLS-1$
 			return;
 		}
 		Object data = mess.getData();
@@ -84,7 +85,7 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 		} else if (data instanceof ContainerMessage.SharedObjectDisposeMessage) {
 			handleSharedObjectDisposeMessage(mess);
 		} else {
-			debug("got unrecognized container message...ignoring: " + mess);
+			debug("got unrecognized container message...ignoring: " + mess); //$NON-NLS-1$
 		}
 	}
 
@@ -128,7 +129,8 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 		} else if (serverData instanceof ContainerMessage) {
 			cr = serverData;
 		} else {
-			throw new ConnectException("server provided invalid response");
+			throw new ConnectException(
+					Messages.AbstractJMSClient_EXCEPTION_INVALID_SERVER_RESPONSE);
 		}
 		return super.handleConnectResponse(originalTarget, cr);
 	}

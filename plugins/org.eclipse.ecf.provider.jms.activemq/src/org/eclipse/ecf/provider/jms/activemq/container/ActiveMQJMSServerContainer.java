@@ -22,16 +22,18 @@ import org.eclipse.ecf.provider.jms.container.AbstractJMSServer;
 import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
-public class ActivemqJMSServer extends AbstractJMSServer {
+public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 
 	public static final String PASSWORD_PROPERTY = "password";
 	public static final String USERNAME_PROPERTY = "username";
+	public static final String DEFAULT_PASSWORD = "defaultPassword";
+	public static final String DEFAULT_USERNAME = "defaultUsername";
 
-	public ActivemqJMSServer(JMSContainerConfig config) {
+	public ActiveMQJMSServerContainer(JMSContainerConfig config) {
 		super(config);
 	}
 
-	class ActivemqServerChannel extends AbstractJMSServerChannel {
+	class ActiveMQServerChannel extends AbstractJMSServerChannel {
 
 		private static final long serialVersionUID = -2348383004973299553L;
 
@@ -41,23 +43,23 @@ public class ActivemqJMSServer extends AbstractJMSServer {
 		 * @throws IOException
 		 * @throws URISyntaxException
 		 */
-		public ActivemqServerChannel() throws IOException, URISyntaxException {
+		public ActiveMQServerChannel() throws ECFException {
 			super(getReceiver(), getJMSContainerConfig().getKeepAlive());
 		}
 
 		protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
 				throws IOException {
-			return new ActiveMQConnectionFactory(getActivemqUsername(targetID),
-					getActivemqPassword(targetID), targetID.getName());
+			return new ActiveMQConnectionFactory(getActiveMQUsername(targetID),
+					getActiveMQPassword(targetID), targetID.getName());
 		}
 
-		private String getActivemqPassword(JMSID targetID) {
+		private String getActiveMQPassword(JMSID targetID) {
 			String pw = (String) getJMSContainerConfig().getProperties().get(
 					PASSWORD_PROPERTY);
 			return (pw == null) ? "defaultPassword" : pw;
 		}
 
-		private String getActivemqUsername(JMSID targetID) {
+		private String getActiveMQUsername(JMSID targetID) {
 			String username = (String) getJMSContainerConfig().getProperties()
 					.get(USERNAME_PROPERTY);
 			return (username == null) ? "defaultUsername" : username;
@@ -72,7 +74,7 @@ public class ActivemqJMSServer extends AbstractJMSServer {
 	 */
 	public void start() throws ECFException {
 		try {
-			ISynchAsynchConnection connection = new ActivemqServerChannel();
+			ISynchAsynchConnection connection = new ActiveMQServerChannel();
 			setConnection(connection);
 			connection.start();
 		} catch (Exception e) {
@@ -82,7 +84,7 @@ public class ActivemqJMSServer extends AbstractJMSServer {
 
 	public void dispose() {
 		super.dispose();
-		getConnection().stop();
+		getConnection().disconnect();
 		setConnection(null);
 	}
 

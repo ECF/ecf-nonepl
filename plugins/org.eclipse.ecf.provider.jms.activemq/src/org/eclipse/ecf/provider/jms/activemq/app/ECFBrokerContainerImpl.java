@@ -26,8 +26,8 @@ import org.activemq.message.SessionInfo;
 import org.activemq.store.PersistenceAdapter;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jms.activemq.Activator;
-import org.eclipse.ecf.internal.provider.jms.activemq.ActivemqDebugOptions;
-import org.eclipse.ecf.provider.jms.activemq.container.ActivemqJMSServer;
+import org.eclipse.ecf.internal.provider.jms.activemq.ActiveMQDebugOptions;
+import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContainer;
 
 public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 
@@ -45,16 +45,17 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 		onTheAir = val;
 	}
 
-	public void addSOContainer(String name, ActivemqJMSServer socontainer) {
+	public void addSOContainer(String name,
+			ActiveMQJMSServerContainer socontainer) {
 		containerMap.put(name, socontainer);
 	}
 
-	public ActivemqJMSServer getSOContainer(String name) {
-		return (ActivemqJMSServer) containerMap.get(name);
+	public ActiveMQJMSServerContainer getSOContainer(String name) {
+		return (ActiveMQJMSServerContainer) containerMap.get(name);
 	}
 
-	public ActivemqJMSServer removeSOContainer(String name) {
-		return (ActivemqJMSServer) containerMap.remove(name);
+	public ActiveMQJMSServerContainer removeSOContainer(String name) {
+		return (ActiveMQJMSServerContainer) containerMap.remove(name);
 	}
 
 	public void addClient(BrokerClient client) {
@@ -125,16 +126,16 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 
 	public void registerSession(BrokerClient client, SessionInfo info)
 			throws JMSException {
-		trace("registerSession(" + client + "," + info + ")");
+		trace("registerSession(" + client + "," + info + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	public void deregisterSession(BrokerClient client, SessionInfo info)
 			throws JMSException {
-		trace("deregisterSession(" + client + "," + info + ")");
+		trace("deregisterSession(" + client + "," + info + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 	}
 
 	public void registerRemoteClientID(String remoteClientID) {
-		trace("registerRemoteClientID(" + remoteClientID + ")");
+		trace("registerRemoteClientID(" + remoteClientID + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 		super.registerRemoteClientID(remoteClientID);
 	}
 
@@ -142,13 +143,13 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 		client.getChannel().forceDisconnect();
 	}
 
-	protected ActivemqJMSServer verifyOrDisconnect(String dest,
+	protected ActiveMQJMSServerContainer verifyOrDisconnect(String dest,
 			BrokerClient client) {
 		if (dest == null) {
 			disconnectBrokerClient(client);
 			return null;
 		}
-		ActivemqJMSServer container = getSOContainer(dest);
+		ActiveMQJMSServerContainer container = getSOContainer(dest);
 		if (container == null) {
 			disconnectBrokerClient(client);
 			return null;
@@ -159,11 +160,11 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 	public void registerMessageConsumer(BrokerClient client, ConsumerInfo info)
 			throws JMSException {
 		Trace.entering(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_ENTERING, this.getClass(),
-				"registerMessageConsumer", new Object[] { client, info });
-		trace("registerMessageConsumer(" + client + "," + info + ")");
+				ActiveMQDebugOptions.METHODS_ENTERING, this.getClass(),
+				"registerMessageConsumer", new Object[] { client, info }); //$NON-NLS-1$
+		trace("registerMessageConsumer(" + client + "," + info + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String dest = info.getDestination().toString();
-		ActivemqJMSServer container = verifyOrDisconnect(dest, client);
+		ActiveMQJMSServerContainer container = verifyOrDisconnect(dest, client);
 		if (container == null) {
 			return;
 		} else {
@@ -171,15 +172,15 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 		}
 		super.registerMessageConsumer(client, info);
 		Trace.exiting(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_EXITING, this.getClass(),
-				"registerMessageConsumer");
+				ActiveMQDebugOptions.METHODS_EXITING, this.getClass(),
+				"registerMessageConsumer"); //$NON-NLS-1$
 	}
 
 	public void deregisterMessageConsumer(BrokerClient client, ConsumerInfo info)
 			throws JMSException {
-		trace("deregisterMessageConsumer(" + client + "," + info + ")");
+		trace("deregisterMessageConsumer(" + client + "," + info + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 		String dest = info.getDestination().toString();
-		ActivemqJMSServer container = verifyOrDisconnect(dest, client);
+		ActiveMQJMSServerContainer container = verifyOrDisconnect(dest, client);
 		if (container != null) {
 			container.removeBrokerClient(client);
 		}
@@ -189,26 +190,26 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 	public void registerMessageProducer(BrokerClient client, ProducerInfo info)
 			throws JMSException {
 		Trace.entering(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_ENTERING, this.getClass(),
-				"registerMessageProducer", new Object[] { client, info });
+				ActiveMQDebugOptions.METHODS_ENTERING, this.getClass(),
+				"registerMessageProducer", new Object[] { client, info }); //$NON-NLS-1$
 		String dest = info.getDestination().toString();
-		ActivemqJMSServer container = verifyOrDisconnect(dest, client);
+		ActiveMQJMSServerContainer container = verifyOrDisconnect(dest, client);
 		if (container == null) {
 			return;
 		}
 		super.registerMessageProducer(client, info);
 		Trace.exiting(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_EXITING, this.getClass(),
-				"registerMessageProducer");
+				ActiveMQDebugOptions.METHODS_EXITING, this.getClass(),
+				"registerMessageProducer"); //$NON-NLS-1$
 	}
 
 	public void deregisterMessageProducer(BrokerClient client, ProducerInfo info)
 			throws JMSException {
 		Trace.entering(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_ENTERING, this.getClass(),
-				"deregisterMessageProducer", new Object[] { client, info });
+				ActiveMQDebugOptions.METHODS_ENTERING, this.getClass(),
+				"deregisterMessageProducer", new Object[] { client, info }); //$NON-NLS-1$
 		String dest = info.getDestination().toString();
-		ActivemqJMSServer container = verifyOrDisconnect(dest, client);
+		ActiveMQJMSServerContainer container = verifyOrDisconnect(dest, client);
 		if (container == null) {
 			return;
 		} else {
@@ -216,44 +217,44 @@ public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 		}
 		super.deregisterMessageProducer(client, info);
 		Trace.exiting(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_EXITING, this.getClass(),
-				"deregisterMessageProducer");
+				ActiveMQDebugOptions.METHODS_EXITING, this.getClass(),
+				"deregisterMessageProducer"); //$NON-NLS-1$
 	}
 
 	public void deregisterRemoteClientID(String remoteClientID) {
 		Trace.entering(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_ENTERING, this.getClass(),
-				"deregisterRemoteClientID", new Object[] { remoteClientID });
+				ActiveMQDebugOptions.METHODS_ENTERING, this.getClass(),
+				"deregisterRemoteClientID", new Object[] { remoteClientID }); //$NON-NLS-1$
 		super.deregisterRemoteClientID(remoteClientID);
 		Trace.exiting(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_EXITING, this.getClass(),
-				"deregisterRemoteClientID");
+				ActiveMQDebugOptions.METHODS_EXITING, this.getClass(),
+				"deregisterRemoteClientID"); //$NON-NLS-1$
 	}
 
 	public void registerConnection(BrokerClient client, ConnectionInfo info)
 			throws JMSException {
 		Trace.entering(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_ENTERING, this.getClass(),
-				"registerConnection", new Object[] { client, info });
+				ActiveMQDebugOptions.METHODS_ENTERING, this.getClass(),
+				"registerConnection", new Object[] { client, info }); //$NON-NLS-1$
 		if (!clientsEmpty()) {
 			addClient(client);
 		}
 		super.registerConnection(client, info);
 		Trace.exiting(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_EXITING, this.getClass(),
-				"registerConnection");
+				ActiveMQDebugOptions.METHODS_EXITING, this.getClass(),
+				"registerConnection"); //$NON-NLS-1$
 	}
 
 	public void deregisterConnection(BrokerClient client, ConnectionInfo info)
 			throws JMSException {
 		Trace.entering(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_ENTERING, this.getClass(),
-				"deregisterConnection", new Object[] { client, info });
+				ActiveMQDebugOptions.METHODS_ENTERING, this.getClass(),
+				"deregisterConnection", new Object[] { client, info }); //$NON-NLS-1$
 		removeClient(client);
 		super.deregisterConnection(client, info);
 		Trace.exiting(Activator.PLUGIN_ID,
-				ActivemqDebugOptions.METHODS_EXITING, this.getClass(),
-				"deregisterConnection");
+				ActiveMQDebugOptions.METHODS_EXITING, this.getClass(),
+				"deregisterConnection"); //$NON-NLS-1$
 	}
 
 }
