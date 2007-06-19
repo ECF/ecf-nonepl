@@ -55,7 +55,6 @@ import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
 import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterEntry;
 import org.eclipse.ecf.presence.roster.RosterGroup;
-import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.yahoo.identity.YahooID;
 
 import ymsg.network.Session;
@@ -163,10 +162,43 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		for(Iterator i=listeners.iterator(); i.hasNext(); ) {
 			IIMMessageListener l = (IIMMessageListener) i.next();
 			ID fromID = makeIDFromName(event.getFrom());
-			l.handleMessageEvent(new ChatMessageEvent(fromID, new ChatMessage(fromID,event.getMessage())));
+			String msg = removeXHTMLFromMessage(event.getMessage());
+			l.handleMessageEvent(new ChatMessageEvent(fromID, new ChatMessage(fromID,msg)));
 		}
 	}
 	
+	private String stripNestedTag(String input, String tag) {
+		int index = input.indexOf("<"+tag);
+		if (index != -1) {
+			String pre = input.substring(0,index);
+			int textBegin = input.indexOf(">",index) + 1;
+			String s = stripNestedTag(input.substring(textBegin),tag);
+			int endIndex = s.lastIndexOf("</"+tag,s.length());
+			String suffix = stripTag(s.substring(0,endIndex),tag);
+			return pre + s + suffix;
+		} else return input;
+	}
+	
+	private String stripTag(String input, String tag) {
+		int index = input.indexOf("<"+tag);
+		if (index != -1) {
+			int textBegin = input.indexOf(">",index) + 1;
+			int textEnd = input.indexOf("</"+tag,textBegin);
+			String s = stripNestedTag(input.substring(textBegin,textEnd),tag);
+			String suffix = stripTag(input.substring(textEnd+3+tag.length()),tag);
+			return s + suffix;
+		} else return input;
+	}
+	
+	/**
+	 * @param message
+	 * @return
+	 */
+	private String removeXHTMLFromMessage(String message) {
+		if (message == null) return null;
+		return stripTag(stripTag(stripTag(message,"font"),"b"),"i");
+	}
+
 	Vector presenceListeners = new Vector();
 	
 	Vector rosterListeners = new Vector();
