@@ -37,6 +37,7 @@ import org.eclipse.ecf.provider.yahoo.util.YahooSessionListener;
 import ymsg.network.AccountLockedException;
 import ymsg.network.LoginRefusedException;
 import ymsg.network.Session;
+import ymsg.network.StatusConstants;
 
 public class YahooContainer extends AbstractContainer {
 
@@ -71,6 +72,7 @@ public class YahooContainer extends AbstractContainer {
 				connectContext));
 		this.targetYahooID = (YahooID) targetID;
 		try {
+			session.setStatus(StatusConstants.STATUS_AVAILABLE);
 			session.login(targetYahooID.getUsername(), password);
 		} catch (AccountLockedException e) {
 			throw new ContainerConnectException("Account locked", e);
