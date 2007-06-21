@@ -182,7 +182,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			int textBegin = input.indexOf(">", index) + 1;
 			String s = stripNestedTag(input.substring(textBegin), tag);
 			int endIndex = s.lastIndexOf("</" + tag, s.length());
-			String suffix = stripTag(s.substring(0, endIndex), tag);
+			String suffix = (endIndex == -1)?"":stripTag(s.substring(0, endIndex), tag);
 			return pre + s + suffix;
 		} else
 			return input;
@@ -193,9 +193,15 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		if (index != -1) {
 			int textBegin = input.indexOf(">", index) + 1;
 			int textEnd = input.indexOf("</" + tag, textBegin);
-			String s = stripNestedTag(input.substring(textBegin, textEnd), tag);
-			String suffix = stripTag(input
-					.substring(textEnd + 3 + tag.length()), tag);
+			String s = null;
+			String suffix = "";
+			if (textEnd == -1) {
+				s = stripNestedTag(input.substring(textBegin),tag);
+			} else {
+				s = stripNestedTag(input.substring(textBegin, textEnd), tag);
+				suffix = stripTag(input
+						.substring(textEnd + 3 + tag.length()), tag);
+			}
 			return s + suffix;
 		} else
 			return input;
