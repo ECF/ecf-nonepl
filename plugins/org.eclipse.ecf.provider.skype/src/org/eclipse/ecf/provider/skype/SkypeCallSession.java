@@ -130,7 +130,7 @@ public class SkypeCallSession  implements ICallSession {
 	 * @param status
 	 * @return
 	 */
-	protected CallSessionState createCallState(Status status) {
+	protected static CallSessionState createCallState(Status status) {
 		if (status.equals(Status.BUSY))
 			return CallSessionState.BUSY;
 		else if (status.equals(Status.CANCELLED))

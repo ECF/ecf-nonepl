@@ -34,6 +34,7 @@ import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserNamespace;
 import org.eclipse.ecf.telephony.call.CallException;
+import org.eclipse.ecf.telephony.call.CallSessionState;
 import org.eclipse.ecf.telephony.call.ICallSession;
 import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
 import org.eclipse.ecf.telephony.call.ICallSessionListener;
@@ -136,6 +137,8 @@ public class SkypeCallContainerAdapter extends BaseSharedObject
 						.next();
 				l.handleCallSessionRequest(new ICallSessionRequestEvent() {
 
+					private Map props = new HashMap();
+					
 					public ICallSession accept(
 							ICallSessionListener listener, Map properties) throws CallException {
 						try {
@@ -153,8 +156,7 @@ public class SkypeCallContainerAdapter extends BaseSharedObject
 					}
 
 					public Map getProperties() {
-						// XXX todo...get from Skype Call
-						return new HashMap();
+						return props;
 					}
 
 					public void reject() {
@@ -179,6 +181,14 @@ public class SkypeCallContainerAdapter extends BaseSharedObject
 
 					public ID getSessionID() {
 						return new SkypeCallSessionID(receivedCall.getId());
+					}
+
+					public CallSessionState getCallSessionState() {
+						try {
+							return SkypeCallSession.createCallState(receivedCall.getStatus());
+						} catch (SkypeException e) {
+							return CallSessionState.ERROR;
+						}
 					}
 
 				});
