@@ -29,6 +29,7 @@ import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.AbstractPresenceContainer;
+import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
@@ -99,6 +100,40 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	};
 
+	protected IAccountManager accountManager = new IAccountManager() {
+
+		public boolean changePassword(String newpassword) throws ECFException {
+			throw new ECFException("Yahoo password must be changed via http://www.yahoo.com");
+		}
+
+		public boolean createAccount(String username, String password,
+				Map attributes) throws ECFException {
+			return false;
+		}
+
+		public boolean deleteAccount() throws ECFException {
+			return false;
+		}
+
+		public Object getAccountAttribute(String attributeName)
+				throws ECFException {
+			return null;
+		}
+
+		public String[] getAccountAttributeNames() throws ECFException {
+			return new String[0];
+		}
+
+		public String getAccountCreationInstructions() throws ECFException {
+			return "";
+		}
+
+		public boolean isAccountCreationSupported() throws ECFException {
+			return false;
+		}
+		
+	};
+	
 	protected IHistoryManager historyManager = new IHistoryManager() {
 
 		/*
@@ -126,8 +161,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		}
 
 		public void setActive(boolean active) {
-			// TODO Auto-generated method stub
-
 		}
 	};
 
@@ -159,6 +192,13 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		}
 
 	};
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.presence.AbstractPresenceContainer#getAccountManager()
+	 */
+	public IAccountManager getAccountManager() {
+		return accountManager;
+	}
 
 	/**
 	 * Notifies any listeners that a message has been received from a yahoo user
@@ -253,7 +293,6 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 					new Object[] { name });
 			return result;
 		} catch (Exception e) {
-			e.printStackTrace();
 			return null;
 		}
 	}
@@ -295,23 +334,41 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 						.equals(IPresence.Mode.EXTENDED_AWAY))
 					session.setStatus(StatusConstants.STATUS_BUSY);
 			} catch (Exception e) {
-				// XXX Catch and swallow...if this happens then we're offline
+				// XXX Catch and swallow...if this happens then we're offline anyway
 			}
 		}
 
 	};
 
+	private void sendRosterChange(boolean add, String friend, String group) throws ECFException {
+		try {
+			if (add) session.addFriend(friend, group);
+			else session.removeFriend(friend, group);
+		} catch (Exception e) {
+			throw new ECFException("sendRosterChange",e);
+		}
+	}
+	
 	IRosterSubscriptionSender rosterSubscriptionSender = new IRosterSubscriptionSender() {
 
 		public void sendRosterAdd(String user, String name, String[] groups)
 				throws ECFException {
-			// TODO Auto-generated method stub
-
+			if (groups != null) for(int i=0; i < groups.length; i++) sendRosterChange(true,user,groups[i]);
+			else sendRosterChange(true,user,"");
 		}
 
 		public void sendRosterRemove(ID userID) throws ECFException {
-			// TODO Auto-generated method stub
-
+			YahooGroup [] groups = session.getGroups();
+			String user = userID.getName();
+			if (groups != null) {
+				for(int i=0; i < groups.length; i++) {
+					Vector members = groups[i].getMembers();
+					for (Iterator j=members.iterator(); j.hasNext(); ) {
+						YahooUser u = (YahooUser) j.next();
+						if (u.getId().equals(user)) sendRosterChange(false,user,groups[i].getName());
+					}
+				}
+			} else sendRosterChange(false,user,"");
 		}
 	};
 
