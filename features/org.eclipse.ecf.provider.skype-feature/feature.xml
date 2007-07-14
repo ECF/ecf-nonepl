@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.ecf.provider.skype_feature"
       label="Eclipse Communication Framework Skype Provider"
-      version="0.1.0.qualifier"
+      version="0.1.1.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/ecf">
