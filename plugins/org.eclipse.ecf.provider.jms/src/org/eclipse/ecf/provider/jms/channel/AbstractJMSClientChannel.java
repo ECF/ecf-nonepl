@@ -110,7 +110,7 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 			first.setJMSCorrelationID(omsg.getJMSCorrelationID());
 			Trace.trace(Activator.PLUGIN_ID, "respondToRequest.sending=" //$NON-NLS-1$
 					+ first);
-			topicProducer.send(first);
+			jmsTopic.getProducer().send(first);
 			handler.handleSynchEvent(new SynchEvent(this, o.getData()));
 		} catch (Exception e) {
 			traceAndLogExceptionCatch(RESPOND_TO_REQUEST_ERROR_CODE,

@@ -20,13 +20,10 @@ import java.util.Vector;
 
 import javax.jms.Connection;
 import javax.jms.ConnectionFactory;
-import javax.jms.Destination;
 import javax.jms.ExceptionListener;
 import javax.jms.JMSException;
 import javax.jms.Message;
-import javax.jms.MessageConsumer;
 import javax.jms.MessageListener;
-import javax.jms.MessageProducer;
 import javax.jms.ObjectMessage;
 import javax.jms.Session;
 
@@ -36,8 +33,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
-import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
 import org.eclipse.ecf.internal.provider.jms.Activator;
+import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
 import org.eclipse.ecf.provider.comm.AsynchEvent;
 import org.eclipse.ecf.provider.comm.ConnectionEvent;
 import org.eclipse.ecf.provider.comm.DisconnectEvent;
@@ -71,12 +68,8 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	private Connection connection = null;
 
 	protected Session session = null;
-
-	protected Destination topicDest = null;
-
-	protected MessageConsumer topicConsumer = null;
-
-	protected MessageProducer topicProducer = null;
+	
+	protected JmsTopic jmsTopic = null;
 
 	protected JMSID targetID = null;
 
@@ -102,6 +95,10 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		this.keepAlive = keepAlive;
 	}
 
+	public Session getSession() {
+		return session;
+	}
+	
 	/**
 	 * (non-Javadoc)
 	 * 
@@ -194,10 +191,8 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				}
 			});
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			topicDest = session.createTopic(targetID.getTopic());
-			topicConsumer = session.createConsumer(topicDest);
-			topicProducer = session.createProducer(topicDest);
-			topicConsumer.setMessageListener(new TopicReceiver());
+			jmsTopic = new JmsTopic(session,targetID.getTopic());
+			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
 			connected = true;
 			connection.start();
 			Serializable connectData = createConnectRequestData(data);
@@ -232,7 +227,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		try {
 			msg = session.createObjectMessage(new JMSMessage(getConnectionID(),
 					getLocalID(), recipient, obj));
-			topicProducer.send(msg);
+			jmsTopic.getProducer().send(msg);
 		} catch (JMSException e) {
 			disconnect();
 			throwIOException("queueObject", "Exception in queueObject", e); //$NON-NLS-1$ //$NON-NLS-2$
@@ -405,7 +400,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				ObjectMessage msg = session.createObjectMessage(obj);
 				correlation = String.valueOf(getNextCorrelationID());
 				msg.setJMSCorrelationID(correlation);
-				topicProducer.send(msg);
+				jmsTopic.getProducer().send(msg);
 				synch.wait(waitDuration);
 			} catch (JMSException e) {
 				Trace.catching(Activator.PLUGIN_ID,

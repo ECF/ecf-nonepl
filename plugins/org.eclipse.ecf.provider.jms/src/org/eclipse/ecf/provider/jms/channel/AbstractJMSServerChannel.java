@@ -71,13 +71,13 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 				first.setJMSCorrelationID(omsg.getJMSCorrelationID());
 				Trace.trace(Activator.PLUGIN_ID,
 						"respondToConnectRequest.sending=" + first); //$NON-NLS-1$
-				topicProducer.send(first);
+				jmsTopic.getProducer().send(first);
 				ObjectMessage second = session
 						.createObjectMessage(new JMSMessage(getConnectionID(),
 								getLocalID(), null, resp[1]));
 				Trace.trace(Activator.PLUGIN_ID,
 						"respondToConnectRequest.sending=" + second); //$NON-NLS-1$
-				topicProducer.send(second);
+				jmsTopic.getProducer().send(second);
 			} else if (o instanceof DisconnectRequestMessage) {
 				ObjectMessage msg = session
 						.createObjectMessage(new DisconnectResponseMessage(
@@ -86,7 +86,7 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 				msg.setJMSCorrelationID(omsg.getJMSCorrelationID());
 				Trace.trace(Activator.PLUGIN_ID,
 						"SERVER.respondToDisconnectRequest:sending:" + msg); //$NON-NLS-1$
-				topicProducer.send(msg);
+				jmsTopic.getProducer().send(msg);
 			}
 		} catch (Exception e) {
 			traceAndLogExceptionCatch(RESPOND_TO_REQUEST_ERROR_CODE,
