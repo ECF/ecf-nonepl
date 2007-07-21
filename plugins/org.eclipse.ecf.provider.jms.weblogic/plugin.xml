@@ -5,10 +5,22 @@
    <extension
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
-            class="org.eclipse.ecf.provider.jms.weblogic.container.WLSJMSClientContainerInstantiator"
+            class="org.eclipse.ecf.provider.jms.weblogic.container.WeblogicJMSClientContainerInstantiator"
             description="ECF Weblogic JMS"
             name="ecf.jms.weblogic.client">
       </containerFactory>
+   </extension>
+   <extension
+         id="org.eclipse.ecf.provider.jms.WeblogicJMSServer"
+         name="Weblogic JMS Server"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.ecf.provider.jms.weblogic.application.WeblogicJMSServer">
+         </run>
+      </application>
    </extension>
 
 </plugin>

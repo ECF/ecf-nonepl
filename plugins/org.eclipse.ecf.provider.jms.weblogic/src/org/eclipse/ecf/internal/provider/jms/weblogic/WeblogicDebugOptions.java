@@ -8,7 +8,7 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jms.weblogic;
 
-public interface WLSDebugOptions {
+public interface WeblogicDebugOptions {
 
 	public static final String DEBUG = Activator.PLUGIN_ID + "/debug"; //$NON-NLS-1$
 

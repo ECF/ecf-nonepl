@@ -13,10 +13,10 @@ import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 
-public class WLSJMSClientContainerInstantiator extends
+public class WeblogicJMSClientContainerInstantiator extends
 		GenericContainerInstantiator {
 
-	public WLSJMSClientContainerInstantiator() {
+	public WeblogicJMSClientContainerInstantiator() {
 
 	}
 
@@ -29,8 +29,7 @@ public class WLSJMSClientContainerInstantiator extends
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] args) throws ContainerCreateException {
 		try {
-			Integer ka = new Integer(
-					WLSJMSClientContainer.DEFAULT_KEEPALIVE);
+			Integer ka = new Integer(WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
 			String name = null;
 			if (args != null) {
 				if (args.length > 0) {
@@ -42,15 +41,14 @@ public class WLSJMSClientContainerInstantiator extends
 			}
 			if (name == null) {
 				if (ka == null)
-					return new WLSJMSClientContainer(
-							WLSJMSClientContainer.DEFAULT_KEEPALIVE);
+					return new WeblogicJMSClientContainer(
+							WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
 				else
-					return new WLSJMSClientContainer(ka.intValue());
+					return new WeblogicJMSClientContainer(ka.intValue());
 			} else {
 				if (ka == null)
-					ka = new Integer(
-							WLSJMSClientContainer.DEFAULT_KEEPALIVE);
-				return new WLSJMSClientContainer(name, ka.intValue());
+					ka = new Integer(WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
+				return new WeblogicJMSClientContainer(name, ka.intValue());
 			}
 		} catch (Exception e) {
 			throw new ContainerCreateException(
