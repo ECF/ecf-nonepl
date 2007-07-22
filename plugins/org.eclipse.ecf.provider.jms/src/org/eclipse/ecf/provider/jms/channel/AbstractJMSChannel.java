@@ -201,7 +201,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 			return connectData;
 		} catch (Exception e) {
 			disconnect();
-			throw new ECFException("setupJMS", e); //$NON-NLS-1$
+			throw new ECFException("setupJMS",e); //$NON-NLS-1$
 		}
 	}
 
