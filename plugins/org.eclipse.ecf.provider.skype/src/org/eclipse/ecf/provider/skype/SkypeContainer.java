@@ -50,12 +50,12 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 
 	private static final String SKYPE_ACCOUNT_NAME = " [skype]";
 
-	SkypeAccountManager accountManager = null;
-	SkypeRosterManager rosterManager = null;
-	SkypeChatManager chatManager = null;
-	SkypeChatRoomManager chatRoomManager = null;
+	private SkypeAccountManager accountManager = null;
+	private SkypeRosterManager rosterManager = null;
+	private SkypeChatManager chatManager = null;
+	private SkypeChatRoomManager chatRoomManager = null;
 
-	SkypeUserID userID = null;
+	private SkypeUserID userID = null;
 
 	/*
 	 * (non-Javadoc)

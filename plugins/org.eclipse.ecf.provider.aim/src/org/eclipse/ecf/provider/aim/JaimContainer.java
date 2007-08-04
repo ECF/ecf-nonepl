@@ -8,9 +8,8 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.aim;
 
+import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;
-import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.IConnectContext;
@@ -22,15 +21,7 @@ import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.presence.service.IPresenceService;
 
-public class JaimContainer implements IContainer, IPresenceService {
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IContainer#addListener(org.eclipse.ecf.core.IContainerListener, java.lang.String)
-	 */
-	public void addListener(IContainerListener listener) {
-		// TODO Auto-generated method stub
-
-	}
+public class JaimContainer extends AbstractContainer implements IPresenceService {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.IContainer#connect(org.eclipse.ecf.core.identity.ID, org.eclipse.ecf.core.security.IConnectContext)
@@ -47,54 +38,6 @@ public class JaimContainer implements IContainer, IPresenceService {
 	public void disconnect() {
 		// TODO Auto-generated method stub
 
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IContainer#dispose()
-	 */
-	public void dispose() {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IContainer#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class serviceType) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IContainer#getConnectNamespace()
-	 */
-	public Namespace getConnectNamespace() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IContainer#getConnectedID()
-	 */
-	public ID getConnectedID() {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IContainer#removeListener(org.eclipse.ecf.core.IContainerListener)
-	 */
-	public void removeListener(IContainerListener listener) {
-		// TODO Auto-generated method stub
-
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.IIdentifiable#getID()
-	 */
-	public ID getID() {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 	public void addPresenceListener(IPresenceListener listener) {
@@ -131,6 +74,30 @@ public class JaimContainer implements IContainer, IPresenceService {
 	 * @see org.eclipse.ecf.presence.IPresenceContainerAdapter#getChatManager()
 	 */
 	public IChatManager getChatManager() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.core.IContainer#getConnectNamespace()
+	 */
+	public Namespace getConnectNamespace() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.core.IContainer#getConnectedID()
+	 */
+	public ID getConnectedID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.core.identity.IIdentifiable#getID()
+	 */
+	public ID getID() {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -25,10 +25,7 @@ import org.eclipse.ecf.core.events.ContainerDisconnectingEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.security.Callback;
-import org.eclipse.ecf.core.security.CallbackHandler;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.core.security.ObjectCallback;
 import org.eclipse.ecf.internal.provider.yahoo.Activator;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.provider.yahoo.identity.YahooID;
@@ -67,7 +64,7 @@ public class YahooContainer extends AbstractContainer {
 
 	public void connect(ID targetID, IConnectContext connectContext)
 			throws ContainerConnectException {
-		String password = getPassword(connectContext);
+		String password = getPasswordFromConnectContext(connectContext);
 		fireContainerEvent(new ContainerConnectingEvent(this.getID(), targetID,
 				connectContext));
 		this.targetYahooID = (YahooID) targetID;
@@ -124,30 +121,11 @@ public class YahooContainer extends AbstractContainer {
 
 	public void dispose() {
 		disconnect();
+		super.dispose();
 	};
 
 	public ID getID() {
 		return this.localID;
-	}
-
-	private String getPassword(IConnectContext connectContext) {
-		// Get password via callback in connectContext
-		String pw = null;
-		try {
-			Callback[] callbacks = new Callback[1];
-			callbacks[0] = new ObjectCallback();
-			if (connectContext != null) {
-				CallbackHandler handler = connectContext.getCallbackHandler();
-				if (handler != null) {
-					handler.handle(callbacks);
-				}
-			}
-			ObjectCallback cb = (ObjectCallback) callbacks[0];
-			pw = (String) cb.getObject();
-		} catch (Exception e) {
-			System.out.println(e.getStackTrace());
-		}
-		return pw;
 	}
 
 }
