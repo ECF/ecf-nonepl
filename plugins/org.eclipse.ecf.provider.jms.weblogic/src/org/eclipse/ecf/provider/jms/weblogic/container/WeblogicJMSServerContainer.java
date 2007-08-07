@@ -16,11 +16,8 @@ import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 public class WeblogicJMSServerContainer extends AbstractJMSServer {
 
 	public static final int DEFAULT_KEEPALIVE = 30000;
-	public static final String DEFAULT_PASSWORD = "weblogic";
-	public static final String DEFAULT_USERNAME = "weblogic";
 	public static final String JNDI_CONTEXT_FACTORY = "weblogic.jndi.WLInitialContextFactory";
 	public final static String JMS_CONNECTION_FACTORY = "weblogic.jms.ConnectionFactory";
-	public final static String DEFAULT_PROVIDER_URL = "t3://localhost:7001";
 
 	public WeblogicJMSServerContainer(JMSContainerConfig config) {
 		super(config);

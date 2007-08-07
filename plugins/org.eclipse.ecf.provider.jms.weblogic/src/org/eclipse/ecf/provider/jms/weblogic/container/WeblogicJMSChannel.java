@@ -39,27 +39,25 @@ public class WeblogicJMSChannel extends AbstractJMSClientChannel {
 		super(handler, keepAlive);
 	}
 
-	private String getServerFromID(JMSID targetID) {
-		return targetID.getServer();
-	}
-
 	private InitialContext getInitialContext(String jmsProviderURL)
 			throws NamingException {
-		Hashtable<String,String> env = new Hashtable<String,String>();
+		Hashtable<String, String> env = new Hashtable<String, String>();
 		env.put(Context.INITIAL_CONTEXT_FACTORY,
 				WeblogicJMSServerContainer.JNDI_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, jmsProviderURL);
 		return new InitialContext(env);
 	}
-	
+
 	@Override
 	protected Serializable setupJMS(JMSID targetID, Object data)
 			throws ECFException {
 		try {
-			InitialContext ctx = getInitialContext(getServerFromID(targetID));
-			Destination topicDestination = (Destination) ctx.lookup(targetID.getTopic());
-			ConnectionFactory factory = (ConnectionFactory) ctx.lookup(WeblogicJMSServerContainer.JMS_CONNECTION_FACTORY);
-			
+			InitialContext ctx = getInitialContext(targetID.getServer());
+			Destination topicDestination = (Destination) ctx.lookup(targetID
+					.getTopic());
+			ConnectionFactory factory = (ConnectionFactory) ctx
+					.lookup(WeblogicJMSServerContainer.JMS_CONNECTION_FACTORY);
+
 			connection = factory.createConnection();
 			connection.setExceptionListener(new ExceptionListener() {
 				public void onException(JMSException arg0) {
@@ -67,7 +65,7 @@ public class WeblogicJMSChannel extends AbstractJMSClientChannel {
 				}
 			});
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			jmsTopic = new JmsTopic(session,topicDestination);
+			jmsTopic = new JmsTopic(session, topicDestination);
 			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
 			connected = true;
 			connection.start();
@@ -75,7 +73,7 @@ public class WeblogicJMSChannel extends AbstractJMSClientChannel {
 			return connectData;
 		} catch (Exception e) {
 			disconnect();
-			throw new ECFException("WeblogicJMSChannel.setupJMS",e); //$NON-NLS-1$
+			throw new ECFException("WeblogicJMSChannel.setupJMS", e); //$NON-NLS-1$
 		}
 	}
 
