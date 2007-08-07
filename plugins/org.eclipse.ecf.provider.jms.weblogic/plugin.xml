@@ -19,7 +19,7 @@
       </containerFactory>
    </extension>
    <extension
-         id="org.eclipse.ecf.provider.jms.WeblogicJMSServer"
+         id="org.eclipse.ecf.provider.jms.WeblogicServer"
          name="Weblogic JMS Server"
          point="org.eclipse.core.runtime.applications">
       <application
