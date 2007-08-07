@@ -35,14 +35,14 @@ public class WeblogicJMSServerContainer extends AbstractJMSServer {
 		ISynchAsynchConnection connection = new WeblogicJMSChannel(
 				getReceiver(), ((JMSContainerConfig) getConfig())
 						.getKeepAlive());
-		connection.start();
 		setConnection(connection);
+		connection.start();
 	}
 
 	public void dispose() {
-		super.dispose();
 		getConnection().disconnect();
 		setConnection(null);
+		super.dispose();
 	}
 
 }
