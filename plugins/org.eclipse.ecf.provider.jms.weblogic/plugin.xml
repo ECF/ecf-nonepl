@@ -6,8 +6,16 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.provider.jms.weblogic.container.WeblogicJMSClientContainerInstantiator"
-            description="ECF Weblogic JMS"
+            description="ECF Weblogic JMS Client"
             name="ecf.jms.weblogic.client">
+      </containerFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.provider.jms.weblogic.container.WeblogicJMSServerContainerInstantiator"
+            description="ECF Weblogic JMS Server"
+            name="ecf.jms.weblogic.server">
       </containerFactory>
    </extension>
    <extension
