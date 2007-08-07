@@ -65,7 +65,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 
 	protected static long correlationID = 0;
 
-	private Connection connection = null;
+	protected Connection connection = null;
 
 	protected Session session = null;
 	
@@ -75,7 +75,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 
 	protected ID containerID;
 
-	private boolean connected = false;
+	protected boolean connected = false;
 
 	private boolean started = false;
 
@@ -191,7 +191,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				}
 			});
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			jmsTopic = new JmsTopic(session,targetID.getTopic());
+			jmsTopic = new JmsTopic(session,"wlevsDemo-jms/"+targetID.getTopic());
 			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
 			connected = true;
 			connection.start();
@@ -463,8 +463,12 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		}
 	}
 
-	class TopicReceiver implements MessageListener {
+	protected final class TopicReceiver implements MessageListener {
 
+		public TopicReceiver() {
+			super();
+		}
+		
 		public void onMessage(Message msg) {
 			Trace.entering(Activator.PLUGIN_ID,
 					JmsDebugOptions.METHODS_ENTERING, this.getClass(),

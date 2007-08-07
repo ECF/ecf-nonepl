@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.equinox.common,
  org.eclipse.ecf.provider.datashare
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: global
-Bundle-ClassPath: .
+Bundle-ClassPath: .,
+ lib/wlclient.jar,
+ lib/wljmsclient.jar
 Import-Package: org.eclipse.equinox.app;version="1.0.0",
  org.eclipse.osgi.util;version="1.1.0",
  org.osgi.framework;version="1.4.0",
