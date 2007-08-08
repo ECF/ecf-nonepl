@@ -455,6 +455,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		String res = null;
 		try {
 			res = connection.getClientID();
+			if (res == null) res = getLocalID().getName();
 			return res;
 		} catch (Exception e) {
 			traceAndLogExceptionCatch(GET_CONNECTIONID_ERROR_CODE,

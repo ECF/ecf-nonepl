@@ -190,6 +190,17 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 			return null;
 	}
 
+	protected void addToIDMap(ID remoteID, String jmsClientID) throws ContainerConnectException {
+		if (remoteID != null && jmsClientID != null) {
+			addIDMap(remoteID, jmsClientID);
+			if (getClientForID(remoteID) == null) {
+				removeIDMap(remoteID);
+				throw new ContainerConnectException(
+						Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLIENT_NOT_FOUND);
+			}
+		}
+	}
+	
 	protected Serializable handleConnectRequest(ConnectRequestMessage request,
 			AbstractJMSServerChannel channel) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
@@ -221,12 +232,8 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 						jgm.getData());
 
 				// add to id map
-				addIDMap(remoteID, request.getSenderJMSID());
-				if (getClientForID(remoteID) == null) {
-					removeIDMap(remoteID);
-					throw new ContainerConnectException(
-							Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLIENT_NOT_FOUND);
-				}
+				addToIDMap(remoteID, request.getSenderJMSID());
+				
 				if (addNewRemoteMember(remoteID, null)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
