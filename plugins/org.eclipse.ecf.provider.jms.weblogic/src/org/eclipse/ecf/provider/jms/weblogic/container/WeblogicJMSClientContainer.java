@@ -41,7 +41,7 @@ public class WeblogicJMSClientContainer extends AbstractJMSClient {
 	protected ISynchAsynchConnection createConnection(ID remoteSpace,
 			Object data) throws ConnectionCreateException {
 		try {
-			return new WeblogicJMSChannel(getReceiver(), getKeepAlive());
+			return new WeblogicJMSClientChannel(getReceiver(), getKeepAlive());
 		} catch (ECFException e) {
 			throw new ConnectionCreateException(e.getStatus());
 		}

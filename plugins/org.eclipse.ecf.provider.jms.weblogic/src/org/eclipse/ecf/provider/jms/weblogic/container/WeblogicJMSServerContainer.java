@@ -8,8 +8,9 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jms.weblogic.container;
 
+import org.eclipse.ecf.core.ContainerConnectException;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.jms.container.AbstractJMSServer;
 import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 
@@ -29,7 +30,7 @@ public class WeblogicJMSServerContainer extends AbstractJMSServer {
 	 * @see org.eclipse.ecf.provider.jms.container.AbstractJMSServer#start()
 	 */
 	public void start() throws ECFException {
-		ISynchAsynchConnection connection = new WeblogicJMSChannel(
+		WeblogicJMSServerChannel connection = new WeblogicJMSServerChannel(
 				getReceiver(), ((JMSContainerConfig) getConfig())
 						.getKeepAlive());
 		setConnection(connection);
@@ -41,5 +42,10 @@ public class WeblogicJMSServerContainer extends AbstractJMSServer {
 		setConnection(null);
 		super.dispose();
 	}
+
+	protected void addToIDMap(ID remoteID, String jmsClientID) throws ContainerConnectException {
+		// do nothing
+	}
+	
 
 }

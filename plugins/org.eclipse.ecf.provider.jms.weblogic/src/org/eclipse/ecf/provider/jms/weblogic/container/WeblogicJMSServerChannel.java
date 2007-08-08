@@ -26,15 +26,15 @@ import javax.naming.NamingException;
 
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
-import org.eclipse.ecf.provider.jms.channel.AbstractJMSClientChannel;
+import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
 import org.eclipse.ecf.provider.jms.channel.JmsTopic;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
-public class WeblogicJMSChannel extends AbstractJMSClientChannel {
+public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 
 	private static final long serialVersionUID = 3688761380066499761L;
 
-	public WeblogicJMSChannel(ISynchAsynchEventHandler handler, int keepAlive)
+	public WeblogicJMSServerChannel(ISynchAsynchEventHandler handler, int keepAlive)
 			throws ECFException {
 		super(handler, keepAlive);
 	}
@@ -73,7 +73,7 @@ public class WeblogicJMSChannel extends AbstractJMSClientChannel {
 			return connectData;
 		} catch (Exception e) {
 			disconnect();
-			throw new ECFException("WeblogicJMSChannel.setupJMS", e); //$NON-NLS-1$
+			throw new ECFException("WeblogicJMSClientChannel.setupJMS", e); //$NON-NLS-1$
 		}
 	}
 
