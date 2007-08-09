@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: ECF JMS Tests
+Bundle-SymbolicName: org.eclipse.ecf.tests.provider.jms
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.ecf.tests.provider.jms.Activator
+Bundle-Vendor: Eclipse.org
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ecf.provider.jms,
+ org.eclipse.ecf,
+ org.eclipse.ecf.tests,
+ org.junit
+Eclipse-LazyStart: true
