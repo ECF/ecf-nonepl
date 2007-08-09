@@ -73,14 +73,15 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 			return connectData;
 		} catch (Exception e) {
 			disconnect();
-			throw new ECFException("WeblogicJMSClientChannel.setupJMS", e); //$NON-NLS-1$
+			throw new ECFException("JMS Connect Failure to "+targetID.getName(), e); //$NON-NLS-1$
 		}
 	}
 
 	@Override
 	protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
 			throws IOException {
-		// XXX not used due to override of setupJMS above
+		// not used due to override of setupJMS above
 		return null;
 	}
+	
 }

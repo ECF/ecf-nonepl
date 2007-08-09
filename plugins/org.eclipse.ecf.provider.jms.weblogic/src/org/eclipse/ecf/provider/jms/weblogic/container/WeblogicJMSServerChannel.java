@@ -73,7 +73,7 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 			return connectData;
 		} catch (Exception e) {
 			disconnect();
-			throw new ECFException("WeblogicJMSClientChannel.setupJMS", e); //$NON-NLS-1$
+			throw new ECFException("JMS Connect Failure to "+targetID.getName(), e); //$NON-NLS-1$
 		}
 	}
 

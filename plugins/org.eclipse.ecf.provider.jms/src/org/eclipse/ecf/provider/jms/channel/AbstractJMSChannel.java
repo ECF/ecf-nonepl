@@ -201,7 +201,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 			return connectData;
 		} catch (Exception e) {
 			disconnect();
-			throw new ECFException("setupJMS",e); //$NON-NLS-1$
+			throw new ECFException("JMS Setup Exception",e); //$NON-NLS-1$
 		}
 	}
 
@@ -229,7 +229,6 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 					getLocalID(), recipient, obj));
 			jmsTopic.getProducer().send(msg);
 		} catch (JMSException e) {
-			disconnect();
 			throwIOException("queueObject", "Exception in queueObject", e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 	}
@@ -324,8 +323,8 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	protected void close() {
 		try {
 			if (connection != null) {
-				connection.stop();
 				connection.close();
+				connection.stop();
 				connection = null;
 				connected = false;
 			}
@@ -357,7 +356,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "handleTopicMessage", new Object[] { msg, //$NON-NLS-1$
 						jmsmsg });
-		if (isConnected() && isStarted()) {
+		if (isConnected() && isStarted() && !waitDone) {
 			try {
 				Object o = jmsmsg.getData();
 				handler.handleAsynchEvent(new AsynchEvent(this, o));
@@ -369,7 +368,6 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 						new Status(IStatus.ERROR, Activator.PLUGIN_ID,
 								HANDLE_ASYNCH_ERROR_CODE,
 								"Exception on handleTopicMessage", e)); //$NON-NLS-1$
-				disconnect();
 			}
 		}
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
@@ -390,6 +388,8 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		return sendAndWait(obj, keepAlive);
 	}
 
+	protected boolean waitDone;
+	
 	protected Serializable sendAndWait(Serializable obj, int waitDuration)
 			throws IOException {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
@@ -400,8 +400,13 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				ObjectMessage msg = session.createObjectMessage(obj);
 				correlation = String.valueOf(getNextCorrelationID());
 				msg.setJMSCorrelationID(correlation);
+				waitDone = false;
+				long waittimeout = System.currentTimeMillis() + waitDuration;
 				jmsTopic.getProducer().send(msg);
-				synch.wait(waitDuration);
+				while (!waitDone && (waittimeout - System.currentTimeMillis() > 0)) {
+					synch.wait(waitDuration/10);
+				}
+				waitDone = true;
 			} catch (JMSException e) {
 				Trace.catching(Activator.PLUGIN_ID,
 						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
@@ -428,11 +433,12 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 			try {
 				if (correlation.equals(msg.getJMSCorrelationID())) {
 					reply = msg.getObject();
+					waitDone = true;
 					synch.notify();
 				}
 			} catch (JMSException e) {
 				traceAndLogExceptionCatch(HANDLE_SYNCH_ERROR_CODE,
-						"handleTopicMessage", e); //$NON-NLS-1$
+						"handleSynchMessage", e); //$NON-NLS-1$
 			}
 		}
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
@@ -495,6 +501,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 									"onMessage.fromID=getLocalID()"); //$NON-NLS-1$
 							return;
 						}
+
 						ID targetID = ecfmsg.getTargetID();
 						if (targetID == null) {
 							if (ecfmsg instanceof JMSMessage)
@@ -527,7 +534,6 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 							"onMessage.non object message received {0}", msg)); //$NON-NLS-1$
 			} catch (Exception e) {
 				traceAndLogExceptionCatch(ONMESSAGE_ERROR_CODE, "onMessage", e); //$NON-NLS-1$
-				disconnect();
 			}
 			Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 					this.getClass(), "onMessage"); //$NON-NLS-1$
