@@ -38,6 +38,7 @@ import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
 import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
 import org.eclipse.ecf.provider.jms.channel.ConnectRequestMessage;
+import org.eclipse.ecf.provider.jms.channel.DisconnectRequestMessage;
 
 /**
  * Abstract JMS Server. Subclasses should be created to create concrete
@@ -161,6 +162,10 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 		if (req instanceof ConnectRequestMessage) {
 			return handleConnectRequest((ConnectRequestMessage) req,
 					(AbstractJMSServerChannel) e.getConnection());
+		} else if (req instanceof DisconnectRequestMessage) {
+			// disconnect them
+			DisconnectRequestMessage drm = (DisconnectRequestMessage) req;
+			handleLeave(drm.getSenderID(), null);
 		}
 		return null;
 	}
