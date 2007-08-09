@@ -18,29 +18,31 @@ import javax.jms.MessageProducer;
 import javax.jms.Session;
 
 /**
- *
+ * 
  */
 public class JmsTopic {
-	
+
 	private Destination destination;
 	private MessageConsumer consumer;
 	private MessageProducer producer;
-	
+
 	public JmsTopic(Session session, String topic) throws JMSException {
 		destination = session.createTopic(topic);
 		consumer = session.createConsumer(destination);
 		producer = session.createProducer(destination);
 	}
-	
-	public JmsTopic(Session session, Destination destination) throws JMSException {
+
+	public JmsTopic(Session session, Destination destination)
+			throws JMSException {
 		this.destination = destination;
 		this.consumer = session.createConsumer(destination);
 		this.producer = session.createProducer(destination);
 	}
+
 	public MessageConsumer getConsumer() {
 		return consumer;
 	}
-	
+
 	public MessageProducer getProducer() {
 		return producer;
 	}

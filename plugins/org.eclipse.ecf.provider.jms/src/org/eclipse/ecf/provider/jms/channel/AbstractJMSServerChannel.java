@@ -10,6 +10,9 @@ package org.eclipse.ecf.provider.jms.channel;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
 
 import javax.jms.ObjectMessage;
 
@@ -19,6 +22,8 @@ import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jms.Activator;
 import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
 import org.eclipse.ecf.internal.provider.jms.Messages;
+import org.eclipse.ecf.provider.comm.DisconnectEvent;
+import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
@@ -36,8 +41,8 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 	public AbstractJMSServerChannel(ISynchAsynchEventHandler handler,
 			int keepAlive) throws ECFException {
 		super(handler, keepAlive);
-		if (containerID instanceof JMSID) {
-			setupJMS((JMSID) containerID, null);
+		if (localContainerID instanceof JMSID) {
+			setupJMS((JMSID) localContainerID, null);
 		} else
 			throw new ECFException(
 					Messages.AbstractJMSServerChannel_CONNECT_EXCEPTION_CONTAINER_NOT_JMSID);
@@ -55,7 +60,158 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 				Messages.AbstractJMSServerChannel_CONNECT_EXCEPTION_CONTAINER_SERVER_CANNOT_CONNECT);
 	}
 
-	protected void respondToRequest(ObjectMessage omsg, ECFMessage o) {
+	public class Client implements ISynchAsynchConnection {
+
+		public static final int DEFAULT_PING_WAITTIME = 3000;
+
+		private Map properties;
+		private ID clientID;
+		private boolean isStarted = false;
+		private Object disconnectLock = new Object();
+		private boolean disconnectHandled = false;
+
+		private Thread pingThread = null;
+		private int pingWaitTime = DEFAULT_PING_WAITTIME;
+
+		public Client(ID clientID) {
+			this.clientID = clientID;
+			this.properties = new HashMap();
+		}
+
+		public void sendAsynch(ID receiver, byte[] data) throws IOException {
+			AbstractJMSServerChannel.this.sendAsynch(receiver, data);
+		}
+
+		public void addListener(IConnectionListener listener) {
+		}
+
+		public Object connect(ID remote, Object data, int timeout)
+				throws ECFException {
+			throw new ECFException(
+					Messages.AbstractJMSServerChannel_CONNECT_EXCEPTION_CONTAINER_SERVER_CANNOT_CONNECT);
+		}
+
+		public synchronized void disconnect() {
+			stop();
+		}
+
+		public ID getLocalID() {
+			return clientID;
+		}
+
+		public Map getProperties() {
+			return properties;
+		}
+
+		public boolean isConnected() {
+			return true;
+		}
+
+		public boolean isStarted() {
+			return isStarted;
+		}
+
+		public void removeListener(IConnectionListener listener) {
+			// TODO Auto-generated method stub
+		}
+
+		public void start() {
+			if (!isStarted) {
+				isStarted = true;
+				pingThread = setupPing();
+				pingThread.setDaemon(true);
+				pingThread.start();
+			}
+		}
+
+		public void stop() {
+			if (isStarted) {
+				isStarted = false;
+				if (pingThread != null) {
+					pingThread.interrupt();
+					pingThread = null;
+				}
+			}
+		}
+
+		public Object getAdapter(Class adapter) {
+			return null;
+		}
+
+		public Object sendSynch(ID receiver, byte[] data) throws IOException {
+			return AbstractJMSServerChannel.this.sendSynch(receiver, data);
+		}
+
+		private Thread setupPing() {
+			final int pingStartWait = (new Random()).nextInt(keepAlive / 2);
+			return new Thread(new Runnable() {
+				public void run() {
+					Thread me = Thread.currentThread();
+					// Sleep a random interval to start
+					try {
+						Thread.sleep(pingStartWait);
+					} catch (InterruptedException e) {
+						return;
+					}
+					// Setup ping frequency as keepAlive /2
+					int frequency = keepAlive / 2;
+					while (isStarted) {
+						try {
+							// We give up if thread interrupted or disconnect
+							// has
+							// occurred
+							if (me.isInterrupted() || disconnectHandled)
+								break;
+							// Sleep for timeout interval divided by two
+							Thread.sleep(frequency);
+							// We give up if thread interrupted or disconnect
+							// has
+							// occurred
+							if (me.isInterrupted() || disconnectHandled)
+								break;
+							sendAndWait(new Ping(AbstractJMSServerChannel.this
+									.getLocalID(), Client.this.getLocalID()),
+									pingWaitTime);
+						} catch (Exception e) {
+							handleException(e);
+							break;
+						}
+					}
+					handleException(null);
+				}
+			}, getLocalID()
+					+ ":ping:" + AbstractJMSServerChannel.this.getLocalID()); //$NON-NLS-1$
+		}
+
+		public void handleDisconnect() {
+			synchronized (disconnectLock) {
+				if (!disconnectHandled) {
+					disconnectHandled = true;
+					handler.handleDisconnectEvent(new DisconnectEvent(
+							Client.this, null, null));
+				}
+			}
+			synchronized (Client.this) {
+				Client.this.notifyAll();
+			}
+		}
+
+		private void handleException(Throwable e) {
+			synchronized (disconnectLock) {
+				if (!disconnectHandled) {
+					disconnectHandled = true;
+					if (e != null)
+						handler.handleDisconnectEvent(new DisconnectEvent(
+								Client.this, e, null));
+				}
+			}
+			synchronized (Client.this) {
+				Client.this.notifyAll();
+			}
+		}
+	}
+
+	protected void handleSynchRequest(ObjectMessage omsg, ECFMessage o) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "respondToRequest", new Object[] { omsg, o }); //$NON-NLS-1$
 		try {

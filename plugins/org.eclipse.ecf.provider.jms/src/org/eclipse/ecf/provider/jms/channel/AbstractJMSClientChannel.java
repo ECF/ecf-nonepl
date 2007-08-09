@@ -33,6 +33,9 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 	private static final long serialVersionUID = -1381571376210849678L;
 
 	private static final int RESPOND_TO_REQUEST_ERROR_CODE = 32001;
+	private static final int DEFAULT_DISCONNECT_WAIT_TIME = 3000;
+
+	private int disconnectWaitTime = DEFAULT_DISCONNECT_WAIT_TIME;
 
 	public AbstractJMSClientChannel(ISynchAsynchEventHandler handler,
 			int keepAlive) {
@@ -48,7 +51,7 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 	public synchronized Object connect(ID target, Object data, int timeout)
 			throws ECFException {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "connect", new Object[] { targetID, data, //$NON-NLS-1$
+				this.getClass(), "connect", new Object[] { target, data, //$NON-NLS-1$
 						new Integer(timeout) });
 		if (isConnected())
 			throw new ContainerConnectException(
@@ -59,8 +62,6 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 		if (!(target instanceof JMSID))
 			throw new ContainerConnectException(
 					Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID);
-		this.targetID = (JMSID) target;
-
 		if (!(data instanceof Serializable)) {
 			throw new ContainerConnectException(
 					Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_CONNECT_ERROR,
@@ -69,16 +70,16 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 		}
 		Serializable result = null;
 		try {
-			Serializable connectData = setupJMS(targetID, data);
-			Trace.trace(Activator.PLUGIN_ID, "connecting to " + targetID + "," //$NON-NLS-1$ //$NON-NLS-2$
+			Serializable connectData = setupJMS((JMSID) target, data);
+			Trace.trace(Activator.PLUGIN_ID, "connecting to " + target + "," //$NON-NLS-1$ //$NON-NLS-2$
 					+ data + "," + timeout + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-			result = getConnectResult(targetID, connectData);
+			result = getConnectResult((JMSID) target, connectData);
 		} catch (Exception e) {
 			throw new ContainerConnectException(
 					NLS
 							.bind(
 									Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED,
-									targetID.getName()), e);
+									target.getName()), e);
 		}
 		if (result == null)
 			throw new ContainerConnectException(
@@ -99,20 +100,28 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 				getLocalID(), managerID, data));
 	}
 
-	protected void respondToRequest(ObjectMessage omsg, ECFMessage o) {
+	protected void handleSynchRequest(ObjectMessage omsg, ECFMessage o) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "respondToRequest", new Object[] { omsg, o }); //$NON-NLS-1$
 		try {
-			ObjectMessage first = session
-					.createObjectMessage(new DisconnectResponseMessage(
-							getConnectionID(), o.getTargetID(),
-							o.getSenderID(), null));
-			first.setJMSCorrelationID(omsg.getJMSCorrelationID());
-			jmsTopic.getProducer().send(first);
-			handler.handleSynchEvent(new SynchEvent(this, o.getData()));
+			if (o instanceof DisconnectRequestMessage) {
+				ObjectMessage response = session
+						.createObjectMessage(new DisconnectResponseMessage(
+								getConnectionID(), o.getTargetID(), o
+										.getSenderID(), null));
+				response.setJMSCorrelationID(omsg.getJMSCorrelationID());
+				jmsTopic.getProducer().send(response);
+				handler.handleSynchEvent(new SynchEvent(this, o.getData()));
+			} else if (o instanceof Ping) {
+				ObjectMessage response = session
+						.createObjectMessage(new PingResponse(o.getTargetID(),
+								o.getSenderID()));
+				response.setJMSCorrelationID(omsg.getJMSCorrelationID());
+				jmsTopic.getProducer().send(response);
+			}
 		} catch (Exception e) {
 			traceAndLogExceptionCatch(RESPOND_TO_REQUEST_ERROR_CODE,
-					"respondToRequest", e); //$NON-NLS-1$
+					"respondToRequest", e); //$NON-NLS-1$			
 		}
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "respondToRequest"); //$NON-NLS-1$
@@ -128,9 +137,11 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "sendSynch", new Object[] { target, data }); //$NON-NLS-1$
 		Object result = null;
-		if (isConnected() && isStarted()) {
+		if (isConnected() && isStarted() && !isStopping()) {
+			isStopping = true;
 			result = sendAndWait(new DisconnectRequestMessage(
-					getConnectionID(), getLocalID(), target, data), keepAlive);
+					getConnectionID(), getLocalID(), target, data),
+					disconnectWaitTime);
 		}
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "sendSynch", result); //$NON-NLS-1$

@@ -13,23 +13,20 @@ import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jms.container.AbstractJMSClient;
+import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 
 public class WeblogicJMSClientContainer extends AbstractJMSClient {
 
-	/**
-	 * @param keepAlive
-	 * @throws Exception
-	 */
 	public WeblogicJMSClientContainer(int keepAlive) throws Exception {
-		super(keepAlive);
+		super(new JMSContainerConfig(IDFactory.getDefault().createGUID(),
+				keepAlive));
 	}
 
-	public WeblogicJMSClientContainer(String name, int keepAlive) throws Exception {
-		super(
-				new SOContainerConfig(IDFactory.getDefault().createStringID(
-						name)), keepAlive);
+	public WeblogicJMSClientContainer(String name, int keepAlive)
+			throws Exception {
+		super(new JMSContainerConfig(IDFactory.getDefault()
+				.createStringID(name), keepAlive));
 	}
 
 	/*
@@ -41,7 +38,8 @@ public class WeblogicJMSClientContainer extends AbstractJMSClient {
 	protected ISynchAsynchConnection createConnection(ID remoteSpace,
 			Object data) throws ConnectionCreateException {
 		try {
-			return new WeblogicJMSClientChannel(getReceiver(), getKeepAlive());
+			return new WeblogicJMSClientChannel(getReceiver(),
+					((JMSContainerConfig) getConfig()).getKeepAlive());
 		} catch (ECFException e) {
 			throw new ConnectionCreateException(e.getStatus());
 		}

@@ -17,12 +17,18 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jms.channel.AbstractJMSClientChannel;
 import org.eclipse.ecf.provider.jms.container.AbstractJMSClient;
+import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 public class ActiveMQJMSClientContainer extends AbstractJMSClient {
+
+	private int keepAlive;
+
+	private int getKeepAlive() {
+		return keepAlive;
+	}
 
 	class ActiveMQClientChannel extends AbstractJMSClientChannel {
 
@@ -59,14 +65,15 @@ public class ActiveMQJMSClientContainer extends AbstractJMSClient {
 	 * @throws Exception
 	 */
 	public ActiveMQJMSClientContainer(int keepAlive) throws Exception {
-		super(keepAlive);
+		super();
+		this.keepAlive = keepAlive;
 	}
 
 	public ActiveMQJMSClientContainer(String name, int keepAlive)
 			throws Exception {
-		super(
-				new SOContainerConfig(IDFactory.getDefault().createStringID(
-						name)), keepAlive);
+		super(new JMSContainerConfig(IDFactory.getDefault()
+				.createStringID(name)));
+		this.keepAlive = keepAlive;
 	}
 
 	/*

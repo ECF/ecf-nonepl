@@ -31,9 +31,11 @@ import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContaine
 
 public class ECFBrokerContainerImpl extends BrokerContainerImpl {
 
-	Map clients = Collections.synchronizedMap(new HashMap());
+	Map<String, BrokerClient> clients = Collections
+			.synchronizedMap(new HashMap<String, BrokerClient>());
 
-	Map containerMap = Collections.synchronizedMap(new HashMap());
+	Map<String, ActiveMQJMSServerContainer> containerMap = Collections
+			.synchronizedMap(new HashMap<String, ActiveMQJMSServerContainer>());
 
 	protected boolean onTheAir = false;
 

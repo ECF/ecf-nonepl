@@ -34,8 +34,8 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 
 	private static final long serialVersionUID = 3688761380066499761L;
 
-	public WeblogicJMSClientChannel(ISynchAsynchEventHandler handler, int keepAlive)
-			throws ECFException {
+	public WeblogicJMSClientChannel(ISynchAsynchEventHandler handler,
+			int keepAlive) throws ECFException {
 		super(handler, keepAlive);
 	}
 
@@ -73,7 +73,8 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 			return connectData;
 		} catch (Exception e) {
 			disconnect();
-			throw new ECFException("JMS Connect Failure to "+targetID.getName(), e); //$NON-NLS-1$
+			throw new ECFException(
+					"JMS Connect Failure to " + targetID.getName(), e); //$NON-NLS-1$
 		}
 	}
 
@@ -83,5 +84,5 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 		// not used due to override of setupJMS above
 		return null;
 	}
-	
+
 }

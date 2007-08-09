@@ -43,9 +43,9 @@ public class WeblogicJMSServerContainer extends AbstractJMSServer {
 		super.dispose();
 	}
 
-	protected void addToIDMap(ID remoteID, String jmsClientID) throws ContainerConnectException {
+	protected void addToIDMap(ID remoteID, String jmsClientID)
+			throws ContainerConnectException {
 		// do nothing
 	}
-	
 
 }

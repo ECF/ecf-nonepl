@@ -16,9 +16,6 @@ import java.io.InvalidObjectException;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.net.SocketAddress;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -31,6 +28,7 @@ import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jms.Activator;
 import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
 import org.eclipse.ecf.internal.provider.jms.Messages;
+import org.eclipse.ecf.provider.comm.IAsynchConnection;
 import org.eclipse.ecf.provider.comm.IConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
@@ -48,19 +46,9 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 
 	public static final int DEFAULT_KEEPALIVE = 30000;
 
-	private static final int HANDLE_CONNECT_REQUEST_EXCEPTION = 36001;
-
-	private static final int MEMBER_LEAVE_ERROR_CODE = 36002;
-
 	private IConnectHandlerPolicy joinPolicy = null;
 
 	private ISynchAsynchConnection serverChannel;
-
-	// JMS client ID -> BrokerClient
-	private Map clients = new HashMap();
-
-	// ECF ID -> JMS client ID
-	private Map idMap = new HashMap();
 
 	public AbstractJMSServer(JMSContainerConfig config) {
 		super(config);
@@ -96,67 +84,6 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 		this.joinPolicy = policy;
 	}
 
-	protected Object addClient(String clientID, Object client) {
-		if (clientID == null || clientID.equals("")) //$NON-NLS-1$
-			return null;
-		synchronized (getGroupMembershipLock()) {
-			return clients.put(clientID, client);
-		}
-	}
-
-	protected Object removeClient(String clientID) {
-		if (clientID == null || clientID.equals("")) //$NON-NLS-1$
-			return null;
-		synchronized (getGroupMembershipLock()) {
-			return clients.remove(clientID);
-		}
-	}
-
-	protected Object getClient(String clientID) {
-		synchronized (getGroupMembershipLock()) {
-			return clients.get(clientID);
-		}
-	}
-
-	protected void addIDMap(ID ecfID, String clientID) {
-		synchronized (getGroupMembershipLock()) {
-			idMap.put(ecfID, clientID);
-		}
-	}
-
-	protected void removeIDMap(ID ecfID) {
-		synchronized (getGroupMembershipLock()) {
-			idMap.remove(ecfID);
-		}
-	}
-
-	protected String getIDMap(ID ecfID) {
-		synchronized (getGroupMembershipLock()) {
-			return (String) idMap.get(ecfID);
-		}
-	}
-
-	protected ID getIDForClientID(String clientID) {
-		if (clientID == null)
-			return null;
-		synchronized (getGroupMembershipLock()) {
-			for (Iterator i = idMap.keySet().iterator(); i.hasNext();) {
-				ID key = (ID) i.next();
-				String value = (String) idMap.get(key);
-				if (clientID.equals(value)) {
-					return key;
-				}
-			}
-		}
-		return null;
-	}
-
-	protected Object getClientForID(ID clientID) {
-		synchronized (getGroupMembershipLock()) {
-			return getClient(getIDMap(clientID));
-		}
-	}
-
 	protected Serializable processSynch(SynchEvent e) throws IOException {
 		Object req = e.getData();
 		if (req instanceof ConnectRequestMessage) {
@@ -164,8 +91,12 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 					(AbstractJMSServerChannel) e.getConnection());
 		} else if (req instanceof DisconnectRequestMessage) {
 			// disconnect them
-			DisconnectRequestMessage drm = (DisconnectRequestMessage) req;
-			handleLeave(drm.getSenderID(), null);
+			DisconnectRequestMessage dcm = (DisconnectRequestMessage) req;
+			IAsynchConnection conn = getConnectionForID(dcm.getSenderID());
+			if (conn != null && conn instanceof AbstractJMSServerChannel.Client) {
+				AbstractJMSServerChannel.Client client = (AbstractJMSServerChannel.Client) conn;
+				client.handleDisconnect();
+			}
 		}
 		return null;
 	}
@@ -195,17 +126,6 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 			return null;
 	}
 
-	protected void addToIDMap(ID remoteID, String jmsClientID) throws ContainerConnectException {
-		if (remoteID != null && jmsClientID != null) {
-			addIDMap(remoteID, jmsClientID);
-			if (getClientForID(remoteID) == null) {
-				removeIDMap(remoteID);
-				throw new ContainerConnectException(
-						Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLIENT_NOT_FOUND);
-			}
-		}
-	}
-	
 	protected Serializable handleConnectRequest(ConnectRequestMessage request,
 			AbstractJMSServerChannel channel) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
@@ -228,6 +148,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 						Messages.AbstractJMSServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
 			ID memberIDs[] = null;
 			Serializable[] messages = new Serializable[2];
+			AbstractJMSServerChannel.Client newclient = null;
 			synchronized (getGroupMembershipLock()) {
 				if (isClosing)
 					throw new ContainerConnectException(
@@ -236,10 +157,9 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 				checkJoin(channel, remoteID, request.getTargetID().getTopic(),
 						jgm.getData());
 
-				// add to id map
-				addToIDMap(remoteID, request.getSenderJMSID());
-				
-				if (addNewRemoteMember(remoteID, null)) {
+				newclient = channel.new Client(remoteID);
+
+				if (addNewRemoteMember(remoteID, newclient)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
@@ -248,7 +168,6 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 									getNextSequenceNumber(),
 									new ID[] { remoteID }, true, null));
 				} else {
-					removeIDMap(remoteID);
 					ConnectException e = new ConnectException(
 							Messages.AbstractJMSServer_CONNECT_EXCEPTION_REFUSED);
 					throw e;
@@ -262,11 +181,12 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 					getID(), remoteID, getNextSequenceNumber(), memberIDs,
 					true, null));
 
+			newclient.start();
+
 			return messages;
 
 		} catch (Exception e) {
-			traceAndLogExceptionCatch(HANDLE_CONNECT_REQUEST_EXCEPTION,
-					"handleConnectRequest", e); //$NON-NLS-1$
+			traceAndLogExceptionCatch(IStatus.ERROR, "handleConnectRequest", e); //$NON-NLS-1$
 			return null;
 		}
 	}
@@ -286,19 +206,6 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 		serverChannel.sendAsynch(mess.toContainerID, serialize(mess));
 	}
 
-	protected void clientRemoved(String clientID) {
-		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "clientRemoved", new Object[] { clientID }); //$NON-NLS-1$
-		// OK, get ID for client...
-		ID remoteID = getIDForClientID(clientID);
-		if (remoteID != null) {
-			IConnection conn = getConnectionForID(remoteID);
-			handleLeave(remoteID, conn);
-		}
-		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "clientRemoved"); //$NON-NLS-1$
-	}
-
 	protected void handleLeave(ID target, IConnection conn) {
 		if (target == null)
 			return;
@@ -308,8 +215,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 						getID(), null, getNextSequenceNumber(),
 						new ID[] { target }, false, null));
 			} catch (IOException e) {
-				traceAndLogExceptionCatch(MEMBER_LEAVE_ERROR_CODE,
-						"memberLeave", e); //$NON-NLS-1$
+				traceAndLogExceptionCatch(IStatus.ERROR, "memberLeave", e); //$NON-NLS-1$
 			}
 		}
 		if (conn != null)

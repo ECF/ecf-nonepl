@@ -17,7 +17,6 @@ import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.datashare.IChannelContainerAdapter;
 import org.eclipse.ecf.internal.provider.jms.Messages;
@@ -28,7 +27,6 @@ import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOConfig;
 import org.eclipse.ecf.provider.generic.SOContainer;
-import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.generic.SOContext;
 import org.eclipse.ecf.provider.jms.channel.DisconnectRequestMessage;
 import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
@@ -39,10 +37,8 @@ import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
  */
 public abstract class AbstractJMSClient extends ClientSOContainer {
 
-	private int keepAlive = 0;
-
 	private DatashareContainerAdapter adapter = null;
-
+	
 	public Object getAdapter(Class clazz) {
 		if (clazz.equals(IChannelContainerAdapter.class)) {
 			return adapter;
@@ -50,22 +46,16 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 			return super.getAdapter(clazz);
 	}
 
-	protected int getKeepAlive() {
-		return keepAlive;
-	}
-
 	public Namespace getConnectNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(JMSNamespace.NAME);
 	}
 
-	public AbstractJMSClient(int keepAlive) throws Exception {
-		this(new SOContainerConfig(IDFactory.getDefault().createGUID()),
-				keepAlive);
+	public AbstractJMSClient() throws Exception {
+		this(new JMSContainerConfig(IDFactory.getDefault().createGUID()));
 	}
 
-	public AbstractJMSClient(ISharedObjectContainerConfig config, int keepAlive) {
+	public AbstractJMSClient(JMSContainerConfig config) {
 		super(config);
-		this.keepAlive = keepAlive;
 		this.adapter = new DatashareContainerAdapter(this);
 	}
 

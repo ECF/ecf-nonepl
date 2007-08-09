@@ -29,7 +29,8 @@ public class WeblogicJMSClientContainerInstantiator extends
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] args) throws ContainerCreateException {
 		try {
-			Integer ka = new Integer(WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
+			Integer ka = new Integer(
+					WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
 			String name = null;
 			if (args != null) {
 				if (args.length > 0) {
@@ -47,7 +48,8 @@ public class WeblogicJMSClientContainerInstantiator extends
 					return new WeblogicJMSClientContainer(ka.intValue());
 			} else {
 				if (ka == null)
-					ka = new Integer(WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
+					ka = new Integer(
+							WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
 				return new WeblogicJMSClientContainer(name, ka.intValue());
 			}
 		} catch (Exception e) {
