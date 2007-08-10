@@ -327,15 +327,17 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	}
 
 	protected void close() {
-		try {
-			if (connection != null) {
-				connection.close();
+		if (connection != null) {
+			try {
 				connection.stop();
-				connection = null;
-				connected = false;
+			} catch (Exception e) {
+				Trace
+				.catching(Activator.PLUGIN_ID,
+						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+						"JMSConnection.stop", e);
 			}
-		} catch (Exception e) {
-			traceAndLogExceptionCatch(IStatus.ERROR, "close", e); //$NON-NLS-1$
+			connection = null;
+			connected = false;
 		}
 	}
 
@@ -485,9 +487,6 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		}
 
 		public void onMessage(Message msg) {
-			Trace.entering(Activator.PLUGIN_ID,
-					JmsDebugOptions.METHODS_ENTERING, this.getClass(),
-					"handleSynchMessage", new Object[] { msg }); //$NON-NLS-1$
 			try {
 				if (msg instanceof ObjectMessage) {
 					ObjectMessage omg = (ObjectMessage) msg;
@@ -506,7 +505,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 							Trace.exiting(Activator.PLUGIN_ID,
 									JmsDebugOptions.METHODS_ENTERING, this
 											.getClass(),
-									"onMessage.fromID=getLocalID()"); //$NON-NLS-1$
+									"onMessage.fromID=localID IGNORING"); //$NON-NLS-1$
 							return;
 						}
 
@@ -544,9 +543,6 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				traceAndLogExceptionCatch(IStatus.ERROR,
 						"JMSChannel onMessage Exception", e); //$NON-NLS-1$
 			}
-			Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
-					this.getClass(), "onMessage"); //$NON-NLS-1$
-
 		}
 	}
 }

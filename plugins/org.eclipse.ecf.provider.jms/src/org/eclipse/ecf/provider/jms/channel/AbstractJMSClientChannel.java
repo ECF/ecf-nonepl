@@ -89,7 +89,7 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 					Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
 		Object resultData = ((ConnectResponseMessage) result).getData();
 		fireListenersConnect(new ConnectionEvent(this, resultData));
-		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
+		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
 				this.getClass(), "connect", resultData); //$NON-NLS-1$
 		return resultData;
 	}
