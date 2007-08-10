@@ -18,11 +18,9 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
-import org.eclipse.ecf.datashare.IChannelContainerAdapter;
 import org.eclipse.ecf.internal.provider.jms.Messages;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
-import org.eclipse.ecf.provider.datashare.DatashareContainerAdapter;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOConfig;
@@ -37,15 +35,6 @@ import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
  */
 public abstract class AbstractJMSClient extends ClientSOContainer {
 
-	private DatashareContainerAdapter adapter = null;
-	
-	public Object getAdapter(Class clazz) {
-		if (clazz.equals(IChannelContainerAdapter.class)) {
-			return adapter;
-		} else
-			return super.getAdapter(clazz);
-	}
-
 	public Namespace getConnectNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(JMSNamespace.NAME);
 	}
@@ -56,7 +45,6 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 
 	public AbstractJMSClient(JMSContainerConfig config) {
 		super(config);
-		this.adapter = new DatashareContainerAdapter(this);
 	}
 
 	protected void handleContainerMessage(ContainerMessage mess)

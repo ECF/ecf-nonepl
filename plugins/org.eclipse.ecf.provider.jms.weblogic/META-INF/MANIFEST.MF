@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.equinox.common,
  org.eclipse.ecf.provider,
  org.eclipse.ecf.sharedobject,
  org.eclipse.ecf.datashare,
- org.eclipse.ecf.provider.datashare
+ org.eclipse.ecf.provider.datashare,
+ org.eclipse.ecf.remoteservice,
+ org.eclipse.ecf.provider.remoteservice
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: global
 Bundle-ClassPath: .,

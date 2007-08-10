@@ -329,7 +329,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	protected void close() {
 		if (connection != null) {
 			try {
-				connection.stop();
+				//connection.stop();
 			} catch (Exception e) {
 				Trace
 				.catching(Activator.PLUGIN_ID,

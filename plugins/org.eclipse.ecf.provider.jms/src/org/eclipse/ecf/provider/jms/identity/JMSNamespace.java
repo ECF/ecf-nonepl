@@ -22,7 +22,7 @@ public class JMSNamespace extends Namespace {
 
 	private static final String SCHEME = "jms"; //$NON-NLS-1$
 
-	public static final String NAME = "jms.activemq"; //$NON-NLS-1$
+	public static final String NAME = "ecf.namespace.jmsid"; //$NON-NLS-1$
 
 	public JMSNamespace() {
 		super(NAME, null);

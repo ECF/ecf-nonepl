@@ -46,11 +46,13 @@ public class WeblogicJMSServerContainerInstantiator extends
 				ka = getIntegerFromArg(args[1]);
 			if (ka == null)
 				ka = new Integer(WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
-			return new WeblogicJMSServerContainer(new JMSContainerConfig(
+			WeblogicJMSServerContainer server = new WeblogicJMSServerContainer(new JMSContainerConfig(
 					serverID, ka.intValue(), null));
+			server.start();
+			return server;
 		} catch (Exception e) {
 			throw new ContainerCreateException(
-					"Exception creating generic container", e);
+					"Exception creating weblogic server container", e);
 		}
 	}
 }

@@ -5,8 +5,8 @@
          point="org.eclipse.ecf.identity.namespace">
       <namespace
             class="org.eclipse.ecf.provider.jms.identity.JMSNamespace"
-            description="JMS Namespace"
-            name="jms.activemq"/>
+            description="JMSID Namespace"
+            name="ecf.namespace.jmsid"/>
    </extension>
 
 </plugin>
