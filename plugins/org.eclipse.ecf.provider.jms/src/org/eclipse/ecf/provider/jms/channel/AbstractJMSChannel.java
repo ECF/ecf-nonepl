@@ -48,10 +48,6 @@ import org.eclipse.osgi.util.NLS;
  * Abstract JMSChannel implementation. This class is superclass to
  * AbstractJMSServerChannel and AbstractJMSClient channel.
  */
-/**
- * @author slewis
- * 
- */
 public abstract class AbstractJMSChannel extends SocketAddress implements
 		ISynchAsynchConnection {
 
@@ -75,7 +71,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 
 	private Map properties = new HashMap();
 
-	private List connectionListeners = new ArrayList();
+	protected List connectionListeners = new ArrayList();
 
 	protected boolean isStopping = false;
 
@@ -190,6 +186,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		try {
 			ConnectionFactory factory = createJMSConnectionFactory(targetID);
 			connection = factory.createConnection();
+			connection.setClientID(getLocalID().getName());
 			connection.setExceptionListener(new ExceptionListener() {
 				public void onException(JMSException arg0) {
 					onJMSException(arg0);
@@ -322,32 +319,22 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				this.getClass(), "disconnect"); //$NON-NLS-1$
 		stop();
 		fireListenersDisconnect(new ConnectionEvent(this, null));
+		connected = false;
+		if (connection != null) {
+			try {
+				connection.close();
+			} catch (Exception e) {}
+			connection = null;
+		}
 		connectionListeners.clear();
 		notifyAll();
 	}
-
-	protected void close() {
-		if (connection != null) {
-			try {
-				//connection.stop();
-			} catch (Exception e) {
-				Trace
-				.catching(Activator.PLUGIN_ID,
-						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
-						"JMSConnection.stop", e);
-			}
-			connection = null;
-			connected = false;
-		}
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#stop()
 	 */
 	public void stop() {
-		close();
 		started = false;
 	}
 

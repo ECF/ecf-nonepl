@@ -25,6 +25,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.provider.comm.ConnectionEvent;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.jms.channel.AbstractJMSClientChannel;
 import org.eclipse.ecf.provider.jms.channel.JmsTopic;
@@ -59,6 +60,7 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 					.lookup(WeblogicJMSServerContainer.JMS_CONNECTION_FACTORY);
 
 			connection = factory.createConnection();
+			connection.setClientID(getLocalID().getName());
 			connection.setExceptionListener(new ExceptionListener() {
 				public void onException(JMSException arg0) {
 					onJMSException(arg0);
@@ -74,7 +76,7 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 		} catch (Exception e) {
 			disconnect();
 			throw new ECFException(
-					"JMS Connect Failure to " + targetID.getName(), e); //$NON-NLS-1$
+					"Client JMS connect failure for " + targetID.getName(), e); //$NON-NLS-1$
 		}
 	}
 
@@ -83,6 +85,19 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 			throws IOException {
 		// not used due to override of setupJMS above
 		return null;
+	}
+
+	@Override
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.provider.jms.channel.AbstractJMSChannel#disconnect()
+	 */
+	public synchronized void disconnect() {
+		stop();
+		fireListenersDisconnect(new ConnectionEvent(this, null));
+		connected = false;
+		// No connection.close because it blocks on weblogic server
+		connectionListeners.clear();
+		notifyAll();
 	}
 
 }

@@ -28,6 +28,6 @@ public class JMSContainerTestCase extends ContainerAbstractTestCase {
 		IContainer client = getClients()[0];
 		ID targetID = IDFactory.getDefault().createID(client.getConnectNamespace(),new Object [] { "t3://localhost:7001/wlevs.airlineDemo.eventsFromSOA.topic"});
 		client.connect(targetID, null);
-		Thread.sleep(60000);
+		Thread.sleep(3000);
 	}
 }
