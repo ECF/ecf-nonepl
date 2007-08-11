@@ -162,8 +162,12 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		return correlationID++;
 	}
 
+	protected synchronized boolean isActive() {
+		return isConnected() && isStarted() && !isStopping();
+	}
+	
 	protected void onJMSException(JMSException except) {
-		if (isConnected() && isStarted())
+		if (isActive())
 			handler.handleDisconnectEvent(new DisconnectEvent(this, except,
 					null));
 	}
@@ -224,13 +228,11 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	}
 
 	private void queueObject(ID recipient, Serializable obj) throws IOException {
-		if (!isConnected())
+		if (!isActive())
 			throw new ConnectException("Not connected"); //$NON-NLS-1$
-		ObjectMessage msg = null;
 		try {
-			msg = session.createObjectMessage(new JMSMessage(getConnectionID(),
-					getLocalID(), recipient, obj));
-			jmsTopic.getProducer().send(msg);
+			jmsTopic.getProducer().send(session.createObjectMessage(new JMSMessage(getConnectionID(),
+					getLocalID(), recipient, obj)));
 		} catch (JMSException e) {
 			throwIOException("queueObject", "Exception in queueObject", e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
@@ -239,7 +241,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	protected void onTopicException(JMSException except) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "onTopicException", new Object[] { except }); //$NON-NLS-1$
-		if (isConnected() && isStarted())
+		if (isActive())
 			handler.handleDisconnectEvent(new DisconnectEvent(this, except,
 					null));
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING,
@@ -314,20 +316,22 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
 	 */
-	public synchronized void disconnect() {
+	public void disconnect() {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "disconnect"); //$NON-NLS-1$
-		stop();
-		fireListenersDisconnect(new ConnectionEvent(this, null));
-		connected = false;
-		if (connection != null) {
-			try {
-				connection.close();
-			} catch (Exception e) {}
-			connection = null;
+		synchronized (this) {
+			stop();
+			connected = false;
+			if (connection != null) {
+				try {
+					connection.close();
+				} catch (Exception e) {}
+				connection = null;
+			}
+			notifyAll();
 		}
+		fireListenersDisconnect(new ConnectionEvent(this, null));
 		connectionListeners.clear();
-		notifyAll();
 	}
 	/*
 	 * (non-Javadoc)
@@ -351,9 +355,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "handleTopicMessage", new Object[] { msg, //$NON-NLS-1$
 						jmsmsg });
-		// Must be connected, started, and not stopping (client) to handle such
-		// messages.
-		if (isConnected() && isStarted() && !isStopping()) {
+		if (isActive()) {
 			try {
 				Object o = jmsmsg.getData();
 				handler.handleAsynchEvent(new AsynchEvent(this, o));

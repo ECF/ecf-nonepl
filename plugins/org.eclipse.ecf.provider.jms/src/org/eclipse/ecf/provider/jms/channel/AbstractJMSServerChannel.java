@@ -112,7 +112,6 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 		}
 
 		public void removeListener(IConnectionListener listener) {
-			// TODO Auto-generated method stub
 		}
 
 		public void start() {
@@ -256,7 +255,7 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "sendSynch", new Object[] { target, data }); //$NON-NLS-1$
 		Object result = null;
-		if (isConnected() && isStarted()) {
+		if (isActive()) {
 			result = sendAndWait(new DisconnectRequestMessage(
 					getConnectionID(), getLocalID(), target, data), keepAlive);
 		}

@@ -103,6 +103,10 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 	protected void handleSynchRequest(ObjectMessage omsg, ECFMessage o) {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "respondToRequest", new Object[] { omsg, o }); //$NON-NLS-1$
+		boolean active = true;
+		synchronized (this) {
+			active = isConnected() && isStarted() && !isStopping();
+		}
 		try {
 			if (o instanceof DisconnectRequestMessage) {
 				ObjectMessage response = session
@@ -111,8 +115,8 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 										.getSenderID(), null));
 				response.setJMSCorrelationID(omsg.getJMSCorrelationID());
 				jmsTopic.getProducer().send(response);
-				handler.handleSynchEvent(new SynchEvent(this, o.getData()));
-			} else if (o instanceof Ping) {
+				if (active) handler.handleSynchEvent(new SynchEvent(this, o.getData()));
+			} else if (o instanceof Ping && active) {
 				ObjectMessage response = session
 						.createObjectMessage(new PingResponse(o.getTargetID(),
 								o.getSenderID()));
@@ -137,7 +141,12 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
 				this.getClass(), "sendSynch", new Object[] { target, data }); //$NON-NLS-1$
 		Object result = null;
-		if (isConnected() && isStarted() && !isStopping()) {
+		boolean active = true;
+		synchronized (this) {
+			active = isActive();
+			if (active) isStopping = true;
+		}
+		if (active) {
 			isStopping = true;
 			result = sendAndWait(new DisconnectRequestMessage(
 					getConnectionID(), getLocalID(), target, data),

@@ -69,8 +69,11 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			jmsTopic = new JmsTopic(session, topicDestination);
 			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
-			connected = true;
-			connection.start();
+			synchronized (this) {
+				connected = true;
+				isStopping = false;
+				connection.start();
+			}
 			Serializable connectData = createConnectRequestData(data);
 			return connectData;
 		} catch (Exception e) {
@@ -87,17 +90,18 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 		return null;
 	}
 
-	@Override
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.jms.channel.AbstractJMSChannel#disconnect()
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
 	 */
-	public synchronized void disconnect() {
-		stop();
+	public void disconnect() {
+		synchronized (this) {
+			stop();
+			connected = false;
+			notifyAll();
+		}
 		fireListenersDisconnect(new ConnectionEvent(this, null));
-		connected = false;
-		// No connection.close because it blocks on weblogic server
 		connectionListeners.clear();
-		notifyAll();
 	}
-
 }

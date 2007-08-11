@@ -25,7 +25,6 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.provider.comm.ConnectionEvent;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
 import org.eclipse.ecf.provider.jms.channel.JmsTopic;
@@ -68,8 +67,11 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			jmsTopic = new JmsTopic(session, topicDestination);
 			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
-			connected = true;
-			connection.start();
+			synchronized (this) {
+				connected = true;
+				isStopping = false;
+				connection.start();
+			}
 			Serializable connectData = createConnectRequestData(data);
 			return connectData;
 		} catch (Exception e) {
@@ -86,17 +88,4 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 		return null;
 	}
 	
-	@Override
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.jms.channel.AbstractJMSChannel#disconnect()
-	 */
-	public synchronized void disconnect() {
-		stop();
-		fireListenersDisconnect(new ConnectionEvent(this, null));
-		connected = false;
-		// No connection.close because it blocks on weblogic server
-		connectionListeners.clear();
-		notifyAll();
-	}
-
 }
