@@ -6,7 +6,7 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             id="org.eclipse.ecf.provider.jms.activemq.ui.actionSet"
-            label="JMS Communications"
+            label="JMS (ActiveMQ) Communications"
             visible="false">
          <action
                class="org.eclipse.ecf.internal.provider.jms.activemq.ui.wizard.JoinGroupWizardAction"
