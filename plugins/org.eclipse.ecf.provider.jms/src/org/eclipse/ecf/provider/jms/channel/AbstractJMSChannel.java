@@ -197,8 +197,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements
 				}
 			});
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			jmsTopic = new JmsTopic(session, "wlevsDemo-jms/"
-					+ targetID.getTopic());
+			jmsTopic = new JmsTopic(session, targetID.getTopic());
 			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
 			connected = true;
 			isStopping = false;

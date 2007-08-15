@@ -73,12 +73,23 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 		private Thread pingThread = null;
 		private int pingWaitTime = DEFAULT_PING_WAITTIME;
 
+		private long lastSendTime = -1;
+
+		protected long getLastSendTime() {
+			return lastSendTime;
+		}
+
+		protected void setLastSendTime() {
+			lastSendTime = System.currentTimeMillis();
+		}
+
 		public Client(ID clientID) {
 			this.clientID = clientID;
 			this.properties = new HashMap();
 		}
 
 		public void sendAsynch(ID receiver, byte[] data) throws IOException {
+			setLastSendTime();
 			AbstractJMSServerChannel.this.sendAsynch(receiver, data);
 		}
 
@@ -168,9 +179,16 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel
 							// occurred
 							if (me.isInterrupted() || disconnectHandled)
 								break;
-							sendAndWait(new Ping(AbstractJMSServerChannel.this
-									.getLocalID(), Client.this.getLocalID()),
-									pingWaitTime);
+							long lastSendTime = getLastSendTime();
+							// Only send ping if the current time is greater
+							// than the lastSendTime + keepAlive/2
+							if (System.currentTimeMillis() > (lastSendTime + frequency)) {
+								setLastSendTime();
+								sendAndWait(new Ping(
+										AbstractJMSServerChannel.this
+												.getLocalID(), Client.this
+												.getLocalID()), pingWaitTime);
+							}
 						} catch (Exception e) {
 							handleException(e);
 							break;
