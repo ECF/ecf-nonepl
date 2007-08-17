@@ -91,7 +91,7 @@ public class WeblogicJMSServer implements IApplication {
 				+ this.getClass().getName()
 				+ "<jmsprotocol>://<jmsserver>:<jmsport>/<jmstopic>"); //$NON-NLS-1$
 		System.out
-				.println("   Examples: eclipse -application org.eclipse.ecf.provider.jms.WeblogicJMSServer t3://localhost:7001/weblogic.topic"); //$NON-NLS-1$
+				.println("   Examples: eclipse -application org.eclipse.ecf.provider.jms.WeblogicJMSServer t3://localhost:7001/exampleTopic"); //$NON-NLS-1$
 	}
 
 }
