@@ -1,4 +1,4 @@
-package org.eclipse.ecf.tests.provider.jms;
+package org.eclipse.ecf.tests.provider.jms.weblogic;
 
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
@@ -26,7 +26,7 @@ public class JMSContainerTestCase extends ContainerAbstractTestCase {
 	
 	public void testConnectClient() throws Exception {
 		IContainer client = getClients()[0];
-		ID targetID = IDFactory.getDefault().createID(client.getConnectNamespace(),new Object [] { "t3://localhost:7001/wlevs.airlineDemo.eventsFromSOA.topic"});
+		ID targetID = IDFactory.getDefault().createID(client.getConnectNamespace(),new Object [] { "t3://localhost:7001/exampleTopic"});
 		client.connect(targetID, null);
 		Thread.sleep(3000);
 	}
