@@ -77,7 +77,7 @@ public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 			setConnection(connection);
 			connection.start();
 		} catch (Exception e) {
-			throw new ECFException("exception starting server", e);
+			throw new ECFException("Exception starting server", e);
 		}
 	}
 
