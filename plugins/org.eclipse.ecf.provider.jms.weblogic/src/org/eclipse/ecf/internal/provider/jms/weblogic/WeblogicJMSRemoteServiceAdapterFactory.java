@@ -9,13 +9,11 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.provider.jms.weblogic.container;
+package org.eclipse.ecf.internal.provider.jms.weblogic;
 
-import org.eclipse.ecf.provider.datashare.DatashareContainerAdapterFactory;
+import org.eclipse.ecf.provider.remoteservice.generic.RemoteServiceContainerAdapterFactory;
 
-/**
- *
- */
-public class WeblogicJMSDatashareContainerAdapterFactory extends DatashareContainerAdapterFactory {
-
+public class WeblogicJMSRemoteServiceAdapterFactory extends
+		RemoteServiceContainerAdapterFactory {
+	
 }

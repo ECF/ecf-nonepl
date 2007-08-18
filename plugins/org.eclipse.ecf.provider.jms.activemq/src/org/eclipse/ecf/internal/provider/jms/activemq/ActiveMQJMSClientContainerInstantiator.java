@@ -6,17 +6,19 @@
  * 
  * Contributors: Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.provider.jms.weblogic.container;
+package org.eclipse.ecf.internal.provider.jms.activemq;
 
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
+import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSClientContainer;
+import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContainer;
 
-public class WeblogicJMSClientContainerInstantiator extends
+public class ActiveMQJMSClientContainerInstantiator extends
 		GenericContainerInstantiator {
 
-	public WeblogicJMSClientContainerInstantiator() {
+	public ActiveMQJMSClientContainerInstantiator() {
 
 	}
 
@@ -30,7 +32,7 @@ public class WeblogicJMSClientContainerInstantiator extends
 			Object[] args) throws ContainerCreateException {
 		try {
 			Integer ka = new Integer(
-					WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
+					ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
 			String name = null;
 			if (args != null) {
 				if (args.length > 0) {
@@ -42,15 +44,15 @@ public class WeblogicJMSClientContainerInstantiator extends
 			}
 			if (name == null) {
 				if (ka == null)
-					return new WeblogicJMSClientContainer(
-							WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
+					return new ActiveMQJMSClientContainer(
+							ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
 				else
-					return new WeblogicJMSClientContainer(ka.intValue());
+					return new ActiveMQJMSClientContainer(ka.intValue());
 			} else {
 				if (ka == null)
 					ka = new Integer(
-							WeblogicJMSServerContainer.DEFAULT_KEEPALIVE);
-				return new WeblogicJMSClientContainer(name, ka.intValue());
+							ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
+				return new ActiveMQJMSClientContainer(name, ka.intValue());
 			}
 		} catch (Exception e) {
 			throw new ContainerCreateException(

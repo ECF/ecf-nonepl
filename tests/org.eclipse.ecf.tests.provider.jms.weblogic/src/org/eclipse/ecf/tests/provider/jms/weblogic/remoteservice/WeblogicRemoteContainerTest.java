@@ -19,32 +19,33 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.IRemoteServiceRegistration;
 import org.eclipse.ecf.remoteservice.events.IRemoteCallEvent;
+import org.eclipse.ecf.tests.provider.jms.remoteservice.AbstractRemoteServiceTestCase;
+import org.eclipse.ecf.tests.provider.jms.remoteservice.IConcatService;
+import org.eclipse.ecf.tests.provider.jms.weblogic.Weblogic;
 
-public class RemoteContainerTest extends AbstractRemoteServiceTestCase {
+public class WeblogicRemoteContainerTest extends AbstractRemoteServiceTestCase {
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#setUp()
-	 */
-	protected void setUp() throws Exception {
-		super.setUp();
-		setClientCount(2);
-		createServerAndClients();
-		connectClients();
-		setupRemoteServiceAdapters();
-		addRemoteServiceListeners();
+	@Override
+	protected String getClientContainerName() {
+		return Weblogic.CLIENT_CONTAINER_NAME;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see junit.framework.TestCase#tearDown()
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerContainerName()
 	 */
-	protected void tearDown() throws Exception {
-		cleanUpServerAndClients();
-		super.tearDown();
+	@Override
+	protected String getServerContainerName() {
+		return Weblogic.SERVER_CONTAINER_NAME;
 	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerIdentity()
+	 */
+	@Override
+	protected String getServerIdentity() {
+		return Weblogic.TARGET_NAME;
+	}
+
 
 	public void testRemoteServiceAdapters() throws Exception {
 		IRemoteServiceContainerAdapter[] adapters = getRemoteServiceAdapters();
@@ -124,10 +125,10 @@ public class RemoteContainerTest extends AbstractRemoteServiceTestCase {
 		IRemoteService service = registerAndGetRemoteService();
 		
 		System.out.println("CLIENT.callSynch start");
-		Object result = service.callSynch(createRemoteConcat("Eclipse ","is cool"));
+		Object result = service.callSynch(createRemoteConcat("Weblogic ","is cool"));
 		System.out.println("CLIENT.callSynch end. result="+result);
 		assertNotNull(result);
-		assertTrue(result.equals("Eclipse ".concat("is cool")));
+		assertTrue(result.equals("Weblogic ".concat("is cool")));
 	}
 
 	public void testBadCallSynch() throws Exception {
@@ -155,7 +156,7 @@ public class RemoteContainerTest extends AbstractRemoteServiceTestCase {
 		IRemoteService service = registerAndGetRemoteService();
 		
 		System.out.println("CLIENT.callAsynch start");
-		service.callAsynch(createRemoteConcat("ECF ", "is cool"),createRemoteCallListener());
+		service.callAsynch(createRemoteConcat("JMS ", "is cool"),createRemoteCallListener());
 		System.out.println("CLIENT.callAsynch end");
 		sleep(1500);
 	}
@@ -164,7 +165,7 @@ public class RemoteContainerTest extends AbstractRemoteServiceTestCase {
 		IRemoteService service = registerAndGetRemoteService();
 				
 		System.out.println("CLIENT.fireAsynch start");
-		service.fireAsynch(createRemoteConcat("Eclipse ", "sucks"));
+		service.fireAsynch(createRemoteConcat("Weblogic ", "sucks"));
 		System.out.println("CLIENT.fireAsynch end");
 		
 		sleep(1500);
@@ -176,7 +177,7 @@ public class RemoteContainerTest extends AbstractRemoteServiceTestCase {
 		IConcatService proxy = (IConcatService) service.getProxy();
 		assertNotNull(proxy);
 		System.out.println("CLIENT.proxy start");
-		String result = proxy.concat("ECF ", "sucks");
+		String result = proxy.concat("JMS ", "sucks");
 		System.out.println("CLIENT.proxy end. result="+result);
 		sleep(1500);
 	}

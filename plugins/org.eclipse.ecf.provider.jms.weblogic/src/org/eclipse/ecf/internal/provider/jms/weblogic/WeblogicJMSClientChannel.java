@@ -9,7 +9,7 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.provider.jms.weblogic.container;
+package org.eclipse.ecf.internal.provider.jms.weblogic;
 
 import java.io.IOException;
 import java.io.Serializable;
@@ -25,16 +25,18 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.provider.comm.ConnectionEvent;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
-import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
+import org.eclipse.ecf.provider.jms.channel.AbstractJMSClientChannel;
 import org.eclipse.ecf.provider.jms.channel.JmsTopic;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
+import org.eclipse.ecf.provider.jms.weblogic.container.WeblogicJMSServerContainer;
 
-public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
+public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 
 	private static final long serialVersionUID = 3688761380066499761L;
 
-	public WeblogicJMSServerChannel(ISynchAsynchEventHandler handler,
+	public WeblogicJMSClientChannel(ISynchAsynchEventHandler handler,
 			int keepAlive) throws ECFException {
 		super(handler, keepAlive);
 	}
@@ -59,6 +61,7 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 					.lookup(WeblogicJMSServerContainer.JMS_CONNECTION_FACTORY);
 
 			connection = factory.createConnection();
+			connection.setClientID(getLocalID().getName());
 			connection.setExceptionListener(new ExceptionListener() {
 				public void onException(JMSException arg0) {
 					onJMSException(arg0);
@@ -77,15 +80,29 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 		} catch (Exception e) {
 			disconnect();
 			throw new ECFException(
-					"Server JMS connect failure for " + targetID.getName(), e); //$NON-NLS-1$
+					"Client JMS connect failure for " + targetID.getName(), e); //$NON-NLS-1$
 		}
 	}
 
 	@Override
 	protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
 			throws IOException {
-		// XXX not used due to override of setupJMS above
+		// not used due to override of setupJMS above
 		return null;
 	}
-	
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
+	 */
+	public void disconnect() {
+		synchronized (this) {
+			stop();
+			connected = false;
+			notifyAll();
+		}
+		fireListenersDisconnect(new ConnectionEvent(this, null));
+		connectionListeners.clear();
+	}
 }

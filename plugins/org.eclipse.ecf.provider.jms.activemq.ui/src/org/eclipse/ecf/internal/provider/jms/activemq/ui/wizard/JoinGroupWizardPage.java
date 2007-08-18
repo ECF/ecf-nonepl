@@ -36,13 +36,13 @@ public class JoinGroupWizardPage extends WizardPage {
 	protected static final String USER_NAME_SYSTEM_PROPERTY = "user.name";
 
 	protected static final String PAGE_DESCRIPTION = "Complete account info and choose 'Finish' to login.";
-	protected static final String JOINGROUP_FIELDNAME = "JMS URL:";
+	protected static final String JOINGROUP_FIELDNAME = "JMS (ActiveMQ) URL:";
 	protected static final String NICKNAME_FIELDNAME = "Nickname:";
-	protected static final String ECF_DEFAULT_URL = "tcp://localhost:3240/server";
-	protected static final String ECF_TEMPLATE_URL = "tcp://<server>:<port>/<groupname>";
-	protected static final String PAGE_TITLE = "Connect JMS Client";
+	protected static final String ECF_DEFAULT_URL = "tcp://localhost:61616/exampleTopic";
+	protected static final String ECF_TEMPLATE_URL = "tcp://<server>:<port>/<jms topic>";
+	protected static final String PAGE_TITLE = "Connect JMS (ActiveMQ) Client";
 
-	protected static final String DEFAULT_CLIENT = "ecf.jms.tcp.client";
+	protected static final String DEFAULT_CLIENT = "ecf.jms.activemq.tcp.client";
 
 	private static final String DIALOG_SETTINGS = CLASSNAME;
 

@@ -6,7 +6,7 @@
  * 
  * Contributors: Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.provider.jms.weblogic.container;
+package org.eclipse.ecf.internal.provider.jms.weblogic;
 
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
@@ -16,6 +16,7 @@ import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
+import org.eclipse.ecf.provider.jms.weblogic.container.WeblogicJMSServerContainer;
 
 public class WeblogicJMSServerContainerInstantiator extends
 		GenericContainerInstantiator {

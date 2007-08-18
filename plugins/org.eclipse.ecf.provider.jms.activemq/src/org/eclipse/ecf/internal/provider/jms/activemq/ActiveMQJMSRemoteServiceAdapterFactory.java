@@ -9,11 +9,11 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.provider.jms.weblogic.container;
+package org.eclipse.ecf.internal.provider.jms.activemq;
 
 import org.eclipse.ecf.provider.remoteservice.generic.RemoteServiceContainerAdapterFactory;
 
-public class WeblogicJMSRemoteServiceAdapterFactory extends
+public class ActiveMQJMSRemoteServiceAdapterFactory extends
 		RemoteServiceContainerAdapterFactory {
 	
 }

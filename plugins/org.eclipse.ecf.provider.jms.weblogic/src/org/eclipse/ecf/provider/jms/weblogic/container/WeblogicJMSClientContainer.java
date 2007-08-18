@@ -11,6 +11,7 @@ package org.eclipse.ecf.provider.jms.weblogic.container;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.jms.weblogic.WeblogicJMSClientChannel;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.jms.container.AbstractJMSClient;

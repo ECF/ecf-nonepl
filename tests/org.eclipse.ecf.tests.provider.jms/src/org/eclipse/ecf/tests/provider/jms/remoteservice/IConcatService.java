@@ -9,7 +9,7 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.tests.provider.jms.weblogic.remoteservice;
+package org.eclipse.ecf.tests.provider.jms.remoteservice;
 
 /**
  *

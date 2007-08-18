@@ -74,6 +74,9 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel
 			Trace.trace(Activator.PLUGIN_ID, "connecting to " + target + "," //$NON-NLS-1$ //$NON-NLS-2$
 					+ data + "," + timeout + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 			result = getConnectResult((JMSID) target, connectData);
+		} catch (ECFException e) {
+			ECFException except = (ECFException) e;
+			throw new ContainerConnectException(except.getStatus());
 		} catch (Exception e) {
 			throw new ContainerConnectException(
 					NLS

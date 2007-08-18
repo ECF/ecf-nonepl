@@ -9,7 +9,7 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.tests.provider.jms.weblogic.remoteservice;
+package org.eclipse.ecf.tests.provider.jms.remoteservice;
 
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
@@ -31,26 +31,48 @@ public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTes
 
 	protected IRemoteServiceContainerAdapter[] adapters = null;
 
-	protected String getServerContainerName() {
-		return "ecf.jms.weblogic.server";
-	}
+	protected abstract String getServerContainerName();
 
-	protected String getClientContainerName() {
-		return "ecf.jms.weblogic.client";
-	}
+	protected abstract String getClientContainerName();
 
-	protected String getRemoteServerIdentity() {
-		return "t3://localhost:7001/wlevs.airlineDemo.eventsFromSOA.topic";
+	protected abstract String getServerIdentity();
+	
+	protected String getJMSNamespace() {
+		return "ecf.namespace.jmsid";
 	}
 	
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see junit.framework.TestCase#setUp()
+	 */
+	protected void setUp() throws Exception {
+		super.setUp();
+		setClientCount(2);
+		createServerAndClients();
+		connectClients();
+		setupRemoteServiceAdapters();
+		addRemoteServiceListeners();
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see junit.framework.TestCase#tearDown()
+	 */
+	protected void tearDown() throws Exception {
+		cleanUpServerAndClients();
+		super.tearDown();
+	}
+
 	protected ID createServerID() throws Exception {
-		return IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName("ecf.namespace.jmsid"), new Object[] { getRemoteServerIdentity() } );
+		return IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(getJMSNamespace()), new Object[] { getServerIdentity() } );
 	}
 
 
 	protected IContainer createServer() throws Exception {
 		return ContainerFactory.getDefault().createContainer(
-				getServerContainerName(), new Object[] { getRemoteServerIdentity() });
+				getServerContainerName(), new Object[] { getServerIdentity() });
 	}
 
 	protected void setClientCount(int count) {

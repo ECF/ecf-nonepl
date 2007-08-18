@@ -36,11 +36,11 @@ public class JoinGroupWizardPage extends WizardPage {
 	protected static final String USER_NAME_SYSTEM_PROPERTY = "user.name";
 
 	protected static final String PAGE_DESCRIPTION = "Complete account info and choose 'Finish' to login.";
-	protected static final String JOINGROUP_FIELDNAME = "Weblogic JMS URL:";
+	protected static final String JOINGROUP_FIELDNAME = "JMS (Weblogic) URL:";
 	protected static final String NICKNAME_FIELDNAME = "Nickname:";
 	protected static final String ECF_DEFAULT_URL = "t3://localhost:7001/exampleTopic";
-	protected static final String ECF_TEMPLATE_URL = "t3://<server>:<port>/<topicname>";
-	protected static final String PAGE_TITLE = "Connect Weblogic JMS Client";
+	protected static final String ECF_TEMPLATE_URL = "t3://<server>:<port>/<jms topic>";
+	protected static final String PAGE_TITLE = "Connect JMS (Weblogic) Client";
 
 	protected static final String DEFAULT_CLIENT = "ecf.jms.weblogic.client";
 
