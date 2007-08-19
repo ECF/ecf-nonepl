@@ -72,13 +72,9 @@ public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 	 * @see org.eclipse.ecf.provider.jms.container.AbstractJMSServer#start()
 	 */
 	public void start() throws ECFException {
-		try {
-			ISynchAsynchConnection connection = new ActiveMQServerChannel();
-			setConnection(connection);
-			connection.start();
-		} catch (Exception e) {
-			throw new ECFException("Exception starting server", e);
-		}
+		ISynchAsynchConnection connection = new ActiveMQServerChannel();
+		setConnection(connection);
+		connection.start();
 	}
 
 	public void dispose() {
