@@ -9,11 +9,13 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.internal.provider.jms.activemq;
+package org.eclipse.ecf.provider.jms.container;
 
-import org.eclipse.ecf.provider.remoteservice.generic.RemoteServiceContainerAdapterFactory;
+import org.eclipse.ecf.provider.datashare.DatashareContainerAdapterFactory;
 
-public class ActiveMQJMSRemoteServiceAdapterFactory extends
-		RemoteServiceContainerAdapterFactory {
-	
+/**
+ *
+ */
+public class JMSDatashareContainerAdapterFactory extends DatashareContainerAdapterFactory {
+
 }
