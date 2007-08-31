@@ -43,9 +43,9 @@ public class JGroupsContainerTestCase extends ContainerAbstractTestCase {
 		final IContainer client = getClients()[0];
 		final ID targetID = IDFactory.getDefault().createID(client.getConnectNamespace(), new Object[] {getServerIdentity()});
 		client.connect(targetID, null);
-		Thread.sleep(1000);
+		Thread.sleep(3000);
 		final IContainer client1 = getClients()[1];
 		client1.connect(targetID, null);
-		Thread.sleep(300000);
+		Thread.sleep(6000);
 	}
 }
