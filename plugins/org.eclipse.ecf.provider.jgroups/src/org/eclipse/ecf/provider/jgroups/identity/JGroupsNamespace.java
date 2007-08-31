@@ -10,11 +10,9 @@ package org.eclipse.ecf.provider.jgroups.identity;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
+import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 
-/**
- *
- */
 public class JGroupsNamespace extends Namespace {
 
 	private static final long serialVersionUID = 1235788855435011811L;
@@ -25,9 +23,14 @@ public class JGroupsNamespace extends Namespace {
 	 * @see org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object[])
 	 */
 	public ID createInstance(Object[] parameters) throws IDCreateException {
-		// XXX Note that this assumes that a unique string is provided for creating the ID
-		// e.g. IDFactory.getDefault().createID("myid");
-		return new JGroupsID(this, (String) parameters[0]);
+		ID result = null;
+		if (parameters != null && parameters.length > 0 && parameters[0] instanceof String) {
+			result = new JGroupsID(this, (String) parameters[0]);
+		} else
+			result = new JGroupsID(this, IDFactory.getDefault().createGUID().getName());
+		if (result == null)
+			throw new IDCreateException("invalid parameters for creating JGroupsID");
+		return result;
 	}
 
 	/* (non-Javadoc)
@@ -35,6 +38,13 @@ public class JGroupsNamespace extends Namespace {
 	 */
 	public String getScheme() {
 		return SCHEME;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.core.identity.Namespace#getSupportedParameterTypes()
+	 */
+	public Class[][] getSupportedParameterTypes() {
+		return new Class[][] { {String.class}, {}};
 	}
 
 }

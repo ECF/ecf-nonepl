@@ -76,7 +76,7 @@ public class JGroupsID extends BaseID {
 
 	public String toString() {
 		final StringBuffer buf = new StringBuffer("JGroupsID[");
-		buf.append(getName()).append("]");
+		buf.append(getName()).append(";").append(address).append("]");
 		return buf.toString();
 	}
 }

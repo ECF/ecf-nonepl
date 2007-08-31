@@ -24,5 +24,6 @@ Import-Package: org.eclipse.ecf.core.sharedobject,
 Export-Package: org.eclipse.ecf.internal.provider.jgroups;x-internal:=true,
  org.eclipse.ecf.provider.jgroups.connection,
  org.eclipse.ecf.provider.jgroups.container,
- org.eclipse.ecf.provider.jgroups.identity
+ org.eclipse.ecf.provider.jgroups.identity,
+ org.jgroups.stack
 Eclipse-BuddyPolicy: global

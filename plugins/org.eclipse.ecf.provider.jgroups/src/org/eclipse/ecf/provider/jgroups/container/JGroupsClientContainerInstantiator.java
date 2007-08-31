@@ -16,6 +16,8 @@ import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.provider.BaseContainerInstantiator;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 
 /**
  *
@@ -27,7 +29,16 @@ public class JGroupsClientContainerInstantiator extends BaseContainerInstantiato
 	 */
 	public IContainer createInstance(ContainerTypeDescription description, Object[] parameters) throws ContainerCreateException {
 		try {
-			final ID newID = IDFactory.getDefault().createGUID();
+			ID newID = null;
+			if (parameters != null && parameters.length > 0) {
+				if (parameters[0] instanceof JGroupsID)
+					newID = (ID) parameters[0];
+				else if (parameters[0] instanceof String)
+					newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, (String) parameters[0]);
+			} else
+				newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, new Object[] {});
+			if (newID == null)
+				throw new ContainerCreateException("invalid parameters for creating client instance");
 			return new JGroupsClientContainer(new SOContainerConfig(newID));
 		} catch (final IDCreateException e) {
 			throw new ContainerCreateException("Exception creating trivial container", e);
@@ -46,7 +57,6 @@ public class JGroupsClientContainerInstantiator extends BaseContainerInstantiato
 	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
 	 */
 	public Class[][] getSupportedParameterTypes(ContainerTypeDescription description) {
-		// TODO Auto-generated method stub
-		return super.getSupportedParameterTypes(description);
+		return new Class[][] { {JGroupsID.class}, {String.class}, {}};
 	}
 }

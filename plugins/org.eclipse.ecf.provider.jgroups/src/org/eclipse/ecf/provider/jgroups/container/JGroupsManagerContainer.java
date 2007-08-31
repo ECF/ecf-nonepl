@@ -37,6 +37,7 @@ import org.eclipse.ecf.provider.generic.ServerSOContainer;
 import org.eclipse.ecf.provider.jgroups.connection.ConnectRequestMessage;
 import org.eclipse.ecf.provider.jgroups.connection.DisconnectRequestMessage;
 import org.eclipse.ecf.provider.jgroups.connection.JGroupsManagerConnection;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.jgroups.Address;
 import org.jgroups.stack.IpAddress;
 
@@ -126,6 +127,11 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 			final ID remoteID = containerMessage.getFromContainerID();
 			if (remoteID == null)
 				throw new InvalidObjectException(Messages.JGroupsServer_CONNECT_EXCEPTION_REMOTEID_NOT_NULL);
+			JGroupsID jgid = null;
+			if (remoteID instanceof JGroupsID) {
+				jgid = (JGroupsID) remoteID;
+			} else
+				throw new InvalidObjectException("remoteID not of JGroupsID type");
 			final ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) containerMessage.getData();
 			if (jgm == null)
 				throw new InvalidObjectException(Messages.JGroupsServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
@@ -135,7 +141,7 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 			synchronized (getGroupMembershipLock()) {
 				if (isClosing)
 					throw new ContainerConnectException(Messages.JGroupsServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
-				final Address address = request.getClientAddress();
+				final Address address = jgid.getAddress();
 				int port = -1;
 				InetAddress host = null;
 				if (address instanceof IpAddress) {
@@ -143,24 +149,24 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 					host = ((IpAddress) address).getIpAddress();
 				}
 				// Now check to see if this request is going to be allowed
-				checkJoin(new InetSocketAddress(host, port), remoteID, request.getTargetID().getChannelName(), jgm.getData());
+				checkJoin(new InetSocketAddress(host, port), jgid, request.getTargetID().getChannelName(), jgm.getData());
 
-				newclient = connection.new Client(address, remoteID);
+				newclient = connection.new Client(jgid);
 
-				if (addNewRemoteMember(remoteID, newclient)) {
+				if (addNewRemoteMember(jgid, newclient)) {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
-					messages[1] = serialize(ContainerMessage.createViewChangeMessage(getID(), null, getNextSequenceNumber(), new ID[] {remoteID}, true, null));
+					messages[1] = serialize(ContainerMessage.createViewChangeMessage(getID(), null, getNextSequenceNumber(), new ID[] {jgid}, true, null));
 				} else {
 					final ConnectException e = new ConnectException(Messages.JGroupsServer_CONNECT_EXCEPTION_REFUSED);
 					throw e;
 				}
 			}
 			// notify listeners
-			fireContainerEvent(new ContainerConnectedEvent(this.getID(), remoteID));
+			fireContainerEvent(new ContainerConnectedEvent(this.getID(), jgid));
 
-			messages[0] = serialize(ContainerMessage.createViewChangeMessage(getID(), remoteID, getNextSequenceNumber(), memberIDs, true, null));
+			messages[0] = serialize(ContainerMessage.createViewChangeMessage(getID(), jgid, getNextSequenceNumber(), memberIDs, true, null));
 
 			newclient.start();
 

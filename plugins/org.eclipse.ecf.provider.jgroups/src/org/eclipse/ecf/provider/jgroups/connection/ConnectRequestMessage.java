@@ -10,24 +10,19 @@ package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.Serializable;
 
-import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.jgroups.Address;
 
 public class ConnectRequestMessage implements Serializable {
 
-	private static final long serialVersionUID = 6802941271892242707L;
+	private static final long serialVersionUID = 463708306852937369L;
 
-	Address clientAddress;
+	private final JGroupsID clientID;
 
-	ID clientID;
+	private final JGroupsID targetID;
 
-	JGroupsID targetID;
+	private final Serializable data;
 
-	Serializable data;
-
-	public ConnectRequestMessage(Address clientAddress, ID clientID, JGroupsID targetID, Serializable data) {
-		this.clientAddress = clientAddress;
+	public ConnectRequestMessage(JGroupsID clientID, JGroupsID targetID, Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.data = data;
@@ -37,12 +32,8 @@ public class ConnectRequestMessage implements Serializable {
 		return targetID;
 	}
 
-	public ID getSenderID() {
+	public JGroupsID getSenderID() {
 		return clientID;
-	}
-
-	public Address getClientAddress() {
-		return clientAddress;
 	}
 
 	public Serializable getData() {
@@ -52,7 +43,7 @@ public class ConnectRequestMessage implements Serializable {
 	public String toString() {
 		final StringBuffer buf = new StringBuffer("ConnectRequestMessage["); //$NON-NLS-1$
 		buf.append(clientID).append(";").append(targetID).append(";"); //$NON-NLS-1$ //$NON-NLS-2$
-		buf.append(clientAddress).append(";").append(data).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
+		buf.append(data).append("]"); //$NON-NLS-1$ 
 		return buf.toString();
 	}
 

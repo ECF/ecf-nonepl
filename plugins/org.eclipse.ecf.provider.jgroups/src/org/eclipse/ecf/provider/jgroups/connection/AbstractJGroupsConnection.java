@@ -70,38 +70,38 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		}
 
 		public void block() {
-			System.out.println("block()");
+			Trace.trace(Activator.PLUGIN_ID, "block()");
 		}
 
 		public void suspect(Address arg0) {
-			System.out.println("suspect(" + arg0 + ")");
+			Trace.trace(Activator.PLUGIN_ID, "suspect(" + arg0 + ")");
 		}
 
 		public void viewAccepted(View arg0) {
-			System.out.println("viewAccepted(" + arg0 + ")");
+			Trace.trace(Activator.PLUGIN_ID, "viewAccepted(" + arg0 + ")");
 		}
 	};
 
 	private final ChannelListener channelListener = new ChannelListener() {
 
 		public void channelClosed(Channel arg0) {
-			System.out.println("channelClosed(" + arg0 + ")");
+			Trace.trace(Activator.PLUGIN_ID, "channelClosed(" + arg0 + ")");
 		}
 
 		public void channelConnected(Channel arg0) {
-			System.out.println("channelConnected(" + arg0 + ")");
+			Trace.trace(Activator.PLUGIN_ID, "channelConnected(" + arg0 + ")");
 		}
 
 		public void channelDisconnected(Channel arg0) {
-			System.out.println("channelConnected(" + arg0 + ")");
+			Trace.trace(Activator.PLUGIN_ID, "channelDisconnected(" + arg0 + ")");
 		}
 
 		public void channelReconnected(Address arg0) {
-			System.out.println("channelReconnected(" + arg0 + ")");
+			Trace.trace(Activator.PLUGIN_ID, "channelReconnected(" + arg0 + ")");
 		}
 
 		public void channelShunned() {
-			System.out.println("channelShunned()");
+			Trace.trace(Activator.PLUGIN_ID, "channelShunned()");
 		}
 
 	};
@@ -139,8 +139,17 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	public synchronized void sendAsynch(ID targetID, byte[] data) throws IOException {
 		if (!isConnected())
 			throw new IOException("channel not connected");
+		JGroupsID jid = null;
+		Address destination = null;
+		if (targetID != null) {
+			if (targetID instanceof JGroupsID) {
+				jid = (JGroupsID) targetID;
+				destination = jid.getAddress();
+			} else
+				throw new IOException("targetID not of JGroupsID type");
+		}
 		try {
-			channel.send(null, null, new JGroupsMessage(getLocalID(), targetID, data));
+			channel.send(destination, null, new JGroupsMessage((JGroupsID) getLocalID(), jid, data));
 		} catch (final ChannelNotConnectedException e) {
 			throw new IOException(e.getLocalizedMessage());
 		} catch (final ChannelClosedException e) {
@@ -179,8 +188,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	protected void logMessageError(String errorString, Message message) {
 		final String messageError = NLS.bind("jgroups message receive error.  error=%1 message=%2", errorString, message);
 		Activator.getDefault().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, messageError, null));
-		// XXX remove
-		System.err.println(messageError);
+		Trace.trace(Activator.PLUGIN_ID, "AbstractJGroupsConnection.logMessageError(" + errorString + "," + message + ")");
 	}
 
 	private void handleAsynch(Message message) {
@@ -257,6 +265,11 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			channel.setReceiver(receiver);
 			messageDispatcher = new MessageDispatcher(factory.createMultiplexerChannel("udp", "ch2"), null, null, messageDispatcherHandler);
 			channel.connect(targetID.getChannelName());
+			final ID localID = getLocalID();
+			// Set our identity address
+			if (localID instanceof JGroupsID) {
+				((JGroupsID) localID).setAddress(getLocalAddress());
+			}
 		} catch (final Exception e) {
 			throw new ECFException("channel exception", e);
 		}

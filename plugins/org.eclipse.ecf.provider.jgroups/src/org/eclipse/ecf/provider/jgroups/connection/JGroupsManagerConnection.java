@@ -10,9 +10,6 @@ package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.Iterator;
 import java.util.Map;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -27,7 +24,6 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.jgroups.Address;
 import org.jgroups.Message;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
@@ -38,34 +34,6 @@ import org.jgroups.blocks.MessageDispatcher;
 public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 
 	private static final long DEFAULT_DISCONNECT_TIMEOUT = 3000;
-
-	private final Map addressToIDMap = Collections.synchronizedMap(new HashMap());
-
-	protected Object addToMap(Address address, ID id) {
-		return addressToIDMap.put(address, id);
-	}
-
-	protected Object removeFromMap(Address address) {
-		return addressToIDMap.remove(address);
-	}
-
-	protected ID getIDFromMap(Address address) {
-		return (ID) addressToIDMap.get(address);
-	}
-
-	protected Address getAddressFromMap(ID id) {
-		if (id == null)
-			return null;
-		synchronized (addressToIDMap) {
-			for (final Iterator i = addressToIDMap.keySet().iterator(); i.hasNext();) {
-				final Address address = (Address) i.next();
-				final ID id1 = (ID) addressToIDMap.get(address);
-				if (id1 != null && id1.equals(id))
-					return address;
-			}
-		}
-		return null;
-	}
 
 	/**
 	 * @param eventHandler
@@ -98,11 +66,11 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 			// this resp is an Serializable[] with two messages, one for the
 			// connect response and the other for everyone else
 			if (o instanceof ConnectRequestMessage) {
-				final ConnectResponseMessage crm = new ConnectResponseMessage(getLocalID(), ((ConnectRequestMessage) o).getSenderID(), resp[0]);
+				final ConnectResponseMessage crm = new ConnectResponseMessage((JGroupsID) getLocalID(), ((ConnectRequestMessage) o).getSenderID(), resp[0]);
 				sendAsynch(null, (byte[]) ((resp == null) ? null : resp[1]));
 				return crm;
 			} else if (o instanceof DisconnectRequestMessage) {
-				return new DisconnectResponseMessage(getLocalID(), ((DisconnectRequestMessage) o).getSenderID(), null);
+				return new DisconnectResponseMessage((JGroupsID) getLocalID(), ((DisconnectRequestMessage) o).getSenderID(), null);
 			}
 		} catch (final Exception e) {
 			Trace.catching(Activator.PLUGIN_ID, JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "internalHandleSynch", e);
@@ -116,7 +84,9 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 	 */
 	public Object sendSynch(ID receiver, byte[] data) throws IOException {
 		final MessageDispatcher messageDispatcher = getMessageDispatcher();
-		final Message msg = new Message(null, null, new DisconnectRequestMessage(getLocalID(), receiver, data));
+		if (receiver == null || !(receiver instanceof JGroupsID))
+			throw new IOException("invalid receiver id");
+		final Message msg = new Message(null, null, new DisconnectRequestMessage((JGroupsID) getLocalID(), (JGroupsID) receiver, data));
 		Object response = null;
 		try {
 			response = messageDispatcher.sendMessage(msg, GroupRequest.GET_FIRST, DEFAULT_DISCONNECT_TIMEOUT);
@@ -129,13 +99,13 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 
 	public class Client implements ISynchAsynchConnection {
 
-		private final ID clientID;
+		private final JGroupsID clientID;
 		private boolean isConnected = true;
 		private boolean isStarted = false;
 		private final Object disconnectLock = new Object();
 		private boolean disconnectHandled = false;
 
-		public Client(Address address, ID clientID) {
+		public Client(JGroupsID clientID) {
 			this.clientID = clientID;
 		}
 

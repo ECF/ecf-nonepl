@@ -10,29 +10,29 @@ package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.Serializable;
 
-import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 
 public class ConnectResponseMessage implements Serializable {
 
-	private static final long serialVersionUID = 2921896051387925300L;
+	private static final long serialVersionUID = -5608966059177012434L;
 
-	ID targetID;
+	private final JGroupsID targetID;
 
-	ID clientID;
+	private final JGroupsID clientID;
 
-	Serializable data;
+	private final Serializable data;
 
-	public ConnectResponseMessage(ID clientID, ID targetID, Serializable data) {
+	public ConnectResponseMessage(JGroupsID clientID, JGroupsID targetID, Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.data = data;
 	}
 
-	public ID getTargetID() {
+	public JGroupsID getTargetID() {
 		return targetID;
 	}
 
-	public ID getSenderID() {
+	public JGroupsID getSenderID() {
 		return clientID;
 	}
 

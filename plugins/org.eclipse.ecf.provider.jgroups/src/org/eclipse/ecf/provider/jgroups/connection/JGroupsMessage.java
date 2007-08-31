@@ -10,19 +10,19 @@ package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.Serializable;
 
-import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 
 public class JGroupsMessage implements Serializable {
 
 	private static final long serialVersionUID = -1835086159379451564L;
 
-	private final ID target;
+	private final JGroupsID target;
 
-	private final ID sender;
+	private final JGroupsID sender;
 
 	private final byte[] data;
 
-	protected JGroupsMessage(ID sender, ID target, byte[] data) {
+	protected JGroupsMessage(JGroupsID sender, JGroupsID target, byte[] data) {
 		this.sender = sender;
 		this.target = target;
 		this.data = data;
@@ -32,11 +32,11 @@ public class JGroupsMessage implements Serializable {
 		return data;
 	}
 
-	public ID getTargetID() {
+	public JGroupsID getTargetID() {
 		return target;
 	}
 
-	public ID getSenderID() {
+	public JGroupsID getSenderID() {
 		return sender;
 	}
 

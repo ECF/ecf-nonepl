@@ -10,29 +10,29 @@ package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.Serializable;
 
-import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 
 public class DisconnectResponseMessage implements Serializable {
 
 	private static final long serialVersionUID = 6407659936123232952L;
 
-	ID targetID;
+	JGroupsID targetID;
 
-	ID clientID;
+	JGroupsID clientID;
 
 	Serializable data;
 
-	public DisconnectResponseMessage(ID clientID, ID targetID, Serializable data) {
+	public DisconnectResponseMessage(JGroupsID clientID, JGroupsID targetID, Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.data = data;
 	}
 
-	public ID getTargetID() {
+	public JGroupsID getTargetID() {
 		return targetID;
 	}
 
-	public ID getSenderID() {
+	public JGroupsID getSenderID() {
 		return clientID;
 	}
 

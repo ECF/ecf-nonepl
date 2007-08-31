@@ -22,6 +22,7 @@ import org.eclipse.ecf.internal.provider.jgroups.Messages;
 import org.eclipse.ecf.provider.comm.ConnectionEvent;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
+import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.osgi.util.NLS;
@@ -77,15 +78,17 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION);
 		if (!(result instanceof ConnectResponseMessage))
 			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
-		Object resultData = null;
+		Object connectResponseResult = null;
 		try {
-			resultData = SOContainer.deserializeContainerMessage((byte[]) ((ConnectResponseMessage) result).getData());
-		} catch (final IOException e) {
-			throw new ECFException("could not deserialized server response", e);
+			connectResponseResult = SOContainer.deserializeContainerMessage((byte[]) ((ConnectResponseMessage) result).getData());
+		} catch (final Exception e) {
+			throw new ContainerConnectException(e);
 		}
-		fireListenersConnect(new ConnectionEvent(this, resultData));
-		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "connect", resultData); //$NON-NLS-1$
-		return resultData;
+		if (connectResponseResult == null || !(connectResponseResult instanceof ContainerMessage))
+			throw new ContainerConnectException("Server response not of type ContainerMessage");
+		fireListenersConnect(new ConnectionEvent(this, connectResponseResult));
+		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "connect", connectResponseResult); //$NON-NLS-1$
+		return connectResponseResult;
 	}
 
 	/**
@@ -96,7 +99,7 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 	 */
 	private Object getConnectResult(JGroupsID jgroupsID, Serializable data, int timeout) throws ECFException {
 		final MessageDispatcher messageDispatcher = getMessageDispatcher();
-		final Message msg = new Message(getConnectDestination(), null, new ConnectRequestMessage(getLocalAddress(), getLocalID(), jgroupsID, data));
+		final Message msg = new Message(getConnectDestination(), null, new ConnectRequestMessage((JGroupsID) getLocalID(), jgroupsID, data));
 		Object response = null;
 		try {
 			response = messageDispatcher.sendMessage(msg, GroupRequest.GET_FIRST, timeout);
@@ -118,8 +121,10 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 	public synchronized Object sendSynch(ID receiver, byte[] data) throws IOException {
 		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "sendSynch", new Object[] {receiver, data}); //$NON-NLS-1$
 		Object result = null;
+		if (receiver == null || !(receiver instanceof JGroupsID))
+			throw new IOException("invalid receiver id");
 		if (isActive())
-			result = new DisconnectRequestMessage(getLocalID(), receiver, data);
+			result = new DisconnectRequestMessage((JGroupsID) getLocalID(), (JGroupsID) receiver, data);
 		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "sendSynch", result);
 		return result;
 	}
