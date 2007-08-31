@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
+            class="org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace"
+            description="JGroups Namespace"
+            name="ecf.namespace.jgroupsid">
+      </namespace>
+   </extension>
+
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainerInstantiator"
+            description="ECF Generic Client - JGroups"
+            name="ecf.jgroups.client">
+      </containerFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainerInstantiator"
+            description="ECF Generic Manager - JGroups"
+            name="ecf.jgroups.manager" server="true">
+      </containerFactory>
+   </extension>
+
+</plugin>
