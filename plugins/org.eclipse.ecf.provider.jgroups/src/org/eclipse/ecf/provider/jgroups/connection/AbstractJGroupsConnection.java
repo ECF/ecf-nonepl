@@ -44,21 +44,9 @@ import org.jgroups.blocks.RequestHandler;
 
 public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
 
-	/**
-	 * 
-	 */
 	private static final String SYNCH_CHANNEL_NAME = "ch2";
-	/**
-	 * 
-	 */
 	private static final String ASYNCH_CHANNEL_NAME = "ch1";
-	/**
-	 * 
-	 */
 	private static final String UDP_STACK = "udp";
-	/**
-	 * 
-	 */
 	private static final String STACKS_XML_FILENAME = "stacks.xml";
 	private Channel channel;
 	protected boolean started = false;
@@ -158,6 +146,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	 * @see org.eclipse.ecf.provider.comm.IAsynchConnection#sendAsynch(org.eclipse.ecf.core.identity.ID, byte[])
 	 */
 	public synchronized void sendAsynch(ID targetID, byte[] data) throws IOException {
+		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "sendAsynch", new Object[] {targetID, data});
 		if (!isConnected())
 			throw new IOException("channel not connected");
 		JGroupsID jid = null;
@@ -176,6 +165,8 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		} catch (final ChannelClosedException e) {
 			throw new IOException(e.getLocalizedMessage());
 		}
+		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "sendAsynch");
+
 	}
 
 	/*

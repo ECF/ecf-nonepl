@@ -10,6 +10,11 @@ package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -24,6 +29,8 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
+import org.eclipse.osgi.util.NLS;
+import org.jgroups.Address;
 import org.jgroups.Message;
 import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
@@ -108,6 +115,10 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 
 		public Client(JGroupsID clientID) {
 			this.clientID = clientID;
+			final Address addr = this.clientID.getAddress();
+			if (addr != null) {
+				addClientToMap(addr, this);
+			}
 		}
 
 		/* (non-Javadoc)
@@ -136,6 +147,7 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 		public void disconnect() {
 			isConnected = false;
 			stop();
+			removeClientFromMap(clientID.getAddress());
 		}
 
 		/* (non-Javadoc)
@@ -213,11 +225,68 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 		}
 	}
 
+	private View oldView = null;
+
+	private List memberDiff(List oldMembers, List newMembers) {
+		final List result = new ArrayList();
+		for (final Iterator i = oldMembers.iterator(); i.hasNext();) {
+			final Address addr1 = (Address) i.next();
+			if (!newMembers.contains(addr1))
+				result.add(addr1);
+		}
+		return result;
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection#handleViewAccepted(org.jgroups.View)
 	 */
 	protected void handleViewAccepted(View view) {
-		// TODO Auto-generated method stub
 		Trace.trace(Activator.PLUGIN_ID, "viewAccepted(" + view + ")");
+		if (oldView == null) {
+			oldView = view;
+			return;
+		} else {
+			final List departed = memberDiff(oldView.getMembers(), view.getMembers());
+			if (departed.size() > 0) {
+				Trace.trace(Activator.PLUGIN_ID, "members departed=" + departed);
+				for (final Iterator i = departed.iterator(); i.hasNext();) {
+					final Address addr = (Address) i.next();
+					final Client client = getClientForAddress(addr);
+					if (client != null) {
+						handleDisconnectInThread(client);
+					}
+				}
+			}
+			oldView = view;
+		}
+	}
+
+	private void handleDisconnectInThread(final Client client) {
+		final Thread t = new Thread(new Runnable() {
+			public void run() {
+				eventHandler.handleDisconnectEvent(new DisconnectEvent(client, new Exception(NLS.bind("member %1 disconnected", client.clientID)), null));
+			}
+		});
+		t.start();
+	}
+
+	private final Map addressClientMap = Collections.synchronizedMap(new HashMap());
+
+	private void addClientToMap(Address addr, Client client) {
+		addressClientMap.put(addr, client);
+	}
+
+	private void removeClientFromMap(Address addr) {
+		addressClientMap.remove(addr);
+	}
+
+	/**
+	 * @param addr
+	 * @return
+	 */
+	private Client getClientForAddress(Address addr) {
+		if (addr == null)
+			return null;
+		return (Client) addressClientMap.get(addr);
 	}
 }
