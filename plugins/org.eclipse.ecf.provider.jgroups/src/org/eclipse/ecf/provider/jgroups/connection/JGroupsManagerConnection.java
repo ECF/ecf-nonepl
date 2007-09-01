@@ -25,6 +25,7 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.jgroups.Message;
+import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
 
@@ -210,5 +211,13 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 				Client.this.notifyAll();
 			}
 		}
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection#handleViewAccepted(org.jgroups.View)
+	 */
+	protected void handleViewAccepted(View view) {
+		// TODO Auto-generated method stub
+		Trace.trace(Activator.PLUGIN_ID, "viewAccepted(" + view + ")");
 	}
 }

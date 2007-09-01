@@ -30,6 +30,7 @@ import org.jgroups.Address;
 import org.jgroups.Message;
 import org.jgroups.SuspectedException;
 import org.jgroups.TimeoutException;
+import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
 
@@ -148,5 +149,12 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 			Trace.catching(Activator.PLUGIN_ID, JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "internalHandleSynch", e);
 		}
 		return null;
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection#handleViewAccepted(org.jgroups.View)
+	 */
+	protected void handleViewAccepted(View view) {
+		Trace.trace(Activator.PLUGIN_ID, "viewAccepted(" + view + ")");
 	}
 }

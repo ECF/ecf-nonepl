@@ -44,6 +44,22 @@ import org.jgroups.blocks.RequestHandler;
 
 public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
 
+	/**
+	 * 
+	 */
+	private static final String SYNCH_CHANNEL_NAME = "ch2";
+	/**
+	 * 
+	 */
+	private static final String ASYNCH_CHANNEL_NAME = "ch1";
+	/**
+	 * 
+	 */
+	private static final String UDP_STACK = "udp";
+	/**
+	 * 
+	 */
+	private static final String STACKS_XML_FILENAME = "stacks.xml";
 	private Channel channel;
 	protected boolean started = false;
 	protected final ISynchAsynchEventHandler eventHandler;
@@ -78,7 +94,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		}
 
 		public void viewAccepted(View arg0) {
-			Trace.trace(Activator.PLUGIN_ID, "viewAccepted(" + arg0 + ")");
+			handleViewAccepted(arg0);
 		}
 	};
 
@@ -116,6 +132,11 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			l.handleConnectEvent(event);
 		}
 	}
+
+	/**
+	 * @param view
+	 */
+	protected abstract void handleViewAccepted(View view);
 
 	protected void fireListenersDisconnect(ConnectionEvent event) {
 		List toNotify = null;
@@ -259,11 +280,11 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	protected void setupJGroups(JGroupsID targetID) throws ECFException {
 		try {
 			final JChannelFactory factory = new JChannelFactory();
-			factory.setMultiplexerConfig("stacks.xml");
-			channel = factory.createMultiplexerChannel("udp", "ch1");
+			factory.setMultiplexerConfig(STACKS_XML_FILENAME);
+			channel = factory.createMultiplexerChannel(UDP_STACK, ASYNCH_CHANNEL_NAME);
 			channel.addChannelListener(channelListener);
 			channel.setReceiver(receiver);
-			messageDispatcher = new MessageDispatcher(factory.createMultiplexerChannel("udp", "ch2"), null, null, messageDispatcherHandler);
+			messageDispatcher = new MessageDispatcher(factory.createMultiplexerChannel(UDP_STACK, SYNCH_CHANNEL_NAME), null, null, messageDispatcherHandler);
 			channel.connect(targetID.getChannelName());
 			final ID localID = getLocalID();
 			// Set our identity address
