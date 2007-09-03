@@ -9,7 +9,7 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.tests.provider.jms.weblogic.remoteservice;
+package org.eclipse.ecf.tests.provider.jms.activemq.remoteservice;
 
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.remoteservice.IRemoteCall;
@@ -19,33 +19,35 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.IRemoteServiceRegistration;
 import org.eclipse.ecf.remoteservice.events.IRemoteCallEvent;
+import org.eclipse.ecf.tests.provider.jms.activemq.ActiveMQ;
 import org.eclipse.ecf.tests.provider.jms.remoteservice.AbstractRemoteServiceTestCase;
 import org.eclipse.ecf.tests.provider.jms.remoteservice.IConcatService;
-import org.eclipse.ecf.tests.provider.jms.weblogic.Weblogic;
 
-public class WeblogicRemoteContainerTest extends AbstractRemoteServiceTestCase {
+public class ActiveMQRemoteServiceTest extends AbstractRemoteServiceTestCase {
 
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.tests.provider.jms.remoteservice.AbstractRemoteServiceTestCase#getClientContainerName()
+	 */
 	@Override
 	protected String getClientContainerName() {
-		return Weblogic.CLIENT_CONTAINER_NAME;
+		return ActiveMQ.CLIENT_CONTAINER_NAME;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerContainerName()
+	 * @see org.eclipse.ecf.tests.provider.jms.remoteservice.AbstractRemoteServiceTestCase#getServerContainerName()
 	 */
 	@Override
 	protected String getServerContainerName() {
-		return Weblogic.SERVER_CONTAINER_NAME;
+		return ActiveMQ.SERVER_CONTAINER_NAME;
 	}
 
 	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerIdentity()
+	 * @see org.eclipse.ecf.tests.provider.jms.remoteservice.AbstractRemoteServiceTestCase#getServerIdentity()
 	 */
 	@Override
 	protected String getServerIdentity() {
-		return Weblogic.TARGET_NAME;
+		return ActiveMQ.TARGET_NAME;
 	}
-
 
 	public void testRemoteServiceAdapters() throws Exception {
 		IRemoteServiceContainerAdapter[] adapters = getRemoteServiceAdapters();
