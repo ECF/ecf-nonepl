@@ -6,21 +6,21 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.tests.ContainerAbstractTestCase;
 
-public class JGroupsContainerTestCase extends ContainerAbstractTestCase {
+public class JGroupsContainerTest extends ContainerAbstractTestCase {
 
 	protected String getClientContainerName() {
-		return "ecf.jgroups.client";
+		return JGroups.CLIENT_CONTAINER_NAME;
 	}
 
 	protected String getServerIdentity() {
-		return "foobar";
+		return JGroups.TARGET_NAME;
 	}
 
 	protected String getServerContainerName() {
-		return "ecf.jgroups.manager";
+		return JGroups.SERVER_CONTAINER_NAME;
 	}
 
-	protected String getJMSNamespace() {
+	protected String getJGroupsNamespace() {
 		return "ecf.namespace.jgroupsid";
 	}
 
