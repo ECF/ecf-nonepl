@@ -63,5 +63,17 @@
       </factory>
    </extension>
 
+   <extension
+         id="JGroupsManager"
+         name="JGroups Manager"
+         point="org.eclipse.core.runtime.applications">
+      <application
+            thread="main"
+            visible="true">
+         <run
+               class="org.eclipse.ecf.provider.jgroups.application.JGroupsManager">
+         </run>
+      </application>
+   </extension>
 
 </plugin>
