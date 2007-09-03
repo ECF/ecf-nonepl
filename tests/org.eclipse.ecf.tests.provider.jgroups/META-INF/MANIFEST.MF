@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf,
  org.eclipse.ecf.tests,
  org.junit,
- org.eclipse.ecf.remoteservice
+ org.eclipse.ecf.remoteservice,
+ org.eclipse.ecf.tests.remoteservice
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.ecf.internal.tests.provider.jgroups;x-internal:=true,
  org.eclipse.ecf.tests.provider.jgroups.remoteservice

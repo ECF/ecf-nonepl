@@ -27,7 +27,7 @@ import org.eclipse.ecf.tests.ContainerAbstractTestCase;
 /**
  * 
  */
-public abstract class AbstractRemoteServiceTest extends ContainerAbstractTestCase {
+public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTestCase {
 
 	protected IRemoteServiceContainerAdapter[] adapters = null;
 
@@ -37,7 +37,7 @@ public abstract class AbstractRemoteServiceTest extends ContainerAbstractTestCas
 
 	protected abstract String getServerIdentity();
 
-	protected String getJMSNamespace() {
+	protected String getJGroupsNamespace() {
 		return "ecf.namespace.jgroupsid";
 	}
 
@@ -66,7 +66,7 @@ public abstract class AbstractRemoteServiceTest extends ContainerAbstractTestCas
 	}
 
 	protected ID createServerID() throws Exception {
-		return IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(getJMSNamespace()), new Object[] {getServerIdentity()});
+		return IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(getJGroupsNamespace()), new Object[] {getServerIdentity()});
 	}
 
 	protected IContainer createServer() throws Exception {

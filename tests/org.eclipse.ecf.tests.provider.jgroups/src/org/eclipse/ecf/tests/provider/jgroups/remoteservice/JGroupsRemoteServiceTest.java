@@ -21,7 +21,7 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.IRemoteServiceRegistration;
 import org.eclipse.ecf.remoteservice.events.IRemoteCallEvent;
 
-public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTest {
+public class JGroupsRemoteServiceTest extends AbstractRemoteServiceTestCase {
 
 	protected String getClientContainerName() {
 		return JGroups.CLIENT_CONTAINER_NAME;
