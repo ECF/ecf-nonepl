@@ -6,7 +6,7 @@
  * 
  * Contributors: Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.provider.jgroups.container;
+package org.eclipse.ecf.internal.provider.jgroups;
 
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
@@ -15,6 +15,7 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.provider.BaseContainerInstantiator;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
+import org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 
 /**

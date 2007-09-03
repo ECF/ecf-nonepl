@@ -13,7 +13,7 @@
    <extension
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
-            class="org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainerInstantiator"
+            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsClientContainerInstantiator"
             description="ECF Generic Client - JGroups"
             name="ecf.jgroups.client">
       </containerFactory>
@@ -21,10 +21,47 @@
    <extension
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
-            class="org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainerInstantiator"
+            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsManagerContainerInstantiator"
             description="ECF Generic Manager - JGroups"
             name="ecf.jgroups.manager" server="true">
       </containerFactory>
    </extension>
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer"
+            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsDatashareContainerAdapterFactory">
+         <adapter type="org.eclipse.ecf.datashare.IChannelContainerAdapter"/>
+      </factory>
+   </extension>
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer"
+            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsDatashareContainerAdapterFactory">
+         <adapter type="org.eclipse.ecf.datashare.IChannelContainerAdapter"/>
+      </factory>
+   </extension>
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer"
+            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsRemoteServiceContainerAdapterFactory">
+         <adapter type="org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter"/>
+      </factory>
+   </extension>
+
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer"
+            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsRemoteServiceContainerAdapterFactory">
+         <adapter type="org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter"/>
+      </factory>
+   </extension>
+
 
 </plugin>

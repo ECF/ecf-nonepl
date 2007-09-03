@@ -70,6 +70,12 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 		serverConnection.start();
 	}
 
+	public void dispose() {
+		getConnection().disconnect();
+		setConnection(null);
+		super.dispose();
+	}
+
 	protected void setConnection(ISynchAsynchConnection channel) {
 		this.serverConnection = channel;
 	}
