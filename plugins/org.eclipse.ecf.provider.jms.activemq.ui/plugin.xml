@@ -7,7 +7,7 @@
       <actionSet
             id="org.eclipse.ecf.provider.jms.activemq.ui.actionSet"
             label="JMS (ActiveMQ) Communications"
-            visible="false">
+            visible="true">
          <action
                class="org.eclipse.ecf.internal.provider.jms.activemq.ui.wizard.JoinGroupWizardAction"
                icon="icons/collaboration.gif"
