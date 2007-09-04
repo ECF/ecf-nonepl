@@ -58,6 +58,7 @@ public class JGroupsManager implements IApplication {
 			synchronized (this) {
 				managerContainer = new JGroupsManagerContainer(config);
 				managerContainer.start();
+				System.out.println("JGroups Manager started with id=" + managerID);
 				// Wait until stopped
 				this.wait();
 			}

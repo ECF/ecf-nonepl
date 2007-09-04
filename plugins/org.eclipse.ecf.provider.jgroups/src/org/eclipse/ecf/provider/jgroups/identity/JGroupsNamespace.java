@@ -19,6 +19,9 @@ public class JGroupsNamespace extends Namespace {
 	public static final String SCHEME = "jgroups";
 	public static final String NAME = "ecf.namespace.jgroupsid";
 
+	public JGroupsNamespace() {
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object[])
 	 */
