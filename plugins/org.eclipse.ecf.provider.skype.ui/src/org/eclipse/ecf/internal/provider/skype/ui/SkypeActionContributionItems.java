@@ -9,30 +9,18 @@ import org.eclipse.osgi.util.NLS;
 
 public class SkypeActionContributionItems extends AbstractRosterEntryContributionItem {
 
-	public SkypeActionContributionItems() {
-	}
-
 	public SkypeActionContributionItems(String id) {
 		super(id);
 	}
 
 	protected IAction[] makeActions() {
-		IRosterEntry entry = getSelectedRosterEntry();
-		IContainer c = getContainerForRosterEntry(entry);
+		final IRosterEntry entry = getSelectedRosterEntry();
+		final IContainer c = getContainerForRosterEntry(entry);
 		if (entry != null && c != null && c instanceof SkypeContainer) {
-			IAction[] actions = new IAction[1];
-			actions[0] = new SkypeCallAction(c,
-						entry.getUser().getID(),
-						NLS
-								.bind(
-										Messages.SkypeActionContributionItems_Call_User,
-										entry.getName()),
-						NLS
-								.bind(
-										Messages.SkypeActionContributionItems_Call_User_Tooltip,
-										entry.getName()));
-				return actions;
-			}
+			final IAction[] actions = new IAction[1];
+			actions[0] = new SkypeCallAction(c, entry.getUser().getID(), NLS.bind(Messages.SkypeActionContributionItems_Call_User, entry.getName()), NLS.bind(Messages.SkypeActionContributionItems_Call_User_Tooltip, entry.getName()));
+			return actions;
+		}
 		return null;
 	}
 
