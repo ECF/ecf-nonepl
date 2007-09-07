@@ -9,6 +9,9 @@
    <feature url="features/org.eclipse.ecf.provider.yahoo_feature_0.0.0.yahooqualifier.jar" id="org.eclipse.ecf.provider.yahoo_feature" version="0.0.0.yahooqualifier">
       <category name="ECF Extras"/>
    </feature>
+   <feature url="features/org.eclipse.ecf.provider.jgroups_feature_0.0.0.jgroupsqualifier.jar" id="org.eclipse.ecf.provider.jgroups_feature" version="0.0.0.jgroupsqualifier">
+      <category name="ECF Extras"/>
+   </feature>
    <category-def name="ECF Extras" label="ECF Extras">
       <description>
          ECF Extras are features not available via the Eclipse Foundation (Yahoo provider, Skype provider, JMS provider).
