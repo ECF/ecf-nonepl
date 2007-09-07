@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
       id="org.eclipse.ecf.provider.jgroups_feature"
-      label="ECF JGroups Feature"
+      label="Eclipse Communication Framework JGroups Provider"
       version="0.2.0.qualifier"
       provider-name="Eclipse.org">
 
