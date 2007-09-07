@@ -5,6 +5,7 @@ Bundle-SymbolicName: org.eclipse.ecf.provider.jms.activemq;singleton:=true
 Bundle-Version: 1.0.500.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.provider.jms.activemq.Activator
 Bundle-Vendor: %plugin.provider
+Bundle-Localization: plugin
 Require-Bundle: org.eclipse.equinox.common,
  org.eclipse.ecf.provider.jms,
  org.eclipse.ecf,
