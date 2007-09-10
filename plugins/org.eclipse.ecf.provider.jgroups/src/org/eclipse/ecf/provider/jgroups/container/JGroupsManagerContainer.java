@@ -34,11 +34,13 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
+import org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection;
 import org.eclipse.ecf.provider.jgroups.connection.ConnectRequestMessage;
 import org.eclipse.ecf.provider.jgroups.connection.DisconnectRequestMessage;
 import org.eclipse.ecf.provider.jgroups.connection.JGroupsManagerConnection;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.jgroups.Address;
+import org.jgroups.Channel;
 import org.jgroups.stack.IpAddress;
 
 /**
@@ -55,6 +57,10 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 	 */
 	public JGroupsManagerContainer(ISharedObjectContainerConfig config) {
 		super(config);
+	}
+
+	public Channel getJChannel() {
+		return ((AbstractJGroupsConnection) serverConnection).getJChannel();
 	}
 
 	/**

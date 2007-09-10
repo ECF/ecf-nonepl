@@ -16,8 +16,10 @@ import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
+import org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection;
 import org.eclipse.ecf.provider.jgroups.connection.JGroupsClientConnection;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
+import org.jgroups.Channel;
 
 /**
  * Trivial container implementation. Note that container adapter implementations can be
@@ -45,4 +47,11 @@ public class JGroupsClientContainer extends ClientSOContainer {
 		return new JGroupsClientConnection(getReceiver());
 	}
 
+	public Channel getJChannel() {
+		synchronized (getConnectLock()) {
+			if (isConnected())
+				return ((AbstractJGroupsConnection) getConnection()).getJChannel();
+			return null;
+		}
+	}
 }

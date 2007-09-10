@@ -169,6 +169,10 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	}
 
+	public Channel getJChannel() {
+		return channel;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -222,7 +226,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		if (o instanceof JGroupsMessage && started) {
 			final JGroupsMessage msg = (JGroupsMessage) o;
 			try {
-				boolean fromUs = src.equals(getLocalAddress());
+				final boolean fromUs = src.equals(getLocalAddress());
 				final ID receiverID = msg.getTargetID();
 				final boolean toUs = receiverID == null || getLocalID().equals(receiverID);
 				if (!fromUs && toUs) {
@@ -247,7 +251,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			logMessageError("Src address is null", message);
 			return null;
 		}
-		boolean fromUs = src.equals(getLocalAddress());
+		final boolean fromUs = src.equals(getLocalAddress());
 		if (isActive() && !fromUs)
 			return internalHandleSynch(message);
 		else
