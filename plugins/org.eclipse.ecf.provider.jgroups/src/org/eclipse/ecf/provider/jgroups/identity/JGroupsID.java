@@ -24,14 +24,8 @@ import org.jgroups.Address;
  */
 public class JGroupsID extends BaseID {
 
-	/**
-	 * 
-	 */
 	public static final String STACK_NAME = "stackName";
 
-	/**
-	 * 
-	 */
 	public static final String STACK_CONFIG_URL = "stackConfigURL";
 
 	private static final long serialVersionUID = -1237654704481532873L;
@@ -39,6 +33,8 @@ public class JGroupsID extends BaseID {
 	public static final String DEFAULT_STACK_FILE = "stacks.xml";
 
 	public static final String DEFAULT_STACK_NAME = "udp";
+
+	public static final String TCP_STACK_NAME = "tcp";
 
 	private Address address = null;
 

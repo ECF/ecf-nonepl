@@ -45,6 +45,14 @@ import org.jgroups.blocks.RequestHandler;
 
 public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
 
+	/**
+	 * 
+	 */
+	protected static final String JGROUPS_UDP_MCAST_PORT_PROPNAME = "jgroups.udp.mcast_port";
+	/**
+	 * 
+	 */
+	protected static final String JGROUPS_UDP_MCAST_ADDR_PROPNAME = "jgroups.udp.mcast_addr";
 	private static final String SYNCH_CHANNEL_NAME = "ch2";
 	private static final String ASYNCH_CHANNEL_NAME = "ch1";
 	private Channel channel;
@@ -271,8 +279,51 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		return messageDispatcher;
 	}
 
+	protected String oldHost = null;
+	protected int oldPort = -1;
+
+	protected void setPropertiesForStack(JGroupsID targetID) {
+		final String stackName = targetID.getStackName();
+		if (stackName == null)
+			return;
+		if (stackName.equalsIgnoreCase(JGroupsID.DEFAULT_STACK_NAME)) {
+			if (targetID.getHost() != null) {
+				oldHost = System.getProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME);
+				System.setProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME, targetID.getHost());
+				if (targetID.getPort() != -1) {
+					final String oPort = System.getProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME);
+					if (oPort != null)
+						oldPort = Integer.parseInt(oPort);
+					System.setProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME, "" + targetID.getPort());
+				}
+			}
+		} else if (stackName.equalsIgnoreCase(JGroupsID.TCP_STACK_NAME)) {
+			// XXX TODO
+		}
+	}
+
+	protected void resetPropertiesForStack(JGroupsID targetID) {
+		final String stackName = targetID.getStackName();
+		if (stackName == null)
+			return;
+		if (stackName.equalsIgnoreCase(JGroupsID.DEFAULT_STACK_NAME)) {
+			if (oldHost != null) {
+				System.setProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME, oldHost);
+				if (oldPort != -1)
+					System.setProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME, "" + oldPort);
+			} else if (System.getProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME) != null) {
+				System.getProperties().remove(JGROUPS_UDP_MCAST_ADDR_PROPNAME);
+				if (System.getProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME) != null)
+					System.getProperties().remove(JGROUPS_UDP_MCAST_PORT_PROPNAME);
+			}
+		} else if (stackName.equalsIgnoreCase(JGroupsID.TCP_STACK_NAME)) {
+			// XXX TODO
+		}
+	}
+
 	protected void setupJGroups(JGroupsID targetID) throws ECFException {
 		try {
+			setPropertiesForStack(targetID);
 			final String stackConfigURL = targetID.getStackConfigURL();
 			final JChannelFactory factory = new JChannelFactory();
 			if (stackConfigURL.equals(JGroupsID.DEFAULT_STACK_FILE)) {
@@ -293,6 +344,8 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			}
 		} catch (final Exception e) {
 			throw new ECFException("channel exception", e);
+		} finally {
+			resetPropertiesForStack(targetID);
 		}
 	}
 
