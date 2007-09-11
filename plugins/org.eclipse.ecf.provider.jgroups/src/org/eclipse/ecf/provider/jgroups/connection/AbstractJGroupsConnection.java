@@ -9,6 +9,7 @@
 package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -46,8 +47,6 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	private static final String SYNCH_CHANNEL_NAME = "ch2";
 	private static final String ASYNCH_CHANNEL_NAME = "ch1";
-	private static final String UDP_STACK = "udp";
-	private static final String STACKS_XML_FILENAME = "stacks.xml";
 	private Channel channel;
 	protected boolean started = false;
 	protected final ISynchAsynchEventHandler eventHandler;
@@ -274,12 +273,18 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 
 	protected void setupJGroups(JGroupsID targetID) throws ECFException {
 		try {
+			final String stackConfigURL = targetID.getStackConfigURL();
 			final JChannelFactory factory = new JChannelFactory();
-			factory.setMultiplexerConfig(STACKS_XML_FILENAME);
-			channel = factory.createMultiplexerChannel(UDP_STACK, ASYNCH_CHANNEL_NAME);
+			if (stackConfigURL.equals(JGroupsID.DEFAULT_STACK_FILE)) {
+				factory.setMultiplexerConfig(stackConfigURL);
+			} else {
+				factory.setMultiplexerConfig(new URL(stackConfigURL));
+			}
+			final String stackName = targetID.getStackName();
+			channel = factory.createMultiplexerChannel(stackName, ASYNCH_CHANNEL_NAME);
 			channel.addChannelListener(channelListener);
 			channel.setReceiver(receiver);
-			messageDispatcher = new MessageDispatcher(factory.createMultiplexerChannel(UDP_STACK, SYNCH_CHANNEL_NAME), null, null, messageDispatcherHandler);
+			messageDispatcher = new MessageDispatcher(factory.createMultiplexerChannel(stackName, SYNCH_CHANNEL_NAME), null, null, messageDispatcherHandler);
 			channel.connect(targetID.getChannelName());
 			final ID localID = getLocalID();
 			// Set our identity address

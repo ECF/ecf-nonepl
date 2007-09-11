@@ -8,9 +8,15 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jgroups.identity;
 
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.util.StringTokenizer;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.BaseID;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 
 /**
@@ -18,20 +24,104 @@ import org.jgroups.Address;
  */
 public class JGroupsID extends BaseID {
 
+	/**
+	 * 
+	 */
+	public static final String STACK_NAME = "stackName";
+
+	/**
+	 * 
+	 */
+	public static final String STACK_CONFIG_URL = "stackConfigURL";
+
 	private static final long serialVersionUID = -1237654704481532873L;
 
-	private final String channelName;
+	public static final String DEFAULT_STACK_FILE = "stacks.xml";
+
+	public static final String DEFAULT_STACK_NAME = "udp";
 
 	private Address address = null;
 
-	public JGroupsID(Namespace ns, String channelName) {
+	private final URI uri;
+
+	private String stackConfigURL = DEFAULT_STACK_FILE;
+
+	private String stackName = DEFAULT_STACK_NAME;
+
+	private String getPathNoSlashes() {
+		String path = this.uri.getRawPath();
+		if (path != null)
+			while (path.startsWith("/"))
+				path = path.substring(1);
+		return path;
+	}
+
+	private void setStackInfo() {
+		final String query = uri.getRawQuery();
+		if (query != null) {
+			final StringTokenizer st = new StringTokenizer(query, "&");
+			while (st.hasMoreTokens()) {
+				final String tok = st.nextToken();
+				final StringTokenizer equalsTok = new StringTokenizer(tok, "=");
+				if (equalsTok.countTokens() == 2) {
+					final String paramName = equalsTok.nextToken();
+					final String paramValue = equalsTok.nextToken();
+					if (paramName != null && paramValue != null) {
+						if (paramName.equals(STACK_CONFIG_URL))
+							this.stackConfigURL = paramValue;
+						if (paramName.equals(STACK_NAME))
+							this.stackName = paramValue;
+					}
+				}
+			}
+		}
+	}
+
+	public JGroupsID(Namespace ns, URI uri) throws IDCreateException {
 		super(ns);
-		this.channelName = channelName;
-		Assert.isNotNull(this.channelName);
+		Assert.isNotNull(uri);
+		this.uri = uri;
+		final String scheme = this.uri.getScheme();
+		if (scheme == null || !scheme.equalsIgnoreCase(ns.getScheme()))
+			throw new IDCreateException(NLS.bind("scheme must be {0}", ns.getScheme()));;
+		final String path = getPathNoSlashes();
+		if (path == null || path.length() < 1)
+			throw new IDCreateException("channel name not valid");
+		setStackInfo();
+	}
+
+	public JGroupsID(Namespace ns, String channelName) throws IDCreateException {
+		super(ns);
+		Assert.isNotNull(channelName);
+		try {
+			this.uri = new URI(ns.getScheme() + ":///" + channelName);
+		} catch (final URISyntaxException e) {
+			throw new IDCreateException("invalid channel name", e);
+		}
+	}
+
+	public String getUserInfo() {
+		return uri.getRawUserInfo();
+	}
+
+	public String getHost() {
+		return uri.getHost();
+	}
+
+	public int getPort() {
+		return uri.getPort();
 	}
 
 	public String getChannelName() {
-		return channelName;
+		return getPathNoSlashes();
+	}
+
+	public String getStackConfigURL() {
+		return stackConfigURL;
+	}
+
+	public String getStackName() {
+		return stackName;
 	}
 
 	public Address getAddress() {
@@ -48,7 +138,7 @@ public class JGroupsID extends BaseID {
 	protected int namespaceCompareTo(BaseID o) {
 		if (!(o instanceof JGroupsID))
 			return -1;
-		return channelName.compareTo(((JGroupsID) o).channelName);
+		return uri.compareTo(((JGroupsID) o).uri);
 	}
 
 	/* (non-Javadoc)
@@ -57,21 +147,21 @@ public class JGroupsID extends BaseID {
 	protected boolean namespaceEquals(BaseID o) {
 		if (!(o instanceof JGroupsID))
 			return false;
-		return channelName.equals(((JGroupsID) o).channelName);
+		return uri.equals(((JGroupsID) o).uri);
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.identity.BaseID#namespaceGetName()
 	 */
 	protected String namespaceGetName() {
-		return channelName;
+		return uri.toString();
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.identity.BaseID#namespaceHashCode()
 	 */
 	protected int namespaceHashCode() {
-		return channelName.hashCode();
+		return uri.hashCode();
 	}
 
 	public String toString() {

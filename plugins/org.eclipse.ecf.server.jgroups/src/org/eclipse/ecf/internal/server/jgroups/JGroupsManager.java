@@ -85,8 +85,8 @@ public class JGroupsManager implements IApplication {
 
 	private void usage() {
 		System.out.println("Usage: eclipse.exe -application " //$NON-NLS-1$
-				+ this.getClass().getName() + "jgroupsChannelName"); //$NON-NLS-1$
-		System.out.println("   Examples: eclipse -application org.eclipse.ecf.provider.jgroups.JGroupsManager jgroupsChannel"); //$NON-NLS-1$
+				+ this.getClass().getName() + " jgroups:///<jgroupsChannelName>"); //$NON-NLS-1$
+		System.out.println("   Examples: eclipse -application org.eclipse.ecf.provider.jgroups.JGroupsManager jgroups:///jgroupsChannel"); //$NON-NLS-1$
 	}
 
 }

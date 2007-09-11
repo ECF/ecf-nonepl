@@ -37,8 +37,8 @@ public class JoinGroupWizardPage extends WizardPage {
 	protected static final String PAGE_DESCRIPTION = "Complete account info and choose 'Finish' to login.";
 	protected static final String JOINGROUP_FIELDNAME = "JGroups Channel URL:";
 	protected static final String NICKNAME_FIELDNAME = "Nickname:";
-	protected static final String ECF_DEFAULT_URL = "jgroups://228.10.10.10:45588/exampleJGroupsChannel";
-	protected static final String ECF_TEMPLATE_URL = "jgroups://<mcast address>:<port>/<channelName>";
+	protected static final String ECF_DEFAULT_URL = "jgroups:///jgroupsChannel";
+	protected static final String ECF_TEMPLATE_URL = "jgroups:///<channelName>";
 	protected static final String PAGE_TITLE = "Connect JGroups Client";
 
 	protected static final String DEFAULT_CLIENT = "ecf.jgroups.client";
