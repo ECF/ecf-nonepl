@@ -26,7 +26,7 @@ public class JGroupsID extends BaseID {
 
 	public static final String STACK_NAME = "stackName";
 
-	public static final String STACK_CONFIG_URL = "stackConfigURL";
+	public static final String STACK_CONFIG_ID = "stackConfigID";
 
 	private static final long serialVersionUID = -1237654704481532873L;
 
@@ -34,13 +34,11 @@ public class JGroupsID extends BaseID {
 
 	public static final String DEFAULT_STACK_NAME = "udp";
 
-	public static final String TCP_STACK_NAME = "tcp";
-
 	private Address address = null;
 
 	private final URI uri;
 
-	private String stackConfigURL = DEFAULT_STACK_FILE;
+	private String stackConfigID = null;
 
 	private String stackName = DEFAULT_STACK_NAME;
 
@@ -63,8 +61,8 @@ public class JGroupsID extends BaseID {
 					final String paramName = equalsTok.nextToken();
 					final String paramValue = equalsTok.nextToken();
 					if (paramName != null && paramValue != null) {
-						if (paramName.equals(STACK_CONFIG_URL))
-							this.stackConfigURL = paramValue;
+						if (paramName.equals(STACK_CONFIG_ID))
+							this.stackConfigID = paramValue;
 						if (paramName.equals(STACK_NAME))
 							this.stackName = paramValue;
 					}
@@ -112,8 +110,8 @@ public class JGroupsID extends BaseID {
 		return getPathNoSlashes();
 	}
 
-	public String getStackConfigURL() {
-		return stackConfigURL;
+	public String getStackConfigID() {
+		return stackConfigID;
 	}
 
 	public String getStackName() {

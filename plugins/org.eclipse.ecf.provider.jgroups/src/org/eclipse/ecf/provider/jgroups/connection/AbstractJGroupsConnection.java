@@ -45,13 +45,7 @@ import org.jgroups.blocks.RequestHandler;
 
 public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
 
-	/**
-	 * 
-	 */
 	protected static final String JGROUPS_UDP_MCAST_PORT_PROPNAME = "jgroups.udp.mcast_port";
-	/**
-	 * 
-	 */
 	protected static final String JGROUPS_UDP_MCAST_ADDR_PROPNAME = "jgroups.udp.mcast_addr";
 	private static final String SYNCH_CHANNEL_NAME = "ch2";
 	private static final String ASYNCH_CHANNEL_NAME = "ch1";
@@ -297,8 +291,6 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 					System.setProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME, "" + targetID.getPort());
 				}
 			}
-		} else if (stackName.equalsIgnoreCase(JGroupsID.TCP_STACK_NAME)) {
-			// XXX TODO
 		}
 	}
 
@@ -316,20 +308,23 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 				if (System.getProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME) != null)
 					System.getProperties().remove(JGROUPS_UDP_MCAST_PORT_PROPNAME);
 			}
-		} else if (stackName.equalsIgnoreCase(JGroupsID.TCP_STACK_NAME)) {
-			// XXX TODO
 		}
 	}
 
 	protected void setupJGroups(JGroupsID targetID) throws ECFException {
 		try {
-			setPropertiesForStack(targetID);
-			final String stackConfigURL = targetID.getStackConfigURL();
+			final String stackConfigID = targetID.getStackConfigID();
+			URL stackConfigURL = null;
 			final JChannelFactory factory = new JChannelFactory();
-			if (stackConfigURL.equals(JGroupsID.DEFAULT_STACK_FILE)) {
+			stackConfigURL = (stackConfigID == null) ? Activator.getDefault().getConfigURLForStackID(Activator.STACK_CONFIG_ID) : Activator.getDefault().getConfigURLForStackID(stackConfigID);
+			if (stackConfigURL != null) {
 				factory.setMultiplexerConfig(stackConfigURL);
 			} else {
-				factory.setMultiplexerConfig(new URL(stackConfigURL));
+				setPropertiesForStack(targetID);
+				if (stackConfigID == null || stackConfigID.equals(JGroupsID.DEFAULT_STACK_FILE))
+					factory.setMultiplexerConfig(JGroupsID.DEFAULT_STACK_FILE);
+				else
+					factory.setMultiplexerConfig(new URL(stackConfigID));
 			}
 			final String stackName = targetID.getStackName();
 			channel = factory.createMultiplexerChannel(stackName, ASYNCH_CHANNEL_NAME);
