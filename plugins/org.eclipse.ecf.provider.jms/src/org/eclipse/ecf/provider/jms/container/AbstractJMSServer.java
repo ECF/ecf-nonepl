@@ -85,77 +85,57 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 	}
 
 	protected Serializable processSynch(SynchEvent e) throws IOException {
-		Object req = e.getData();
+		final Object req = e.getData();
 		if (req instanceof ConnectRequestMessage) {
-			return handleConnectRequest((ConnectRequestMessage) req,
-					(AbstractJMSServerChannel) e.getConnection());
+			return handleConnectRequest((ConnectRequestMessage) req, (AbstractJMSServerChannel) e.getConnection());
 		} else if (req instanceof DisconnectRequestMessage) {
 			// disconnect them
-			DisconnectRequestMessage dcm = (DisconnectRequestMessage) req;
-			IAsynchConnection conn = getConnectionForID(dcm.getSenderID());
+			final DisconnectRequestMessage dcm = (DisconnectRequestMessage) req;
+			final IAsynchConnection conn = getConnectionForID(dcm.getSenderID());
 			if (conn != null && conn instanceof AbstractJMSServerChannel.Client) {
-				AbstractJMSServerChannel.Client client = (AbstractJMSServerChannel.Client) conn;
+				final AbstractJMSServerChannel.Client client = (AbstractJMSServerChannel.Client) conn;
 				client.handleDisconnect();
 			}
 		}
 		return null;
 	}
 
-	protected void traceAndLogExceptionCatch(int code, String method,
-			Throwable e) {
-		Trace
-				.catching(Activator.PLUGIN_ID,
-						JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
-						method, e);
-		Activator.getDefault()
-				.log(
-						new Status(IStatus.ERROR, Activator.PLUGIN_ID, code,
-								method, e));
+	protected void traceAndLogExceptionCatch(int code, String method, Throwable e) {
+		Trace.catching(Activator.PLUGIN_ID, JmsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), method, e);
+		Activator.getDefault().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, code, method, e));
 	}
 
-	protected void handleConnectException(ContainerMessage mess,
-			AbstractJMSServerChannel serverChannel, Exception e) {
+	protected void handleConnectException(ContainerMessage mess, AbstractJMSServerChannel serverChannel, Exception e) {
 	}
 
-	protected Object checkJoin(SocketAddress socketAddress, ID fromID,
-			String targetPath, Serializable data) throws Exception {
+	protected Object checkJoin(SocketAddress socketAddress, ID fromID, String targetPath, Serializable data) throws Exception {
 		if (joinPolicy != null)
-			return joinPolicy.checkConnect(socketAddress, fromID, getID(),
-					targetPath, data);
+			return joinPolicy.checkConnect(socketAddress, fromID, getID(), targetPath, data);
 		else
 			return null;
 	}
 
-	protected Serializable handleConnectRequest(ConnectRequestMessage request,
-			AbstractJMSServerChannel channel) {
-		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING,
-				this.getClass(), "handleConnectRequest", new Object[] { //$NON-NLS-1$
-				request, channel });
+	protected Serializable handleConnectRequest(ConnectRequestMessage request, AbstractJMSServerChannel channel) {
+		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING, this.getClass(), "handleConnectRequest", new Object[] { //$NON-NLS-1$
+				request, channel});
 		try {
-			ContainerMessage containerMessage = (ContainerMessage) request
-					.getData();
+			final ContainerMessage containerMessage = (ContainerMessage) request.getData();
 			if (containerMessage == null)
-				throw new InvalidObjectException(
-						Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL);
-			ID remoteID = containerMessage.getFromContainerID();
+				throw new InvalidObjectException(Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL);
+			final ID remoteID = containerMessage.getFromContainerID();
 			if (remoteID == null)
-				throw new InvalidObjectException(
-						Messages.AbstractJMSServer_CONNECT_EXCEPTION_REMOTEID_NOT_NULL);
-			ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) containerMessage
-					.getData();
+				throw new InvalidObjectException(Messages.AbstractJMSServer_CONNECT_EXCEPTION_REMOTEID_NOT_NULL);
+			final ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) containerMessage.getData();
 			if (jgm == null)
-				throw new InvalidObjectException(
-						Messages.AbstractJMSServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
+				throw new InvalidObjectException(Messages.AbstractJMSServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
 			ID memberIDs[] = null;
-			Serializable[] messages = new Serializable[2];
+			final Serializable[] messages = new Serializable[2];
 			AbstractJMSServerChannel.Client newclient = null;
 			synchronized (getGroupMembershipLock()) {
 				if (isClosing)
-					throw new ContainerConnectException(
-							Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
+					throw new ContainerConnectException(Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
 				// Now check to see if this request is going to be allowed
-				checkJoin(channel, remoteID, request.getTargetID().getTopic(),
-						jgm.getData());
+				checkJoin(channel, remoteID, request.getTargetID().getTopic(), jgm.getData());
 
 				newclient = channel.new Client(remoteID);
 
@@ -163,47 +143,37 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
-					messages[1] = serialize(ContainerMessage
-							.createViewChangeMessage(getID(), null,
-									getNextSequenceNumber(),
-									new ID[] { remoteID }, true, null));
+					messages[1] = serialize(ContainerMessage.createViewChangeMessage(getID(), null, getNextSequenceNumber(), new ID[] {remoteID}, true, null));
 				} else {
-					ConnectException e = new ConnectException(
-							Messages.AbstractJMSServer_CONNECT_EXCEPTION_REFUSED);
+					final ConnectException e = new ConnectException(Messages.AbstractJMSServer_CONNECT_EXCEPTION_REFUSED);
 					throw e;
 				}
 			}
 			// notify listeners
-			fireContainerEvent(new ContainerConnectedEvent(this.getID(),
-					remoteID));
+			fireContainerEvent(new ContainerConnectedEvent(this.getID(), remoteID));
 
-			messages[0] = serialize(ContainerMessage.createViewChangeMessage(
-					getID(), remoteID, getNextSequenceNumber(), memberIDs,
-					true, null));
+			messages[0] = serialize(ContainerMessage.createViewChangeMessage(getID(), remoteID, getNextSequenceNumber(), memberIDs, true, null));
 
 			newclient.start();
 
 			return messages;
 
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			traceAndLogExceptionCatch(IStatus.ERROR, "handleConnectRequest", e); //$NON-NLS-1$
 			return null;
 		}
 	}
 
-	protected void forwardExcluding(ID from, ID excluding, ContainerMessage data)
-			throws IOException {
+	protected void forwardExcluding(ID from, ID excluding, ContainerMessage data) throws IOException {
 		// no forwarding necessary
 	}
 
-	protected void forwardToRemote(ID from, ID to, ContainerMessage data)
-			throws IOException {
+	protected void forwardToRemote(ID from, ID to, ContainerMessage data) throws IOException {
 		// no forwarding necessary
 	}
 
-	protected void queueContainerMessage(ContainerMessage mess)
-			throws IOException {
-		serverChannel.sendAsynch(mess.toContainerID, serialize(mess));
+	protected void queueContainerMessage(ContainerMessage mess) throws IOException {
+		serverChannel.sendAsynch(mess.getToContainerID(), serialize(mess));
 	}
 
 	protected void handleLeave(ID target, IConnection conn) {
@@ -211,10 +181,8 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 			return;
 		if (removeRemoteMember(target)) {
 			try {
-				queueContainerMessage(ContainerMessage.createViewChangeMessage(
-						getID(), null, getNextSequenceNumber(),
-						new ID[] { target }, false, null));
-			} catch (IOException e) {
+				queueContainerMessage(ContainerMessage.createViewChangeMessage(getID(), null, getNextSequenceNumber(), new ID[] {target}, false, null));
+			} catch (final IOException e) {
 				traceAndLogExceptionCatch(IStatus.ERROR, "memberLeave", e); //$NON-NLS-1$
 			}
 		}

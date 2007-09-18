@@ -199,7 +199,7 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 	}
 
 	protected void queueContainerMessage(ContainerMessage mess) throws IOException {
-		serverConnection.sendAsynch(mess.toContainerID, serialize(mess));
+		serverConnection.sendAsynch(mess.getToContainerID(), serialize(mess));
 	}
 
 	protected void handleLeave(ID target, IConnection conn) {
