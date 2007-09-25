@@ -40,5 +40,4 @@ public interface Video {
 
 	/** Use this flag to disable/enable camera hardware */
 	public static final int IAXC_VIDEO_PREF_CAPTURE_DISABLE     = 1 << 6;
-
 }
