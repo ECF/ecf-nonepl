@@ -6,13 +6,30 @@
 <link rel="stylesheet" href="default_style.css" type="text/css">
 </head>
 <body text="#000000" bgcolor="#ffffff" link="#0000ee" vlink="#551a8b" alink="#ff0000"><table width=100% BORDER=0 CELLPADDING=2 CELLSPACING=5 STYLE="page-break-before: always">
-<h1>Under Construction</h1>
+<h1>ECF Extra Daily Downloads</h1>
 <div>
 <p>
 </p>
 <?php
+    function directoryToArray($directory, $recursive) {
+      $array_items = array();
+      if ($handle = opendir($directory)) {
+        while (false !== ($file = readdir($handle))) {
+          if ($file != "." && $file != "..") {
+            $array_items[] = preg_replace("/\/\//si", "/", $file);
+          }
+        }
+      }
+      closedir($handle);
+      rsort($array_items,SORT_STRING);
+      return $array_items;
+    }
 
+    $files=directoryToArray("/var/www/localhost/htdocs/dailies",false);
 
+    foreach ($files as $file) {
+       echo '<tr> <td> <p><a href="http://ecf1.osuosl.org/dailies/' . $file . '">' . $file .'</a></p></td></tr>';
+    }
 ?>
 </div>
 </body>
