@@ -33,7 +33,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer"
-            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsDatashareContainerAdapterFactory">
+            class="org.eclipse.ecf.provider.datashare.DatashareContainerAdapterFactory">
          <adapter type="org.eclipse.ecf.datashare.IChannelContainerAdapter"/>
       </factory>
    </extension>
@@ -42,7 +42,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer"
-            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsDatashareContainerAdapterFactory">
+            class="org.eclipse.ecf.provider.datashare.DatashareContainerAdapterFactory">
          <adapter type="org.eclipse.ecf.datashare.IChannelContainerAdapter"/>
       </factory>
    </extension>
@@ -51,7 +51,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer"
-            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsRemoteServiceContainerAdapterFactory">
+            class="org.eclipse.ecf.provider.remoteservice.generic.RemoteServiceContainerAdapterFactory">
          <adapter type="org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter"/>
       </factory>
    </extension>
@@ -60,7 +60,7 @@
          point="org.eclipse.core.runtime.adapters">
       <factory
             adaptableType="org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer"
-            class="org.eclipse.ecf.internal.provider.jgroups.JGroupsRemoteServiceContainerAdapterFactory">
+            class="org.eclipse.ecf.provider.remoteservice.generic.RemoteServiceContainerAdapterFactory">
          <adapter type="org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter"/>
       </factory>
    </extension>
