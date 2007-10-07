@@ -66,50 +66,11 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 
 	private final List callSessionRequestListeners = new ArrayList();
 
-	private final IAXClientListener iaxclientlistener = new IAXClientListener() {
-
-		public void onEvent_Audio(Event_Audio fired_EventAudio) {
-			handleEventAudio(fired_EventAudio);
-		}
-
-		public void onEvent_CallState(Event_State fired_EventCallState) {
-			handleEventCallState(fired_EventCallState);
-		}
-
-		public void onEvent_Level(Event_Level fired_EventLevel) {
-			handleEventLevel(fired_EventLevel);
-		}
-
-		public void onEvent_NetStats(Event_NetStats fired_EventNetStats) {
-			handleEventNetStats(fired_EventNetStats);
-		}
-
-		public void onEvent_Registration(Event_Registration fired_EventRegistration) {
-			handleEventRegistration(fired_EventRegistration);
-		}
-
-		public void onEvent_Text(Event_Text fired_EventText) {
-			handleEventText(fired_EventText);
-		}
-
-		public void onEvent_URL(Event_URL fired_EventURL) {
-			handleEventURL(fired_EventURL);
-		}
-
-		public void onEvent_Video(Event_Video fired_EventVideo) {
-			handleEventVideo(fired_EventVideo);
-		}
-
-		public void onEvent_VideoStats(Event_VideoStats fired_EventVideoStats) {
-			handleEventVideoStats(fired_EventVideoStats);
-		}
-	};
-
 	public IAXContainer() throws IDCreateException {
 		super();
 		this.containerID = IDFactory.getDefault().createGUID();
 		this.iaxclient = IAXClient.getIAXClient(true, 1);
-		this.iaxclient.addIAXClientListener(iaxclientlistener);
+		this.iaxclient.addIAXClientListener(new IAXClientListenerImpl(this));
 	}
 
 	/*
@@ -199,7 +160,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventVideo(Event_Video fired_EventVideo) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventVideo", fired_EventVideo);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -208,7 +168,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventURL(Event_URL fired_EventURL) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventURL", fired_EventURL);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -217,7 +176,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventText(Event_Text fired_EventText) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventText", fired_EventText);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -226,7 +184,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventRegistration(Event_Registration fired_EventRegistration) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventRegistration", fired_EventRegistration);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -235,7 +192,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventNetStats(Event_NetStats fired_EventNetStats) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventNetStats", fired_EventNetStats);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -244,7 +200,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventLevel(Event_Level fired_EventLevel) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventLevel", fired_EventLevel);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -253,7 +208,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventCallState(Event_State fired_EventCallState) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventCallState", fired_EventCallState);
 		// TODO Auto-generated method stub
-
 	}
 
 	/**
@@ -262,7 +216,6 @@ public class IAXContainer extends AbstractContainer implements ICallSessionConta
 	protected void handleEventAudio(Event_Audio fired_EventAudio) {
 		Trace.entering(Activator.PLUGIN_ID, IAXDebugOptions.METHODS_ENTERING, this.getClass(), "handleEventAudio", fired_EventAudio);
 		// TODO Auto-generated method stub
-
 	}
 
 	protected void fireCallSessionRequestListeners(ICallSessionRequestEvent event) {
