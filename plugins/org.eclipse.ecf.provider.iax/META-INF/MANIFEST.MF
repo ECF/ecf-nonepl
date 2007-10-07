@@ -5,9 +5,10 @@ Bundle-SymbolicName: org.eclipse.ecf.provider.iax;singleton:=true
 Bundle-Version: 0.1.0.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.provider.iax.Activator
 Bundle-Vendor: Eclipse.org
-Require-Bundle: org.eclipse.equinox.common,
- org.eclipse.ecf,
- org.eclipse.ecf.telephony.call
+Require-Bundle: org.eclipse.ecf,
+ org.eclipse.ecf.telephony.call,
+ org.eclipse.equinox.common,
+ org.eclipse.equinox.launcher
 Eclipse-LazyStart: true
 Import-Package: com.yakasoftware.telephony.iax.iaxclient,
  com.yakasoftware.telephony.iax.iaxclient.constants,
