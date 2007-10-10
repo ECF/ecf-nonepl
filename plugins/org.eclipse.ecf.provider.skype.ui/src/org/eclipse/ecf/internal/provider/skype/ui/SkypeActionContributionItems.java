@@ -9,6 +9,10 @@ import org.eclipse.osgi.util.NLS;
 
 public class SkypeActionContributionItems extends AbstractRosterEntryContributionItem {
 
+	public SkypeActionContributionItems() {
+		super();
+	}
+
 	public SkypeActionContributionItems(String id) {
 		super(id);
 	}
