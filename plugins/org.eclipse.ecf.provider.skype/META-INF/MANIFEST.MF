@@ -14,7 +14,9 @@ Require-Bundle: org.eclipse.ecf,
  org.eclipse.ecf.provider,
  org.eclipse.ecf.telephony.call,
  org.eclipse.ecf.datashare,
- org.eclipse.ecf.provider.datashare
+ org.eclipse.ecf.provider.datashare,
+ org.eclipse.ecf.remoteservice,
+ org.eclipse.ecf.provider.remoteservice
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: global
 Import-Package: org.eclipse.osgi.util;version="1.1.0",
