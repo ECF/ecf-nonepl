@@ -42,7 +42,7 @@ public class YahooContainer extends AbstractContainer {
 	private Session session;
 
 	/** Entity identifier within the ECF namespace for the local Container entity */
-	private ID localID;
+	private final ID localID;
 
 	/**
 	 * Entity identifier within the Yahoo! namespace for the target server or
@@ -54,34 +54,31 @@ public class YahooContainer extends AbstractContainer {
 	 * Presence container instance used for adapting this container to a present
 	 * container
 	 */
-	private YahooPresenceContainer presenceContainer;
+	private final YahooPresenceContainer presenceContainer;
 
 	public YahooContainer(ID id) {
 		this.localID = id;
 		session = new Session();
-		presenceContainer = new YahooPresenceContainer(this,session);
+		presenceContainer = new YahooPresenceContainer(this, session);
 	}
 
-	public void connect(ID targetID, IConnectContext connectContext)
-			throws ContainerConnectException {
-		String password = getPasswordFromConnectContext(connectContext);
-		fireContainerEvent(new ContainerConnectingEvent(this.getID(), targetID,
-				connectContext));
+	public void connect(ID targetID, IConnectContext connectContext) throws ContainerConnectException {
+		final String password = getPasswordFromConnectContext(connectContext);
+		fireContainerEvent(new ContainerConnectingEvent(this.getID(), targetID, connectContext));
 		this.targetYahooID = (YahooID) targetID;
 		try {
 			session.setStatus(StatusConstants.STATUS_AVAILABLE);
 			session.login(targetYahooID.getUsername(), password);
-		} catch (AccountLockedException e) {
+		} catch (final AccountLockedException e) {
 			throw new ContainerConnectException("Account locked", e);
-		} catch (IllegalStateException e) {
-			throw new IllegalStateException("Illegal state", e);
-		} catch (LoginRefusedException e) {
+		} catch (final IllegalStateException e) {
+			throw e;
+		} catch (final LoginRefusedException e) {
 			throw new ContainerConnectException("Login refused", e);
-		} catch (IOException e) {
+		} catch (final IOException e) {
 			throw new ContainerConnectException("Unknown IOException", e);
 		}
-		session.addSessionListener(new YahooSessionListener(this,
-				presenceContainer));
+		session.addSessionListener(new YahooSessionListener(this, presenceContainer));
 		presenceContainer.populateRoster(targetYahooID, session.getGroups());
 		fireContainerEvent(new ContainerConnectedEvent(this.getID(), targetID));
 	}
@@ -91,23 +88,20 @@ public class YahooContainer extends AbstractContainer {
 	}
 
 	public Namespace getConnectNamespace() {
-		return IDFactory.getDefault().getNamespaceByName(
-				Activator.NAMESPACE_IDENTIFIER);
+		return IDFactory.getDefault().getNamespaceByName(Activator.NAMESPACE_IDENTIFIER);
 	}
 
 	public synchronized void disconnect() {
 		if (session != null) {
-			fireContainerEvent(new ContainerDisconnectingEvent(this.getID(),
-					targetYahooID));
+			fireContainerEvent(new ContainerDisconnectingEvent(this.getID(), targetYahooID));
 			try {
 				session.logout();
-			} catch (Exception e) {
+			} catch (final Exception e) {
 			} finally {
 				session = null;
 			}
 			// notify listeners
-			fireContainerEvent(new ContainerDisconnectedEvent(this.getID(),
-					targetYahooID));
+			fireContainerEvent(new ContainerDisconnectedEvent(this.getID(), targetYahooID));
 		}
 		targetYahooID = null;
 	}
