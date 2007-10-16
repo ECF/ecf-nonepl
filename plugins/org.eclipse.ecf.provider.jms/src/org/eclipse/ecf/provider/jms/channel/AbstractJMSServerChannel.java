@@ -10,23 +10,13 @@ package org.eclipse.ecf.provider.jms.channel;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
+import java.util.*;
 import javax.jms.ObjectMessage;
-
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
-import org.eclipse.ecf.internal.provider.jms.Activator;
-import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
-import org.eclipse.ecf.internal.provider.jms.Messages;
-import org.eclipse.ecf.provider.comm.DisconnectEvent;
-import org.eclipse.ecf.provider.comm.IConnectionListener;
-import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
-import org.eclipse.ecf.provider.comm.SynchEvent;
+import org.eclipse.ecf.internal.provider.jms.*;
+import org.eclipse.ecf.provider.comm.*;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 /**
@@ -61,9 +51,9 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel implem
 
 		private final Map properties;
 		private final ID clientID;
-		private boolean isStarted = false;
+		boolean isStarted = false;
 		private final Object disconnectLock = new Object();
-		private boolean disconnectHandled = false;
+		boolean disconnectHandled = false;
 
 		private Thread pingThread = null;
 		private final int pingWaitTime = DEFAULT_PING_WAITTIME;
@@ -89,6 +79,7 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel implem
 		}
 
 		public void addListener(IConnectionListener listener) {
+			// XXX not implemented
 		}
 
 		public Object connect(ID remote, Object data, int timeout) throws ECFException {
@@ -116,6 +107,7 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel implem
 		}
 
 		public void removeListener(IConnectionListener listener) {
+			// XXX not implemented
 		}
 
 		public void start() {
@@ -172,10 +164,10 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel implem
 							// occurred
 							if (me.isInterrupted() || disconnectHandled)
 								break;
-							final long lastSendTime = getLastSendTime();
+							final long lastSendTime1 = getLastSendTime();
 							// Only send ping if the current time is greater
 							// than the lastSendTime + keepAlive/2
-							if (System.currentTimeMillis() > (lastSendTime + frequency)) {
+							if (System.currentTimeMillis() > (lastSendTime1 + frequency)) {
 								setLastSendTime();
 								sendAndWait(new Ping(AbstractJMSServerChannel.this.getLocalID(), Client.this.getLocalID()), pingWaitTime);
 							}
@@ -201,7 +193,7 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel implem
 			}
 		}
 
-		private void handleException(Throwable e) {
+		void handleException(Throwable e) {
 			synchronized (disconnectLock) {
 				if (!disconnectHandled) {
 					disconnectHandled = true;

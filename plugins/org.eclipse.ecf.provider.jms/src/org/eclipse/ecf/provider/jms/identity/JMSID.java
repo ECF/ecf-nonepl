@@ -17,7 +17,8 @@ public class JMSID extends StringID {
 
 	private static final long serialVersionUID = 3979266962767753264L;
 
-	private static final String PROTOCOLSEPARATOR = "://";
+	private static final String PROTOCOLSEPARATOR = "://"; //$NON-NLS-1$
+
 	/**
 	 * @param n
 	 * @param s
@@ -36,23 +37,26 @@ public class JMSID extends StringID {
 		String server = getServer();
 		if (server.length() > 0) {
 			String postServer = getName().substring(server.length());
-			int indexOfPathStart = postServer.indexOf("/");
+			int indexOfPathStart = postServer.indexOf("/"); //$NON-NLS-1$
 			if (indexOfPathStart != -1) {
-				String path = postServer.substring(indexOfPathStart+1);
-				while (path.charAt(0) == '/') path = path.substring(1,path.length());
+				String path = postServer.substring(indexOfPathStart + 1);
+				while (path.charAt(0) == '/')
+					path = path.substring(1, path.length());
 				return path;
-			} else return "";
-		} else return "";
+			}
+		}
+		return ""; //$NON-NLS-1$
 	}
-	
+
 	public String getServer() {
 		int indexOfSlashes = getName().indexOf(PROTOCOLSEPARATOR);
 		if (indexOfSlashes != -1) {
-			String postProtocol = getName().substring(indexOfSlashes+PROTOCOLSEPARATOR.length());
+			String postProtocol = getName().substring(indexOfSlashes + PROTOCOLSEPARATOR.length());
 			int indexOfPathStart = postProtocol.indexOf('/');
 			if (indexOfPathStart != -1) {
-				return getName().substring(0,indexOfSlashes+PROTOCOLSEPARATOR.length()+indexOfPathStart);
-			} else return "";
-		} else return "";
+				return getName().substring(0, indexOfSlashes + PROTOCOLSEPARATOR.length() + indexOfPathStart);
+			}
+		}
+		return ""; //$NON-NLS-1$
 	}
 }

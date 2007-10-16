@@ -9,12 +9,10 @@
 package org.eclipse.ecf.provider.jms.channel;
 
 import java.io.Serializable;
-
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 
-public class ConnectRequestMessage implements Serializable, ECFMessage,
-		SynchRequestMessage {
+public class ConnectRequestMessage implements Serializable, ECFMessage, SynchRequestMessage {
 
 	private static final long serialVersionUID = -1660845225936582555L;
 
@@ -26,15 +24,14 @@ public class ConnectRequestMessage implements Serializable, ECFMessage,
 
 	Serializable data;
 
-	public ConnectRequestMessage(String jmsTopicClientID, ID clientID,
-			JMSID targetID, Serializable data) {
+	public ConnectRequestMessage(String jmsTopicClientID, ID clientID, JMSID targetID, Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.jmsTopicClientID = jmsTopicClientID;
 		this.data = data;
 	}
 
-	public JMSID getTargetID() {
+	public JMSID getTargetJMSID() {
 		return targetID;
 	}
 
@@ -55,6 +52,13 @@ public class ConnectRequestMessage implements Serializable, ECFMessage,
 		buf.append(clientID).append(";").append(targetID).append(";"); //$NON-NLS-1$ //$NON-NLS-2$
 		buf.append(jmsTopicClientID).append(";").append(data).append("]"); //$NON-NLS-1$ //$NON-NLS-2$
 		return buf.toString();
+	}
+
+	/* (non-Javadoc)
+	 * @see org.eclipse.ecf.provider.jms.channel.ECFMessage#getTargetID()
+	 */
+	public ID getTargetID() {
+		return targetID;
 	}
 
 }

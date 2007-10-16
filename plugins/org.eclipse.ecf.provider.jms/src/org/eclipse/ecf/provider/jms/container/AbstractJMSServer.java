@@ -11,12 +11,9 @@
 
 package org.eclipse.ecf.provider.jms.container;
 
-import java.io.IOException;
-import java.io.InvalidObjectException;
-import java.io.Serializable;
+import java.io.*;
 import java.net.ConnectException;
 import java.net.SocketAddress;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.ContainerConnectException;
@@ -25,18 +22,11 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.security.IConnectHandlerPolicy;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
-import org.eclipse.ecf.internal.provider.jms.Activator;
-import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
-import org.eclipse.ecf.internal.provider.jms.Messages;
-import org.eclipse.ecf.provider.comm.IAsynchConnection;
-import org.eclipse.ecf.provider.comm.IConnection;
-import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.provider.comm.SynchEvent;
+import org.eclipse.ecf.internal.provider.jms.*;
+import org.eclipse.ecf.provider.comm.*;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
-import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
-import org.eclipse.ecf.provider.jms.channel.ConnectRequestMessage;
-import org.eclipse.ecf.provider.jms.channel.DisconnectRequestMessage;
+import org.eclipse.ecf.provider.jms.channel.*;
 
 /**
  * Abstract JMS Server. Subclasses should be created to create concrete
@@ -84,6 +74,11 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 		this.joinPolicy = policy;
 	}
 
+	/**
+	 * @param e
+	 * @return Serializable result of this synchronous processing.
+	 * @throws IOException not thrown by this implementation.
+	 */
 	protected Serializable processSynch(SynchEvent e) throws IOException {
 		final Object req = e.getData();
 		if (req instanceof ConnectRequestMessage) {
@@ -105,14 +100,14 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 		Activator.getDefault().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, code, method, e));
 	}
 
-	protected void handleConnectException(ContainerMessage mess, AbstractJMSServerChannel serverChannel, Exception e) {
+	protected void handleConnectException(ContainerMessage mess, AbstractJMSServerChannel serverChannel1, Exception e) {
+		// no default implementation
 	}
 
 	protected Object checkJoin(SocketAddress socketAddress, ID fromID, String targetPath, Serializable data) throws Exception {
 		if (joinPolicy != null)
 			return joinPolicy.checkConnect(socketAddress, fromID, getID(), targetPath, data);
-		else
-			return null;
+		return null;
 	}
 
 	protected Serializable handleConnectRequest(ConnectRequestMessage request, AbstractJMSServerChannel channel) {
@@ -135,7 +130,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 				if (isClosing)
 					throw new ContainerConnectException(Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
 				// Now check to see if this request is going to be allowed
-				checkJoin(channel, remoteID, request.getTargetID().getTopic(), jgm.getData());
+				checkJoin(channel, remoteID, request.getTargetJMSID().getTopic(), jgm.getData());
 
 				newclient = channel.new Client(remoteID);
 
@@ -164,10 +159,22 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 		}
 	}
 
+	/**
+	 * @param from
+	 * @param excluding
+	 * @param data
+	 * @throws IOException not thrown by this implementation.
+	 */
 	protected void forwardExcluding(ID from, ID excluding, ContainerMessage data) throws IOException {
 		// no forwarding necessary
 	}
 
+	/**
+	 * @param from
+	 * @param to
+	 * @param data
+	 * @throws IOException not thrown by this implementation.
+	 */
 	protected void forwardToRemote(ID from, ID to, ContainerMessage data) throws IOException {
 		// no forwarding necessary
 	}

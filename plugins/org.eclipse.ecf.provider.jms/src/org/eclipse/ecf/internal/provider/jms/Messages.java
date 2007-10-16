@@ -39,10 +39,11 @@ public class Messages extends NLS {
 	public static String JMSNamespace_EXCEPTION_XMPP_ARGS_INVALID;
 
 	static {
-// initialize resource bundle
+		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
 
 	private Messages() {
+		//
 	}
 }

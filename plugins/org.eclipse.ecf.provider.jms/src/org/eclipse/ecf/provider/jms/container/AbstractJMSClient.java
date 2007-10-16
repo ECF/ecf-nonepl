@@ -12,20 +12,13 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.net.ConnectException;
 import java.util.Map;
-
 import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.core.identity.*;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.internal.provider.jms.Messages;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
-import org.eclipse.ecf.provider.generic.ClientSOContainer;
-import org.eclipse.ecf.provider.generic.ContainerMessage;
-import org.eclipse.ecf.provider.generic.SOConfig;
-import org.eclipse.ecf.provider.generic.SOContainer;
-import org.eclipse.ecf.provider.generic.SOContext;
+import org.eclipse.ecf.provider.generic.*;
 import org.eclipse.ecf.provider.jms.channel.DisconnectRequestMessage;
 import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 
@@ -47,8 +40,7 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 		super(config);
 	}
 
-	protected void handleContainerMessage(ContainerMessage mess)
-			throws IOException {
+	protected void handleContainerMessage(ContainerMessage mess) throws IOException {
 		if (mess == null) {
 			debug("got null container message...ignoring"); //$NON-NLS-1$
 			return;
@@ -69,18 +61,20 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 
 	class JMSContainerContext extends SOContext {
 
-		public JMSContainerContext(ID objID, ID homeID, SOContainer cont,
-				Map props, IQueueEnqueue queue) {
+		public JMSContainerContext(ID objID, ID homeID, SOContainer cont, Map props, IQueueEnqueue queue) {
 			super(objID, homeID, cont, props, queue);
 		}
 	}
 
-	protected SOContext createSharedObjectContext(SOConfig soconfig,
-			IQueueEnqueue queue) {
-		return new JMSContainerContext(soconfig.getSharedObjectID(), soconfig
-				.getHomeContainerID(), this, soconfig.getProperties(), queue);
+	protected SOContext createSharedObjectContext(SOConfig soconfig, IQueueEnqueue queue) {
+		return new JMSContainerContext(soconfig.getSharedObjectID(), soconfig.getHomeContainerID(), this, soconfig.getProperties(), queue);
 	}
 
+	/**
+	 * @param e
+	 * @return Serializable result of the synchronous processing.
+	 * @throws IOException not thrown by this implementation.
+	 */
 	protected Serializable processSynch(SynchEvent e) throws IOException {
 		Object req = e.getData();
 		if (req instanceof DisconnectRequestMessage) {
@@ -99,16 +93,14 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 		fireContainerEvent(new ContainerDisconnectedEvent(getID(), fromID));
 	}
 
-	protected ID handleConnectResponse(ID originalTarget, Object serverData)
-			throws Exception {
+	protected ID handleConnectResponse(ID originalTarget, Object serverData) throws Exception {
 		Object cr = null;
 		if (serverData instanceof byte[]) {
 			cr = deserializeContainerMessage((byte[]) serverData);
 		} else if (serverData instanceof ContainerMessage) {
 			cr = serverData;
 		} else {
-			throw new ConnectException(
-					Messages.AbstractJMSClient_EXCEPTION_INVALID_SERVER_RESPONSE);
+			throw new ConnectException(Messages.AbstractJMSClient_EXCEPTION_INVALID_SERVER_RESPONSE);
 		}
 		return super.handleConnectResponse(originalTarget, cr);
 	}

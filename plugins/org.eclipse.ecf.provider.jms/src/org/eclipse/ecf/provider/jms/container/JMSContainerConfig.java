@@ -12,7 +12,6 @@
 package org.eclipse.ecf.provider.jms.container;
 
 import java.util.Map;
-
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 
@@ -24,12 +23,12 @@ public class JMSContainerConfig extends SOContainerConfig {
 	private int keepAlive = AbstractJMSServer.DEFAULT_KEEPALIVE;
 
 	/**
-	 * @param id.
+	 * @param id
 	 *            The new ID for this container. Must not be
 	 *            <code>null</code>.
-	 * @param keepAlive.
+	 * @param keepAlive
 	 *            Keep alive for this JMS container.
-	 * @param props.
+	 * @param props
 	 *            Any properties for this config. May be <code>null</code>.
 	 */
 	public JMSContainerConfig(ID id, int keepAlive, Map props) {
@@ -38,10 +37,10 @@ public class JMSContainerConfig extends SOContainerConfig {
 	}
 
 	/**
-	 * @param id.
+	 * @param id
 	 *            The new ID for this container. Must not be
 	 *            <code>null</code>.
-	 * @param keepAlive.
+	 * @param keepAlive
 	 *            Keep alive for this JMS container.
 	 */
 	public JMSContainerConfig(ID id, int keepAlive) {
@@ -50,7 +49,7 @@ public class JMSContainerConfig extends SOContainerConfig {
 	}
 
 	/**
-	 * @param id.
+	 * @param id
 	 *            The new ID for this container. Must not be
 	 *            <code>null</code>.
 	 */
