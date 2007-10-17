@@ -32,14 +32,12 @@ public class SkypeContainerInstantiator implements IContainerInstantiator {
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription,
 	 *      java.lang.Object[])
 	 */
-	public IContainer createInstance(ContainerTypeDescription description,
-			Object[] parameters) throws ContainerCreateException {
+	public IContainer createInstance(ContainerTypeDescription description, Object[] parameters) throws ContainerCreateException {
 		try {
-			Profile skypeProfile = Skype.getProfile();
+			final Profile skypeProfile = Skype.getProfile();
 			return new SkypeContainer(skypeProfile, skypeProfile.getId());
-		} catch (Exception e) {
-			throw new ContainerCreateException(
-					"Could not create skype container", e);
+		} catch (final Exception e) {
+			throw new ContainerCreateException("Could not create skype container", e);
 		}
 	}
 
@@ -48,10 +46,8 @@ public class SkypeContainerInstantiator implements IContainerInstantiator {
 	 * 
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#getSupportedAdapterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
 	 */
-	public String[] getSupportedAdapterTypes(
-			ContainerTypeDescription description) {
-		return new String[] { IPresenceContainerAdapter.class.getName(),
-				ICallSessionContainerAdapter.class.getName() };
+	public String[] getSupportedAdapterTypes(ContainerTypeDescription description) {
+		return new String[] {IPresenceContainerAdapter.class.getName(), ICallSessionContainerAdapter.class.getName()};
 	}
 
 	/*
@@ -59,8 +55,7 @@ public class SkypeContainerInstantiator implements IContainerInstantiator {
 	 * 
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
 	 */
-	public Class[][] getSupportedParameterTypes(
-			ContainerTypeDescription description) {
+	public Class[][] getSupportedParameterTypes(ContainerTypeDescription description) {
 		return null;
 	}
 

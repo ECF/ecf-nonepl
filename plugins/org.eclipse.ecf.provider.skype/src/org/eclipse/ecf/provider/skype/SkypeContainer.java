@@ -45,8 +45,7 @@ import com.skype.connector.ConnectorException;
 /**
  * 
  */
-public class SkypeContainer extends ClientSOContainer implements IContainer,
-		IPresenceService {
+public class SkypeContainer extends ClientSOContainer implements IContainer, IPresenceService {
 
 	private static final String SKYPE_ACCOUNT_NAME = " [skype]";
 
@@ -85,8 +84,7 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 	/**
 	 * @param config
 	 */
-	public SkypeContainer(final Profile skypeProfile, final String id)
-			throws SkypeException, ConnectorException {
+	public SkypeContainer(final Profile skypeProfile, final String id) throws SkypeException, ConnectorException {
 		super(new ISharedObjectContainerConfig() {
 
 			public Object getAdapter(Class clazz) {
@@ -100,20 +98,18 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 			public ID getID() {
 				try {
 					return IDFactory.getDefault().createStringID(id);
-				} catch (Exception e) {
+				} catch (final Exception e) {
 					return null;
 				}
 			}
 		});
 		this.userID = new SkypeUserID(skypeProfile.getId());
+		//SkypeClient.hideSkypeWindow();
 		String fullName = skypeProfile.getFullName();
-		fullName = (fullName == null || fullName.equals("")) ? userID.getUser()
-				: fullName;
-		org.eclipse.ecf.core.user.User user = new org.eclipse.ecf.core.user.User(
-				userID, fullName + SKYPE_ACCOUNT_NAME);
+		fullName = (fullName == null || fullName.equals("")) ? userID.getUser() : fullName;
+		final org.eclipse.ecf.core.user.User user = new org.eclipse.ecf.core.user.User(userID, fullName + SKYPE_ACCOUNT_NAME);
 
-		accountManager = new SkypeAccountManager(this, skypeProfile, userID,
-				user);
+		accountManager = new SkypeAccountManager(this, skypeProfile, userID, user);
 		rosterManager = new SkypeRosterManager(this, user);
 		chatManager = new SkypeChatManager();
 		chatRoomManager = new SkypeChatRoomManager();
@@ -129,18 +125,15 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#connect(org.eclipse.ecf.core.identity.ID,
 	 *      org.eclipse.ecf.core.security.IConnectContext)
 	 */
-	public synchronized void connect(ID remote, IConnectContext joinContext)
-			throws ContainerConnectException {
+	public synchronized void connect(ID remote, IConnectContext joinContext) throws ContainerConnectException {
 		if (this.connectionState != CONNECTED) {
-			fireContainerEvent(new ContainerConnectingEvent(getID(),
-					this.remoteServerID));
+			fireContainerEvent(new ContainerConnectingEvent(getID(), this.remoteServerID));
 			try {
 				this.remoteServerID = userID;
 				this.connectionState = CONNECTED;
 				rosterManager.fillRoster();
-				fireContainerEvent(new ContainerConnectedEvent(getID(),
-						this.remoteServerID));
-			} catch (Exception e) {
+				fireContainerEvent(new ContainerConnectedEvent(getID(), this.remoteServerID));
+			} catch (final Exception e) {
 				throw new ContainerConnectException("Couldn't connect", e);
 			}
 		}
@@ -152,14 +145,12 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#disconnect()
 	 */
 	public synchronized void disconnect() {
-		fireContainerEvent(new ContainerDisconnectingEvent(getID(),
-				this.remoteServerID));
+		fireContainerEvent(new ContainerDisconnectingEvent(getID(), this.remoteServerID));
 		accountManager.disconnect();
 		rosterManager.disconnect();
 		chatManager.disconnect();
 		chatRoomManager.disconnect();
-		fireContainerEvent(new ContainerDisconnectedEvent(getID(),
-				this.remoteServerID));
+		fireContainerEvent(new ContainerDisconnectedEvent(getID(), this.remoteServerID));
 		this.remoteServerID = null;
 		this.connectionState = DISCONNECTED;
 	}
@@ -206,19 +197,17 @@ public class SkypeContainer extends ClientSOContainer implements IContainer,
 	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org.eclipse.ecf.core.identity.ID,
 	 *      java.lang.Object)
 	 */
-	protected ISynchAsynchConnection createConnection(ID remoteSpace,
-			Object data) throws ConnectionCreateException {
+	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data) throws ConnectionCreateException {
 		return null;
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.provider.generic.SOContainer#createSharedObjectWrapper(org.eclipse.ecf.core.identity.ID, org.eclipse.ecf.core.sharedobject.ISharedObject, java.util.Map)
 	 */
-	protected SOWrapper createSharedObjectWrapper(ID id, ISharedObject s,
-			Map props) throws ECFException {
+	protected SOWrapper createSharedObjectWrapper(ID id, ISharedObject s, Map props) throws ECFException {
 		if (s instanceof IChannel)
-			return new SOWrapper(new SkypeChannelSOConfig(id, getID(), this, props),s,this);
+			return new SOWrapper(new SkypeChannelSOConfig(id, getID(), this, props), s, this);
 		return super.createSharedObjectWrapper(id, s, props);
 	}
-	
+
 }
