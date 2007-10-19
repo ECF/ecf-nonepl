@@ -44,81 +44,76 @@ import com.skype.SkypeException;
  */
 public class SkypeChatManager implements IChatManager {
 
-	private Vector chatListeners = new Vector();
-	
-	private Map chats = new HashMap();
-	
+	private final Vector chatListeners = new Vector();
+
+	private final Map chats = new HashMap();
+
 	private Chat sentChat = null;
-	
+
 	private ChatMessageListener chatMessageListener = new ChatMessageListener() {
 
-		public void chatMessageReceived(ChatMessage chatMessageReceived)
-				throws SkypeException {
-			Trace
-					.trace(
-							Activator.PLUGIN_ID,
-							"chatMessageReceived(id=" //$NON-NLS-1$
-									+ chatMessageReceived.getId()
-									+ ";content=" + chatMessageReceived.getContent() + ";senderid=" + chatMessageReceived.getSenderId() + ";sendername=" + chatMessageReceived.getSenderDisplayName() + ")"); //$NON-NLS-1$
+		public void chatMessageReceived(ChatMessage chatMessageReceived) throws SkypeException {
+			Trace.trace(Activator.PLUGIN_ID, "chatMessageReceived(id=" //$NON-NLS-1$
+					+ chatMessageReceived.getId() + ";content=" + chatMessageReceived.getContent() + ";senderid=" + chatMessageReceived.getSenderId() + ";sendername=" + chatMessageReceived.getSenderDisplayName() + ")"); //$NON-NLS-1$
 			fireChatMessageReceived(chatMessageReceived);
 		}
 
 		private void fireChatMessageReceived(ChatMessage chatMessageReceived) {
-			for(Iterator i=chatListeners.iterator(); i.hasNext(); ) {
+			for (Iterator i = chatListeners.iterator(); i.hasNext();) {
 				IIMMessageListener l = (IIMMessageListener) i.next();
 				try {
 					Chat chat = (Chat) chats.get(chatMessageReceived.getChat().getId());
-					if (chat != null) {
-						ID senderID = new SkypeUserID(chatMessageReceived.getSenderId());
-						final IChatMessage chatMessage = new org.eclipse.ecf.presence.im.ChatMessage(senderID,IDFactory.getDefault().createStringID(chatMessageReceived.getId()),Type.CHAT,null,chatMessageReceived.getContent(),createPropertiesForChatMessage(chatMessageReceived));
-						l.handleMessageEvent(new ChatMessageEvent(senderID,chatMessage));						
-					}
+					// XXX eventually we should only show messages from
+					// e.g. if (chat != null) { ...
+					// chats that we 'know' about.  For now, we'll show all messages
+					// to all clients (including the skype normal client)
+					ID senderID = new SkypeUserID(chatMessageReceived.getSenderId());
+					final IChatMessage chatMessage = new org.eclipse.ecf.presence.im.ChatMessage(senderID, IDFactory.getDefault().createStringID(chatMessageReceived.getId()), Type.CHAT, null, chatMessageReceived.getContent(), createPropertiesForChatMessage(chatMessageReceived));
+					l.handleMessageEvent(new ChatMessageEvent(senderID, chatMessage));
 				} catch (Exception e) {
-					Activator.log("fireChatMessageReceived",e);
+					Activator.log("fireChatMessageReceived", e);
 				}
 
 			}
 		}
 
-		private Map createPropertiesForChatMessage(
-				ChatMessage chatMessageReceived) {
+		private Map createPropertiesForChatMessage(ChatMessage chatMessageReceived) {
 			// TODO Auto-generated method stub
 			return null;
 		}
 
-		public void chatMessageSent(ChatMessage sentChatMessage)
-				throws SkypeException {
+		public void chatMessageSent(ChatMessage sentChatMessage) throws SkypeException {
 			try {
 				if (sentChat == null) {
 					String chatId = sentChatMessage.getChat().getId();
 					Chat chat = (Chat) chats.get(chatId);
-					if (chat == null) chats.put(chatId, sentChatMessage.getChat());
+					if (chat == null)
+						chats.put(chatId, sentChatMessage.getChat());
 					fireChatMessageSent(sentChatMessage);
 				} else {
 					sentChat = null;
 				}
 			} catch (SkypeException e) {
-				Activator.log("chatMessageSent",e);
+				Activator.log("chatMessageSent", e);
 			}
 		}
 
 		private void fireChatMessageSent(ChatMessage chatMessageSent) {
-			for(Iterator i=chatListeners.iterator(); i.hasNext(); ) {
+			for (Iterator i = chatListeners.iterator(); i.hasNext();) {
 				IIMMessageListener l = (IIMMessageListener) i.next();
 				try {
 					Chat chat = (Chat) chats.get(chatMessageSent.getChat().getId());
 					if (chat != null) {
 						ID senderID = new SkypeUserID(chatMessageSent.getSenderId());
-						final IChatMessage chatMessage = new org.eclipse.ecf.presence.im.ChatMessage(senderID,IDFactory.getDefault().createStringID(chatMessageSent.getId()),Type.CHAT,null,chatMessageSent.getContent(),createPropertiesForChatMessage(chatMessageSent));
-						l.handleMessageEvent(new ChatMessageEvent(senderID,chatMessage));						
+						final IChatMessage chatMessage = new org.eclipse.ecf.presence.im.ChatMessage(senderID, IDFactory.getDefault().createStringID(chatMessageSent.getId()), Type.CHAT, null, chatMessageSent.getContent(), createPropertiesForChatMessage(chatMessageSent));
+						l.handleMessageEvent(new ChatMessageEvent(senderID, chatMessage));
 					}
 				} catch (Exception e) {
-					Activator.log("fireChatMessageSent",e);
+					Activator.log("fireChatMessageSent", e);
 				}
 
 			}
 		}
-
 
 	};
 
@@ -137,31 +132,30 @@ public class SkypeChatManager implements IChatManager {
 		public Object getAdapter(Class adapter) {
 			return null;
 		}
-		
+
 	};
-	
+
 	IChatMessageSender chatMessageSender = new IChatMessageSender() {
-		
-		public void sendChatMessage(ID toID, ID threadID, Type type,
-				String subject, String body, Map properties)
-				throws ECFException {
-			if (toID == null || !(toID instanceof SkypeUserID)) throw new ECFException("Invalid Skype ID");
+
+		public void sendChatMessage(ID toID, ID threadID, Type type, String subject, String body, Map properties) throws ECFException {
+			if (toID == null || !(toID instanceof SkypeUserID))
+				throw new ECFException("Invalid Skype ID");
 			SkypeUserID skypeId = (SkypeUserID) toID;
 			try {
 				Chat chat = Skype.chat(skypeId.getName());
 				chat.send(body);
 				sentChat = chat;
 			} catch (SkypeException e) {
-				throw new ECFException("Skype Exception",e);
+				throw new ECFException("Skype Exception", e);
 			}
 		}
 
 		public void sendChatMessage(ID toID, String body) throws ECFException {
-			sendChatMessage(toID,null,Type.CHAT,null,body,null);
+			sendChatMessage(toID, null, Type.CHAT, null, body, null);
 		}
-		
+
 	};
-	
+
 	/**
 	 * @param skypeContainer
 	 * @param user2 
@@ -216,9 +210,9 @@ public class SkypeChatManager implements IChatManager {
 	}
 
 	protected void dispose() {
-		
+
 	}
-	
+
 	/**
 	 * 
 	 */
