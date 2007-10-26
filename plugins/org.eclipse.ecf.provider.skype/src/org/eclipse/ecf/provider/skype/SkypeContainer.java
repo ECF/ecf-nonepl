@@ -82,7 +82,10 @@ public class SkypeContainer extends ClientSOContainer implements IContainer, IPr
 	}
 
 	/**
-	 * @param config
+	 * @param skypeProfile 
+	 * @param id
+	 * @throws SkypeException 
+	 * @throws ConnectorException 
 	 */
 	public SkypeContainer(final Profile skypeProfile, final String id) throws SkypeException, ConnectorException {
 		super(new ISharedObjectContainerConfig() {

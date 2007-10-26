@@ -22,13 +22,16 @@ import com.skype.SkypeException;
 public class SkypeInitiatorCallSession extends SkypeCallSession {
 
 	/**
-	 * @param sharedObjectCallContainerAdapter
+	 * @param adapter 
+	 * @param initiatorID 
+	 * @param receiverID 
+	 * @param call 
+	 * @param listener 
+	 * @throws SkypeException 
 	 */
-	public SkypeInitiatorCallSession(SkypeCallContainerAdapter adapter, SkypeUserID initiatorID,
-			SkypeUserID receiverID, Call call, ICallSessionListener listener)
-			throws SkypeException {
+	public SkypeInitiatorCallSession(SkypeCallContainerAdapter adapter, SkypeUserID initiatorID, SkypeUserID receiverID, Call call, ICallSessionListener listener) throws SkypeException {
 		super(adapter, initiatorID, receiverID, call, listener);
-		ICallSessionListener l = getListener();
+		final ICallSessionListener l = getListener();
 		if (l != null)
 			l.handleCallSessionEvent(new ICallSessionEvent() {
 
@@ -37,8 +40,7 @@ public class SkypeInitiatorCallSession extends SkypeCallSession {
 				}
 
 				public String toString() {
-					return getStringBufferForEvent("ICallSessionEvent")
-							.toString();
+					return getStringBufferForEvent("ICallSessionEvent").toString();
 				}
 
 			});

@@ -9,7 +9,6 @@
 package org.eclipse.ecf.provider.jms.activemq.container;
 
 import java.io.IOException;
-import java.net.URISyntaxException;
 
 import javax.jms.ConnectionFactory;
 
@@ -37,30 +36,23 @@ public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 		private static final long serialVersionUID = -2348383004973299553L;
 
 		/**
-		 * @param handler
-		 * @param keepAlive
-		 * @throws IOException
-		 * @throws URISyntaxException
+		 * @throws ECFException
 		 */
 		public ActiveMQServerChannel() throws ECFException {
 			super(getReceiver(), getJMSContainerConfig().getKeepAlive());
 		}
 
-		protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
-				throws IOException {
-			return new ActiveMQConnectionFactory(getActiveMQUsername(targetID),
-					getActiveMQPassword(targetID), targetID.getName());
+		protected ConnectionFactory createJMSConnectionFactory(JMSID targetID) throws IOException {
+			return new ActiveMQConnectionFactory(getActiveMQUsername(targetID), getActiveMQPassword(targetID), targetID.getName());
 		}
 
 		private String getActiveMQPassword(JMSID targetID) {
-			String pw = (String) getJMSContainerConfig().getProperties().get(
-					PASSWORD_PROPERTY);
+			final String pw = (String) getJMSContainerConfig().getProperties().get(PASSWORD_PROPERTY);
 			return (pw == null) ? "defaultPassword" : pw;
 		}
 
 		private String getActiveMQUsername(JMSID targetID) {
-			String username = (String) getJMSContainerConfig().getProperties()
-					.get(USERNAME_PROPERTY);
+			final String username = (String) getJMSContainerConfig().getProperties().get(USERNAME_PROPERTY);
 			return (username == null) ? "defaultUsername" : username;
 		}
 
@@ -72,7 +64,7 @@ public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 	 * @see org.eclipse.ecf.provider.jms.container.AbstractJMSServer#start()
 	 */
 	public void start() throws ECFException {
-		ISynchAsynchConnection connection = new ActiveMQServerChannel();
+		final ISynchAsynchConnection connection = new ActiveMQServerChannel();
 		setConnection(connection);
 		connection.start();
 	}

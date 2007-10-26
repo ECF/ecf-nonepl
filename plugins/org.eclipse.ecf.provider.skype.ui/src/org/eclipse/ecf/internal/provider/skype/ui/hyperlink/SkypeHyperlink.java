@@ -61,7 +61,7 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 	 * Creates a new URL hyperlink.
 	 * 
 	 * @param region
-	 * @param urlString
+	 * @param uri
 	 */
 	public SkypeHyperlink(IRegion region, URI uri) {
 		super(region, uri);
@@ -82,21 +82,18 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 	 * @see org.eclipse.ecf.ui.hyperlink.AbstractURLHyperlink#createContainer()
 	 */
 	protected IContainer createContainer() throws ContainerCreateException {
-		return ContainerFactory.getDefault().createContainer(
-				ECF_SKYPE_CONTAINER_NAME);
+		return ContainerFactory.getDefault().createContainer(ECF_SKYPE_CONTAINER_NAME);
 	}
 
 	protected IContainer[] getContainers() {
-		IContainerManager manager = Activator.getDefault()
-				.getContainerManager();
+		final IContainerManager manager = Activator.getDefault().getContainerManager();
 		if (manager == null)
 			return EMPTY;
-		List results = new ArrayList();
-		IContainer[] containers = manager.getAllContainers();
+		final List results = new ArrayList();
+		final IContainer[] containers = manager.getAllContainers();
 		for (int i = 0; i < containers.length; i++) {
 			// Must be connected
-			if (containers[i].getConnectedID() != null
-					&& containers[i] instanceof SkypeContainer)
+			if (containers[i].getConnectedID() != null && containers[i] instanceof SkypeContainer)
 				results.add(containers[i]);
 		}
 		return (IContainer[]) results.toArray(EMPTY);
@@ -108,24 +105,14 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 	 * @see org.eclipse.ecf.ui.hyperlink.AbstractURLHyperlink#open()
 	 */
 	public void open() {
-		IContainer[] containers = getContainers();
+		final IContainer[] containers = getContainers();
 		if (containers.length > 0) {
-			if (containers[0].getConnectedID().getName().equals(
-					getURI().getAuthority())) {
-				MessageDialog.openError(null,
-						Messages.SkypeHyperlink_MESSAGING_ERROR_TITLE,
-						Messages.SkypeHyperlink_MESSAGING_ERROR_MESSAGE);
+			if (containers[0].getConnectedID().getName().equals(getURI().getAuthority())) {
+				MessageDialog.openError(null, Messages.SkypeHyperlink_MESSAGING_ERROR_TITLE, Messages.SkypeHyperlink_MESSAGING_ERROR_MESSAGE);
 			} else
 				chooseAccountAndOpen(containers);
 		} else {
-			if (MessageDialog
-					.openQuestion(
-							null,
-							Messages.SkypeHyperlink_DIALOG_CONNECT_TO_ACCOUNT_TITLE,
-							NLS
-									.bind(
-											Messages.SkypeHyperlink_DIALOG_CONNECT_TO_ACCOUNT_MESSAGE,
-											getURI().getAuthority()))) {
+			if (MessageDialog.openQuestion(null, Messages.SkypeHyperlink_DIALOG_CONNECT_TO_ACCOUNT_TITLE, NLS.bind(Messages.SkypeHyperlink_DIALOG_CONNECT_TO_ACCOUNT_MESSAGE, getURI().getAuthority()))) {
 				super.open();
 			}
 		}
@@ -138,37 +125,26 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 		// If there's only one choice then use it
 		if (containers.length == 1) {
 			// ask to the user if the talk is by IM or Call
-			MessageDialog dialog = new MessageDialog(null,
-					Messages.SkypeHyperlink_DIALOG_CALLIM_TITLE, null,
-					NLS.bind(Messages.SkypeHyperlink_DIALOG_CALLIM_MESSAGE,
-							getURI().getAuthority()), MessageDialog.QUESTION,
-					new String[] { Messages.SkypeHyperlink_BUTTON_CALL,
-							Messages.SkypeHyperlink_BUTTON_IM,
-							Messages.SkypeHyperlink_BUTTON_CANCEL }, 2);
-			int answer = dialog.open();
+			final MessageDialog dialog = new MessageDialog(null, Messages.SkypeHyperlink_DIALOG_CALLIM_TITLE, null, NLS.bind(Messages.SkypeHyperlink_DIALOG_CALLIM_MESSAGE, getURI().getAuthority()), MessageDialog.QUESTION, new String[] {Messages.SkypeHyperlink_BUTTON_CALL, Messages.SkypeHyperlink_BUTTON_IM, Messages.SkypeHyperlink_BUTTON_CANCEL}, 2);
+			final int answer = dialog.open();
 			switch (answer) {
-			case 0:
-				IPresenceContainerAdapter presenceContainerAdapter = (IPresenceContainerAdapter) containers[0]
-						.getAdapter(IPresenceContainerAdapter.class);
-				ID localID = presenceContainerAdapter.getRosterManager()
-						.getRoster().getUser().getID();
-				ID targetUser = new SkypeUserID(localID.getNamespace(),
-						getURI().getAuthority());
-				call(containers[0], targetUser);
-				break;
-			case 1:
-				openMessagesView((IPresenceContainerAdapter) containers[0]
-						.getAdapter(IPresenceContainerAdapter.class));
-				break;
+				case 0 :
+					final IPresenceContainerAdapter presenceContainerAdapter = (IPresenceContainerAdapter) containers[0].getAdapter(IPresenceContainerAdapter.class);
+					final ID localID = presenceContainerAdapter.getRosterManager().getRoster().getUser().getID();
+					final ID targetUser = new SkypeUserID(localID.getNamespace(), getURI().getAuthority());
+					call(containers[0], targetUser);
+					break;
+				case 1 :
+					openMessagesView((IPresenceContainerAdapter) containers[0].getAdapter(IPresenceContainerAdapter.class));
+					break;
 			}
 
 			return;
 		} else {
 			final IPresenceContainerAdapter[] adapters = new IPresenceContainerAdapter[containers.length];
 			for (int i = 0; i < containers.length; i++)
-				adapters[i] = (IPresenceContainerAdapter) containers[i]
-						.getAdapter(IPresenceContainerAdapter.class);
-			ListDialog dialog = new ListDialog(null);
+				adapters[i] = (IPresenceContainerAdapter) containers[i].getAdapter(IPresenceContainerAdapter.class);
+			final ListDialog dialog = new ListDialog(null);
 			dialog.setContentProvider(new IStructuredContentProvider() {
 
 				public Object[] getElements(Object inputElement) {
@@ -178,28 +154,23 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 				public void dispose() {
 				}
 
-				public void inputChanged(Viewer viewer, Object oldInput,
-						Object newInput) {
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				}
 			});
 			dialog.setInput(adapters);
 			dialog.setAddCancelButton(true);
 			dialog.setBlockOnOpen(true);
-			dialog
-					.setTitle(Messages.SkypeHyperlink_DIALOG_SELECT_ACCOUNT_TITLE);
-			dialog
-					.setMessage(Messages.SkypeHyperlink_DIALOG_SELECT_ACCOUNT_MESSAGE);
+			dialog.setTitle(Messages.SkypeHyperlink_DIALOG_SELECT_ACCOUNT_TITLE);
+			dialog.setMessage(Messages.SkypeHyperlink_DIALOG_SELECT_ACCOUNT_MESSAGE);
 			dialog.setHeightInChars(adapters.length > 4 ? adapters.length : 4);
-			dialog
-					.setInitialSelections(new IPresenceContainerAdapter[] { adapters[0] });
+			dialog.setInitialSelections(new IPresenceContainerAdapter[] {adapters[0]});
 			dialog.setLabelProvider(new ILabelProvider() {
 				public Image getImage(Object element) {
 					return null;
 				}
 
 				public String getText(Object element) {
-					IRosterManager manager = ((IPresenceContainerAdapter) element)
-							.getRosterManager();
+					final IRosterManager manager = ((IPresenceContainerAdapter) element).getRosterManager();
 					if (manager == null)
 						return null;
 					return manager.getRoster().getUser().getID().getName();
@@ -218,9 +189,9 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 				public void removeListener(ILabelProviderListener listener) {
 				}
 			});
-			int result = dialog.open();
+			final int result = dialog.open();
 			if (result == ListDialog.OK) {
-				Object[] res = dialog.getResult();
+				final Object[] res = dialog.getResult();
 				if (res.length > 0)
 					openMessagesView((IPresenceContainerAdapter) res[0]);
 			}
@@ -230,36 +201,20 @@ public class SkypeHyperlink extends AbstractURLHyperlink {
 	/**
 	 * @param presenceContainerAdapter
 	 */
-	private void openMessagesView(
-			IPresenceContainerAdapter presenceContainerAdapter) {
-		IChatManager chatManager = presenceContainerAdapter.getChatManager();
-		IRosterManager rosterManager = presenceContainerAdapter
-				.getRosterManager();
+	private void openMessagesView(IPresenceContainerAdapter presenceContainerAdapter) {
+		final IChatManager chatManager = presenceContainerAdapter.getChatManager();
+		final IRosterManager rosterManager = presenceContainerAdapter.getRosterManager();
 		if (chatManager != null && rosterManager != null) {
-			IChatMessageSender icms = chatManager.getChatMessageSender();
-			ITypingMessageSender itms = chatManager.getTypingMessageSender();
+			final IChatMessageSender icms = chatManager.getChatMessageSender();
+			final ITypingMessageSender itms = chatManager.getTypingMessageSender();
 			try {
-				IWorkbenchWindow ww = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow();
-				MessagesView view = (MessagesView) ww.getActivePage().showView(
-						MessagesView.VIEW_ID);
-				ID localID = rosterManager.getRoster().getUser().getID();
-				view.selectTab(icms, itms, localID, new SkypeUserID(localID
-						.getNamespace(), getURI().getAuthority()));
-			} catch (Exception e) {
-				MessageDialog
-						.openError(
-								null,
-								Messages.SkypeHyperlink_ERROR_OPEN_VIEW_TITLE,
-								NLS
-										.bind(
-												Messages.SkypeHyperlink_ERROR_OPEN_VIEW_MESSAGE,
-												e.getLocalizedMessage()));
-				Activator.getDefault().getLog().log(
-						new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-								IStatus.ERROR,
-								Messages.SkypeHyperlink_ERROR_OPEN_VIEW_STATUS,
-								e));
+				final IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				final MessagesView view = (MessagesView) ww.getActivePage().showView(MessagesView.VIEW_ID);
+				final ID localID = rosterManager.getRoster().getUser().getID();
+				view.selectTab(icms, itms, localID, new SkypeUserID(localID.getNamespace(), getURI().getAuthority()));
+			} catch (final Exception e) {
+				MessageDialog.openError(null, Messages.SkypeHyperlink_ERROR_OPEN_VIEW_TITLE, NLS.bind(Messages.SkypeHyperlink_ERROR_OPEN_VIEW_MESSAGE, e.getLocalizedMessage()));
+				Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, Messages.SkypeHyperlink_ERROR_OPEN_VIEW_STATUS, e));
 			}
 		}
 	}

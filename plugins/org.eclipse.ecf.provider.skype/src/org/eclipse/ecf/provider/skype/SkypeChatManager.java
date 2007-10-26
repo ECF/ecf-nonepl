@@ -157,10 +157,7 @@ public class SkypeChatManager implements IChatManager {
 	};
 
 	/**
-	 * @param skypeContainer
-	 * @param user2 
-	 * @param userID2 
-	 * @param skypeProfile 
+	 * @throws SkypeException 
 	 */
 	public SkypeChatManager() throws SkypeException {
 		Skype.addChatMessageListener(chatMessageListener);

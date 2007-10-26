@@ -49,54 +49,54 @@ import com.skype.StreamListener;
 public class SkypeSOContext extends SOContext {
 
 	private Application application = null;
-	
-	private Map streams = new Hashtable();
 
-	private List membership = new Vector();
-	
+	private final Map streams = new Hashtable();
+
+	private final List membership = new Vector();
+
 	class SOContextStreamListener implements StreamListener {
 
 		ID memberID = null;
-		
+
 		public SOContextStreamListener(ID memberID) {
 			this.memberID = memberID;
 		}
-		public void datagramReceived(String receivedDatagram)
-				throws SkypeException {
+
+		public void datagramReceived(String receivedDatagram) throws SkypeException {
 		}
 
 		public void textReceived(String receivedText) throws SkypeException {
 			handleReceived(memberID, receivedText);
 		}
-		
+
 	};
-	
-	private ApplicationListener applicationListener = new ApplicationListener() {
+
+	private final ApplicationListener applicationListener = new ApplicationListener() {
 		public void connected(Stream stream) throws SkypeException {
 			ID memberID = createIDFromName(stream.getFriend().getId());
 			membership.add(memberID);
 			stream.addStreamListener(new SOContextStreamListener(memberID));
-			streams.put(memberID,stream);
-			enqueue(new ContainerConnectedEvent(getLocalContainerID(),memberID));
+			streams.put(memberID, stream);
+			enqueue(new ContainerConnectedEvent(getLocalContainerID(), memberID));
 		}
 
 		public void disconnected(Stream stream) throws SkypeException {
 			ID memberID = createIDFromName(stream.getFriend().getId());
 			membership.remove(memberID);
 			streams.remove(memberID);
-			enqueue(new ContainerDisconnectedEvent(getLocalContainerID(),memberID));
+			enqueue(new ContainerDisconnectedEvent(getLocalContainerID(), memberID));
 		}
 	};
 
 	/**
+	 * @param application 
 	 * @param objID
 	 * @param homeID
 	 * @param cont
 	 * @param props
 	 * @param queue
 	 */
-	public SkypeSOContext(Application application, ID objID, ID homeID, SOContainer cont, Map props,
-			IQueueEnqueue queue) {
+	public SkypeSOContext(Application application, ID objID, ID homeID, SOContainer cont, Map props, IQueueEnqueue queue) {
 		super(objID, homeID, cont, props, queue);
 		Assert.isNotNull(application);
 		this.application = application;
@@ -112,49 +112,49 @@ public class SkypeSOContext extends SOContext {
 	public ID[] getGroupMemberIDs() {
 		return (ID[]) membership.toArray(new ID[] {});
 	}
-	
+
 	private void enqueue(Event event) {
 		try {
 			queue.enqueue(new SOWrapper.ProcEvent(event));
-		} catch (QueueException e) {
+		} catch (final QueueException e) {
 			// Should not happen
 		}
 	}
-	
+
 	/**
 	 * @param memberID
 	 * @param receivedText
 	 */
 	protected void handleReceived(ID memberID, String receivedText) {
 		// First get stream...make sure it's still active
-		Stream stream = (Stream) streams.get(memberID);
+		final Stream stream = (Stream) streams.get(memberID);
 		if (stream != null) {
 			try {
-				Object o = deserialize(Base64.decode(receivedText));
+				final Object o = deserialize(Base64.decode(receivedText));
 				// Deliver to queue for processing
-				enqueue(new RemoteSharedObjectEvent(sharedObjectID,memberID,o));
-			} catch (Exception e) {
+				enqueue(new RemoteSharedObjectEvent(sharedObjectID, memberID, o));
+			} catch (final Exception e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
 		}
 	}
 
-
 	protected ID createIDFromName(String id) {
 		try {
 			return IDFactory.getDefault().createStringID(id);
-		} catch (IDCreateException e) {
+		} catch (final IDCreateException e) {
 			// Should never happen
 			return null;
 		}
 	}
-	
+
 	protected Stream getStreamForId(String id) throws IOException {
-		if (application == null) throw new IOException("application not available");
+		if (application == null)
+			throw new IOException("application not available");
 		return (Stream) streams.get(id);
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -163,35 +163,37 @@ public class SkypeSOContext extends SOContext {
 	 */
 	public void sendMessage(ID targetID, Object data) throws IOException {
 		if (targetID == null) {
-			ID [] ids = getGroupMemberIDs();
-			for(int i=0; i < 0; i++) sendMessage(ids[i],data);
+			final ID[] ids = getGroupMemberIDs();
+			for (int i = 0; i < 0; i++)
+				sendMessage(ids[i], data);
 		} else {
 			try {
-				String friendID = targetID.getName();
+				final String friendID = targetID.getName();
 				Stream stream = getStreamForId(friendID);
 				if (stream == null) {
-					Friend friend = (Friend) Friend.getInstance(friendID);
-					Stream [] streams = application.connect(new Friend[] { friend } );
-					if (streams.length == 0) throw new IOException("Skype friend not running application");
+					final Friend friend = (Friend) Friend.getInstance(friendID);
+					final Stream[] streams = application.connect(new Friend[] {friend});
+					if (streams.length == 0)
+						throw new IOException("Skype friend not running application");
 					stream = streams[0];
 				}
 				stream.write(Base64.encode(serialize(data)));
-			} catch (SkypeException e) {
+			} catch (final SkypeException e) {
 				throw new IOException(e.getLocalizedMessage());
 			}
 		}
 	}
-	
+
 	protected byte[] serialize(Object o) throws IOException {
-		ByteArrayOutputStream bos = new ByteArrayOutputStream();
-		ObjectOutputStream oos = new ObjectOutputStream(bos);
+		final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+		final ObjectOutputStream oos = new ObjectOutputStream(bos);
 		oos.writeObject(o);
 		return bos.toByteArray();
 	}
 
 	protected Object deserialize(byte[] bytes) throws IOException, ClassNotFoundException {
-		ByteArrayInputStream bins = new ByteArrayInputStream(bytes);
-		ObjectInputStream oins = new ObjectInputStream(bins);
+		final ByteArrayInputStream bins = new ByteArrayInputStream(bytes);
+		final ObjectInputStream oins = new ObjectInputStream(bins);
 		return oins.readObject();
 	}
 

@@ -67,7 +67,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements ISynch
 	/**
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#connect(org.eclipse.ecf.core.identity.ID,
+	 * @see org.eclipse.ecf.provider.comm.IConnection#connect(org.eclipse.ecf.core.identity.ID,
 	 *      java.lang.Object, int)
 	 */
 	public abstract Object connect(ID remote, Object data, int timeout) throws ECFException;

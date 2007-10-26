@@ -23,13 +23,15 @@ import com.skype.SkypeException;
 public class SkypeReceiverCallSession extends SkypeCallSession {
 
 	/**
+	 * @param adapter 
 	 * @param receiverID
+	 * @param initiatorID 
 	 * @param receivedCall
+	 * @param listener 
+	 * @throws SkypeException 
 	 */
-	public SkypeReceiverCallSession(SkypeCallContainerAdapter adapter, SkypeUserID receiverID, SkypeUserID initiatorID, Call receivedCall,
-			ICallSessionListener listener) throws SkypeException {
-		super(adapter, initiatorID, receiverID,
-				receivedCall, listener);
+	public SkypeReceiverCallSession(SkypeCallContainerAdapter adapter, SkypeUserID receiverID, SkypeUserID initiatorID, Call receivedCall, ICallSessionListener listener) throws SkypeException {
+		super(adapter, initiatorID, receiverID, receivedCall, listener);
 	}
 
 }

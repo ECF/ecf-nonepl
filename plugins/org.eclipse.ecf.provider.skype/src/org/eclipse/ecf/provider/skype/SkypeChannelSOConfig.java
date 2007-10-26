@@ -29,10 +29,10 @@ import com.skype.SkypeException;
 public class SkypeChannelSOConfig extends SOConfig {
 
 	private Application application = null;
-	
+
 	private final String REMOVE_PREFIX = "org.eclipse.";
 	private final int MAXAPPNAMELENGTH = 32;
-	
+
 	/**
 	 * Clean app name so that it's not too long.  The Skype docs say max length of
 	 * app name is 32 bytes.  See reference here:
@@ -40,25 +40,27 @@ public class SkypeChannelSOConfig extends SOConfig {
 	 * https://developer.skype.com/Docs/ApiDoc/Application_to_application_commands
 	 */
 	protected String cleanAppName(String appName) {
-		if (appName.length() <= MAXAPPNAMELENGTH) return appName;
+		if (appName.length() <= MAXAPPNAMELENGTH)
+			return appName;
 		else if (appName.startsWith(REMOVE_PREFIX)) {
-			return cleanAppName(appName.substring(REMOVE_PREFIX.length()));			
-		} else return appName.substring(0,MAXAPPNAMELENGTH);
+			return cleanAppName(appName.substring(REMOVE_PREFIX.length()));
+		} else
+			return appName.substring(0, MAXAPPNAMELENGTH);
 	}
-	
+
 	/**
 	 * @param sharedObjectID
 	 * @param homeContainerID
 	 * @param cont
 	 * @param dict
+	 * @throws ECFException 
 	 */
-	public SkypeChannelSOConfig(ID sharedObjectID, ID homeContainerID,
-			SOContainer cont, Map dict) throws ECFException {
+	public SkypeChannelSOConfig(ID sharedObjectID, ID homeContainerID, SOContainer cont, Map dict) throws ECFException {
 		super(sharedObjectID, homeContainerID, cont, dict);
 		// Setup application here
 		try {
 			application = Skype.addApplication(cleanAppName(sharedObjectID.getName()));
-		} catch (SkypeException e) {
+		} catch (final SkypeException e) {
 			throw new ECFException("Could not create application", e);
 		}
 	}
@@ -66,8 +68,9 @@ public class SkypeChannelSOConfig extends SOConfig {
 	protected void makeActive(IQueueEnqueue queue) {
 		isActive = true;
 		if (container.getID().equals(homeContainerID)) {
-			this.context = new SkypeSOContext(application,sharedObjectID,homeContainerID,container,properties,queue);
-		} else super.makeActive(queue);
+			this.context = new SkypeSOContext(application, sharedObjectID, homeContainerID, container, properties, queue);
+		} else
+			super.makeActive(queue);
 	}
 
 }
