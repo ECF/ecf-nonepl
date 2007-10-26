@@ -60,7 +60,7 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	 * Creates a new URL hyperlink.
 	 * 
 	 * @param region
-	 * @param urlString
+	 * @param uri
 	 */
 	public YahooHyperlink(IRegion region, URI uri) {
 		super(region, uri);
@@ -81,19 +81,17 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	 * @see org.eclipse.ecf.ui.hyperlink.AbstractURLHyperlink#createContainer()
 	 */
 	protected IContainer createContainer() throws ContainerCreateException {
-		return ContainerFactory.getDefault().createContainer(
-				ECF_YAHOO_CONTAINER_NAME);
+		return ContainerFactory.getDefault().createContainer(ECF_YAHOO_CONTAINER_NAME);
 	}
 
 	protected IContainer[] getContainers() {
-		IContainerManager manager = Activator.getDefault()
-				.getContainerManager();
+		final IContainerManager manager = Activator.getDefault().getContainerManager();
 		if (manager == null)
 			return EMPTY;
-		List results = new ArrayList();
-		IContainer[] containers = manager.getAllContainers();
+		final List results = new ArrayList();
+		final IContainer[] containers = manager.getAllContainers();
 		for (int i = 0; i < containers.length; i++) {
-			ID connectedID = containers[i].getConnectedID();
+			final ID connectedID = containers[i].getConnectedID();
 			// Must be connected
 			if (connectedID != null && containers[i] instanceof YahooContainer) {
 				results.add(containers[i]);
@@ -108,18 +106,11 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	 * @see org.eclipse.ecf.ui.hyperlink.AbstractURLHyperlink#open()
 	 */
 	public void open() {
-		IContainer[] containers = getContainers();
+		final IContainer[] containers = getContainers();
 		if (containers.length > 0)
 			chooseAccountAndOpenMessagesView(containers);
 		else {
-			if (MessageDialog
-					.openQuestion(
-							null,
-							Messages.YahooHyperlink_CONNECT_DIALOG_TITLE,
-							NLS
-									.bind(
-											Messages.YahooHyperlink_CONNECT_DIALOG_MESSAGE,
-											getURI().getAuthority()))) {
+			if (MessageDialog.openQuestion(null, Messages.YahooHyperlink_CONNECT_DIALOG_TITLE, NLS.bind(Messages.YahooHyperlink_CONNECT_DIALOG_MESSAGE, getURI().getAuthority()))) {
 				super.open();
 			}
 		}
@@ -131,15 +122,13 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	private void chooseAccountAndOpenMessagesView(final IContainer[] containers) {
 		// If there's only one choice then use it
 		if (containers.length == 1) {
-			openMessagesView((IPresenceContainerAdapter) containers[0]
-					.getAdapter(IPresenceContainerAdapter.class));
+			openMessagesView((IPresenceContainerAdapter) containers[0].getAdapter(IPresenceContainerAdapter.class));
 			return;
 		} else {
 			final IPresenceContainerAdapter[] adapters = new IPresenceContainerAdapter[containers.length];
 			for (int i = 0; i < containers.length; i++)
-				adapters[i] = (IPresenceContainerAdapter) containers[i]
-						.getAdapter(IPresenceContainerAdapter.class);
-			ListDialog dialog = new ListDialog(null);
+				adapters[i] = (IPresenceContainerAdapter) containers[i].getAdapter(IPresenceContainerAdapter.class);
+			final ListDialog dialog = new ListDialog(null);
 			dialog.setContentProvider(new IStructuredContentProvider() {
 
 				public Object[] getElements(Object inputElement) {
@@ -149,8 +138,7 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 				public void dispose() {
 				}
 
-				public void inputChanged(Viewer viewer, Object oldInput,
-						Object newInput) {
+				public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
 				}
 			});
 			dialog.setInput(adapters);
@@ -159,16 +147,14 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 			dialog.setTitle(Messages.YahooHyperlink_SELECT_ACCOUNT_DIALOG_TITLE);
 			dialog.setMessage(Messages.YahooHyperlink_SELECT_ACCOUNT_DIALOG_MESSAGE);
 			dialog.setHeightInChars(adapters.length > 4 ? adapters.length : 4);
-			dialog
-					.setInitialSelections(new IPresenceContainerAdapter[] { adapters[0] });
+			dialog.setInitialSelections(new IPresenceContainerAdapter[] {adapters[0]});
 			dialog.setLabelProvider(new ILabelProvider() {
 				public Image getImage(Object element) {
 					return null;
 				}
 
 				public String getText(Object element) {
-					IRosterManager manager = ((IPresenceContainerAdapter) element)
-							.getRosterManager();
+					final IRosterManager manager = ((IPresenceContainerAdapter) element).getRosterManager();
 					if (manager == null)
 						return null;
 					return manager.getRoster().getUser().getID().getName();
@@ -187,9 +173,9 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 				public void removeListener(ILabelProviderListener listener) {
 				}
 			});
-			int result = dialog.open();
+			final int result = dialog.open();
 			if (result == ListDialog.OK) {
-				Object[] res = dialog.getResult();
+				final Object[] res = dialog.getResult();
 				if (res.length > 0)
 					openMessagesView((IPresenceContainerAdapter) res[0]);
 			}
@@ -199,34 +185,22 @@ public class YahooHyperlink extends AbstractURLHyperlink {
 	/**
 	 * @param presenceContainerAdapter
 	 */
-	private void openMessagesView(
-			IPresenceContainerAdapter presenceContainerAdapter) {
-		IChatManager chatManager = presenceContainerAdapter.getChatManager();
-		IRosterManager rosterManager = presenceContainerAdapter
-				.getRosterManager();
+	private void openMessagesView(IPresenceContainerAdapter presenceContainerAdapter) {
+		final IChatManager chatManager = presenceContainerAdapter.getChatManager();
+		final IRosterManager rosterManager = presenceContainerAdapter.getRosterManager();
 		if (chatManager != null && rosterManager != null) {
-			IChatMessageSender icms = chatManager.getChatMessageSender();
-			ITypingMessageSender itms = chatManager.getTypingMessageSender();
+			final IChatMessageSender icms = chatManager.getChatMessageSender();
+			final ITypingMessageSender itms = chatManager.getTypingMessageSender();
 			try {
-				IWorkbenchWindow ww = PlatformUI.getWorkbench()
-						.getActiveWorkbenchWindow();
-				MessagesView view = (MessagesView) ww.getActivePage().showView(
-						MessagesView.VIEW_ID);
-				ID localID = rosterManager.getRoster().getUser().getID();
-				view.selectTab(icms, itms, localID, new YahooID(localID
-						.getNamespace(), getURI().getAuthority()));
-			} catch (Exception e) {
-				MessageDialog.openError(null, Messages.YahooHyperlink_ERROR_MESSAGE_TITLE, NLS.bind(
-						Messages.YahooHyperlink_ERROR_MESSAGE_MESSAGE,
-						e.getLocalizedMessage()));
-				Activator.getDefault().getLog()
-						.log(
-								new Status(IStatus.ERROR, Activator.PLUGIN_ID,
-										IStatus.ERROR,
-										Messages.YahooHyperlink_ERROR_STATUS_MESSAGE, e));
+				final IWorkbenchWindow ww = PlatformUI.getWorkbench().getActiveWorkbenchWindow();
+				final MessagesView view = (MessagesView) ww.getActivePage().showView(MessagesView.VIEW_ID);
+				final ID localID = rosterManager.getRoster().getUser().getID();
+				view.selectTab(icms, itms, localID, new YahooID(localID.getNamespace(), getURI().getAuthority()));
+			} catch (final Exception e) {
+				MessageDialog.openError(null, Messages.YahooHyperlink_ERROR_MESSAGE_TITLE, NLS.bind(Messages.YahooHyperlink_ERROR_MESSAGE_MESSAGE, e.getLocalizedMessage()));
+				Activator.getDefault().getLog().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, Messages.YahooHyperlink_ERROR_STATUS_MESSAGE, e));
 			}
 		}
 	}
-
 
 }

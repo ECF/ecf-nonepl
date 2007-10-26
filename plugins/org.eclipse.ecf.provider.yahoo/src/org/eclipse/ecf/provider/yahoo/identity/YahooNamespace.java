@@ -19,23 +19,26 @@ import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
 
 public class YahooNamespace extends Namespace {
-	
+
 	private static final long serialVersionUID = 6211049515723995382L;
 	private static final String YMSG_PROTOCOL = "ymsg://";
-	
+
 	public String getScheme() {
 		return YMSG_PROTOCOL;
 	}
-	
+
 	/**
 	 * Creates an instance of an ID within this namespace given
 	 * the arguments provided. In this case, the args is expected
 	 * to include a single string argument representing the username
+	 * @param args 
+	 * @return instance created.
+	 * @throws IDCreateException 
 	 */
 	public ID createInstance(Object[] args) throws IDCreateException {
 		try {
 			return new YahooID(this, (String) args[0]);
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			throw new IDCreateException("Yahoo ID creation exception", e);
 		}
 	}
@@ -44,7 +47,7 @@ public class YahooNamespace extends Namespace {
 	 * @see org.eclipse.ecf.core.identity.Namespace#getSupportedParameterTypesForCreateInstance()
 	 */
 	public Class[][] getSupportedParameterTypes() {
-		return new Class[][] { { String.class } };
+		return new Class[][] {{String.class}};
 	}
-	
+
 }

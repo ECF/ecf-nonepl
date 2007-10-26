@@ -10,7 +10,7 @@
  *  	- Chris Aniszczyk <zx@us.ibm.com>
  *   	- Borna Safabakhsh <borna@us.ibm.com> 
  *   
- * $Id: Activator.java,v 1.3 2007/04/20 22:28:25 slewis Exp $
+ * $Id: Activator.java,v 1.4 2007/10/26 04:04:58 slewis Exp $
  */
 
 package org.eclipse.ecf.internal.provider.yahoo;
@@ -27,10 +27,10 @@ public class Activator implements BundleActivator {
 	 * Namespace identifier
 	 */
 	public static final String NAMESPACE_IDENTIFIER = "ecf.yahoo";
-	
+
 	//The shared instance.
 	private static Activator plugin;
-	
+
 	/**
 	 * The constructor.
 	 */
@@ -40,12 +40,16 @@ public class Activator implements BundleActivator {
 
 	/**
 	 * This method is called upon plug-in activation
+	 * @param context 
+	 * @throws Exception 
 	 */
 	public void start(BundleContext context) throws Exception {
 	}
 
 	/**
 	 * This method is called when the plug-in is stopped
+	 * @param context 
+	 * @throws Exception 
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
@@ -53,6 +57,7 @@ public class Activator implements BundleActivator {
 
 	/**
 	 * Returns the shared instance.
+	 * @return default activator instance.
 	 */
 	public synchronized static Activator getDefault() {
 		if (plugin == null) {
