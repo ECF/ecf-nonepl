@@ -12,7 +12,6 @@ import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 
-
 /**
  * The main plugin class to be used in the desktop.
  */
@@ -36,6 +35,8 @@ public class RcpChatPlugin extends AbstractUIPlugin {
 
 	/**
 	 * This method is called upon plug-in activation
+	 * @param context 
+	 * @throws Exception 
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -43,6 +44,8 @@ public class RcpChatPlugin extends AbstractUIPlugin {
 
 	/**
 	 * This method is called when the plug-in is stopped
+	 * @param context 
+	 * @throws Exception 
 	 */
 	public void stop(BundleContext context) throws Exception {
 		super.stop(context);
@@ -51,6 +54,7 @@ public class RcpChatPlugin extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance.
+	 * @return default plugin instance.
 	 */
 	public static RcpChatPlugin getDefault() {
 		return plugin;
@@ -65,7 +69,6 @@ public class RcpChatPlugin extends AbstractUIPlugin {
 	 * @return the image descriptor
 	 */
 	public static ImageDescriptor getImageDescriptor(String path) {
-		return AbstractUIPlugin.imageDescriptorFromPlugin(
-				"org.eclipse.ecf.example.rcpchat", path);
+		return AbstractUIPlugin.imageDescriptorFromPlugin("org.eclipse.ecf.example.rcpchat", path);
 	}
 }
