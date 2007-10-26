@@ -45,7 +45,7 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 
 	/**
 	 * @param eventHandler
-	 * @param channelProperties
+	 * @throws ECFException 
 	 */
 	public JGroupsManagerConnection(ISynchAsynchEventHandler eventHandler) throws ECFException {
 		super(eventHandler);

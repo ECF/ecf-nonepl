@@ -41,7 +41,6 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 
 	/**
 	 * @param eventHandler
-	 * @param channelProperties
 	 */
 	public JGroupsClientConnection(ISynchAsynchEventHandler eventHandler) {
 		super(eventHandler);
