@@ -42,6 +42,29 @@ source code in the Content and such source code may be obtained
 at http://www.eclipse.org.
    </license>
 
+   <requires>
+      <import plugin="org.eclipse.swt"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.ecf"/>
+      <import plugin="org.eclipse.ecf.presence"/>
+      <import plugin="org.eclipse.ecf.sharedobject"/>
+      <import plugin="org.eclipse.equinox.common"/>
+      <import plugin="org.eclipse.ecf.provider"/>
+      <import plugin="org.eclipse.ecf.telephony.call"/>
+      <import plugin="org.eclipse.ecf.datashare"/>
+      <import plugin="org.eclipse.ecf.provider.datashare"/>
+      <import plugin="org.eclipse.ecf.remoteservice"/>
+      <import plugin="org.eclipse.ecf.provider.remoteservice"/>
+      <import plugin="org.eclipse.osgi.services"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.ecf.provider.skype"/>
+      <import plugin="org.eclipse.ecf.presence.ui"/>
+      <import plugin="org.eclipse.ecf.ui"/>
+      <import plugin="org.eclipse.ecf.telephony.call.ui"/>
+      <import plugin="org.eclipse.jface.text"/>
+   </requires>
+
    <plugin
          id="com.skype"
          download-size="0"

@@ -382,10 +382,15 @@ Public License instead of this License.
    </license>
 
    <requires>
-      <import plugin="org.eclipse.core.runtime"/>
       <import plugin="org.eclipse.ecf"/>
       <import plugin="org.eclipse.ecf.presence"/>
-      <import plugin="org.eclipse.ecf.provider"/>
+      <import plugin="org.eclipse.core.runtime"/>
+      <import plugin="org.eclipse.equinox.common"/>
+      <import plugin="org.eclipse.osgi"/>
+      <import plugin="org.eclipse.ui"/>
+      <import plugin="org.eclipse.ecf.ui"/>
+      <import plugin="org.eclipse.ecf.presence.ui"/>
+      <import plugin="org.eclipse.jface.text"/>
    </requires>
 
    <plugin
