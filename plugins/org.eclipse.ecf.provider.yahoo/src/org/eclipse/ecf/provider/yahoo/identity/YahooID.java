@@ -14,7 +14,6 @@
  */
 package org.eclipse.ecf.provider.yahoo.identity;
 
-import java.net.URI;
 import java.net.URISyntaxException;
 
 import org.eclipse.ecf.core.identity.BaseID;
@@ -25,12 +24,10 @@ public class YahooID extends BaseID implements IChatID {
 
 	private static final long serialVersionUID = -5949609561932558417L;
 	private final String username;
-	private final URI uri;
 
 	public YahooID(Namespace namespace, String username) throws URISyntaxException {
 		super(namespace);
 		this.username = username;
-		uri = new URI(namespace.getScheme() + username);
 	}
 
 	/**
@@ -45,43 +42,41 @@ public class YahooID extends BaseID implements IChatID {
 	 * Compares this ID's URI in this namespace with the provided ID's URI
 	 */
 	protected boolean namespaceEquals(BaseID o) {
-		if(!(o instanceof YahooID)){
+		if (!(o instanceof YahooID)) {
 			return false;
 		}
-		return uri.equals(((YahooID) o).uri);
+		return username.equals(((YahooID) o).username);
 	}
 
-	
 	protected String namespaceGetName() {
 		return username;
 	}
 
 	protected int namespaceHashCode() {
-		return uri.hashCode();
-	}
-
-	protected URI namespaceToURI() throws URISyntaxException {
-		return uri;
+		return username.hashCode() ^ YahooID.class.hashCode();
 	}
 
 	public String getUsername() {
 		return username;
 	}
-	
+
 	public String getHostname() {
 		return "yahoo.com";
 	}
 
 	public String toString() {
-		StringBuffer sb = new StringBuffer("YahooID[");
-		sb.append(uri.toString()).append("]");
+		final StringBuffer sb = new StringBuffer("YahooID[");
+		sb.append(username).append("]");
 		return sb.toString();
 	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.identity.BaseID#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class clazz) {
-		if (clazz.isInstance(this)) return this;
-		else return super.getAdapter(clazz);
+		if (clazz.isInstance(this))
+			return this;
+		else
+			return super.getAdapter(clazz);
 	}
 }
