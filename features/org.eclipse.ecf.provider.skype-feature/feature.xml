@@ -2,7 +2,7 @@
 <feature
       id="org.eclipse.ecf.provider.skype_feature"
       label="Eclipse Communication Framework Skype Provider"
-      version="1.2.0.qualifier"
+      version="2.0.0.qualifier"
       provider-name="Eclipse.org">
 
    <description url="http://www.eclipse.org/ecf">
@@ -61,14 +61,14 @@ at http://www.eclipse.org.
          id="org.eclipse.ecf.provider.skype"
          download-size="0"
          install-size="0"
-         version="1.2.0.qualifier"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
    <plugin
          id="org.eclipse.ecf.provider.skype.ui"
          download-size="0"
          install-size="0"
-         version="1.2.0.qualifier"
+         version="2.0.0.qualifier"
          unpack="false"/>
 
 </feature>
