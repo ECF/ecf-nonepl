@@ -23,6 +23,7 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.IRemoteServiceRegistration;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.eclipse.ecf.tests.ContainerAbstractTestCase;
+import org.osgi.framework.InvalidSyntaxException;
 
 /**
  * 
@@ -112,7 +113,12 @@ public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTes
 	}
 
 	protected IRemoteServiceReference[] getRemoteServiceReferences(IRemoteServiceContainerAdapter adapter, String clazz) {
-		return adapter.getRemoteServiceReferences(null, clazz, null);
+		try {
+			return adapter.getRemoteServiceReferences(null, clazz, null);
+		} catch (final InvalidSyntaxException e) {
+			fail("should not happen");
+		}
+		return null;
 	}
 
 	protected IRemoteService getRemoteService(IRemoteServiceContainerAdapter adapter, String clazz) {
