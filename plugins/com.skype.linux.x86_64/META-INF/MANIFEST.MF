@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: com.skype.linux.x86_64
-Bundle-Version: 0.1.0
+Bundle-Version: 0.1.0.qualifier
 Bundle-Localization: plugin
 Bundle-Vendor: %plugin.provider
 Fragment-Host: com.skype;bundle-version="0.3.0"
