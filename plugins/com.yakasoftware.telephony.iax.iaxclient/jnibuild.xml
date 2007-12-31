@@ -1,0 +1,163 @@
+<project name="com.yakasoftware.telephony.iax.iaxclient" default="package" basedir=".">
+	
+	<description> Build file for com.yakasoftware.telephony.iax.iaxclient wrapper project </description>
+	
+	<!-- Define 3rd party tasks -->
+	<taskdef resource="cpptasks.tasks"/>
+	<typedef resource="cpptasks.types"/>	
+	<!-- xmlns:cpptasks="antlib:org.sf.net.antcontrib.cpptasks" -->
+	
+	<!-- set global properties for this build -->
+	<property name="src" location="src"/>
+	<property name="bin" location="bin"/>
+	<property name="dist" location="dist"/>
+	<property name="jni" location="jni"/>
+	<property name="libs" location="libs"/>
+	
+	<!-- set global properties for this build -->	
+	<property name="compiler" value="gcc"/>
+	<property name="api" value="default"/><!-- specify api="unix" or api="win32" override platform default -->
+
+	<target name="compile" description="Compile the java source">
+		<!-- Compile the java code from ${src} into ${build}. Use libraries in libs folder as well -->
+		<javac verbose="yes" srcdir="${src}" destdir="${bin}">
+		    <classpath>
+		      <fileset dir="${libs}">
+		        <include name="**/*.jar"/>
+		      </fileset>
+		    </classpath>			
+		</javac>
+		
+	</target>
+
+	<target name="package" depends="compile" description="generate the distribution" >
+		<!-- Create the distribution directory -->
+		<mkdir dir="${dist}/lib"/>
+		
+		<!-- Put everything in ${build} into the ProjectName-${DSTAMP}.jar file -->
+		<jar jarfile="${dist}/lib/com.yakasoftware.telephony.iax.iaxclient-JNI.jar">
+			<fileset dir="${bin}">
+				<include name="**/*.class"/>
+			</fileset>
+			<fileset dir=".">
+				<include name="**/*.dll"/>
+			</fileset>
+			<manifest>
+				<attribute name="Author" value="Roland Ndaka Fru"/>
+				<attribute name="Homepage" value="http://www.yakasoftware.com"/>
+				<attribute name="Version" value="1.0.0"/>
+			</manifest>
+		</jar>  	
+	</target>
+
+	<target name="jni_init" description="generate the parameters for native compilation" >
+		<condition property="is-gcc">
+			<or>
+				<equals arg1="${compiler}" arg2="gcc"/>
+				<equals arg1="${compiler}" arg2="g++"/>
+			</or>
+		</condition>
+		<condition property="is-msvc">
+			<or>
+				<equals arg1="${compiler}" arg2="msvc"/>
+			</or>
+		</condition>
+		<condition property="is-windows"><os family="windows"/></condition>
+	  <condition property="not-windows">
+	    <not>
+	      <isset property="is-windows"/>
+	    </not>
+	  </condition>
+	  <condition property="is-win32">
+			<or>
+				<equals arg1="${api}" arg2="win32"/>
+				<and>
+					<equals arg1="${api}" arg2="default"/>
+					<isset property="is-windows"/>
+				</and>
+			</or>
+		</condition>
+		<property environment="env"/>
+		<!--  in case not set in environment, use an insignificant value -->
+		<property name="env.LD_LIBRARY_PATH" value="."/>
+	  <condition property="use-brc">
+	    <equals arg1="${compiler}" arg2="bcc"/>
+	  </condition>	 
+	</target>
+	
+	<target name="jni_javap" depends="compile" description="generate the method descriptions needed at the native level" >		
+		<!-- Use the native executable to generate method descriptions using the javap utility-->
+		<exec executable="javap"  dir="${bin}">
+			<arg value="-s"/>
+			<arg value="-p"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.AbstractIAXClient"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_Audio"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_State"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_Level"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_NetStats"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_Registration"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_Text"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_URL"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_Video"/>
+			<arg value="com.yakasoftware.telephony.iax.iaxclient.event.Event_VideoStats"/>
+		</exec> 	
+	</target>	
+	
+	<target name="jni_compile" depends="compile, jni_init" description="generate the native headers and compile code" >
+		<!-- Create the distribution directory -->
+		<!-- <mkdir dir="${jni}"/> -->
+		
+		<!-- make the header file(s) -->
+		<javah destdir="${jni}" force="yes">
+			<classpath>
+			  <pathelement location="${bin}"/>
+			</classpath>    	
+			<!-- <class name="com.yakasoftware.telephony.iax.iaxclient.IAXClient"/> -->
+			<class name="com.yakasoftware.telephony.iax.iaxclient.AbstractIAXClient"/>
+		</javah>
+		
+		<!-- Compile the native code -->
+		<!-- You will probably need to modify the paths here to correspond to your local machine -->
+		<cc subsystem="gui"
+			objdir="${bin}"
+			debug="false"
+			outtype="shared"
+			name="msvc"
+			exceptions="true"
+			rtti="true"
+			optimize="none"
+			warnings="production"
+			runtime="static"
+			rebuild="true"
+			outfile="jIAXClient">
+		
+			<defineset define="WIN32" if="is-win32"/> <!-- If we are building on win32-->
+			<fileset dir="${jni}" includes="/*.cpp"/>
+			<includepath path="${java.home}/../include"/>
+			<includepath path="${java.home}/../include/win32"/>
+			<includepath path="C:\Programme\Microsoft Platform SDK\Include"/>
+			<includepath path="C:\Programme\Microsoft Visual Studio 8\VC\include"/>
+			<libset dir="C:\Programme\Microsoft Visual Studio 8\VC\lib" libs="MSVCRT, OLDNAMES, libcmt, kernel32, uuid"/>
+			<includepath path="D:\Downloads\Tools\Telephony\VOIP\Asterisk\Developer\iax\iaxclient\lib"/>
+			<libset dir="D:\Downloads\Tools\Telephony\VOIP\Asterisk\Developer\iax\iaxclient\contrib\win\vs2005\Release_dll\libiaxclient" libs="libiaxclient"/>
+		</cc> 
+		
+		<!-- Copy library to JVM bin path so it will be found on run -->
+		<!-- <copy file="jIAXClient.dll" todir="${java.home}/../bin"/> -->
+	    	
+	</target>	
+
+	<target name="clean" description="Clean up files resulting from build..." >
+		<!-- Delete the ${bin}, ${jni}  and ${dist} directory trees -->
+		<delete includeemptydirs="true">
+			<fileset dir="${bin}" includes="**/*"/>
+		</delete>
+		<delete dir="${dist}"/>
+		<delete includeemptydirs="true">
+			<fileset dir="${jni}" includes="com_yakasoftware_telephony_iax_iaxclient_AbstractIAXClient.h"/>
+		</delete>
+		<delete includeemptydirs="true">
+			<fileset dir="." includes="jIAXClient.*"/>
+		</delete>		
+	</target>
+</project>
