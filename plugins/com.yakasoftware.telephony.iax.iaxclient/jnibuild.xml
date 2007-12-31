@@ -138,8 +138,8 @@
 			<includepath path="C:\Programme\Microsoft Platform SDK\Include"/>
 			<includepath path="C:\Programme\Microsoft Visual Studio 8\VC\include"/>
 			<libset dir="C:\Programme\Microsoft Visual Studio 8\VC\lib" libs="MSVCRT, OLDNAMES, libcmt, kernel32, uuid"/>
-			<includepath path="D:\Downloads\Tools\Telephony\VOIP\Asterisk\Developer\iax\iaxclient\lib"/>
-			<libset dir="D:\Downloads\Tools\Telephony\VOIP\Asterisk\Developer\iax\iaxclient\contrib\win\vs2005\Release_dll\libiaxclient" libs="libiaxclient"/>
+			<includepath path="D:\Downloads\Tools\Telephony\VOIP\Asterisk\Developer\iax_Release\iaxclient-2.0.2\lib"/>
+			<libset dir="D:\Downloads\Tools\Telephony\VOIP\Asterisk\Developer\iax_Release\iaxclient-2.0.2\contrib\win\vs2005\Release_dll\libiaxclient" libs="libiaxclient"/>
 		</cc> 
 		
 		<!-- Copy library to JVM bin path so it will be found on run -->
