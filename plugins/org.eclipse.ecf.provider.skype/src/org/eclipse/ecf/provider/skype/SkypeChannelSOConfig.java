@@ -16,6 +16,7 @@ import java.util.Map;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.provider.generic.SOConfig;
 import org.eclipse.ecf.provider.generic.SOContainer;
 
@@ -30,7 +31,7 @@ public class SkypeChannelSOConfig extends SOConfig {
 
 	private Application application = null;
 
-	private final String REMOVE_PREFIX = "org.eclipse.";
+	private final String REMOVE_PREFIX = "org.eclipse."; //$NON-NLS-1$
 	private final int MAXAPPNAMELENGTH = 32;
 
 	/**
@@ -61,7 +62,7 @@ public class SkypeChannelSOConfig extends SOConfig {
 		try {
 			application = Skype.addApplication(cleanAppName(sharedObjectID.getName()));
 		} catch (final SkypeException e) {
-			throw new ECFException("Could not create application", e);
+			throw new ECFException(Messages.SkypeChannelSOConfig_EXCEPTION_COULD_NOT_CREATE_APP, e);
 		}
 	}
 

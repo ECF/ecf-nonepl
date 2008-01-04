@@ -15,6 +15,7 @@ import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.provider.IContainerInstantiator;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
 
@@ -37,7 +38,7 @@ public class SkypeContainerInstantiator implements IContainerInstantiator {
 			final Profile skypeProfile = Skype.getProfile();
 			return new SkypeContainer(skypeProfile, skypeProfile.getId());
 		} catch (final Exception e) {
-			throw new ContainerCreateException("Could not create skype container", e);
+			throw new ContainerCreateException(Messages.SkypeContainerInstantiator_EXCEPTION_COULD_NOT_CREATE_CONTAINER, e);
 		}
 	}
 

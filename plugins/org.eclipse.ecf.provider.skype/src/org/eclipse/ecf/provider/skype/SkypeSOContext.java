@@ -32,6 +32,7 @@ import org.eclipse.ecf.core.sharedobject.util.IQueueEnqueue;
 import org.eclipse.ecf.core.sharedobject.util.QueueException;
 import org.eclipse.ecf.core.util.Base64;
 import org.eclipse.ecf.core.util.Event;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.generic.SOContext;
 import org.eclipse.ecf.provider.generic.SOWrapper;
@@ -151,7 +152,7 @@ public class SkypeSOContext extends SOContext {
 
 	protected Stream getStreamForId(String id) throws IOException {
 		if (application == null)
-			throw new IOException("application not available");
+			throw new IOException(Messages.SkypeSOContext_EXCEPTION_APP_NOT_AVAILABLE);
 		return (Stream) streams.get(id);
 	}
 
@@ -174,7 +175,7 @@ public class SkypeSOContext extends SOContext {
 					final Friend friend = (Friend) Friend.getInstance(friendID);
 					final Stream[] streams = application.connect(new Friend[] {friend});
 					if (streams.length == 0)
-						throw new IOException("Skype friend not running application");
+						throw new IOException(Messages.SkypeSOContext_EXCEPTION_SKYPE_FRIEND_NO_APPLICATION);
 					stream = streams[0];
 				}
 				stream.write(Base64.encode(serialize(data)));

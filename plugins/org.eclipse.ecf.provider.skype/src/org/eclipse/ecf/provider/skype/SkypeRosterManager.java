@@ -11,18 +11,24 @@
 
 package org.eclipse.ecf.provider.skype;
 
+import java.awt.image.BufferedImage;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.io.ByteArrayOutputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import javax.imageio.ImageIO;
+
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.skype.Activator;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.IPresenceSender;
@@ -68,13 +74,13 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 		 */
 		public void messageReceived(ConnectorMessageEvent event) {
 			String message = event.getMessage();
-			if (message.startsWith("USER ")) {
-				String data = message.substring("USER ".length());
+			if (message.startsWith("USER ")) { //$NON-NLS-1$
+				String data = message.substring("USER ".length()); //$NON-NLS-1$
 				String skypeId = data.substring(0, data.indexOf(' '));
 				data = data.substring(data.indexOf(' ') + 1);
 				String propertyName = data.substring(0, data.indexOf(' '));
 				String propertyValue = data.substring(data.indexOf(' ') + 1);
-				if (propertyName.equals("BUDDYSTATUS")) {
+				if (propertyName.equals("BUDDYSTATUS")) { //$NON-NLS-1$
 					handleBuddyStatusChange(skypeId, propertyValue);
 				}
 			}
@@ -124,13 +130,13 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 
 		public void messageReceived(ConnectorMessageEvent event) {
 			if (debug) {
-				System.out.println("SkypeRosterManager.messageReceived(time=" + event.getTime() + "," + event.getSource() + "," + event.getMessage());
+				System.out.println("SkypeRosterManager.messageReceived(time=" + event.getTime() + "," + event.getSource() + "," + event.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 		}
 
 		public void messageSent(ConnectorMessageEvent event) {
 			if (debug) {
-				System.out.println("SkypeRosterManager.messageSent(time=" + event.getTime() + "," + event.getSource() + "," + event.getMessage());
+				System.out.println("SkypeRosterManager.messageSent(time=" + event.getTime() + "," + event.getSource() + "," + event.getMessage()); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 			}
 
 		}
@@ -145,11 +151,11 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 			Assert.isNotNull(presence);
 			Profile profile = Skype.getProfile();
 			if (profile == null)
-				throw new ECFException("Skype profile not available");
+				throw new ECFException(Messages.SkypeRosterManager_EXCEPTION_PROFILE_NOT_AVAILABLE);
 			try {
 				profile.setStatus(createStatusForPresence(presence));
 			} catch (SkypeException e) {
-				throw new ECFException("exception changing user status", e);
+				throw new ECFException(Messages.SkypeRosterManager_EXCEPTION_USER_STATUS, e);
 			}
 		}
 	};
@@ -194,23 +200,23 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 		final Map properties = new HashMap();
 		String name = null;
 		try {
-			properties.put("Country", f.getCountry());
-			properties.put("City", f.getCity());
-			properties.put("Home Phone", f.getHomePhoneNumber());
-			properties.put("Mobile Phone", f.getMobilePhoneNumber());
-			properties.put("Mood Message", f.getMoodMessage());
-			properties.put("Birthday", f.getBirthDay());
+			properties.put("Country", f.getCountry()); //$NON-NLS-1$
+			properties.put("City", f.getCity()); //$NON-NLS-1$
+			properties.put("Home Phone", f.getHomePhoneNumber()); //$NON-NLS-1$
+			properties.put("Mobile Phone", f.getMobilePhoneNumber()); //$NON-NLS-1$
+			properties.put("Mood Message", f.getMoodMessage()); //$NON-NLS-1$
+			properties.put("Birthday", f.getBirthDay()); //$NON-NLS-1$
 			name = f.getFullName();
 		} catch (final SkypeException e) {
 		}
-		return new org.eclipse.ecf.core.user.User(userID, (name == null || name.equals("")) ? userID.getName() : name, properties);
+		return new org.eclipse.ecf.core.user.User(userID, (name == null || name.equals("")) ? userID.getName() : name, properties); //$NON-NLS-1$
 	}
 
 	protected Map createProperties(User friend) throws SkypeException {
 		// XXX todo
 		final Map props = new HashMap();
-		props.put("Cell Phone", friend.getMobilePhoneNumber());
-		props.put("Home Page", friend.getHomePageAddress());
+		props.put("Cell Phone", friend.getMobilePhoneNumber()); //$NON-NLS-1$
+		props.put("Home Page", friend.getHomePageAddress()); //$NON-NLS-1$
 		return props;
 	}
 
@@ -229,15 +235,16 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 			type = IPresence.Type.UNAVAILABLE;
 			mode = IPresence.Mode.AWAY;
 		}
-		// XXX this doesn't work yet in Skype4Java apparently...getAvatar()
-		// current throws exception.
-		/*
-		 * BufferedImage bi = friend.getAvatar(); ByteArrayOutputStream bos =
-		 * new ByteArrayOutputStream(); ImageIO.write(bi,"jpg",bos); byte []
-		 * imageBytes = bos.toByteArray();
-		 */
-		final byte[] imageBytes = null;
-		return new Presence(type, (moodMessage == null) ? "" : moodMessage, mode, properties, imageBytes);
+		byte[] imageBytes = null;
+		try {
+			final BufferedImage bi = friend.getAvatar();
+			final ByteArrayOutputStream bos = new ByteArrayOutputStream();
+			ImageIO.write(bi, "jpg", bos); //$NON-NLS-1$
+			imageBytes = bos.toByteArray();
+		} catch (final Exception e) {
+			Activator.log(Messages.SkypeRosterManager_EXCEPTION_GETTING_AVATAR, e);
+		}
+		return new Presence(type, (moodMessage == null) ? "" : moodMessage, mode, properties, imageBytes); //$NON-NLS-1$
 	}
 
 	protected void handleFriendPropertyChangeEvent(PropertyChangeEvent evt) {
@@ -299,7 +306,7 @@ public class SkypeRosterManager extends AbstractRosterManager implements IRoster
 		final Map props = existingPresence.getProperties();
 		final String moodMessage = existingPresence.getStatus();
 		final byte[] image = existingPresence.getPictureData();
-		return new Presence(createPresenceType(status), (moodMessage == null) ? "" : moodMessage, createPresenceMode(status), props, image);
+		return new Presence(createPresenceType(status), (moodMessage == null) ? "" : moodMessage, createPresenceMode(status), props, image); //$NON-NLS-1$
 	}
 
 	private IRosterEntry createRosterEntry(User friend) {

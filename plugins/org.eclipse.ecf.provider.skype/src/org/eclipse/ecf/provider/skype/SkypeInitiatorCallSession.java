@@ -40,7 +40,7 @@ public class SkypeInitiatorCallSession extends SkypeCallSession {
 				}
 
 				public String toString() {
-					return getStringBufferForEvent("ICallSessionEvent").toString();
+					return getStringBufferForEvent("ICallSessionEvent").toString(); //$NON-NLS-1$
 				}
 
 			});

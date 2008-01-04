@@ -151,7 +151,7 @@ public class SkypeCallContainerAdapter extends BaseSharedObject
 							addReceivedCall(session);
 							return session;
 						} catch (SkypeException e) {
-							throw new CallException("unexpected exception", e);
+							throw new CallException(Messages.SkypeCallContainerAdapter_EXCEPTION_UNEXPECTED, e);
 						}
 					}
 
@@ -237,7 +237,7 @@ public class SkypeCallContainerAdapter extends BaseSharedObject
 							Activator.PLUGIN_ID,
 							"ECF Skype Adapter initializing with version: " + skypeVersion); //$NON-NLS-1$
 			Trace.trace(Activator.PLUGIN_ID,
-					"UserID is: '" + userID.getName() + "'"); //$NON-NLS-1$
+					"UserID is: '" + userID.getName() + "'"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		} catch (Exception e) {
 			Trace.catching(Activator.PLUGIN_ID,
@@ -288,7 +288,7 @@ public class SkypeCallContainerAdapter extends BaseSharedObject
 	 */
 	public void sendCallRequest(ID[] receivers, ICallSessionListener listener,
 			Map properties) throws CallException {
-		throw new CallException("conference call request not yet supported");
+		throw new CallException(Messages.SkypeCallContainerAdapter_EXCEPTION_CONFERENCE_CALL_NOT_SUPPORTED);
 	}
 
 	/*

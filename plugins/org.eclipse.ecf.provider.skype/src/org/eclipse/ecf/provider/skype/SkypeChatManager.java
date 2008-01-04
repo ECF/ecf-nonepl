@@ -21,6 +21,7 @@ import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.skype.Activator;
+import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.history.IHistory;
 import org.eclipse.ecf.presence.history.IHistoryManager;
@@ -54,7 +55,7 @@ public class SkypeChatManager implements IChatManager {
 
 		public void chatMessageReceived(ChatMessage chatMessageReceived) throws SkypeException {
 			Trace.trace(Activator.PLUGIN_ID, "chatMessageReceived(id=" //$NON-NLS-1$
-					+ chatMessageReceived.getId() + ";content=" + chatMessageReceived.getContent() + ";senderid=" + chatMessageReceived.getSenderId() + ";sendername=" + chatMessageReceived.getSenderDisplayName() + ")"); //$NON-NLS-1$
+					+ chatMessageReceived.getId() + ";content=" + chatMessageReceived.getContent() + ";senderid=" + chatMessageReceived.getSenderId() + ";sendername=" + chatMessageReceived.getSenderDisplayName() + ")"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 			fireChatMessageReceived(chatMessageReceived);
 		}
 
@@ -62,6 +63,7 @@ public class SkypeChatManager implements IChatManager {
 			for (Iterator i = chatListeners.iterator(); i.hasNext();) {
 				IIMMessageListener l = (IIMMessageListener) i.next();
 				try {
+					@SuppressWarnings("unused") //$NON-NLS-1$
 					Chat chat = (Chat) chats.get(chatMessageReceived.getChat().getId());
 					// XXX eventually we should only show messages from
 					// e.g. if (chat != null) { ...
@@ -71,7 +73,7 @@ public class SkypeChatManager implements IChatManager {
 					final IChatMessage chatMessage = new org.eclipse.ecf.presence.im.ChatMessage(senderID, IDFactory.getDefault().createStringID(chatMessageReceived.getId()), Type.CHAT, null, chatMessageReceived.getContent(), createPropertiesForChatMessage(chatMessageReceived));
 					l.handleMessageEvent(new ChatMessageEvent(senderID, chatMessage));
 				} catch (Exception e) {
-					Activator.log("fireChatMessageReceived", e);
+					Activator.log("fireChatMessageReceived", e); //$NON-NLS-1$
 				}
 
 			}
@@ -94,7 +96,7 @@ public class SkypeChatManager implements IChatManager {
 					sentChat = null;
 				}
 			} catch (SkypeException e) {
-				Activator.log("chatMessageSent", e);
+				Activator.log("chatMessageSent", e); //$NON-NLS-1$
 			}
 		}
 
@@ -109,7 +111,7 @@ public class SkypeChatManager implements IChatManager {
 						l.handleMessageEvent(new ChatMessageEvent(senderID, chatMessage));
 					}
 				} catch (Exception e) {
-					Activator.log("fireChatMessageSent", e);
+					Activator.log("fireChatMessageSent", e); //$NON-NLS-1$
 				}
 
 			}
@@ -139,14 +141,14 @@ public class SkypeChatManager implements IChatManager {
 
 		public void sendChatMessage(ID toID, ID threadID, Type type, String subject, String body, Map properties) throws ECFException {
 			if (toID == null || !(toID instanceof SkypeUserID))
-				throw new ECFException("Invalid Skype ID");
+				throw new ECFException(Messages.SkypeChatManager_EXCEPTION_INVALID_SKYPE_ID);
 			SkypeUserID skypeId = (SkypeUserID) toID;
 			try {
 				Chat chat = Skype.chat(skypeId.getName());
 				chat.send(body);
 				sentChat = chat;
 			} catch (SkypeException e) {
-				throw new ECFException("Skype Exception", e);
+				throw new ECFException(Messages.SkypeChatManager_EXCEPTION_SKYPE_EXCEPTION, e);
 			}
 		}
 

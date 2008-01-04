@@ -20,7 +20,7 @@ import org.eclipse.ecf.core.identity.Namespace;
  */
 public class SkypeUserNamespace extends Namespace {
 
-	public static final String SCHEME = "ecf.namespace.skype.call";
+	public static final String SCHEME = "ecf.namespace.skype.call"; //$NON-NLS-1$
 	public static final String NAMESPACE_NAME = SCHEME;
 
 	private static final long serialVersionUID = -7848190137834330244L;

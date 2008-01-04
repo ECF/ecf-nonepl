@@ -25,7 +25,7 @@ import org.osgi.util.tracker.ServiceTracker;
 public class Activator implements BundleActivator {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.ecf.provider.skype";
+	public static final String PLUGIN_ID = "org.eclipse.ecf.provider.skype"; //$NON-NLS-1$
 
 	// The shared instance
 	private static Activator plugin;

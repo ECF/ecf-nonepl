@@ -106,7 +106,7 @@ public class SkypeCallSession  implements ICallSession {
 			}
 
 			public String toString() {
-				return getStringBufferForEvent("ICallSessionEvent")
+				return getStringBufferForEvent("ICallSessionEvent") //$NON-NLS-1$
 						.toString();
 			}
 
@@ -115,13 +115,13 @@ public class SkypeCallSession  implements ICallSession {
 
 	protected StringBuffer getStringBufferForEvent(String eventType) {
 		StringBuffer buffer = new StringBuffer(eventType);
-		buffer.append("[");
+		buffer.append("["); //$NON-NLS-1$
 		buffer.append("id=").append( //$NON-NLS-1$
 				getID());
-		buffer.append(";init=").append(getInitiator());
-		buffer.append(";rcvr=").append(getReceiver());
-		buffer.append(";state=").append(getState());
-		buffer.append(";reason=").append(getFailureReason());
+		buffer.append(";init=").append(getInitiator()); //$NON-NLS-1$
+		buffer.append(";rcvr=").append(getReceiver()); //$NON-NLS-1$
+		buffer.append(";state=").append(getState()); //$NON-NLS-1$
+		buffer.append(";reason=").append(getFailureReason()); //$NON-NLS-1$
 		buffer.append("]"); //$NON-NLS-1$		
 		return buffer;
 	}
