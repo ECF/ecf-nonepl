@@ -6,8 +6,8 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             id="org.eclipse.ecf.provider.jms.weblogic.ui.actionSet"
-            label="JMS (Weblogic) Communications"
-            visible="true">
+            label="Communications - Weblogic"
+            visible="false">
          <action
                class="org.eclipse.ecf.internal.provider.jms.weblogic.ui.wizard.JoinGroupWizardAction"
                icon="icons/collaboration.gif"

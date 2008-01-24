@@ -6,8 +6,8 @@
          point="org.eclipse.ui.actionSets">
       <actionSet
             id="org.eclipse.ecf.provider.jgroups.ui.actionSet"
-            label="JGroups Communications"
-            visible="true">
+            label="Communications - JGroups"
+            visible="false">
          <action
                class="org.eclipse.ecf.internal.provider.jgroups.ui.wizard.JoinGroupWizardAction"
                icon="icons/collaboration.gif"
