@@ -14,3 +14,4 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.tests,
  org.eclipse.ecf.tests.provider.jms
 Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy

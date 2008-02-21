@@ -13,3 +13,4 @@ Require-Bundle: org.junit,
  org.eclipse.ecf.telephony.call
 Eclipse-LazyStart: true
 Import-Package: org.osgi.framework;version="1.4.0"
+Bundle-ActivationPolicy: lazy

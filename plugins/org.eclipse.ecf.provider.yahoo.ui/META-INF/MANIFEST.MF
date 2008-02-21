@@ -17,3 +17,4 @@ Require-Bundle: org.eclipse.ui,
 Eclipse-LazyStart: true
 Export-Package: org.eclipse.ecf.internal.provider.yahoo.ui;x-internal:=true,
  org.eclipse.ecf.internal.provider.yahoo.ui.wizards;x-internal:=true
+Bundle-ActivationPolicy: lazy

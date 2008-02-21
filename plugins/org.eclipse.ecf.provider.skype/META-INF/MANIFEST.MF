@@ -26,3 +26,4 @@ Import-Package: org.eclipse.osgi.util;version="1.1.0",
 Export-Package: org.eclipse.ecf.internal.provider.skype;x-internal:=true,
  org.eclipse.ecf.provider.skype,
  org.eclipse.ecf.provider.skype.identity
+Bundle-ActivationPolicy: lazy

@@ -20,3 +20,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5,
 Export-Package: org.eclipse.ecf.example.rcpchat,
  org.eclipse.ecf.example.rcpchat.actions,
  org.eclipse.ecf.example.rcpchat.wizard
+Bundle-ActivationPolicy: lazy
