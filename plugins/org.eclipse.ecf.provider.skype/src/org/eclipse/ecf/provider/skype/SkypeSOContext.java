@@ -74,7 +74,7 @@ public class SkypeSOContext extends SOContext {
 
 	private final ApplicationListener applicationListener = new ApplicationListener() {
 		public void connected(Stream stream) throws SkypeException {
-			ID memberID = createIDFromName(stream.getFriend().getId());
+			final ID memberID = createIDFromName(stream.getFriend().getId());
 			membership.add(memberID);
 			stream.addStreamListener(new SOContextStreamListener(memberID));
 			streams.put(memberID, stream);
@@ -82,7 +82,7 @@ public class SkypeSOContext extends SOContext {
 		}
 
 		public void disconnected(Stream stream) throws SkypeException {
-			ID memberID = createIDFromName(stream.getFriend().getId());
+			final ID memberID = createIDFromName(stream.getFriend().getId());
 			membership.remove(memberID);
 			streams.remove(memberID);
 			enqueue(new ContainerDisconnectedEvent(getLocalContainerID(), memberID));
