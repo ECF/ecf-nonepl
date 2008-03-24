@@ -18,6 +18,14 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.ecf.internal.provider.yahoo.ui.messages"; //$NON-NLS-1$
+	public static String YahooConnectWizard_NEW_CONNECTION;
+	public static String YahooConnectWizardPage_ERROR_MESSAGE;
+	public static String YahooConnectWizardPage_PASSWORD_ERROR;
+	public static String YahooConnectWizardPage_PASSWORD_LABEL;
+	public static String YahooConnectWizardPage_TITLE;
+	public static String YahooConnectWizardPage_USERNAME_EXAMPLE;
+	public static String YahooConnectWizardPage_USERNAME_LABEL;
+	public static String YahooConnectWizardPage_USERNAME_PASSWORD_TEXT;
 	public static String YahooHyperlink_CONNECT_DIALOG_MESSAGE;
 	public static String YahooHyperlink_CONNECT_DIALOG_TITLE;
 	public static String YahooHyperlink_ERROR_MESSAGE_MESSAGE;

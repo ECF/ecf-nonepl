@@ -26,16 +26,13 @@ public class SkypeConnectWizardPage extends WizardPage {
 
 	String username;
 
-	static ImageDescriptor skypeIcon = AbstractUIPlugin
-			.imageDescriptorFromPlugin(Activator.PLUGIN_ID,
-					Messages.SkypeConnectWizardPage_SKYPEICON_48X48);
+	static ImageDescriptor skypeIcon = AbstractUIPlugin.imageDescriptorFromPlugin(Activator.PLUGIN_ID, Messages.SkypeConnectWizardPage_SKYPEICON_48X48);
 
 	public SkypeConnectWizardPage(String username) {
 		super(""); //$NON-NLS-1$
 		this.username = username;
 		setTitle(Messages.SkypeConnectWizardPage_CONNECTION_WIZARD_TITLE);
-		setDescription(NLS
-				.bind(Messages.SkypeConnectWizardPage_SKYPE_WIZARD_DESCRIPTION, this.username));
+		setDescription(NLS.bind(Messages.SkypeConnectWizardPage_SKYPE_WIZARD_DESCRIPTION, this.username));
 		setPageComplete(true);
 		setImageDescriptor(skypeIcon);
 	}
@@ -46,11 +43,10 @@ public class SkypeConnectWizardPage extends WizardPage {
 	 * @see org.eclipse.jface.dialogs.IDialogPage#createControl(org.eclipse.swt.widgets.Composite)
 	 */
 	public void createControl(Composite parent) {
-		Label label = new Label(parent, SWT.LEFT);
-		label
-				.setText(NLS
-						.bind(
-								Messages.SkypeConnectWizardPage_CONNECT_WIZARD_PAGE_MESSAGE, username));  //$NON-NLS-2$
+		parent = new Composite(parent, SWT.NONE);
+
+		final Label label = new Label(parent, SWT.LEFT);
+		label.setText(NLS.bind(Messages.SkypeConnectWizardPage_CONNECT_WIZARD_PAGE_MESSAGE, username));
 
 		setControl(parent);
 	}

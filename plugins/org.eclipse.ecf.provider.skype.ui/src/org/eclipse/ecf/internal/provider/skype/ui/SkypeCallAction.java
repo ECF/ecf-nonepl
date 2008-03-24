@@ -23,7 +23,7 @@ public class SkypeCallAction extends AbstractCallAction {
 	}
 
 	public SkypeCallAction(IContainer container, ID skypeReceiver) {
-		this(container,skypeReceiver,"","");
+		this(container,skypeReceiver,"",""); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 	
 	protected IContainer getContainer() {

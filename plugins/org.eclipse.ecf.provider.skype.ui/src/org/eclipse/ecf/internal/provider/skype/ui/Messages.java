@@ -23,6 +23,7 @@ public class Messages extends NLS {
 	public static String SkypeCallAction_Call_Image_Icon_Name;
 	public static String SkypeConnectWizard_EXCEPTION_SEE_DETAILS;
 	public static String SkypeConnectWizard_EXCEPTION_SKYPE_EXCEPTION;
+	public static String SkypeConnectWizard_NEW_CONNECTION_TITLE;
 	public static String SkypeConnectWizardPage_CONNECT_WIZARD_PAGE_MESSAGE;
 	public static String SkypeConnectWizardPage_CONNECTION_WIZARD_TITLE;
 	public static String SkypeConnectWizardPage_SKYPE_WIZARD_DESCRIPTION;

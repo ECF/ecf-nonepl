@@ -15,6 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ecf.internal.provider.yahoo.ui.Activator;
+import org.eclipse.ecf.internal.provider.yahoo.ui.Messages;
 import org.eclipse.ecf.ui.SharedImages;
 import org.eclipse.ecf.ui.util.PasswordCacheHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;
@@ -40,9 +41,9 @@ final class YahooConnectWizardPage extends WizardPage {
 	private String username;
 
 	YahooConnectWizardPage() {
-		super("");
-		setTitle("Yahoo IM Connection Wizard");
-		setDescription("Specify a Yahoo username and password to connect to account");
+		super(""); //$NON-NLS-1$
+		setTitle(Messages.YahooConnectWizardPage_TITLE);
+		setDescription(Messages.YahooConnectWizardPage_USERNAME_PASSWORD_TEXT);
 		setPageComplete(false);
 		setImageDescriptor(SharedImages.getImageDescriptor(SharedImages.IMG_CHAT_WIZARD));
 	}
@@ -53,32 +54,34 @@ final class YahooConnectWizardPage extends WizardPage {
 	}
 
 	private void verify() {
-		String text = connectText.getText();
-		passwordText.setText("");
-		if (text.equals("")) {
-			updateStatus("A valid connect ID must be specified.");
+		final String text = connectText.getText();
+		passwordText.setText(""); //$NON-NLS-1$
+		if (text.equals("")) { //$NON-NLS-1$
+			updateStatus(Messages.YahooConnectWizardPage_ERROR_MESSAGE);
 		} else {
 			updateStatus(null);
 			restorePassword(text);
 		}
 	}
-	
+
 	private void restorePassword(String username) {
-		PasswordCacheHelper pwStorage = new PasswordCacheHelper(username);
-		String pw = pwStorage.retrievePassword();
+		final PasswordCacheHelper pwStorage = new PasswordCacheHelper(username);
+		final String pw = pwStorage.retrievePassword();
 		if (pw != null) {
 			passwordText.setText(pw);
 		}
 	}
-	
 
 	public void createControl(Composite parent) {
+
+		parent = new Composite(parent, SWT.NONE);
+
 		parent.setLayout(new GridLayout());
-		GridData fillData = new GridData(SWT.FILL, SWT.CENTER, true, false);
-		GridData endData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
+		final GridData fillData = new GridData(SWT.FILL, SWT.CENTER, true, false);
+		final GridData endData = new GridData(SWT.FILL, SWT.CENTER, true, false, 2, 1);
 
 		Label label = new Label(parent, SWT.LEFT);
-		label.setText("Username:");
+		label.setText(Messages.YahooConnectWizardPage_USERNAME_LABEL);
 
 		connectText = new Combo(parent, SWT.SINGLE | SWT.BORDER | SWT.DROP_DOWN);
 		connectText.setLayoutData(fillData);
@@ -91,24 +94,26 @@ final class YahooConnectWizardPage extends WizardPage {
 			public void widgetDefaultSelected(SelectionEvent e) {
 				verify();
 			}
+
 			public void widgetSelected(SelectionEvent e) {
 				verify();
-			}});
+			}
+		});
 
 		label = new Label(parent, SWT.RIGHT);
-		label.setText("<user>");
+		label.setText(Messages.YahooConnectWizardPage_USERNAME_EXAMPLE);
 		label.setLayoutData(endData);
 
 		label = new Label(parent, SWT.LEFT);
-		label.setText("Password:");
+		label.setText(Messages.YahooConnectWizardPage_PASSWORD_LABEL);
 		passwordText = new Text(parent, SWT.SINGLE | SWT.PASSWORD | SWT.BORDER);
 		passwordText.setLayoutData(fillData);
 		label = new Label(parent, SWT.RIGHT | SWT.WRAP);
-		label.setText("Password required for Yahoo accounts");
+		label.setText(Messages.YahooConnectWizardPage_PASSWORD_ERROR);
 		label.setLayoutData(endData);
 
 		restoreCombo();
-		
+
 		if (username != null) {
 			connectText.setText(username);
 			restorePassword(username);
@@ -130,34 +135,32 @@ final class YahooConnectWizardPage extends WizardPage {
 		setPageComplete(message == null);
 	}
 
-	private static final String PAGE_SETTINGS = YahooConnectWizardPage.class
-			.getName();
+	private static final String PAGE_SETTINGS = YahooConnectWizardPage.class.getName();
 	private static final int MAX_COMBO_VALUES = 40;
-	private static final String COMBO_TEXT_KEY = "connectTextValue";
-	private static final String COMBO_BOX_ITEMS_KEY = "comboValues";
+	private static final String COMBO_TEXT_KEY = "connectTextValue"; //$NON-NLS-1$
+	private static final String COMBO_BOX_ITEMS_KEY = "comboValues"; //$NON-NLS-1$
 
 	protected void saveComboText() {
-		IDialogSettings pageSettings = getPageSettings();
+		final IDialogSettings pageSettings = getPageSettings();
 		if (pageSettings != null)
 			pageSettings.put(COMBO_TEXT_KEY, connectText.getText());
 	}
 
 	protected void saveComboItems() {
-		IDialogSettings pageSettings = getPageSettings();
+		final IDialogSettings pageSettings = getPageSettings();
 		if (pageSettings != null) {
-			String connectTextValue = connectText.getText();
-			List rawItems = Arrays.asList(connectText.getItems());
+			final String connectTextValue = connectText.getText();
+			final List rawItems = Arrays.asList(connectText.getItems());
 			// If existing text item is not in combo box then add it
-			List items = new ArrayList();
+			final List items = new ArrayList();
 			if (!rawItems.contains(connectTextValue))
 				items.add(connectTextValue);
 			items.addAll(rawItems);
 			int itemsToSaveLength = items.size();
 			if (itemsToSaveLength > MAX_COMBO_VALUES)
 				itemsToSaveLength = MAX_COMBO_VALUES;
-			String[] itemsToSave = new String[itemsToSaveLength];
-			System.arraycopy(items.toArray(new String[] {}), 0, itemsToSave, 0,
-					itemsToSaveLength);
+			final String[] itemsToSave = new String[itemsToSaveLength];
+			System.arraycopy(items.toArray(new String[] {}), 0, itemsToSave, 0, itemsToSaveLength);
 			pageSettings.put(COMBO_BOX_ITEMS_KEY, itemsToSave);
 		}
 	}
@@ -168,7 +171,7 @@ final class YahooConnectWizardPage extends WizardPage {
 
 	private IDialogSettings getPageSettings() {
 		IDialogSettings pageSettings = null;
-		IDialogSettings dialogSettings = this.getDialogSettings();
+		final IDialogSettings dialogSettings = this.getDialogSettings();
 		if (dialogSettings != null) {
 			pageSettings = dialogSettings.getSection(PAGE_SETTINGS);
 			if (pageSettings == null)
@@ -179,12 +182,12 @@ final class YahooConnectWizardPage extends WizardPage {
 	}
 
 	protected void restoreCombo() {
-		IDialogSettings pageSettings = getPageSettings();
+		final IDialogSettings pageSettings = getPageSettings();
 		if (pageSettings != null) {
-			String[] items = pageSettings.getArray(COMBO_BOX_ITEMS_KEY);
+			final String[] items = pageSettings.getArray(COMBO_BOX_ITEMS_KEY);
 			if (items != null)
 				connectText.setItems(items);
-			String text = pageSettings.get(COMBO_TEXT_KEY);
+			final String text = pageSettings.get(COMBO_TEXT_KEY);
 			if (text != null)
 				connectText.setText(text);
 		}

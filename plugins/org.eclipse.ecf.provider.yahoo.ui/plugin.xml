@@ -21,4 +21,17 @@
       </hyperlinkDetector>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="org.eclipse.ecf.internal.provider.yahoo.ui.wizards.YahooConnectWizard"
+            id="org.eclipse.ecf.provider.ui.yahoo.connect"
+            name="Yahoo IM"
+            icon="icons/new_connection.gif"
+            category="org.eclipse.ecf.ui.newConnection.category"
+            finalPerspective="org.eclipse.ecf.ui.perspective.communications">
+          <description>%YahooConnectWizardPage.description</description>
+      </wizard>
+   </extension>
+
 </plugin>

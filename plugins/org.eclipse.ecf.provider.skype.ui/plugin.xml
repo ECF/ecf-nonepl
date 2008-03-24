@@ -34,4 +34,17 @@
       </hyperlinkDetector>
    </extension>
 
+   <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="org.eclipse.ecf.internal.provider.skype.ui.SkypeConnectWizard"
+            id="org.eclipse.ecf.provider.ui.skype.connect"
+            name="Skype"
+            icon="icons/new_connection.gif"
+            category="org.eclipse.ecf.ui.newConnection.category"
+            finalPerspective="org.eclipse.ecf.ui.perspective.communications">
+          <description>%SkypeConnectWizardPage.description</description>
+      </wizard>
+   </extension>
+
 </plugin>
