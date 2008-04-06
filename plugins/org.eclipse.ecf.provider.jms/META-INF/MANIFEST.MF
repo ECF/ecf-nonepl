@@ -14,8 +14,8 @@ Export-Package: javax.jms,
  org.eclipse.ecf.provider.jms.channel,
  org.eclipse.ecf.provider.jms.container,
  org.eclipse.ecf.provider.jms.identity
-Bundle-RequiredExecutionEnvironment: J2SE-1.4,
- CDC-1.1/Foundation-1.1
+Bundle-RequiredExecutionEnvironment: CDC-1.1/Foundation-1.1,
+ J2SE-1.4
 Require-Bundle: org.eclipse.equinox.common,
  org.eclipse.ecf,
  org.eclipse.ecf.provider,

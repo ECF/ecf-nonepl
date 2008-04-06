@@ -35,29 +35,22 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 
 	private static final long serialVersionUID = 3688761380066499761L;
 
-	public WeblogicJMSServerChannel(ISynchAsynchEventHandler handler,
-			int keepAlive) throws ECFException {
+	public WeblogicJMSServerChannel(ISynchAsynchEventHandler handler, int keepAlive) throws ECFException {
 		super(handler, keepAlive);
 	}
 
-	private InitialContext getInitialContext(String jmsProviderURL)
-			throws NamingException {
-		Hashtable<String, String> env = new Hashtable<String, String>();
-		env.put(Context.INITIAL_CONTEXT_FACTORY,
-				WeblogicJMSServerContainer.JNDI_CONTEXT_FACTORY);
+	private InitialContext getInitialContext(String jmsProviderURL) throws NamingException {
+		final Hashtable env = new Hashtable();
+		env.put(Context.INITIAL_CONTEXT_FACTORY, WeblogicJMSServerContainer.JNDI_CONTEXT_FACTORY);
 		env.put(Context.PROVIDER_URL, jmsProviderURL);
 		return new InitialContext(env);
 	}
 
-	@Override
-	protected Serializable setupJMS(JMSID targetID, Object data)
-			throws ECFException {
+	protected Serializable setupJMS(JMSID targetID, Object data) throws ECFException {
 		try {
-			InitialContext ctx = getInitialContext(targetID.getServer());
-			Destination topicDestination = (Destination) ctx.lookup(targetID
-					.getTopic());
-			ConnectionFactory factory = (ConnectionFactory) ctx
-					.lookup(WeblogicJMSServerContainer.JMS_CONNECTION_FACTORY);
+			final InitialContext ctx = getInitialContext(targetID.getServer());
+			final Destination topicDestination = (Destination) ctx.lookup(targetID.getTopic());
+			final ConnectionFactory factory = (ConnectionFactory) ctx.lookup(WeblogicJMSServerContainer.JMS_CONNECTION_FACTORY);
 
 			connection = factory.createConnection();
 			connection.setExceptionListener(new ExceptionListener() {
@@ -73,20 +66,17 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 				isStopping = false;
 				connection.start();
 			}
-			Serializable connectData = createConnectRequestData(data);
+			final Serializable connectData = createConnectRequestData(data);
 			return connectData;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			disconnect();
-			throw new ECFException(
-					"Server JMS connect failure for " + targetID.getName(), e); //$NON-NLS-1$
+			throw new ECFException("Server JMS connect failure for " + targetID.getName(), e); //$NON-NLS-1$
 		}
 	}
 
-	@Override
-	protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
-			throws IOException {
+	protected ConnectionFactory createJMSConnectionFactory(JMSID targetID) throws IOException {
 		// XXX not used due to override of setupJMS above
 		return null;
 	}
-	
+
 }

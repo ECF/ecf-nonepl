@@ -18,3 +18,5 @@ Eclipse-LazyStart: true
 Export-Package: org.eclipse.ecf.internal.provider.yahoo.ui;x-internal:=true,
  org.eclipse.ecf.internal.provider.yahoo.ui.wizards;x-internal:=true
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: CDC-1.1/Foundation-1.1,
+ J2SE-1.4

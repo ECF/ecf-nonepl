@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: org.eclipse.ecf.tests.provider.jms
-Bundle-Version: 1.2.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: org.eclipse.ecf.tests.provider.jms.Activator
 Bundle-Vendor: %plugin.provider
 Bundle-Localization: plugin
@@ -16,3 +16,4 @@ Eclipse-LazyStart: true
 Export-Package: org.eclipse.ecf.tests.provider.jms,
  org.eclipse.ecf.tests.provider.jms.remoteservice
 Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
