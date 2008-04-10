@@ -16,12 +16,14 @@
 
    <windowImages i16="icons/buddy_available.gif"/>
 
+
    <launcher name="rcpchat">
       <solaris/>
       <win useIco="false">
          <bmp/>
       </win>
    </launcher>
+
 
    <vm>
    </vm>
