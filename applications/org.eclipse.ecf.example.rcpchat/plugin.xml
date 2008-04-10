@@ -29,7 +29,7 @@
                value="%aboutText"/>
          <property
                name="windowImages"
-               value="icons/contact_enabled.gif"/>
+               value="icons/buddy_available.gif"/>
          <property
                name="appName"
                value="RCPChat">
