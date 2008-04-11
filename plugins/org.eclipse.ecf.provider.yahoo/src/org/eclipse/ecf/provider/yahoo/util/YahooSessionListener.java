@@ -36,8 +36,7 @@ public class YahooSessionListener implements SessionListener {
 	YahooContainer container;
 	YahooPresenceContainer presenceContainer;
 
-	public YahooSessionListener(YahooContainer container,
-			YahooPresenceContainer presenceContainer) {
+	public YahooSessionListener(YahooContainer container, YahooPresenceContainer presenceContainer) {
 		this.container = container;
 		this.presenceContainer = presenceContainer;
 	}
@@ -46,12 +45,12 @@ public class YahooSessionListener implements SessionListener {
 	}
 
 	public void connectionClosed(SessionEvent arg0) {
-		hardClose();
+		hardClose(((arg0 instanceof SessionExceptionEvent) ? ((SessionExceptionEvent) arg0).getException() : null));
 	}
 
-	protected void hardClose() {
+	protected void hardClose(Throwable t) {
 		if (container != null) {
-			container.disconnect();
+			container.disconnect(t);
 			container = null;
 		}
 	}
@@ -64,6 +63,7 @@ public class YahooSessionListener implements SessionListener {
 	}
 
 	public void buzzReceived(SessionEvent arg0) {
+		presenceContainer.handleMessageReceived(arg0);
 	}
 
 	public void offlineMessageReceived(SessionEvent arg0) {
@@ -73,13 +73,15 @@ public class YahooSessionListener implements SessionListener {
 	}
 
 	public void inputExceptionThrown(SessionExceptionEvent arg0) {
-		hardClose();
 	}
 
 	public void newMailReceived(SessionNewMailEvent arg0) {
 	}
 
 	public void notifyReceived(SessionNotifyEvent arg0) {
+		if (arg0.isTyping()) {
+			presenceContainer.handleTypingReceived(arg0);
+		}
 	}
 
 	public void contactRequestReceived(SessionEvent arg0) {

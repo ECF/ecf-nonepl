@@ -22,6 +22,7 @@ import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.events.ContainerConnectingEvent;
 import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.events.ContainerDisconnectingEvent;
+import org.eclipse.ecf.core.events.ContainerEjectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
@@ -91,9 +92,10 @@ public class YahooContainer extends AbstractContainer {
 		return IDFactory.getDefault().getNamespaceByName(Activator.NAMESPACE_IDENTIFIER);
 	}
 
-	public synchronized void disconnect() {
+	public synchronized void disconnect(Throwable t) {
 		if (session != null) {
-			fireContainerEvent(new ContainerDisconnectingEvent(this.getID(), targetYahooID));
+			if (t == null)
+				fireContainerEvent(new ContainerDisconnectingEvent(this.getID(), targetYahooID));
 			try {
 				session.logout();
 			} catch (final Exception e) {
@@ -101,9 +103,16 @@ public class YahooContainer extends AbstractContainer {
 				session = null;
 			}
 			// notify listeners
-			fireContainerEvent(new ContainerDisconnectedEvent(this.getID(), targetYahooID));
+			if (t == null)
+				fireContainerEvent(new ContainerDisconnectedEvent(this.getID(), targetYahooID));
+			else
+				fireContainerEvent(new ContainerEjectedEvent(this.getID(), targetYahooID, t));
 		}
 		targetYahooID = null;
+	}
+
+	public void disconnect() {
+		disconnect(null);
 	}
 
 	public Object getAdapter(Class serviceType) {

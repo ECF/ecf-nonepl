@@ -44,6 +44,8 @@ import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessage;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
+import org.eclipse.ecf.presence.im.TypingMessage;
+import org.eclipse.ecf.presence.im.TypingMessageEvent;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
@@ -64,12 +66,13 @@ import ymsg.network.YahooGroup;
 import ymsg.network.YahooUser;
 import ymsg.network.event.SessionEvent;
 import ymsg.network.event.SessionFriendEvent;
+import ymsg.network.event.SessionNotifyEvent;
 
 public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	private static final String YAHOO_ACCOUNT_NAME = " [yahoo]";
 
-	private Session session;
+	private final Session session;
 
 	List listeners = new ArrayList();
 
@@ -81,21 +84,18 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	}
 
 	IChatMessageSender chatSender = new IChatMessageSender() {
-		public void sendChatMessage(ID toID, ID threadID, Type type,
-				String subject, String body, Map properties)
-				throws ECFException {
+		public void sendChatMessage(ID toID, ID threadID, Type type, String subject, String body, Map properties) throws ECFException {
 			try {
 				session.sendMessage(toID.getName(), body);
-			} catch (IllegalStateException e) {
+			} catch (final IllegalStateException e) {
 				e.printStackTrace();
-			} catch (IOException e) {
+			} catch (final IOException e) {
 				e.printStackTrace();
 			}
 		}
 
 		public void sendChatMessage(ID toID, String body) throws ECFException {
-			sendChatMessage(toID, null, IChatMessage.Type.CHAT, null, body,
-					null);
+			sendChatMessage(toID, null, IChatMessage.Type.CHAT, null, body, null);
 		}
 
 	};
@@ -106,8 +106,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			throw new ECFException("Yahoo password must be changed via http://www.yahoo.com");
 		}
 
-		public boolean createAccount(String username, String password,
-				Map attributes) throws ECFException {
+		public boolean createAccount(String username, String password, Map attributes) throws ECFException {
 			return false;
 		}
 
@@ -115,8 +114,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			return false;
 		}
 
-		public Object getAccountAttribute(String attributeName)
-				throws ECFException {
+		public Object getAccountAttribute(String attributeName) throws ECFException {
 			return null;
 		}
 
@@ -131,9 +129,9 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 		public boolean isAccountCreationSupported() throws ECFException {
 			return false;
 		}
-		
+
 	};
-	
+
 	protected IHistoryManager historyManager = new IHistoryManager() {
 
 		/*
@@ -185,8 +183,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			return historyManager;
 		}
 
-		public IChat createChat(ID targetUser,
-				IIMMessageListener messageListener) throws ECFException {
+		public IChat createChat(ID targetUser, IIMMessageListener messageListener) throws ECFException {
 			// TODO Auto-generated method stub
 			return null;
 		}
@@ -206,41 +203,40 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 * @param event
 	 */
 	public void handleMessageReceived(SessionEvent event) {
-		for (Iterator i = listeners.iterator(); i.hasNext();) {
-			IIMMessageListener l = (IIMMessageListener) i.next();
-			ID fromID = makeIDFromName(event.getFrom());
-			String msg = removeXHTMLFromMessage(event.getMessage());
-			l.handleMessageEvent(new ChatMessageEvent(fromID, new ChatMessage(
-					fromID, msg)));
+		for (final Iterator i = listeners.iterator(); i.hasNext();) {
+			final IIMMessageListener l = (IIMMessageListener) i.next();
+			final ID fromID = makeIDFromName(event.getFrom());
+			final String msg = removeXHTMLFromMessage(event.getMessage());
+			l.handleMessageEvent(new ChatMessageEvent(fromID, new ChatMessage(fromID, msg)));
+			sendTyping(fromID, l, false);
 		}
 	}
 
 	private String stripNestedTag(String input, String tag) {
-		int index = input.indexOf("<" + tag);
+		final int index = input.indexOf("<" + tag);
 		if (index != -1) {
-			String pre = input.substring(0, index);
-			int textBegin = input.indexOf(">", index) + 1;
-			String s = stripNestedTag(input.substring(textBegin), tag);
-			int endIndex = s.lastIndexOf("</" + tag, s.length());
-			String suffix = (endIndex == -1)?"":stripTag(s.substring(0, endIndex), tag);
+			final String pre = input.substring(0, index);
+			final int textBegin = input.indexOf(">", index) + 1;
+			final String s = stripNestedTag(input.substring(textBegin), tag);
+			final int endIndex = s.lastIndexOf("</" + tag, s.length());
+			final String suffix = (endIndex == -1) ? "" : stripTag(s.substring(0, endIndex), tag);
 			return pre + s + suffix;
 		} else
 			return input;
 	}
 
 	private String stripTag(String input, String tag) {
-		int index = input.indexOf("<" + tag);
+		final int index = input.indexOf("<" + tag);
 		if (index != -1) {
-			int textBegin = input.indexOf(">", index) + 1;
-			int textEnd = input.indexOf("</" + tag, textBegin);
+			final int textBegin = input.indexOf(">", index) + 1;
+			final int textEnd = input.indexOf("</" + tag, textBegin);
 			String s = null;
 			String suffix = "";
 			if (textEnd == -1) {
-				s = stripNestedTag(input.substring(textBegin),tag);
+				s = stripNestedTag(input.substring(textBegin), tag);
 			} else {
 				s = stripNestedTag(input.substring(textBegin, textEnd), tag);
-				suffix = stripTag(input
-						.substring(textEnd + 3 + tag.length()), tag);
+				suffix = stripTag(input.substring(textEnd + 3 + tag.length()), tag);
 			}
 			return s + suffix;
 		} else
@@ -272,10 +268,9 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 */
 	public void handleFriendsUpdateReceived(SessionFriendEvent event) {
 		for (int i = 0; i < getPresenceListeners().size(); i++) {
-			IPresenceListener l = (IPresenceListener) getPresenceListeners()
-					.get(i);
-			ID from = makeIDFromName(event.getFrom());
-			IPresence presence = createPresence(from.getName());
+			final IPresenceListener l = (IPresenceListener) getPresenceListeners().get(i);
+			final ID from = makeIDFromName(event.getFrom());
+			final IPresence presence = createPresence(from.getName());
 			l.handlePresence(from, presence);
 		}
 	}
@@ -287,12 +282,9 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	protected ID makeIDFromName(String name) {
 		ID result = null;
 		try {
-			result = IDFactory.getDefault().createID(
-					IDFactory.getDefault().getNamespaceByName(
-							Activator.NAMESPACE_IDENTIFIER),
-					new Object[] { name });
+			result = IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(Activator.NAMESPACE_IDENTIFIER), new Object[] {name});
 			return result;
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			return null;
 		}
 	}
@@ -304,15 +296,13 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 * @return Determines the presence of a YMSG user
 	 */
 	public IPresence createPresence(String userID) {
-		YahooUser user = session.getUser(userID);
-		long status = user.getStatus();
+		final YahooUser user = session.getUser(userID);
+		final long status = user.getStatus();
 		Presence presence = new Presence(IPresence.Type.UNAVAILABLE);
 		if (status == StatusConstants.STATUS_AVAILABLE) {
 			presence = new Presence(IPresence.Type.AVAILABLE);
-		} else if (status == StatusConstants.STATUS_BRB
-				|| status == StatusConstants.STATUS_BUSY) {
-			presence = new Presence(IPresence.Type.UNAVAILABLE, "User is away",
-					IPresence.Mode.AWAY);
+		} else if (status == StatusConstants.STATUS_BRB || status == StatusConstants.STATUS_BUSY) {
+			presence = new Presence(IPresence.Type.UNAVAILABLE, "User is away", IPresence.Mode.AWAY);
 		}
 		return presence;
 	}
@@ -321,8 +311,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	IPresenceSender presenceSender = new IPresenceSender() {
 
-		public void sendPresenceUpdate(ID targetID, IPresence presence)
-				throws ECFException {
+		public void sendPresenceUpdate(ID targetID, IPresence presence) throws ECFException {
 			try {
 				if (presence.getMode().equals(IPresence.Mode.AVAILABLE))
 					session.setStatus(StatusConstants.STATUS_AVAILABLE);
@@ -330,10 +319,9 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 					session.setStatus(StatusConstants.STATUS_BRB);
 				else if (presence.getMode().equals(IPresence.Mode.INVISIBLE))
 					session.setStatus(StatusConstants.STATUS_INVISIBLE);
-				else if (presence.getMode()
-						.equals(IPresence.Mode.EXTENDED_AWAY))
+				else if (presence.getMode().equals(IPresence.Mode.EXTENDED_AWAY))
 					session.setStatus(StatusConstants.STATUS_BUSY);
-			} catch (Exception e) {
+			} catch (final Exception e) {
 				// XXX Catch and swallow...if this happens then we're offline anyway
 			}
 		}
@@ -342,33 +330,39 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	private void sendRosterChange(boolean add, String friend, String group) throws ECFException {
 		try {
-			if (add) session.addFriend(friend, group);
-			else session.removeFriend(friend, group);
-		} catch (Exception e) {
-			throw new ECFException("sendRosterChange",e);
+			if (add)
+				session.addFriend(friend, group);
+			else
+				session.removeFriend(friend, group);
+		} catch (final Exception e) {
+			throw new ECFException("sendRosterChange", e);
 		}
 	}
-	
+
 	IRosterSubscriptionSender rosterSubscriptionSender = new IRosterSubscriptionSender() {
 
-		public void sendRosterAdd(String user, String name, String[] groups)
-				throws ECFException {
-			if (groups != null) for(int i=0; i < groups.length; i++) sendRosterChange(true,user,groups[i]);
-			else sendRosterChange(true,user,"");
+		public void sendRosterAdd(String user, String name, String[] groups) throws ECFException {
+			if (groups != null)
+				for (int i = 0; i < groups.length; i++)
+					sendRosterChange(true, user, groups[i]);
+			else
+				sendRosterChange(true, user, "");
 		}
 
 		public void sendRosterRemove(ID userID) throws ECFException {
-			YahooGroup [] groups = session.getGroups();
-			String user = userID.getName();
+			final YahooGroup[] groups = session.getGroups();
+			final String user = userID.getName();
 			if (groups != null) {
-				for(int i=0; i < groups.length; i++) {
-					Vector members = groups[i].getMembers();
-					for (Iterator j=members.iterator(); j.hasNext(); ) {
-						YahooUser u = (YahooUser) j.next();
-						if (u.getId().equals(user)) sendRosterChange(false,user,groups[i].getName());
+				for (int i = 0; i < groups.length; i++) {
+					final Vector members = groups[i].getMembers();
+					for (final Iterator j = members.iterator(); j.hasNext();) {
+						final YahooUser u = (YahooUser) j.next();
+						if (u.getId().equals(user))
+							sendRosterChange(false, user, groups[i].getName());
 					}
 				}
-			} else sendRosterChange(false,user,"");
+			} else
+				sendRosterChange(false, user, "");
 		}
 	};
 
@@ -378,8 +372,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			presenceListeners.add(listener);
 		}
 
-		public void addRosterSubscriptionListener(
-				IRosterSubscriptionListener listener) {
+		public void addRosterSubscriptionListener(IRosterSubscriptionListener listener) {
 		}
 
 		public void addRosterListener(IRosterListener listener) {
@@ -402,8 +395,7 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 			presenceListeners.remove(listener);
 		}
 
-		public void removeRosterSubscriptionListener(
-				IRosterSubscriptionListener listener) {
+		public void removeRosterSubscriptionListener(IRosterSubscriptionListener listener) {
 		}
 
 		public void removeRosterListener(IRosterListener listener) {
@@ -446,27 +438,24 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 * @return returns roster entry representing this user in the buddy list
 	 */
 	protected IRosterEntry makeRosterEntry(IRosterGroup group, YahooUser user) {
-		String userName = user.getId();
+		final String userName = user.getId();
 		ID userID;
 		try {
-			userID = IDFactory.getDefault().createID(
-					container.getConnectNamespace(), userName);
-			IPresence presence = createPresence(userID.getName());
+			userID = IDFactory.getDefault().createID(container.getConnectNamespace(), userName);
+			final IPresence presence = createPresence(userID.getName());
 			return new RosterEntry(group, new User(userID, userName), presence);
-		} catch (IDCreateException e) {
+		} catch (final IDCreateException e) {
 			e.printStackTrace();
 			return null;
 		}
 	}
 
 	protected void populateRoster(YahooID userID, YahooGroup[] groups) {
-		roster = new Roster(this, new User(userID, userID.getName()
-				+ YAHOO_ACCOUNT_NAME));
+		roster = new Roster(this, new User(userID, userID.getName() + YAHOO_ACCOUNT_NAME));
 		for (int i = 0; i < groups.length; i++) {
-			RosterGroup group = new RosterGroup(getRoster(), groups[i]
-					.getName());
+			final RosterGroup group = new RosterGroup(getRoster(), groups[i].getName());
 			for (int j = 0; j < groups[i].getMembers().size(); j++) {
-				YahooUser u = (YahooUser) groups[i].getMembers().get(j);
+				final YahooUser u = (YahooUser) groups[i].getMembers().get(j);
 				makeRosterEntry(group, u);
 			}
 			roster.addItem(group);
@@ -478,8 +467,8 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 * @param entry
 	 */
 	protected void fireRosterEntryAdd(IRosterEntry entry) {
-		for (Iterator i = rosterListeners.iterator(); i.hasNext();) {
-			IRosterListener l = (IRosterListener) i.next();
+		for (final Iterator i = rosterListeners.iterator(); i.hasNext();) {
+			final IRosterListener l = (IRosterListener) i.next();
 			l.handleRosterEntryAdd(entry);
 		}
 	}
@@ -488,10 +477,23 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	 * @param entry
 	 */
 	public void fireRosterUpdate(IRosterItem entry) {
-		for (Iterator i = rosterListeners.iterator(); i.hasNext();) {
-			IRosterListener l = (IRosterListener) i.next();
+		for (final Iterator i = rosterListeners.iterator(); i.hasNext();) {
+			final IRosterListener l = (IRosterListener) i.next();
 			l.handleRosterUpdate(roster, entry);
 		}
+	}
+
+	/**
+	 * @param arg0
+	 */
+	public void handleTypingReceived(SessionNotifyEvent arg0) {
+		for (final Iterator i = listeners.iterator(); i.hasNext();) {
+			sendTyping(makeIDFromName(arg0.getFrom()), (IIMMessageListener) i.next(), (arg0.getMode() == 1) ? true : false);
+		}
+	}
+
+	private void sendTyping(ID fromID, IIMMessageListener l, boolean isTyping) {
+		l.handleMessageEvent(new TypingMessageEvent(fromID, new TypingMessage(fromID, isTyping, null)));
 	}
 
 }
