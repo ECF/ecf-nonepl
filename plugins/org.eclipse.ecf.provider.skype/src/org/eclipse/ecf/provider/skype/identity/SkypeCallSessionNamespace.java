@@ -14,6 +14,7 @@ package org.eclipse.ecf.provider.skype.identity;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.osgi.util.NLS;
 
 /**
  * 
@@ -24,13 +25,35 @@ public class SkypeCallSessionNamespace extends Namespace {
 	public static final String SCHEME = "ecf.namespace.skype.call.session"; //$NON-NLS-1$
 	public static final String NAMESPACE_NAME = SCHEME;
 
+	private String getInitFromExternalForm(Object[] args) {
+		if (args == null || args.length < 1 || args[0] == null)
+			return null;
+		if (args[0] instanceof String) {
+			final String arg = (String) args[0];
+			if (arg.startsWith(getScheme() + Namespace.SCHEME_SEPARATOR)) {
+				final int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
+				if (index >= arg.length())
+					return null;
+				return arg.substring(index + 1);
+			}
+		}
+		return null;
+	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object[])
 	 */
 	public ID createInstance(Object[] parameters) throws IDCreateException {
-		return new SkypeCallSessionID(this, (String) parameters[0]);
+		try {
+			final String init = getInitFromExternalForm(parameters);
+			if (init != null)
+				return new SkypeCallSessionID(this, init);
+			return new SkypeCallSessionID(this, (String) parameters[0]);
+		} catch (final Exception e) {
+			throw new IDCreateException(NLS.bind("{0} createInstance()", getName()), e); //$NON-NLS-1$
+		}
 	}
 
 	/*
