@@ -20,7 +20,7 @@ import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 
 /**
- *
+ * 
  */
 public class JGroupsID extends BaseID {
 
