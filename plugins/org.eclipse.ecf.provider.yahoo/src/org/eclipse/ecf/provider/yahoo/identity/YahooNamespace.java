@@ -27,6 +27,21 @@ public class YahooNamespace extends Namespace {
 		return YMSG_PROTOCOL;
 	}
 
+	private String getInitFromExternalForm(Object[] args) {
+		if (args == null || args.length < 1 || args[0] == null)
+			return null;
+		if (args[0] instanceof String) {
+			final String arg = (String) args[0];
+			if (arg.startsWith(getScheme() + Namespace.SCHEME_SEPARATOR)) {
+				final int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
+				if (index >= arg.length())
+					return null;
+				return arg.substring(index + 1);
+			}
+		}
+		return null;
+	}
+
 	/**
 	 * Creates an instance of an ID within this namespace given
 	 * the arguments provided. In this case, the args is expected
@@ -37,6 +52,9 @@ public class YahooNamespace extends Namespace {
 	 */
 	public ID createInstance(Object[] args) throws IDCreateException {
 		try {
+			final String init = getInitFromExternalForm(args);
+			if (init != null)
+				return new YahooID(this, init);
 			return new YahooID(this, (String) args[0]);
 		} catch (final Exception e) {
 			throw new IDCreateException("Yahoo ID creation exception", e);
