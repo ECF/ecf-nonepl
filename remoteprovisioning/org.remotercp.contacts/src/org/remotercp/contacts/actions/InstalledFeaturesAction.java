@@ -2,6 +2,7 @@ package org.remotercp.contacts.actions;
 
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterItem;
@@ -41,12 +42,13 @@ public class InstalledFeaturesAction implements IObjectActionDelegate {
 		List<IRosterEntry> onlineUser = RosterUtil
 				.filterOnlineUser((IRosterItem) this.selection
 						.getFirstElement());
+		Assert.isNotNull(onlineUser);
 
-		// filter online user
-		ID[] userIds = (ID[]) onlineUser.toArray(new ID[onlineUser.size()]);
+		ID[] userIDs = RosterUtil.getUserIDs(onlineUser);
+		Assert.isNotNull(userIDs);
 
 		ProvisioningEditorInput editorInput = new ProvisioningEditorInput(
-				userIds);
+				userIDs);
 
 		IWorkbenchPage activePage = this.targetPart.getSite()
 				.getWorkbenchWindow().getActivePage();
