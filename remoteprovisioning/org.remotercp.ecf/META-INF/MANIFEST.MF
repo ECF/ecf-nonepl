@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Hyperbola Plug-in
+Bundle-SymbolicName: org.remotercp.ecf;singleton:=true
+Bundle-Version: 1.0.0
+Require-Bundle: org.eclipse.core.runtime,
+ org.remotercp.libs,
+ org.eclipse.ui,
+ org.jivesoftware.smack,
+ org.remotercp.util
+Export-Package: org.remotercp.ecf,
+ org.remotercp.ecf.session
+Eclipse-LazyStart: true
+Bundle-Activator: org.remotercp.ecf.ECFActivator

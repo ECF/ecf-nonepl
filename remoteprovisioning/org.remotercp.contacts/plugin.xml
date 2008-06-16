@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            class="org.remotercp.contacts.ui.ContactsView"
+            icon="icons/group.png"
+            id="contacts.ui.contactsview"
+            name="Contacts">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="org.remotercp.core.perspective">
+         <view
+               closeable="false"
+               id="contacts.ui.contactsview"
+               ratio="0.3f"
+               relationship="left"
+               relative="org.eclipse.ui.editorss">
+         </view>
+      </perspectiveExtension>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.eclipse.ecf.presence.roster.Roster"
+            class="org.remotercp.contacts.ContactsAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.ecf.presence.roster.RosterGroup"
+            class="org.remotercp.contacts.ContactsAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.eclipse.ecf.presence.roster.RosterEntry"
+            class="org.remotercp.contacts.ContactsAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.eclipsercp.hyperbola.actionSet"
+            label="Action Set"
+            visible="true">
+         <menu
+               id="org.eclipsercp.hyperbola.menu"
+               label="Menu">
+            <separator
+                  name="org.eclipsercp.hyperbola.separator">
+            </separator>
+         </menu>
+         <action
+               class="org.remotercp.contacts.actions.AddContactAction"
+               icon="icons/add_contact.png"
+               id="org.eclipsercp.hyperbola.addContactAction"
+               label="Add Contact"
+               toolbarPath="org.eclipsercp.hyperbola.separator">
+         </action>
+      </actionSet>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.remotercp.contacts.rosterItemContribution"
+            objectClass="org.eclipse.ecf.presence.roster.IRosterItem">
+         <action
+               class="org.remotercp.contacts.actions.InstalledFeaturesAction"
+               id="org.remotercp.contacts.getInstalledFeaturesAction"
+               label="Get installed features"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

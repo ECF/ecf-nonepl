@@ -1,0 +1,103 @@
+package org.remotercp.contacts;
+
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.presence.IIMMessageEvent;
+import org.eclipse.ecf.presence.IIMMessageListener;
+import org.eclipse.ecf.presence.IPresence;
+import org.eclipse.ecf.presence.IPresenceListener;
+import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleContext;
+import org.remotercp.chat.actions.ChatUserSatusChangedAction;
+import org.remotercp.chat.actions.OpenChatEditorAction;
+import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
+
+/**
+ * The activator class controls the plug-in life cycle
+ */
+public class ContactsActivator extends AbstractUIPlugin {
+
+	// The plug-in ID
+	public static final String PLUGIN_ID = "org.remotercp.contacts";
+
+	// The shared instance
+	private static ContactsActivator plugin;
+
+	private static BundleContext bundlecontext;
+
+	/**
+	 * The constructor
+	 */
+	public ContactsActivator() {
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 */
+	public void start(BundleContext context) throws Exception {
+		super.start(context);
+		plugin = this;
+
+		bundlecontext = context;
+
+		this.registerListener();
+	}
+
+	/*
+	 * Registriere Listener für eingehende Chat-Ereignisse. Die Registrierung
+	 * ist hier erforderlich, da der Chat-Editor noch nicht initialisiert wurde
+	 * und dies auch nicht wird, bevor eine Nachricht o.ä. eingegangen ist.
+	 */
+	private void registerListener() {
+		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
+				bundlecontext, ISessionService.class);
+
+		// nachrichten
+		session.getChatManager().addMessageListener(new IIMMessageListener() {
+
+			public void handleMessageEvent(IIMMessageEvent messageEvent) {
+				Logger.getAnonymousLogger().log(Level.INFO,
+						"Message received: " + messageEvent.getFromID());
+
+				new OpenChatEditorAction(messageEvent).run();
+			}
+		});
+
+		// inform chat user about arriving and leaving of other chat user
+		session.getRosterManager().addPresenceListener(new IPresenceListener() {
+			public void handlePresence(ID fromID, IPresence presence) {
+				new ChatUserSatusChangedAction(fromID, presence).run();
+
+			}
+		});
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 */
+	public void stop(BundleContext context) throws Exception {
+		plugin = null;
+		super.stop(context);
+	}
+
+	/**
+	 * Returns the shared instance
+	 * 
+	 * @return the shared instance
+	 */
+	public static ContactsActivator getDefault() {
+		return plugin;
+	}
+
+	public static BundleContext getBundleContext() {
+		return bundlecontext;
+	}
+
+}

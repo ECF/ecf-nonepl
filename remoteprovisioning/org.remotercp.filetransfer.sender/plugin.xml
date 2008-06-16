@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.remotercp.filetransfer.objectContribution"
+            objectClass="org.eclipse.ecf.presence.roster.IRosterItem">
+         <action
+               class="org.remotercp.filetransfer.sender.actions.SendFileAction"
+               icon="icons/html.png"
+               id="org.remotercp.filetransfer.sendFileAction"
+               label="Send File"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

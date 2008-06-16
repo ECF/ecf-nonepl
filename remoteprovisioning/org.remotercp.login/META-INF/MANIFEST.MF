@@ -1,0 +1,12 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Login Plug-in
+Bundle-SymbolicName: org.remotercp.login
+Bundle-Version: 1.0.0
+Bundle-Activator: org.remotercp.login.LoginActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.remotercp.ecf,
+ org.remotercp.libs
+Eclipse-LazyStart: true
+Export-Package: org.remotercp.login.ui

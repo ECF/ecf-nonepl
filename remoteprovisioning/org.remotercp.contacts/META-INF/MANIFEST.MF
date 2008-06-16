@@ -1,0 +1,19 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Contacts Plug-in
+Bundle-SymbolicName: org.remotercp.contacts;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.remotercp.contacts.ContactsActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.remotercp.libs,
+ org.eclipse.core.databinding,
+ org.eclipse.core.databinding.beans,
+ org.eclipse.jface.databinding,
+ org.remotercp.ecf,
+ org.remotercp.provisioning,
+ org.remotercp.chat,
+ org.remotercp.provisioning.update,
+ org.remotercp.util
+Eclipse-LazyStart: true
+Export-Package: org.remotercp.contacts.ui

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Chat Plug-in
+Bundle-SymbolicName: org.remotercp.chat;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.remotercp.chat.ChatActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.remotercp.libs,
+ org.remotercp.ecf,
+ org.remotercp.provisioning,
+ org.eclipse.update.core
+Eclipse-LazyStart: true
+Export-Package: org.remotercp.chat.actions,
+ org.remotercp.chat.ui
