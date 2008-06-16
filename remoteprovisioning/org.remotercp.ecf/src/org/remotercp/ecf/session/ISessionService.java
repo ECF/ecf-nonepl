@@ -52,6 +52,27 @@ public interface ISessionService {
 	public void ungetRemoteService(ID[] idFilter, String serviceName,
 			String filter) throws ECFException, InvalidSyntaxException;
 
+	/**
+	 * Returns a list of remote service references for a given service. The
+	 * given service might me provided by several user though there might be
+	 * more than one service available
+	 * 
+	 * @param <T>
+	 *            The service type
+	 * @param service
+	 *            The needed remote service name
+	 * @param filterIDs
+	 *            User IDs work as a filter though remote services will be
+	 *            limited to the given user. May be null if the service should
+	 *            be get for all users.
+	 * @param filter
+	 *            Additional filter which checks if the service properties do
+	 *            match the given filer. May be null if all services should be
+	 *            found
+	 * @return A list of remote service proxies
+	 * @throws ECFException
+	 * @throws InvalidSyntaxException
+	 */
 	public <T> List<T> getRemoteService(Class<T> service, ID[] filterIDs,
 			String filter) throws ECFException, InvalidSyntaxException;
 }

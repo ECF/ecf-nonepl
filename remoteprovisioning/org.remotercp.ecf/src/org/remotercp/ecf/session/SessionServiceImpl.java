@@ -74,13 +74,16 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 	 *            The needed remote service name
 	 * @param filterIDs
 	 *            User IDs work as a filter though remote services will be
-	 *            limited to the given uesr
+	 *            limited to the given user. May be null if the service should
+	 *            be get for all users.
 	 * @param filter
+	 *            Additional filter which checks if the service properties do
+	 *            match the given filer. May be null if all services should be
+	 *            found
 	 * @return A list of remote service proxies
 	 * @throws ECFException
 	 * @throws InvalidSyntaxException
 	 */
-	@SuppressWarnings("unchecked")
 	public <T> List<T> getRemoteService(Class<T> service, ID[] filterIDs,
 			String filter) throws ECFException, InvalidSyntaxException {
 		List<T> remoteServices = new ArrayList<T>();
@@ -100,7 +103,8 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 			Assert.isNotNull(remoteService);
 
 			// get proxy for remote service and add service to the service list
-			T castedService = (T) remoteService.getProxy();
+			T castedService = service.cast(remoteService.getProxy());
+			// T castedService = (T) remoteService.getProxy();
 			Assert.isNotNull(castedService);
 			remoteServices.add(castedService);
 		}
