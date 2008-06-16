@@ -21,10 +21,16 @@ public class RosterUtil {
 	public static ID[] getUserIDs(IRoster roster) {
 		List<IRosterEntry> entries = getRosterEntries(roster);
 
-		ID[] ids = new ID[entries.size()];
+		ID[] ids = getUserIDs(entries);
 
-		for (int entry = 0; entry < entries.size(); entry++) {
-			ids[entry] = entries.get(entry).getUser().getID();
+		return ids;
+	}
+
+	public static ID[] getUserIDs(List<IRosterEntry> rosterEntries) {
+		ID[] ids = new ID[rosterEntries.size()];
+
+		for (int entry = 0; entry < rosterEntries.size(); entry++) {
+			ids[entry] = rosterEntries.get(entry).getUser().getID();
 		}
 
 		return ids;

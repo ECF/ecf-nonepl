@@ -5,6 +5,7 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
 import static junit.framework.Assert.fail;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -33,6 +34,8 @@ public class TestRosterUtil {
 
 	private IRosterGroup group2;
 
+	private List<IRosterEntry> rosterEntries;
+
 	@Test
 	public void testUserPresenceInContextMenu() {
 
@@ -44,6 +47,16 @@ public class TestRosterUtil {
 
 		List<IRosterEntry> group2Entries = RosterUtil.getRosterEntries(group2);
 		assertEquals(3, group2Entries.size());
+	}
+
+	@Test
+	public void testGetUserIDs() {
+		ID[] userIDs = RosterUtil.getUserIDs(rosterEntries);
+
+		assertEquals(7, userIDs.length);
+		for (int id = 0; id < userIDs.length; id++) {
+			assertNotNull(userIDs[id]);
+		}
 	}
 
 	@SuppressWarnings("unchecked")
@@ -86,15 +99,24 @@ public class TestRosterUtil {
 		IPresence presence1 = new Presence(IPresence.Type.AVAILABLE);
 		IPresence presence2 = new Presence(IPresence.Type.UNAVAILABLE);
 
-		new RosterEntry(group1, user1, presence1);
-		new RosterEntry(group1, user2, presence2);
+		RosterEntry rosterEntry1 = new RosterEntry(group1, user1, presence1);
+		RosterEntry rosterEntry2 = new RosterEntry(group1, user2, presence2);
 
-		new RosterEntry(group2, user2, presence2);
-		new RosterEntry(group2, user3, presence2);
-		new RosterEntry(group2, user4, presence2);
-		new RosterEntry(group2, user4, presence2);
+		RosterEntry rosterEntry3 = new RosterEntry(group2, user2, presence2);
+		RosterEntry rosterEntry4 = new RosterEntry(group2, user3, presence2);
+		RosterEntry rosterEntry5 = new RosterEntry(group2, user4, presence2);
+		RosterEntry rosterEntry6 = new RosterEntry(group2, user4, presence2);
 
-		new RosterEntry(roster, user4, presence1);
+		RosterEntry rosterEntry7 = new RosterEntry(roster, user4, presence1);
+
+		this.rosterEntries = new ArrayList<IRosterEntry>();
+		rosterEntries.add(rosterEntry1);
+		rosterEntries.add(rosterEntry2);
+		rosterEntries.add(rosterEntry3);
+		rosterEntries.add(rosterEntry4);
+		rosterEntries.add(rosterEntry5);
+		rosterEntries.add(rosterEntry6);
+		rosterEntries.add(rosterEntry7);
 
 		assertNotNull(roster.getItems());
 		// roster must contain 2 groups
