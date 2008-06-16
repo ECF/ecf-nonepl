@@ -49,32 +49,42 @@ public class ContactsActivator extends AbstractUIPlugin {
 	}
 
 	/*
-	 * Registriere Listener für eingehende Chat-Ereignisse. Die Registrierung
-	 * ist hier erforderlich, da der Chat-Editor noch nicht initialisiert wurde
-	 * und dies auch nicht wird, bevor eine Nachricht o.ä. eingegangen ist.
+	 * Register listener for incoming chat events. Check if this is the
+	 * appropriate place to register a listener. The listener has to be
+	 * registered on start up, otherwise the chat editor will never be opened.
+	 * 
 	 */
 	private void registerListener() {
 		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
 				bundlecontext, ISessionService.class);
 
-		// nachrichten
-		session.getChatManager().addMessageListener(new IIMMessageListener() {
+		if (session != null) {
 
-			public void handleMessageEvent(IIMMessageEvent messageEvent) {
-				Logger.getAnonymousLogger().log(Level.INFO,
-						"Message received: " + messageEvent.getFromID());
+			// nachrichten
+			session.getChatManager().addMessageListener(
+					new IIMMessageListener() {
 
-				new OpenChatEditorAction(messageEvent).run();
-			}
-		});
+						public void handleMessageEvent(
+								IIMMessageEvent messageEvent) {
+							Logger.getAnonymousLogger().log(
+									Level.INFO,
+									"Message received: "
+											+ messageEvent.getFromID());
 
-		// inform chat user about arriving and leaving of other chat user
-		session.getRosterManager().addPresenceListener(new IPresenceListener() {
-			public void handlePresence(ID fromID, IPresence presence) {
-				new ChatUserSatusChangedAction(fromID, presence).run();
+							new OpenChatEditorAction(messageEvent).run();
+						}
+					});
 
-			}
-		});
+			// inform chat user about arriving and leaving of other chat user
+			session.getRosterManager().addPresenceListener(
+					new IPresenceListener() {
+						public void handlePresence(ID fromID, IPresence presence) {
+							new ChatUserSatusChangedAction(fromID, presence)
+									.run();
+
+						}
+					});
+		}
 	}
 
 	/*
