@@ -4,11 +4,9 @@ import org.eclipse.ecf.presence.roster.RosterGroup;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.window.Window;
-import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.remotercp.contacts.dialogs.AddContactDialog;
+import org.remotercp.util.dialogs.RemoteExceptionHandler;
 
 public class AddContactAction implements IWorkbenchWindowActionDelegate {
 
@@ -28,30 +26,39 @@ public class AddContactAction implements IWorkbenchWindowActionDelegate {
 	}
 
 	public void run(IAction action) {
-		AddContactDialog addContactDialog = new AddContactDialog();
 
-		Object item = selection.getFirstElement();
-		if (item instanceof RosterGroup) {
-			// RosterGroup group = (RosterGroup) item;
+		UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException(
+				"Method is not supported yet");
+		RemoteExceptionHandler.handleException(unsupportedOperationException,
+				"Method has to be written fist");
+		// ErrorView.addError("Severe error", Level.SEVERE);
+		// ErrorView.addError("Warning message", Level.WARNING);
+		// ErrorView.addError("Info message", Level.INFO);
 
-			WizardDialog dialog = new WizardDialog(window.getShell(),
-					addContactDialog);
-
-			int state = dialog.open();
-			if (state == Window.OK) {
-				// try {
-				// Roster list =
-				// Session.getInstance().getConnection().getRoster();
-				// ContactEntryJFaceModel contactEntry = addContactDialog
-				// .getContactsEntry();
-				// String[] groups = new String[] { group.getName() };
-				// list.createEntry(contactEntry.getName(), contactEntry
-				// .getNickname(), groups);
-				// } catch (XMPPException e) {
-				// e.printStackTrace();
-				// }
-			}
-		}
+		// AddContactDialog addContactDialog = new AddContactDialog();
+		//
+		// Object item = selection.getFirstElement();
+		// if (item instanceof RosterGroup) {
+		// // RosterGroup group = (RosterGroup) item;
+		//
+		// WizardDialog dialog = new WizardDialog(window.getShell(),
+		// addContactDialog);
+		//
+		// int state = dialog.open();
+		// if (state == Window.OK) {
+		// // try {
+		// // Roster list =
+		// // Session.getInstance().getConnection().getRoster();
+		// // ContactEntryJFaceModel contactEntry = addContactDialog
+		// // .getContactsEntry();
+		// // String[] groups = new String[] { group.getName() };
+		// // list.createEntry(contactEntry.getName(), contactEntry
+		// // .getNickname(), groups);
+		// // } catch (XMPPException e) {
+		// // e.printStackTrace();
+		// // }
+		// }
+		// }
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
