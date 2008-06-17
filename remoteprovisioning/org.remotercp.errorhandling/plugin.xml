@@ -9,6 +9,12 @@
             id="org.eclipse.pde.runtime.LogView"
             name="Error View">
       </view>
+      <view
+            class="org.remotercp.errorhandling.ui.ErrorView"
+            icon="icons/info6.jpeg"
+            id="org.remotercp.errorhandling.errorview"
+            name="Error View">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">
@@ -21,6 +27,15 @@
                ratio="0.8f"
                relationship="bottom"
                relative="org.eclipse.ui.editorss"
+               showTitle="true"
+               visible="true">
+         </view>
+         <view
+               id="org.remotercp.errorhandling.errorview"
+               moveable="true"
+               ratio="0.8f"
+               relationship="stack"
+               relative="org.eclipse.pde.runtime.LogView"
                showTitle="true"
                visible="true">
          </view>
