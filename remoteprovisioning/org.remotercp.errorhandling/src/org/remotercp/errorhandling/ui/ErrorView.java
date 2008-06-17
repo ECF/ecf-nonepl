@@ -14,6 +14,8 @@ import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -46,6 +48,12 @@ public class ErrorView extends ViewPart {
 
 	private Action deleteErrorsAction;
 
+	public static final int COLUMN_ICON = 0;
+
+	public static final int COLUMN_MESSAGE = 1;
+
+	public static final int COLUMN_DATE = 2;
+
 	public ErrorView() {
 		this.errorMessageList = new ArrayList<ErrorMessage>();
 	}
@@ -63,20 +71,45 @@ public class ErrorView extends ViewPart {
 
 			this.tableViewer.setContentProvider(new ArrayContentProvider());
 			this.tableViewer.setLabelProvider(new ErrorTableLabelProvider());
+			this.tableViewer.setSorter(new ErrorMessageSorter());
 
 			Table table = this.tableViewer.getTable();
 			// table.setLayoutData(new GridData(GridData.FILL_BOTH));
 
 			TableColumn columnImage = new TableColumn(table, SWT.LEFT);
 			columnImage.setWidth(30);
+			columnImage.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					((ErrorMessageSorter) tableViewer.getSorter())
+							.doSort(COLUMN_ICON);
+					tableViewer.refresh();
+				}
+			});
 
 			TableColumn columnMessage = new TableColumn(table, SWT.LEFT);
 			columnMessage.setText("Message");
 			columnMessage.setWidth(500);
+			columnMessage.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					((ErrorMessageSorter) tableViewer.getSorter())
+							.doSort(COLUMN_MESSAGE);
+					tableViewer.refresh();
+				}
+			});
 
 			TableColumn columnDate = new TableColumn(table, SWT.LEFT);
 			columnDate.setText("Date");
 			columnDate.setWidth(150);
+			columnDate.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					((ErrorMessageSorter) tableViewer.getSorter())
+							.doSort(COLUMN_DATE);
+					tableViewer.refresh();
+				}
+			});
 
 			table.setHeaderVisible(true);
 			table.setLinesVisible(true);
@@ -101,7 +134,8 @@ public class ErrorView extends ViewPart {
 		Image image = getImageBySeverity(severity);
 		Assert.isNotNull(image);
 
-		final ErrorMessage message = new ErrorMessage(errorText, image);
+		final ErrorMessage message = new ErrorMessage(errorText, image,
+				severity);
 
 		// find error view reference
 		IViewReference[] viewReferences = PlatformUI.getWorkbench()
@@ -201,7 +235,7 @@ public class ErrorView extends ViewPart {
 	private class ErrorTableLabelProvider implements ITableLabelProvider {
 
 		public Image getColumnImage(Object element, int columnIndex) {
-			if (columnIndex == 0) { // icons
+			if (columnIndex == COLUMN_ICON) {
 				return ((ErrorMessage) element).getImage();
 			} else {
 				return null;
@@ -210,9 +244,9 @@ public class ErrorView extends ViewPart {
 
 		public String getColumnText(Object element, int columnIndex) {
 			switch (columnIndex) {
-			case 1: // Message text
+			case COLUMN_MESSAGE:
 				return ((ErrorMessage) element).getText();
-			case 2: // date
+			case COLUMN_DATE:
 				return ((ErrorMessage) element).getDate();
 			default:
 				return null;
