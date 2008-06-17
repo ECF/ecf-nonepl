@@ -1,5 +1,7 @@
 package org.remotercp.contacts.actions;
 
+import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
@@ -38,10 +40,19 @@ public class InstalledFeaturesAction implements IObjectActionDelegate {
 
 		this.contactsView.doMarkSelectedRosterItems();
 
+		List<IRosterEntry> onlineUser = new ArrayList<IRosterEntry>();
+
+		Iterator iterator = this.selection.iterator();
+		while (iterator.hasNext()) {
+			IRosterItem next = (IRosterItem) iterator.next();
+			List<IRosterEntry> tempUser = RosterUtil.filterOnlineUser(next);
+
+			onlineUser.addAll(tempUser);
+		}
+
 		// get all selected user
-		List<IRosterEntry> onlineUser = RosterUtil
-				.filterOnlineUser((IRosterItem) this.selection
-						.getFirstElement());
+		// onlineUser = RosterUtil.filterOnlineUser((IRosterItem) this.selection
+		// .getFirstElement());
 		Assert.isNotNull(onlineUser);
 
 		ID[] userIDs = RosterUtil.getUserIDs(onlineUser);
