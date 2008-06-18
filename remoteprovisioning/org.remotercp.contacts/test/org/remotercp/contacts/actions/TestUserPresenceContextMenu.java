@@ -5,20 +5,17 @@ import java.util.List;
 
 import junit.framework.Assert;
 
-import org.eclipse.ecf.core.user.IUser;
-import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.presence.IPresence;
-import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.Roster;
-import org.eclipse.ecf.presence.roster.RosterEntry;
 import org.eclipse.ecf.presence.roster.RosterGroup;
 import org.junit.Test;
+import org.remotercp.util.roster.AbstractRosterGenerator;
 import org.remotercp.util.roster.RosterUtil;
 
-public class TestUserPresenceContextMenu {
+public class TestUserPresenceContextMenu extends AbstractRosterGenerator {
 
 	@Test
 	public void testUserPresenceInContextMenu() {
@@ -28,10 +25,13 @@ public class TestUserPresenceContextMenu {
 		List<IRosterEntry> rosterEntries = RosterUtil
 				.getRosterEntries(rosterItem);
 
-		Assert.assertEquals(5, rosterEntries.size());
+		Assert.assertEquals(6, rosterEntries.size());
 		Assert.assertEquals(true, RosterUtil.isRosterItemOnline(rosterItem));
 
 		IRoster offlineRoster = this.getOfflineRoster();
+		rosterEntries = RosterUtil.getRosterEntries(offlineRoster);
+		Assert.assertEquals(6, rosterEntries.size());
+
 		Assert
 				.assertEquals(false, RosterUtil
 						.isRosterItemOnline(offlineRoster));
@@ -39,10 +39,6 @@ public class TestUserPresenceContextMenu {
 
 	@SuppressWarnings("unchecked")
 	private IRoster getOnlineRoster() {
-		IUser user1 = new User(null, "Klaus");
-		IUser user2 = new User(null, "Susi");
-		IUser user3 = new User(null, "Marie");
-		IUser user4 = new User(null, "Peter");
 
 		IRoster roster = new Roster(null);
 
@@ -52,16 +48,13 @@ public class TestUserPresenceContextMenu {
 		roster.getItems().add(group1);
 		roster.getItems().add(group2);
 
-		IPresence presence1 = new Presence(IPresence.Type.AVAILABLE);
-		IPresence presence2 = new Presence(IPresence.Type.UNAVAILABLE);
+		super.createRosterEntry("Klaus", group1, IPresence.Type.AVAILABLE);
+		super.createRosterEntry("Susi", group1, IPresence.Type.UNAVAILABLE);
+		super.createRosterEntry("Peter", group1, IPresence.Type.AVAILABLE);
 
-		new RosterEntry(group1, user1, presence1);
-		new RosterEntry(group1, user2, presence2);
-
-		new RosterEntry(group2, user2, presence2);
-		new RosterEntry(group2, user3, presence2);
-		new RosterEntry(group2, user4, presence2);
-		new RosterEntry(roster, user4, presence1);
+		super.createRosterEntry("Mike", group2, IPresence.Type.AVAILABLE);
+		super.createRosterEntry("Sandra", group2, IPresence.Type.UNAVAILABLE);
+		super.createRosterEntry("Jason", group2, IPresence.Type.AVAILABLE);
 
 		Assert.assertNotNull(roster.getItems());
 		// roster must contain 2 groups
@@ -78,18 +71,33 @@ public class TestUserPresenceContextMenu {
 
 	@SuppressWarnings("unchecked")
 	private IRoster getOfflineRoster() {
-		IUser user1 = new User(null, "Dieter");
-		IUser user2 = new User(null, "Verona");
 
 		IRoster roster = new Roster(null);
 
-		IRosterGroup group = new RosterGroup(roster, "group3");
-		roster.getItems().add(group);
+		IRosterGroup group1 = new RosterGroup(roster, "group1");
+		IRosterGroup group2 = new RosterGroup(roster, "group2");
 
-		IPresence presence2 = new Presence(IPresence.Type.UNAVAILABLE);
-		new RosterEntry(group, user1, presence2);
-		new RosterEntry(roster, user2, presence2);
+		roster.getItems().add(group1);
+		roster.getItems().add(group2);
 
+		super.createRosterEntry("Klaus", group1, IPresence.Type.UNAVAILABLE);
+		super.createRosterEntry("Susi", group1, IPresence.Type.UNAVAILABLE);
+		super.createRosterEntry("Peter", group1, IPresence.Type.UNAVAILABLE);
+
+		super.createRosterEntry("Mike", group2, IPresence.Type.UNAVAILABLE);
+		super.createRosterEntry("Sandra", group2, IPresence.Type.UNAVAILABLE);
+		super.createRosterEntry("Jason", group2, IPresence.Type.UNAVAILABLE);
+
+		Assert.assertNotNull(roster.getItems());
+		// roster must contain 2 groups
+		Assert.assertEquals(2, roster.getItems().size());
+
+		Collection items = roster.getItems();
+		for (Object rosterItem : items) {
+			IRosterGroup group = (IRosterGroup) rosterItem;
+			Assert.assertNotNull(group.getEntries());
+			Assert.assertFalse(group.getEntries().isEmpty());
+		}
 		return roster;
 	}
 }
