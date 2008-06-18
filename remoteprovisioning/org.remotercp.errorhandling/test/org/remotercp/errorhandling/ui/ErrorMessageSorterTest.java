@@ -1,9 +1,10 @@
 package org.remotercp.errorhandling.ui;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
-import java.util.logging.Level;
-
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -29,40 +30,48 @@ public class ErrorMessageSorterTest {
 
 	@Before
 	public void setUp() {
-		e1Severe = new ErrorMessage("Severe message", null, Level.SEVERE) {
+		String pluginID = "dummyID";
+		IStatus error = new Status(IStatus.ERROR, pluginID, "Severe message");
+		IStatus warning = new Status(IStatus.WARNING, pluginID,
+				"Warning message");
+		IStatus info = new Status(IStatus.INFO, pluginID, "Info message");
+
+		e1Severe = new ErrorMessage(null, error) {
 
 			@Override
 			public String getDate() {
 				return "17.06.2008 12:00";
 			}
 		};
-		e1Warning = new ErrorMessage("Warning message", null, Level.WARNING) {
+
+		e1Warning = new ErrorMessage(null, warning) {
 			@Override
 			public String getDate() {
 				return "17.06.2008 13:00";
 			}
 		};
 
-		e1Info = new ErrorMessage("Info message", null, Level.INFO) {
+		e1Info = new ErrorMessage(null, info) {
 			@Override
 			public String getDate() {
 				return "17.06.2008 14:00";
 			}
 		};
 
-		e2Severe = new ErrorMessage("Severe message", null, Level.SEVERE) {
+		e2Severe = new ErrorMessage(null, error) {
 			@Override
 			public String getDate() {
 				return "17.06.2008 12:00";
 			}
 		};
-		e2Warning = new ErrorMessage("Warning message", null, Level.WARNING) {
+
+		e2Warning = new ErrorMessage(null, warning) {
 			@Override
 			public String getDate() {
 				return "17.06.2008 13:00";
 			}
 		};
-		e2Info = new ErrorMessage("Info message", null, Level.INFO) {
+		e2Info = new ErrorMessage(null, info) {
 			@Override
 			public String getDate() {
 				return "17.06.2008 14:00";
@@ -76,7 +85,7 @@ public class ErrorMessageSorterTest {
 		sorter.doSort(ErrorView.COLUMN_ICON);
 
 		// override direction
-		sorter.setDirection(0);
+		sorter.setDirection(ErrorMessageSorter.DESCENDING);
 
 		int compare = 0;
 
@@ -116,11 +125,11 @@ public class ErrorMessageSorterTest {
 		assertTrue(compare == 0);
 
 		compare = sorter.compare(null, e1Info, e2Severe);
-		assertTrue(compare < 0);
+		assertTrue(compare > 0);
 		// assertEquals(GREATER, compare);
 
 		compare = sorter.compare(null, e1Warning, e2Info);
-		assertTrue(compare > 0);
+		assertTrue(compare < 0);
 
 		// date
 		sorter.doSort(ErrorView.COLUMN_DATE);
@@ -129,9 +138,12 @@ public class ErrorMessageSorterTest {
 		assertEquals(EQUALS, compare);
 
 		compare = sorter.compare(null, e1Severe, e2Warning);
-		assertEquals(LOWER, compare);
+		assertEquals(GREATER, compare);
 
 		compare = sorter.compare(null, e1Info, e2Warning);
+		assertEquals(LOWER, compare);
+
+		compare = sorter.compare(null, e2Severe, e1Warning);
 		assertEquals(GREATER, compare);
 	}
 }

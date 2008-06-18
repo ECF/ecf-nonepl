@@ -1,16 +1,15 @@
 package org.remotercp.errorhandling.ui;
 
-import java.util.logging.Level;
-
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.jface.viewers.ViewerComparator;
 import org.eclipse.jface.viewers.ViewerSorter;
 
 public class ErrorMessageSorter extends ViewerSorter {
 
-	private static final int ASCENDING = 0;
+	public static final int ASCENDING = 0;
 
-	private static final int DESCENDING = 1;
+	public static final int DESCENDING = 1;
 
 	private int column;
 
@@ -63,8 +62,8 @@ public class ErrorMessageSorter extends ViewerSorter {
 	}
 
 	protected int compareSeverity(ErrorMessage e1, ErrorMessage e2) {
-		Level level1 = e1.getSeverity();
-		Level level2 = e2.getSeverity();
+		IStatus level1 = e1.getSeverity();
+		IStatus level2 = e2.getSeverity();
 
 		final int EQUALS = 0;
 		final int LOWER = -1;
@@ -72,9 +71,9 @@ public class ErrorMessageSorter extends ViewerSorter {
 
 		int compare = 0;
 
-		if (level1 == Level.SEVERE) {
+		if (level1.matches(IStatus.ERROR)) {
 			// check, whether the lesel2 severity is lower
-			if (level2 == Level.SEVERE) {
+			if (level2.matches(IStatus.ERROR)) {
 				compare = EQUALS;
 			} else {
 				// e1 > e2
@@ -82,24 +81,25 @@ public class ErrorMessageSorter extends ViewerSorter {
 			}
 		}
 
-		if (level1 == Level.WARNING) {
-			if (level2 == Level.SEVERE) {
+		if (level1.matches(IStatus.WARNING)) {
+			if (level2.matches(IStatus.ERROR)) {
 				// e1 < e2
 				compare = LOWER;
 			}
-			if (level2 == Level.WARNING) {
+			if (level2.matches(IStatus.WARNING)) {
 				compare = EQUALS;
 			}
-			if (level2 == Level.INFO) {
+			if (level2.matches(IStatus.INFO)) {
 				compare = GREATER;
 			}
 		}
 
-		if (level1 == Level.INFO) {
-			if (level2 == Level.SEVERE || level2 == Level.WARNING) {
+		if (level1.matches(IStatus.INFO)) {
+			if (level2.matches(IStatus.ERROR)
+					|| level2.matches(IStatus.WARNING)) {
 				compare = LOWER;
 			}
-			if (level2 == Level.INFO) {
+			if (level2.matches(IStatus.INFO)) {
 				compare = EQUALS;
 			}
 		}

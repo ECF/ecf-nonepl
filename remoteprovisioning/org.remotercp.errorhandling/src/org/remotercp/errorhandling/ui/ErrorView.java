@@ -2,10 +2,10 @@ package org.remotercp.errorhandling.ui;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -125,17 +125,16 @@ public class ErrorView extends ViewPart {
 	 * 
 	 * @param errorText
 	 *            The error description
-	 * @param severity
+	 * @param status
 	 *            Logger.Level severity. Is used to display appropriate images
 	 *            like warning or error. Level supported: SEVERE, WARNING, INFO
 	 */
-	public static void addError(String errorText, Level severity) {
+	public static void addError(IStatus status) {
 
-		Image image = getImageBySeverity(severity);
+		Image image = getImageBySeverity(status);
 		Assert.isNotNull(image);
 
-		final ErrorMessage message = new ErrorMessage(errorText, image,
-				severity);
+		final ErrorMessage message = new ErrorMessage(image, status);
 
 		// find error view reference
 		IViewReference[] viewReferences = PlatformUI.getWorkbench()
@@ -169,22 +168,22 @@ public class ErrorView extends ViewPart {
 	 * Returns the appropriate image for a severity. This image will be
 	 * displayed as an icon in the error table.
 	 * 
-	 * @param severity
+	 * @param status
 	 *            The {@link Logger} Level severity
 	 * @return Image for a severity (ERROR, WARNING, INFO)
 	 */
-	protected static Image getImageBySeverity(Level severity) {
+	protected static Image getImageBySeverity(IStatus status) {
 		Image image = null;
-		if (severity == Level.SEVERE) {
+		if (status.getSeverity() == IStatus.ERROR) {
 			image = ErrorHandlingActivator.getImageDescriptor(ImageKeys.ERROR)
 					.createImage();
 		}
-		if (severity == Level.WARNING) {
+		if (status.getSeverity() == IStatus.WARNING) {
 			image = ErrorHandlingActivator
 					.getImageDescriptor(ImageKeys.WARNING).createImage();
 		}
 
-		if (severity == Level.INFO) {
+		if (status.getSeverity() == IStatus.INFO) {
 			image = ErrorHandlingActivator.getImageDescriptor(ImageKeys.INFO)
 					.createImage();
 		}

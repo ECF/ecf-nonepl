@@ -1,10 +1,5 @@
 package org.remotercp.chat.ui;
 
-import java.io.Serializable;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -27,14 +22,9 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.update.core.IFeature;
-import org.eclipse.update.core.VersionedIdentifier;
 import org.remotercp.chat.ChatActivator;
 import org.remotercp.chat.ChatEditorInput;
 import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.provisioning.bundleexplorer.IBundleExplorerService;
-
-import com.thoughtworks.xstream.XStream;
 
 public class ChatEditor extends EditorPart {
 
@@ -261,10 +251,10 @@ public class ChatEditor extends EditorPart {
 	 *            the message
 	 */
 	public void processFirstMessage(IChatMessage message) {
-		if (message.getType() == IChatMessage.Type.SYSTEM) {
-			Map properties = message.getProperties();
-			// Object object = properties.get("bundlecontext");
-		}
+		// if (message.getType() == IChatMessage.Type.SYSTEM) {
+		// Map properties = message.getProperties();
+		// // Object object = properties.get("bundlecontext");
+		//		}
 
 		// XStream xstream = new XStream();
 		if (message.getProperties() != null) {

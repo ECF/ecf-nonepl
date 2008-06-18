@@ -2,32 +2,29 @@ package org.remotercp.errorhandling.ui;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
-import java.util.logging.Level;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.swt.graphics.Image;
 
 public class ErrorMessage {
-
-	private String text;
 
 	private Image image;
 
 	private Date date;
 
-	private Level severity;
+	private IStatus status;
 
 	private SimpleDateFormat dateFormat = new SimpleDateFormat(
 			"dd.MM.yyyy HH:mm");
 
-	public ErrorMessage(String text, Image image, Level severity) {
-		this.text = text;
+	public ErrorMessage(Image image, IStatus status) {
 		this.image = image;
 		this.date = new Date();
-		this.severity = severity;
+		this.status = status;
 	}
 
 	public String getText() {
-		return this.text;
+		return this.status.getMessage();
 	}
 
 	public Image getImage() {
@@ -38,7 +35,7 @@ public class ErrorMessage {
 		return dateFormat.format(this.date);
 	}
 
-	public Level getSeverity() {
-		return this.severity;
+	public IStatus getSeverity() {
+		return this.status;
 	}
 }
