@@ -14,14 +14,12 @@
  *******************************************************************************/
 package org.remotercp.ecf.session;
 
-@Deprecated
 public class ConnectionDetails {
-	private String userId, server, password;
+	private String userId, server;
 
-	public ConnectionDetails(String userId, String server, String password) {
+	public ConnectionDetails(String userId, String server) {
 		this.userId = userId;
 		this.server = server;
-		this.password = password;
 	}
 
 	public String getUserId() {
@@ -30,10 +28,6 @@ public class ConnectionDetails {
 
 	public String getServer() {
 		return server;
-	}
-
-	public String getPassword() {
-		return password;
 	}
 
 	public String getResource() {

@@ -100,7 +100,7 @@ public class ChatLoginWizard extends Wizard {
 
 			connector.connect(targetID, connectContext, ECFConstants.XMPP);
 			ConnectionDetails connectionDetails = new ConnectionDetails(
-					userName, server, password);
+					userName, server);
 
 			// Session session = Session.getInstance();
 			ISessionService session = LoginActivator.getDefault().getService(
