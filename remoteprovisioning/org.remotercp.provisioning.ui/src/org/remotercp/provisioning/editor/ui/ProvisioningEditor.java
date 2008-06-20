@@ -34,7 +34,9 @@ import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ProvisioningEditorInput;
 import org.remotercp.provisioning.update.features.IInstalledFeaturesService;
+import org.remotercp.provisioning.update.features.SerializedBundleWrapper;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
+import org.remotercp.util.serialize.SerializeUtil;
 
 public class ProvisioningEditor extends EditorPart {
 
@@ -229,12 +231,24 @@ public class ProvisioningEditor extends EditorPart {
 						// monitor.beginTask("Get remote installed bundles",
 						// installedFeaturesServiceList.size());
 						try {
-
-							Bundle[] installedBundles = featureService
+							Collection<SerializedBundleWrapper> bundleWrapper = featureService
 									.getInstalledBundles();
-							List<Bundle> bundleList = Arrays
-									.asList(installedBundles);
-							bundleSet.addAll(bundleList);
+
+							System.out.println("Bundles: " + bundleWrapper);
+							// Bundle[] installedBundles = featureService
+							// .getInstalledBundles();
+							// String installedBundlesAsXML = featureService
+							// .getInstalledBundlesAsXML();
+							// Object convertXMLToObject = SerializeUtil
+							// .convertXMLToObject(installedBundlesAsXML);
+
+							// if (convertXMLToObject instanceof Bundle[]) {
+							// Bundle[] installedBundles = (Bundle[])
+							// convertXMLToObject;
+							// List<Bundle> bundleList = Arrays
+							// .asList(installedBundles);
+							// bundleSet.addAll(bundleList);
+							// }
 
 							// return Status.OK_STATUS;
 
