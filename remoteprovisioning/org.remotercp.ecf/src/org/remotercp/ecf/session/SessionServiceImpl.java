@@ -97,9 +97,18 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 		 * properly filtered. Solution needed for this problem! According to
 		 * Scott this might become API in the next release
 		 */
+		// IRemoteServiceReference[] refs = remoteServiceContainerAdapter
+		// .getRemoteServiceReferences(filterIDs, service.getName(),
+		// filter);
+		/*
+		 * XXX this is a workaround for the above mentioned problem. The idea is
+		 * to get all remote services and ask each serviceReference for the
+		 * containerID. Afterwards the containerIDName will be matched with the
+		 * given rosterIDs in order to filter only those service which are
+		 * requested (filterIDs).
+		 */
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
-				.getRemoteServiceReferences(filterIDs, service.getName(),
-						filter);
+				.getRemoteServiceReferences(null, service.getName(), filter);
 
 		// cast the remote service references to proxies
 		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
@@ -108,11 +117,23 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 					.getRemoteService(refs[serviceNumber]);
 			Assert.isNotNull(remoteService);
 
-			// get proxy for remote service and add service to the service list
-			T castedService = service.cast(remoteService.getProxy());
-			// T castedService = (T) remoteService.getProxy();
-			Assert.isNotNull(castedService);
-			remoteServices.add(castedService);
+			IRemoteServiceReference remoteServiceReference = refs[serviceNumber];
+			ID containerID = remoteServiceReference.getContainerID();
+			String containerIDName = containerID.getName();
+
+			for (ID userID : filterIDs) {
+				if (userID.getName().equals(containerIDName)) {
+
+					// get proxy for remote service and add service to the
+					// service list
+					T castedService = service.cast(remoteService.getProxy());
+					// T castedService = (T) remoteService.getProxy();
+					Assert.isNotNull(castedService);
+					remoteServices.add(castedService);
+					break;
+				}
+			}
+
 		}
 
 		return remoteServices;
