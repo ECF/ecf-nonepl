@@ -10,6 +10,7 @@ import org.remotercp.util.dialogs.RemoteExceptionHandler;
 
 public class AddContactAction implements IWorkbenchWindowActionDelegate {
 
+	@SuppressWarnings("unused")
 	private IWorkbenchWindow window;
 
 	// TreeViewer Selection

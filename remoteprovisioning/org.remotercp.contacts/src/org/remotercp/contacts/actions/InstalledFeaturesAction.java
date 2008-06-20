@@ -36,6 +36,7 @@ public class InstalledFeaturesAction implements IObjectActionDelegate {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	public void run(IAction action) {
 
 		this.contactsView.doMarkSelectedRosterItems();
