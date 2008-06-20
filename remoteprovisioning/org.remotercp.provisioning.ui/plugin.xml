@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.2"?>
+<plugin>
+   <extension
+         point="org.eclipse.core.runtime.adapters">
+      <factory
+            adaptableType="org.osgi.framework.Bundle"
+            class="org.remotercp.provisioning.editor.BundleAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+      <factory
+            adaptableType="org.osgi.framework.Bundle"
+            class="org.remotercp.provisioning.editor.BundleAdapterFactory">
+         <adapter
+               type="org.eclipse.ui.model.IWorkbenchAdapter">
+         </adapter>
+      </factory>
+   </extension>
+   <extension
+         point="org.eclipse.ui.editors">
+      <editor
+            class="org.remotercp.provisioning.editor.ui.ProvisioningEditor"
+            icon="icons/toolkit_priority.gif"
+            id="org.remotercp.provisioning.editor"
+            name="Provisioning Editor">
+      </editor>
+   </extension>
+   <extension
+         point="org.eclipse.ui.popupMenus">
+      <objectContribution
+            adaptable="true"
+            id="org.remotercp.provisioning.ui.rosterItemContribution"
+            objectClass="org.eclipse.ecf.presence.roster.IRosterItem">
+         <action
+               class="org.remotercp.provisioning.actions.InstalledFeaturesAction"
+               icon="icons/features.png"
+               id="org.remotercp.provisioning.ui.getInstalledFeaturesAction"
+               label="Get installed features"
+               menubarPath="additions">
+         </action>
+         <action
+               class="org.remotercp.provisioning.actions.InstalledBundlesAction"
+               icon="icons/plugin.gif"
+               id="org.remotercp.provisioning.ui.getInstalledBundlesAction"
+               label="Get installed bundles"
+               menubarPath="additions">
+         </action>
+      </objectContribution>
+   </extension>
+
+</plugin>

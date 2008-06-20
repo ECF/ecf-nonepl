@@ -1,0 +1,18 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Provisioning Plug-in
+Bundle-SymbolicName: org.remotercp.provisioning.ui;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.remotercp.provisioning.ProvisioningActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.eclipse.update.core,
+ org.remotercp.provisioning.update,
+ org.remotercp.libs,
+ org.remotercp.ecf,
+ org.remotercp.util,
+ org.remotercp.errorhandling
+Eclipse-LazyStart: true
+Export-Package: org.remotercp.provisioning.bundleexplorer,
+ org.remotercp.provisioning.editor,
+ org.remotercp.provisioning.editor.ui
