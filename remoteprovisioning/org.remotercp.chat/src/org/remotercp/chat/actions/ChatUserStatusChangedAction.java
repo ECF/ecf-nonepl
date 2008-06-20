@@ -12,13 +12,13 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PlatformUI;
 import org.remotercp.chat.ui.ChatEditor;
 
-public class ChatUserSatusChangedAction extends Action {
+public class ChatUserStatusChangedAction extends Action {
 
 	private ID fromID;
 
 	private IPresence presence;
 
-	public ChatUserSatusChangedAction(ID fromID, IPresence presence) {
+	public ChatUserStatusChangedAction(ID fromID, IPresence presence) {
 		this.fromID = fromID;
 		this.presence = presence;
 	}

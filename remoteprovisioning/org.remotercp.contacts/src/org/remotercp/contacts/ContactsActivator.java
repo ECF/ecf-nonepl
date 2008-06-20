@@ -10,7 +10,7 @@ import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.remotercp.chat.actions.ChatUserSatusChangedAction;
+import org.remotercp.chat.actions.ChatUserStatusChangedAction;
 import org.remotercp.chat.actions.OpenChatEditorAction;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
@@ -79,7 +79,7 @@ public class ContactsActivator extends AbstractUIPlugin {
 			session.getRosterManager().addPresenceListener(
 					new IPresenceListener() {
 						public void handlePresence(ID fromID, IPresence presence) {
-							new ChatUserSatusChangedAction(fromID, presence)
+							new ChatUserStatusChangedAction(fromID, presence)
 									.run();
 
 						}
