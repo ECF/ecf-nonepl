@@ -91,6 +91,12 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = (IRemoteServiceContainerAdapter) this.containter
 				.getAdapter(IRemoteServiceContainerAdapter.class);
 
+		/*
+		 * XXX: according to Scott Lewis the filterIDs have to be containerIDs
+		 * and not rosterIDs, therefore the IRemoteServiceReferences are not
+		 * properly filtered. Solution needed for this problem! According to
+		 * Scott this might become API in the next release
+		 */
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
 				.getRemoteServiceReferences(filterIDs, service.getName(),
 						filter);
