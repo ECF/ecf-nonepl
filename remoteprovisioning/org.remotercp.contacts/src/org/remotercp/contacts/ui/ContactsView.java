@@ -1,7 +1,5 @@
 package org.remotercp.contacts.ui;
 
-import java.util.logging.Logger;
-
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.presence.IPresence;
@@ -20,7 +18,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
-import org.eclipse.ui.IPropertyListener;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.remotercp.contacts.ContactsActivator;
@@ -156,6 +153,9 @@ public class ContactsView extends ViewPart {
 	 * This method does set the selected items in the label provider in order
 	 * that the label provider paints the selected items in a different
 	 * foreground color.
+	 * 
+	 * XXX somehow this approach doesn't make me happy. think of another way to
+	 * show the admin which contacts he is going to manage
 	 */
 	public void doMarkSelectedRosterItems() {
 		ISelection selection = this.treeViewer.getSelection();
@@ -180,14 +180,14 @@ public class ContactsView extends ViewPart {
 		this.treeViewer = null;
 	}
 
-	public class EditorClosedListener implements IPropertyListener {
-
-		public void propertyChanged(Object source, int propId) {
-			Logger.getAnonymousLogger().info(
-					"PropertyEvent: " + source + " id: " + propId);
-
-		}
-
-	}
+	// public class EditorClosedListener implements IPropertyListener {
+	//
+	// public void propertyChanged(Object source, int propId) {
+	// Logger.getAnonymousLogger().info(
+	// "PropertyEvent: " + source + " id: " + propId);
+	//
+	// }
+	//
+	// }
 
 }

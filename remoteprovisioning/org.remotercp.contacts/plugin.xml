@@ -69,19 +69,5 @@
          </action>
       </actionSet>
    </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.remotercp.contacts.rosterItemContribution"
-            objectClass="org.eclipse.ecf.presence.roster.IRosterItem">
-         <action
-               class="org.remotercp.contacts.actions.InstalledFeaturesAction"
-               id="org.remotercp.contacts.getInstalledFeaturesAction"
-               label="Get installed features"
-               menubarPath="additions">
-         </action>
-      </objectContribution>
-   </extension>
 
 </plugin>
