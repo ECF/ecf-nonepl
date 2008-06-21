@@ -1,9 +1,8 @@
 package org.remotercp.provisioning.editor.ui;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
-import java.util.SortedSet;
+import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -28,15 +27,13 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.eclipse.update.core.IFeature;
-import org.osgi.framework.Bundle;
+import org.remotercp.common.provisioning.IInstalledFeaturesService;
+import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ProvisioningEditorInput;
-import org.remotercp.provisioning.update.features.IInstalledFeaturesService;
-import org.remotercp.provisioning.update.features.SerializedBundleWrapper;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
-import org.remotercp.util.serialize.SerializeUtil;
 
 public class ProvisioningEditor extends EditorPart {
 
@@ -47,6 +44,9 @@ public class ProvisioningEditor extends EditorPart {
 	private TabItem availableFeaturesTabItem;
 
 	private TabFolder featuresFolder;
+
+	private static final Logger logger = Logger
+			.getLogger(ProvisioningEditor.class.getName());
 
 	private List<IInstalledFeaturesService> installedFeaturesServiceList;
 
@@ -216,41 +216,30 @@ public class ProvisioningEditor extends EditorPart {
 				 * to be defined as well as the intersection of different
 				 * features/bundles
 				 */
-				final SortedSet<Bundle> bundleSet = new TreeSet<Bundle>();
-				final SortedSet<IFeature> featureSet = new TreeSet<IFeature>();
+				// final SortedSet<SerializedBundleWrapper> bundleSet = new
+				// TreeSet<SerializedBundleWrapper>();
+				// final SortedSet<IFeature> featureSet = new
+				// TreeSet<IFeature>();
+				// final Collection<Set<SerializedBundleWrapper>> allUserBundles
+				// = new ArrayList<Set<SerializedBundleWrapper>>();
+				final Set<SerializedBundleWrapper> allUserBundels = new TreeSet<SerializedBundleWrapper>();
 
-				// collect the data for the editor
 				ProvisioningEditorInput editorInput = (ProvisioningEditorInput) getEditorInput();
 				for (final IInstalledFeaturesService featureService : installedFeaturesServiceList) {
 					switch (editorInput.getArtifactToShow()) {
 					case ProvisioningEditorInput.BUNDLE:
-						// getInstalledBundlesJob = new Job("installed bundles")
-						// {
-						// @Override
-						// protected IStatus run(IProgressMonitor monitor) {
-						// monitor.beginTask("Get remote installed bundles",
-						// installedFeaturesServiceList.size());
+
 						try {
-							Collection<SerializedBundleWrapper> bundleWrapper = featureService
+							Collection<SerializedBundleWrapper> installedBundles = featureService
 									.getInstalledBundles();
 
-							System.out.println("Bundles: " + bundleWrapper);
-							// Bundle[] installedBundles = featureService
-							// .getInstalledBundles();
-							// String installedBundlesAsXML = featureService
-							// .getInstalledBundlesAsXML();
-							// Object convertXMLToObject = SerializeUtil
-							// .convertXMLToObject(installedBundlesAsXML);
+							logger.info("Remote installed Bundles received");
 
-							// if (convertXMLToObject instanceof Bundle[]) {
-							// Bundle[] installedBundles = (Bundle[])
-							// convertXMLToObject;
-							// List<Bundle> bundleList = Arrays
-							// .asList(installedBundles);
-							// bundleSet.addAll(bundleList);
-							// }
-
-							// return Status.OK_STATUS;
+							if (allUserBundels.isEmpty()) {
+								allUserBundels.addAll(installedBundles);
+							} else {
+								allUserBundels.retainAll(installedBundles);
+							}
 
 						} catch (Exception e) {
 							IStatus error = new Status(IStatus.ERROR,
@@ -270,7 +259,7 @@ public class ProvisioningEditor extends EditorPart {
 							Collection<IFeature> installedFeatures = featureService
 									.getInstalledFeatures();
 
-							featureSet.addAll(installedFeatures);
+							// featureSet.addAll(installedFeatures);
 						} catch (Exception e) {
 							ErrorView
 									.addError(new Status(IStatus.ERROR,
@@ -291,10 +280,10 @@ public class ProvisioningEditor extends EditorPart {
 				// set input in the appropriate composite
 				switch (editorInput.getArtifactToShow()) {
 				case ProvisioningEditorInput.BUNDLE:
-					installedFeaturesComposite.setInput(bundleSet);
+					installedFeaturesComposite.setInput(allUserBundels);
 					break;
 				case ProvisioningEditorInput.FEATURE:
-					installedFeaturesComposite.setInput(featureSet);
+					// installedFeaturesComposite.setInput(featureSet);
 					break;
 				default:
 					break;

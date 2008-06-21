@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.eclipse.update.core.IFeature;
 import org.osgi.framework.Bundle;
-import org.remotercp.provisioning.update.features.IInstalledFeaturesService;
+import org.remotercp.common.provisioning.IInstalledFeaturesService;
 
 /**
  * Use {@link IInstalledFeaturesService} instead

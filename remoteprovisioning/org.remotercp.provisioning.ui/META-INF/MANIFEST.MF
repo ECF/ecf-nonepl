@@ -7,11 +7,11 @@ Bundle-Activator: org.remotercp.provisioning.ProvisioningActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.update.core,
- org.remotercp.provisioning.update,
  org.remotercp.libs,
  org.remotercp.ecf,
  org.remotercp.util,
- org.remotercp.errorhandling
+ org.remotercp.errorhandling,
+ org.remotercp.common
 Eclipse-LazyStart: true
 Export-Package: org.remotercp.provisioning.bundleexplorer,
  org.remotercp.provisioning.editor,

@@ -17,7 +17,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.update.core.IFeature;
-import org.osgi.framework.Bundle;
+import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.images.ImageKeys;
 
@@ -177,7 +177,7 @@ public class InstalledFeaturesComposite {
 	 */
 	private class InstalledFeaturesLabelProvider implements ITableLabelProvider {
 
-		 private Image plugin = ProvisioningActivator.getImageDescriptor(
+		private Image plugin = ProvisioningActivator.getImageDescriptor(
 				ImageKeys.PLUGIN).createImage();
 
 		private Image feature = ProvisioningActivator.getImageDescriptor(
@@ -185,12 +185,12 @@ public class InstalledFeaturesComposite {
 
 		public Image getColumnImage(Object element, int columnIndex) {
 			Image image = null;
-			 if (element instanceof IFeature) {
-			 image = feature;
-			 }
-			 if (element instanceof Bundle) {
-			 image = plugin;
-			 }
+			if (element instanceof IFeature) {
+				image = feature;
+			}
+			if (element instanceof SerializedBundleWrapper) {
+				image = plugin;
+			}
 			return image;
 		}
 
@@ -199,8 +199,8 @@ public class InstalledFeaturesComposite {
 				IFeature feature = (IFeature) element;
 				return feature.getVersionedIdentifier().getIdentifier();
 			}
-			if (element instanceof Bundle) {
-				Bundle bundle = (Bundle) element;
+			if (element instanceof SerializedBundleWrapper) {
+				SerializedBundleWrapper bundle = (SerializedBundleWrapper) element;
 				return bundle.getSymbolicName();
 			}
 			return element.toString();

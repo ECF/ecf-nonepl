@@ -49,7 +49,6 @@ public class ContactsView extends ViewPart {
 	protected void initServices() {
 		this.session = OsgiServiceLocatorUtil.getOSGiService(ContactsActivator
 				.getBundleContext(), ISessionService.class);
-
 	}
 
 	/*

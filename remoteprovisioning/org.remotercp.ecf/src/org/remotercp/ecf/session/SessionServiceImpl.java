@@ -122,7 +122,8 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 			String containerIDName = containerID.getName();
 
 			for (ID userID : filterIDs) {
-				if (userID.getName().equals(containerIDName)) {
+				String userIDName = userID.getName();
+				if (userIDName.equals(containerIDName)) {
 
 					// get proxy for remote service and add service to the
 					// service list
