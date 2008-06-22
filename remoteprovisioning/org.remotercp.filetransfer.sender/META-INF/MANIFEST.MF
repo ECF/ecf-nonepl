@@ -6,7 +6,6 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.filetransfer.sender.FiletransferSenderActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.remotercp.contacts,
  org.remotercp.ecf,
  org.remotercp.libs,
  org.remotercp.util

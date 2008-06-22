@@ -9,6 +9,13 @@
             id="contacts.ui.contactsview"
             name="Contacts">
       </view>
+      <view
+            allowMultiple="false"
+            class="org.remotercp.contacts.ui.SelectedContactsView"
+            icon="icons/settings.gif"
+            id="org.remotercp.contacts.selectedContactsView"
+            name="Selected Contacts">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.perspectiveExtensions">

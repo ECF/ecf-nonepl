@@ -17,8 +17,8 @@ import org.eclipse.ecf.presence.roster.RosterEntry;
 
 public class AbstractRosterGenerator {
 
-	public IRosterEntry createRosterEntry(String rosterName, IRosterGroup group,
-			IPresence.Type presencetype) {
+	public IRosterEntry createRosterEntry(String rosterName,
+			IRosterGroup group, IPresence.Type presencetype) {
 		TestNameSpace namespace = new TestNameSpace();
 		ID userID = null;
 
@@ -38,6 +38,19 @@ public class AbstractRosterGenerator {
 		RosterEntry rosterEntry = new RosterEntry(group, user, presence);
 
 		return rosterEntry;
+	}
+
+	public ID createUserID(String userName) {
+		TestNameSpace namespace = new TestNameSpace();
+		ID userID = null;
+		try {
+			userID = namespace.createInstance(new String[] { userName });
+		} catch (IDCreateException e) {
+			e.printStackTrace();
+			fail();
+		}
+
+		return userID;
 	}
 
 	private class TestID extends BaseID {
@@ -80,6 +93,13 @@ public class AbstractRosterGenerator {
 				fail();
 				return false;
 			}
+		}
+
+		@Override
+		public int compareTo(Object o) {
+			// TODO Auto-generated method stub
+			TestID compareID = (TestID) o;
+			return this.getName().compareTo(compareID.getName());
 		}
 	}
 

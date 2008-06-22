@@ -2,7 +2,8 @@ package org.remotercp.common.provisioning;
 
 import java.io.Serializable;
 
-public class SerializedBundleWrapper implements Serializable {
+public class SerializedBundleWrapper implements Serializable,
+		Comparable<SerializedBundleWrapper> {
 
 	/**
 	 * 
@@ -47,5 +48,9 @@ public class SerializedBundleWrapper implements Serializable {
 					bundleWrapper.getSymbolicName());
 		}
 		return super.equals(bundle);
+	}
+
+	public int compareTo(SerializedBundleWrapper bundle) {
+		return this.getSymbolicName().compareTo(bundle.getSymbolicName());
 	}
 }

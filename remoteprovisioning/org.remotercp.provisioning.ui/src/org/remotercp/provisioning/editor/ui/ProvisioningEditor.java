@@ -1,7 +1,10 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Level;
@@ -19,14 +22,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
-import org.eclipse.update.core.IFeature;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.ecf.session.ISessionService;
@@ -60,7 +61,7 @@ public class ProvisioningEditor extends EditorPart {
 	private AvailableFeaturesComposite availableFeaturesComposite;
 
 	public ProvisioningEditor() {
-		// nothing to do
+		// nothing to do yet
 	}
 
 	@Override
@@ -207,106 +208,167 @@ public class ProvisioningEditor extends EditorPart {
 
 	protected void initEditorInput() {
 
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
+		ProvisioningEditorInput editorInput = (ProvisioningEditorInput) getEditorInput();
+		switch (editorInput.getArtifactToShow()) {
+		case ProvisioningEditorInput.BUNDLE:
+			handleInstalledBundles(installedFeaturesServiceList);
+			break;
+		case ProvisioningEditorInput.FEATURE:
+			handleInstalledFeatures();
+			break;
+		default:
+			break;
+		}
+
+	}
+
+	/*
+	 * Collects the bundle list from selected user and does:
+	 * 
+	 * 1. display common bundles (inersection)
+	 * 
+	 * 2. diplay different bundles (difference)
+	 * 
+	 * 3. display user for different bundles, that means you can see which users
+	 * have different bundles
+	 */
+	protected void handleInstalledBundles(
+			List<IInstalledFeaturesService> serviceList) {
+
+		/*
+		 * TODO: perform a remote call on all selected user and ask for
+		 * installed features. Display the features in the editor part. To
+		 * display common features a set of all common features has to be
+		 * defined as well as the intersection of different features/bundles
+		 */
+		final Set<SerializedBundleWrapper> commonBundles = new TreeSet<SerializedBundleWrapper>();
+		final Set<SerializedBundleWrapper> differentBundles = new TreeSet<SerializedBundleWrapper>();
+		final Set<SerializedBundleWrapper> allBundles = new TreeSet<SerializedBundleWrapper>();
+
+		final Map<ID, Collection<SerializedBundleWrapper>> userBundles = new HashMap<ID, Collection<SerializedBundleWrapper>>();
+
+		for (final IInstalledFeaturesService featureService : serviceList) {
+
+			try {
+				Collection<SerializedBundleWrapper> installedBundles = featureService
+						.getInstalledBundles();
+
 				/*
-				 * TODO: perform a remote call on all selected user and ask for
-				 * installed features. Display the features in the editor part.
-				 * To display common features a set of all common features has
-				 * to be defined as well as the intersection of different
-				 * features/bundles
+				 * store the relationship between user and bundles
 				 */
-				// final SortedSet<SerializedBundleWrapper> bundleSet = new
-				// TreeSet<SerializedBundleWrapper>();
-				// final SortedSet<IFeature> featureSet = new
-				// TreeSet<IFeature>();
-				// final Collection<Set<SerializedBundleWrapper>> allUserBundles
-				// = new ArrayList<Set<SerializedBundleWrapper>>();
-				final Set<SerializedBundleWrapper> allUserBundels = new TreeSet<SerializedBundleWrapper>();
+				ID userID = featureService.getUserID();
+				userBundles.put(userID, installedBundles);
+				allBundles.addAll(installedBundles);
 
-				ProvisioningEditorInput editorInput = (ProvisioningEditorInput) getEditorInput();
-				for (final IInstalledFeaturesService featureService : installedFeaturesServiceList) {
-					switch (editorInput.getArtifactToShow()) {
-					case ProvisioningEditorInput.BUNDLE:
+				logger.info("Remote installed bundles received");
 
-						try {
-							Collection<SerializedBundleWrapper> installedBundles = featureService
-									.getInstalledBundles();
+				if (commonBundles.isEmpty()) {
+					// start with any collection
+					commonBundles.addAll(installedBundles);
 
-							logger.info("Remote installed Bundles received");
+				} else {
+					// get the intersection of bundles
+					commonBundles.retainAll(installedBundles);
+				}
 
-							if (allUserBundels.isEmpty()) {
-								allUserBundels.addAll(installedBundles);
-							} else {
-								allUserBundels.retainAll(installedBundles);
-							}
+			} catch (Exception e) {
+				IStatus error = new Status(
+						IStatus.ERROR,
+						ProvisioningActivator.PLUGIN_ID,
+						"Unable to get installed bundles on the remote rpc application",
+						e);
+				ErrorView.addError(error);
+			}
+		}
 
-						} catch (Exception e) {
-							IStatus error = new Status(IStatus.ERROR,
-									ProvisioningActivator.PLUGIN_ID,
-									"Unable to get installed bundles on the remote rpc application");
-							ErrorView.addError(error);
-							// return error;
-						}
-						// }
-						// };
-						// getInstalledBundlesJob.schedule();
+		// the difference between allbundles and interception
+		allBundles.removeAll(commonBundles);
+		differentBundles.addAll(allBundles);
 
-						break;
-					case ProvisioningEditorInput.FEATURE:
-						try {
-							// featureService.getInstalledFeatures();
-							Collection<IFeature> installedFeatures = featureService
-									.getInstalledFeatures();
+		final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = getRelationshipDifferentBundleToUser(
+				userBundles, differentBundles);
+		// set table input
+		// Display.getDefault().asyncExec(new Runnable() {
+		// public void run() {
+		setCommonBundlesInput(commonBundles);
+		setDifferentBundlesInput(differentBundles);
+		setDifferentBundlesToUserRelationship(differentBundleToUser);
+		// }
+		// });
+	}
 
-							// featureSet.addAll(installedFeatures);
-						} catch (Exception e) {
-							ErrorView
-									.addError(new Status(IStatus.ERROR,
-											ProvisioningActivator.PLUGIN_ID,
-											"Unable to get installed features on the remote rpc application"));
-						}
-						break;
-					default:
-						String userInfo = featureService.getUserInfo();
+	/*
+	 * In oder to see which user have one or more different bundles we have to
+	 * map now bundles to user. The result should be like bundle
+	 * org.eclipse.example is used by user John and Sandy but not by Peter.
+	 */
+	protected Map<SerializedBundleWrapper, Collection<ID>> getRelationshipDifferentBundleToUser(
+			Map<ID, Collection<SerializedBundleWrapper>> userBundles,
+			Set<SerializedBundleWrapper> differentBundles) {
+		Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = new HashMap<SerializedBundleWrapper, Collection<ID>>();
+		// Map<String, Collection<ID>> differentBundleToUser = new HashMap<String, Collection<ID>>();
 
-						// print the info in the error view
-						ErrorView.addError(new Status(IStatus.INFO,
-								ProvisioningActivator.PLUGIN_ID, userInfo));
-						break;
+		for (SerializedBundleWrapper differentBundle : differentBundles) {
+			for (ID userID : userBundles.keySet()) {
+				/*
+				 * check whether user has a different bundle installed
+				 */
+				Collection<SerializedBundleWrapper> userBundleCollection = userBundles
+						.get(userID);
+
+				if (userBundleCollection.contains(differentBundle)) {
+					/*
+					 * Check if there is already a key for the given bundle. If
+					 * this is the case add additional user ID
+					 */
+					if (differentBundleToUser.containsKey(differentBundle)) {
+						Collection<ID> collection = differentBundleToUser
+								.get(differentBundle);
+						collection.add(userID);
+					} else {
+						// create new key and collection
+						Collection<ID> user = new ArrayList<ID>();
+						user.add(userID);
+						differentBundleToUser.put(differentBundle, user);
 					}
 				}
-
-				// set input in the appropriate composite
-				switch (editorInput.getArtifactToShow()) {
-				case ProvisioningEditorInput.BUNDLE:
-					installedFeaturesComposite.setInput(allUserBundels);
-					break;
-				case ProvisioningEditorInput.FEATURE:
-					// installedFeaturesComposite.setInput(featureSet);
-					break;
-				default:
-					break;
-				}
-
-				// for (IInstalledFeaturesService featureService :
-				// this.installedFeaturesServiceList) {
-				// // featureService.getInstalledFeatures();
-				// String userInfo = featureService.getUserInfo();
-				//
-				// // print the info in the error view
-				// ErrorView.addError(new Status(IStatus.INFO,
-				// ProvisioningActivator.PLUGIN_ID, userInfo));
-				// }
 			}
-		});
+		}
 
+		return differentBundleToUser;
+	}
+
+	protected void handleInstalledFeatures() {
+		throw new UnsupportedOperationException("MEthod not implemented yet");
 	}
 
 	@Override
 	public void setFocus() {
 		this.featuresFolder.setFocus();
 
+	}
+
+	/*
+	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+	 * 
+	 * In order to be able to test the above methods extra setInput methods have
+	 * been created
+	 * 
+	 */
+
+	protected void setCommonBundlesInput(
+			final Set<SerializedBundleWrapper> commonBundles) {
+		installedFeaturesComposite.setInstalledInput(commonBundles);
+	}
+
+	protected void setDifferentBundlesInput(
+			final Set<SerializedBundleWrapper> differentBundles) {
+		installedFeaturesComposite.setDifferentInput(differentBundles);
+	}
+
+	protected void setDifferentBundlesToUserRelationship(
+			final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser) {
+		installedFeaturesComposite.setUserInput(differentBundleToUser);
 	}
 
 }

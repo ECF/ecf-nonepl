@@ -7,6 +7,7 @@ Bundle-Activator: org.remotercp.errorhandling.ErrorHandlingActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.pde.runtime,
- org.remotercp.libs
+ org.remotercp.libs,
+ org.remotercp.util
 Eclipse-LazyStart: true
 Export-Package: org.remotercp.errorhandling.ui

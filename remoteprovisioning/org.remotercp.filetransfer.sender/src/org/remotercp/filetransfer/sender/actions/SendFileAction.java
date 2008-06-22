@@ -8,7 +8,6 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
-import org.remotercp.contacts.ui.ContactsView;
 import org.remotercp.filetransfer.sender.RemoteFileSender;
 import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.roster.RosterUtil;
@@ -17,18 +16,11 @@ public class SendFileAction implements IObjectActionDelegate {
 
 	private IStructuredSelection selection;
 
-	private ContactsView contactsView;
-
 	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// this.targetPart = targetPart;
-		if (targetPart instanceof ContactsView) {
-			this.contactsView = (ContactsView) targetPart;
-		}
 
 	}
 
 	public void run(IAction action) {
-		this.contactsView.doMarkSelectedRosterItems();
 
 		// filter online user
 		ID[] userIDs = RosterUtil

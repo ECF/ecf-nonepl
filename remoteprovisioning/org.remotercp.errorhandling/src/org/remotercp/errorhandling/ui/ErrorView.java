@@ -10,7 +10,10 @@ import org.eclipse.jface.action.Action;
 import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelProviderListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
@@ -28,6 +31,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
 import org.remotercp.errorhandling.ErrorHandlingActivator;
 import org.remotercp.errorhandling.images.ImageKeys;
+import org.remotercp.util.dialogs.RemoteExceptionHandler;
 
 /**
  * The error view will display all possible errors that can occur while remote
@@ -113,6 +117,19 @@ public class ErrorView extends ViewPart {
 
 			table.setHeaderVisible(true);
 			table.setLinesVisible(true);
+
+			/*
+			 * opens a wizard dialog with a detailed description ot the error
+			 */
+			this.tableViewer.addDoubleClickListener(new IDoubleClickListener() {
+				public void doubleClick(DoubleClickEvent event) {
+					IStructuredSelection selection = (IStructuredSelection) ErrorView.this.tableViewer
+							.getSelection();
+					ErrorMessage error = (ErrorMessage) selection
+							.getFirstElement();
+					RemoteExceptionHandler.handleException(error.getSeverity());
+				}
+			});
 		}
 
 		// create toolbar actions

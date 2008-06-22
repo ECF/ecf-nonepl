@@ -9,4 +9,4 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.libs,
  org.remotercp.util,
  org.remotercp.ecf
-Eclipse-LazyStart: true
+Eclipse-LazyStart: false

@@ -49,9 +49,23 @@ public class ExceptionHandlingWizard extends Wizard {
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
 						exceptionText);
 				if (this.exception != null) {
-					if (this.exception.getMessage() != null)
+					if (this.exception.getMessage() != null) {
+						exceptionText.append("Message:");
+						exceptionText.append("\n");
 						exceptionText.append(this.exception.getMessage());
-					exceptionText.append("\n");
+						exceptionText.append("\n");
+						exceptionText.append("\n");
+					}
+
+					if (this.exception.getCause() != null) {
+						exceptionText.append("Cause:");
+						exceptionText.append("\n");
+						exceptionText.append(this.exception.getCause()
+								.toString());
+						exceptionText.append("\n");
+						exceptionText.append("\n");
+					}
+
 					if (this.exception.getStackTrace() != null) {
 						StackTraceElement[] stackTrace = this.exception
 								.getStackTrace();

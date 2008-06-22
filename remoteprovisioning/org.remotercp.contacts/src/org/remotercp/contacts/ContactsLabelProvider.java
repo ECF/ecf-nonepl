@@ -17,23 +17,16 @@ package org.remotercp.contacts;
 
 import java.util.HashMap;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ecf.presence.roster.IRosterEntry;
-import org.eclipse.ecf.presence.roster.IRosterGroup;
-import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.model.IWorkbenchAdapter;
-import org.remotercp.util.roster.RosterUtil;
 
 public class ContactsLabelProvider extends LabelProvider implements
 		IColorProvider {
@@ -41,7 +34,7 @@ public class ContactsLabelProvider extends LabelProvider implements
 	private Map<ImageDescriptor, Image> imageTable = new HashMap<ImageDescriptor, Image>(
 			7);
 
-	private IRosterItem selection;
+	// private IRosterItem selection;
 
 	protected final IWorkbenchAdapter getAdapter(Object element) {
 		IWorkbenchAdapter adapter = null;
@@ -105,37 +98,37 @@ public class ContactsLabelProvider extends LabelProvider implements
 	 * @param selection
 	 */
 	public Color getForeground(Object element) {
-		if (this.selection != null) {
-			IRosterItem rosterItem = (IRosterItem) element;
-
-			// check whether selecttion matches the element
-			if (this.selection.equals(rosterItem)) {
-				// color the root element
-				return Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-			}
-
-			// check whether children of a group have to be colored either
-			if (this.selection instanceof IRosterGroup
-					&& rosterItem instanceof IRosterEntry) {
-				IRosterEntry rosterEntry = (IRosterEntry) rosterItem;
-
-				List<IRosterEntry> filterOnlineUser = RosterUtil
-						.filterOnlineUser(this.selection);
-
-				/*
-				 * The current elements has to be a member of the selected group
-				 * and online in order to be colored
-				 */
-				if (filterOnlineUser.contains(rosterEntry)
-						&& rosterEntry.getParent().equals(this.selection)) {
-					return Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-				}
-			}
-		}
+		// if (this.selection != null) {
+		// IRosterItem rosterItem = (IRosterItem) element;
+		//
+		// // check whether selecttion matches the element
+		// if (this.selection.equals(rosterItem)) {
+		// // color the root element
+		// return Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+		// }
+		//
+		// // check whether children of a group have to be colored either
+		// if (this.selection instanceof IRosterGroup
+		// && rosterItem instanceof IRosterEntry) {
+		// IRosterEntry rosterEntry = (IRosterEntry) rosterItem;
+		//
+		// List<IRosterEntry> filterOnlineUser = RosterUtil
+		// .filterOnlineUser(this.selection);
+		//
+		// /*
+		// * The current elements has to be a member of the selected group
+		// * and online in order to be colored
+		// */
+		// if (filterOnlineUser.contains(rosterEntry)
+		// && rosterEntry.getParent().equals(this.selection)) {
+		// return Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
+		//				}
+		//			}
+		//		}
 		return null;
 	}
-
-	public void setSelection(IRosterItem selection) {
-		this.selection = selection;
-	}
+	//
+	// public void setSelection(IRosterItem selection) {
+	// this.selection = selection;
+	// }
 }

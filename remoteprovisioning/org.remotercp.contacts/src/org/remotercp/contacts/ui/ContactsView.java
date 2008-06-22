@@ -1,5 +1,8 @@
 package org.remotercp.contacts.ui;
 
+import java.util.List;
+import java.util.logging.Logger;
+
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.presence.IPresence;
@@ -11,10 +14,13 @@ import org.eclipse.ecf.presence.roster.IRosterListener;
 import org.eclipse.jface.action.IStatusLineManager;
 import org.eclipse.jface.action.MenuManager;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.dnd.DND;
+import org.eclipse.swt.dnd.DragSourceEvent;
+import org.eclipse.swt.dnd.DragSourceListener;
+import org.eclipse.swt.dnd.Transfer;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Menu;
@@ -26,6 +32,7 @@ import org.remotercp.contacts.ContactsLabelProvider;
 import org.remotercp.contacts.images.ImageKeys;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
+import org.remotercp.util.roster.RosterUtil;
 
 public class ContactsView extends ViewPart {
 
@@ -34,13 +41,12 @@ public class ContactsView extends ViewPart {
 
 	private TreeViewer treeViewer;
 
-	// private IAdapterFactory adapterFactory = new ContactsAdapterFactory();
-
 	private IPresenceListener presenceListener;
 
 	private ISessionService session;
 
-	private ContactsLabelProvider contactsLabelProvider;
+	private final static Logger logger = Logger.getLogger(ContactsView.class
+			.getName());
 
 	public ContactsView() {
 		this.initServices();
@@ -91,8 +97,7 @@ public class ContactsView extends ViewPart {
 		 */
 		getSite().setSelectionProvider(treeViewer);
 
-		treeViewer
-				.setLabelProvider(contactsLabelProvider = new ContactsLabelProvider());
+		treeViewer.setLabelProvider(new ContactsLabelProvider());
 		treeViewer.setContentProvider(new ContactsContentProvider());
 
 		treeViewer.setInput(this.session.getRoster());
@@ -112,6 +117,8 @@ public class ContactsView extends ViewPart {
 
 		// show online user in status line
 		this.setStatuslineInfo();
+
+		this.initDragAndDrop();
 	}
 
 	private void hookContextMenu() {
@@ -142,30 +149,70 @@ public class ContactsView extends ViewPart {
 	private void refresh() {
 		getSite().getShell().getDisplay().asyncExec(new Runnable() {
 			public void run() {
-				// treeViewer.setInput(Session.getInstance().getRoster());
 				treeViewer.refresh();
 			}
 		});
 	}
 
-	/**
-	 * This method does set the selected items in the label provider in order
-	 * that the label provider paints the selected items in a different
-	 * foreground color.
-	 * 
-	 * XXX somehow this approach doesn't make me happy. think of another way to
-	 * show the admin which contacts he is going to manage
-	 */
-	public void doMarkSelectedRosterItems() {
-		ISelection selection = this.treeViewer.getSelection();
-		if (selection instanceof IStructuredSelection) {
-			IStructuredSelection structuredSelection = (IStructuredSelection) selection;
-			this.contactsLabelProvider
-					.setSelection((IRosterItem) structuredSelection
-							.getFirstElement());
+	private void initDragAndDrop() {
+		final int dragOperations = DND.DROP_MOVE | DND.DROP_COPY;
+		final Transfer[] types = new Transfer[] { TreeObjectTransfer
+				.getInstance() };
 
-			this.treeViewer.refresh();
-		}
+		this.treeViewer.addDragSupport(dragOperations, types,
+				new DragSourceListener() {
+
+					IRosterItem selection = null;
+
+					public void dragFinished(DragSourceEvent event) {
+						if (event.detail == DND.DROP_MOVE) {
+							/*
+							 * think of coloring the draged files gray in order
+							 * to show which items have already been selected
+							 */
+							logger.info("drag finished");
+						}
+
+					}
+
+					public void dragSetData(DragSourceEvent event) {
+						if (TreeObjectTransfer.getInstance().isSupportedType(
+								event.dataType)) {
+
+							// event.data = selection;
+							DragAndDropSupport.getInstance().setDragItem(
+									selection);
+							logger.info("drag set data");
+						}
+
+					}
+
+					public void dragStart(DragSourceEvent event) {
+						/*
+						 * only start the drag if the selected IRosterItem is
+						 * online
+						 */
+
+						selection = getTreeViewerSelection();
+
+						List<IRosterEntry> onlineUser = RosterUtil
+								.filterOnlineUser(selection);
+						if (onlineUser.isEmpty()) {
+							event.doit = false;
+						}
+
+						logger.info("Drag start = " + event.doit);
+					}
+
+				});
+	}
+
+	private IRosterItem getTreeViewerSelection() {
+		IStructuredSelection selection = (IStructuredSelection) ContactsView.this.treeViewer
+				.getSelection();
+
+		IRosterItem item = (IRosterItem) selection.getFirstElement();
+		return item;
 	}
 
 	@Override
@@ -178,15 +225,4 @@ public class ContactsView extends ViewPart {
 		this.presenceListener = null;
 		this.treeViewer = null;
 	}
-
-	// public class EditorClosedListener implements IPropertyListener {
-	//
-	// public void propertyChanged(Object source, int propId) {
-	// Logger.getAnonymousLogger().info(
-	// "PropertyEvent: " + source + " id: " + propId);
-	//
-	// }
-	//
-	// }
-
 }

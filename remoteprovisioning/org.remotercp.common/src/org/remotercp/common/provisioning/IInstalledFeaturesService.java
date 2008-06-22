@@ -2,11 +2,11 @@ package org.remotercp.common.provisioning;
 
 import java.util.Collection;
 
-import org.eclipse.update.core.IFeature;
+import org.eclipse.ecf.core.identity.ID;
 
 public interface IInstalledFeaturesService {
 
-	public Collection<IFeature> getInstalledFeatures();
+	// public Collection<IFeature> getInstalledFeatures();
 
 	/**
 	 * Returns an array with installed bundles in the users rcp application.
@@ -17,6 +17,8 @@ public interface IInstalledFeaturesService {
 
 	public String getUserInfo();
 
-	public String getInstalledBundlesAsXML();
+	public ID getUserID();
+
+	// public String getInstalledBundlesAsXML();
 
 }

@@ -4,11 +4,8 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
-import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
@@ -25,7 +22,7 @@ public class InstalledFeaturesComposite {
 
 	private TableViewer tableViewer;
 
-	private TableViewer diverseFeaturesViewer;
+	private TableViewer differentFeaturesViewer;
 
 	private TreeViewer userWithDifferentFeaturesViewer;
 
@@ -66,7 +63,7 @@ public class InstalledFeaturesComposite {
 					this.tableViewer
 							.setContentProvider(new ArrayContentProvider());
 					this.tableViewer
-							.setLabelProvider(new InstalledFeaturesLabelProvider());
+							.setLabelProvider(new FeaturesLabelProvider());
 				}
 			}
 			{
@@ -92,18 +89,17 @@ public class InstalledFeaturesComposite {
 						 * different features of selected features will be shown
 						 * here
 						 */
-						this.diverseFeaturesViewer = new TableViewer(
+						this.differentFeaturesViewer = new TableViewer(
 								differentFeaturesGroup, SWT.H_SCROLL
 										| SWT.V_SCROLL | SWT.SINGLE);
-						GridDataFactory
-								.fillDefaults()
-								.grab(true, true)
+						GridDataFactory.fillDefaults().grab(true, true)
 								.applyTo(
-										this.diverseFeaturesViewer.getControl());
-						this.diverseFeaturesViewer
+										this.differentFeaturesViewer
+												.getControl());
+						this.differentFeaturesViewer
 								.setContentProvider(new ArrayContentProvider());
-						this.diverseFeaturesViewer
-								.setLabelProvider(new InstalledFeaturesLabelProvider());
+						this.differentFeaturesViewer
+								.setLabelProvider(new FeaturesLabelProvider());
 					}
 				}
 				{
@@ -122,15 +118,17 @@ public class InstalledFeaturesComposite {
 						 */
 						this.userWithDifferentFeaturesViewer = new TreeViewer(
 								userFordifferentFeaturesGroup, SWT.H_SCROLL
-										| SWT.V_SCROLL);
+										| SWT.V_SCROLL | SWT.SINGLE);
 						GridDataFactory.fillDefaults().grab(true, true)
 								.applyTo(
 										this.userWithDifferentFeaturesViewer
 												.getControl());
+
+						// XXX this line causes an error???
+						// this.userWithDifferentFeaturesViewer
+						// .setContentProvider(new ArrayContentProvider());
 						this.userWithDifferentFeaturesViewer
-								.setContentProvider(new DifferentFeaturesContentprovider());
-						this.userWithDifferentFeaturesViewer
-								.setLabelProvider(new DifferenFeaturesLabelProvider());
+								.setLabelProvider(new FeaturesLabelProvider());
 					}
 				}
 
@@ -165,8 +163,16 @@ public class InstalledFeaturesComposite {
 	 * 
 	 * @param input
 	 */
-	public void setInput(Object input) {
+	public void setInstalledInput(Object input) {
 		this.tableViewer.setInput(input);
+	}
+
+	public void setDifferentInput(Object input) {
+		this.differentFeaturesViewer.setInput(input);
+	}
+
+	public void setUserInput(Object input) {
+		this.userWithDifferentFeaturesViewer.setInput(input);
 	}
 
 	/**
@@ -175,7 +181,7 @@ public class InstalledFeaturesComposite {
 	 * @author eugrei
 	 * 
 	 */
-	private class InstalledFeaturesLabelProvider implements ITableLabelProvider {
+	private class FeaturesLabelProvider implements ITableLabelProvider {
 
 		private Image plugin = ProvisioningActivator.getImageDescriptor(
 				ImageKeys.PLUGIN).createImage();
@@ -232,49 +238,4 @@ public class InstalledFeaturesComposite {
 
 	}
 
-	private class DifferentFeaturesContentprovider implements
-			ITreeContentProvider {
-
-		public Object[] getChildren(Object parentElement) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public Object getParent(Object element) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public boolean hasChildren(Object element) {
-			// TODO Auto-generated method stub
-			return false;
-		}
-
-		public Object[] getElements(Object inputElement) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public void dispose() {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
-			// TODO Auto-generated method stub
-
-		}
-	}
-
-	private class DifferenFeaturesLabelProvider extends LabelProvider {
-		public Image getImage(Object element) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-
-		public String getText(Object element) {
-			// TODO Auto-generated method stub
-			return null;
-		}
-	}
 }

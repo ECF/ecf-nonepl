@@ -1,5 +1,6 @@
 package org.remotercp.util.dialogs;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
@@ -34,5 +35,11 @@ public class RemoteExceptionHandler {
 			wizard.dispose();
 			dialog = null;
 		}
+	}
+
+	public static void handleException(IStatus status) {
+		Exception exception = new Exception(status.getMessage(), status
+				.getException());
+		handleException(exception, status.getMessage());
 	}
 }
