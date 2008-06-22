@@ -22,6 +22,7 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.TabFolder;
 import org.eclipse.swt.widgets.TabItem;
 import org.eclipse.ui.IEditorInput;
@@ -288,13 +289,13 @@ public class ProvisioningEditor extends EditorPart {
 		final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = getRelationshipDifferentBundleToUser(
 				userBundles, differentBundles);
 		// set table input
-		// Display.getDefault().asyncExec(new Runnable() {
-		// public void run() {
+		 Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
 		setCommonBundlesInput(commonBundles);
 		setDifferentBundlesInput(differentBundles);
 		setDifferentBundlesToUserRelationship(differentBundleToUser);
-		// }
-		// });
+		 }
+		 });
 	}
 
 	/*
