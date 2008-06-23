@@ -62,6 +62,15 @@ public class ExceptionHandlingWizard extends Wizard {
 						exceptionText.append("\n");
 						exceptionText.append(this.exception.getCause()
 								.toString());
+
+						// append cause
+						if (this.exception.getCause().getCause() != null) {
+							exceptionText.append("\n");
+							exceptionText.append("Further details:");
+							exceptionText.append(this.exception.getCause()
+									.getCause().toString());
+							exceptionText.append("\n");
+						}
 						exceptionText.append("\n");
 						exceptionText.append("\n");
 					}

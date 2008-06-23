@@ -5,6 +5,7 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
+import org.remotercp.common.provisioning.SerializedWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.images.ImageKeys;
 
@@ -39,32 +40,21 @@ public class ArtifactsLabelProvider implements ITableLabelProvider {
 
 	}
 
+	@SuppressWarnings("unchecked")
 	public String getColumnText(Object element, int columnIndex) {
-		if (element instanceof SerializedFeatureWrapper) {
-			SerializedFeatureWrapper feature = (SerializedFeatureWrapper) element;
+		if (element instanceof SerializedWrapper) {
+			SerializedWrapper wrapper = (SerializedWrapper) element;
 
 			switch (columnIndex) {
 			case 0:
-				return feature.getLabel();
+				return wrapper.getIdentifier();
 
 			case 1:
-				return feature.getVersion();
+				return wrapper.getVersion();
 			default:
 				break;
 			}
 
-		}
-		if (element instanceof SerializedBundleWrapper) {
-			SerializedBundleWrapper bundle = (SerializedBundleWrapper) element;
-			switch (columnIndex) {
-			case 0:
-				return bundle.getSymbolicName();
-			case 1:
-				return bundle.getBundleVersion();
-
-			default:
-				break;
-			}
 		}
 		return element.toString();
 	}

@@ -1,9 +1,8 @@
 package org.remotercp.common.provisioning;
 
-import java.io.Serializable;
 
-public class SerializedBundleWrapper implements Serializable,
-		Comparable<SerializedBundleWrapper> {
+public class SerializedBundleWrapper implements
+		SerializedWrapper<SerializedBundleWrapper> {
 
 	/**
 	 * 
@@ -12,7 +11,7 @@ public class SerializedBundleWrapper implements Serializable,
 
 	private long bundleId;
 
-	private String symbolicName;
+	private String identifier;
 
 	private int state;
 
@@ -26,12 +25,12 @@ public class SerializedBundleWrapper implements Serializable,
 		this.bundleId = bundleId;
 	}
 
-	public String getSymbolicName() {
-		return symbolicName;
+	public String getIdentifier() {
+		return identifier;
 	}
 
-	public void setSymbolicName(String symbolicName) {
-		this.symbolicName = symbolicName;
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 	public int getState() {
@@ -46,21 +45,20 @@ public class SerializedBundleWrapper implements Serializable,
 	public boolean equals(Object bundle) {
 		if (bundle instanceof SerializedBundleWrapper) {
 			SerializedBundleWrapper bundleWrapper = (SerializedBundleWrapper) bundle;
-			return this.getSymbolicName().equals(
-					bundleWrapper.getSymbolicName());
+			return this.getIdentifier().equals(bundleWrapper.getIdentifier());
 		}
 		return super.equals(bundle);
 	}
 
 	public int compareTo(SerializedBundleWrapper bundle) {
-		return this.getSymbolicName().compareTo(bundle.getSymbolicName());
+		return this.getIdentifier().compareTo(bundle.getIdentifier());
 	}
 
-	public String getBundleVersion() {
+	public String getVersion() {
 		return bundleVersion;
 	}
 
-	public void setBundleVersion(String bundleVersion) {
-		this.bundleVersion = bundleVersion;
+	public void setVersion(String version) {
+		this.bundleVersion = version;
 	}
 }

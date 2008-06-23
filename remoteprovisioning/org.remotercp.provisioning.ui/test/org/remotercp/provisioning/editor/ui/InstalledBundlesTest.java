@@ -107,7 +107,7 @@ public class InstalledBundlesTest extends AbstractRosterGenerator {
 		SerializedBundleWrapper bundle = new SerializedBundleWrapper();
 		bundle.setBundleId(id);
 		bundle.setState(state);
-		bundle.setSymbolicName(name);
+		bundle.setIdentifier(name);
 
 		return bundle;
 	}
@@ -326,7 +326,7 @@ public class InstalledBundlesTest extends AbstractRosterGenerator {
 			Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser) {
 
 		for (SerializedBundleWrapper bundle : differentBundleToUser.keySet()) {
-			if (bundle.getSymbolicName().equals(id)) {
+			if (bundle.getIdentifier().equals(id)) {
 				return differentBundleToUser.get(bundle);
 			}
 		}
