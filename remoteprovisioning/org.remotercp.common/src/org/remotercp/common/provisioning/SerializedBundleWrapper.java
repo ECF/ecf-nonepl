@@ -16,6 +16,8 @@ public class SerializedBundleWrapper implements Serializable,
 
 	private int state;
 
+	private String bundleVersion;
+
 	public long getBundleId() {
 		return bundleId;
 	}
@@ -52,5 +54,13 @@ public class SerializedBundleWrapper implements Serializable,
 
 	public int compareTo(SerializedBundleWrapper bundle) {
 		return this.getSymbolicName().compareTo(bundle.getSymbolicName());
+	}
+
+	public String getBundleVersion() {
+		return bundleVersion;
+	}
+
+	public void setBundleVersion(String bundleVersion) {
+		this.bundleVersion = bundleVersion;
 	}
 }

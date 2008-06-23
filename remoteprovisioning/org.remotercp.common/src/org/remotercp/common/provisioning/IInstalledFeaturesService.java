@@ -6,8 +6,6 @@ import org.eclipse.ecf.core.identity.ID;
 
 public interface IInstalledFeaturesService {
 
-	// public Collection<IFeature> getInstalledFeatures();
-
 	/**
 	 * Returns an array with installed bundles in the users rcp application.
 	 * 
@@ -17,8 +15,11 @@ public interface IInstalledFeaturesService {
 
 	public String getUserInfo();
 
+	/**
+	 * Returns the remote user {@link ID}
+	 * 
+	 * @return
+	 */
 	public ID getUserID();
-
-	// public String getInstalledBundlesAsXML();
 
 }
