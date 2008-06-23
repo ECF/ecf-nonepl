@@ -62,28 +62,7 @@ public class InstalledFeaturesComposite {
 					/*
 					 * installed features tree viewer
 					 */
-					this.artifactsViewer = new TableViewer(commonFeaturesGroup,
-							SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
-					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							this.artifactsViewer.getControl());
-					this.artifactsViewer
-							.setContentProvider(new ArrayContentProvider());
-					this.artifactsViewer
-							.setLabelProvider(new FeaturesLabelProvider());
-
-					Table table = this.artifactsViewer.getTable();
-
-					TableColumn artifactName = new TableColumn(table, SWT.LEFT);
-					artifactName.setText("Name");
-					artifactName.setWidth(200);
-
-					TableColumn artifactVersion = new TableColumn(table,
-							SWT.LEFT);
-					artifactVersion.setText("Version");
-					artifactVersion.setWidth(100);
-
-					table.setLinesVisible(true);
-					table.setHeaderVisible(true);
+					this.artifactsViewer = createArtifactTableViewer(commonFeaturesGroup);
 				}
 			}
 			{
@@ -109,18 +88,7 @@ public class InstalledFeaturesComposite {
 						 * different features of selected features will be shown
 						 * here
 						 */
-						this.differentFeaturesViewer = new TableViewer(
-								differentFeaturesGroup, SWT.H_SCROLL
-										| SWT.V_SCROLL | SWT.SINGLE);
-						GridDataFactory.fillDefaults().grab(true, true)
-								.applyTo(
-										this.differentFeaturesViewer
-												.getControl());
-						this.differentFeaturesViewer
-								.setContentProvider(new ArrayContentProvider());
-						this.differentFeaturesViewer
-								.setLabelProvider(new FeaturesLabelProvider());
-
+						this.differentFeaturesViewer = createArtifactTableViewer(differentFeaturesGroup);
 						this.differentFeaturesViewer
 								.addSelectionChangedListener(new ISelectionChangedListener() {
 
@@ -131,21 +99,6 @@ public class InstalledFeaturesComposite {
 									}
 
 								});
-
-						Table table = this.differentFeaturesViewer.getTable();
-
-						TableColumn artifactName = new TableColumn(table,
-								SWT.LEFT);
-						artifactName.setText("Name");
-						artifactName.setWidth(200);
-
-						TableColumn artifactVersion = new TableColumn(table,
-								SWT.LEFT);
-						artifactVersion.setText("Version");
-						artifactVersion.setWidth(100);
-
-						table.setLinesVisible(true);
-						table.setHeaderVisible(true);
 					}
 				}
 				{
@@ -201,6 +154,33 @@ public class InstalledFeaturesComposite {
 					SWT.PUSH);
 			options.setText("Options");
 		}
+	}
+
+	/*
+	 * creates a table viewer for a given composite
+	 */
+	private TableViewer createArtifactTableViewer(Composite parent) {
+		TableViewer viewer = new TableViewer(parent, SWT.H_SCROLL
+				| SWT.V_SCROLL | SWT.MULTI);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(
+				viewer.getControl());
+		viewer.setContentProvider(new ArrayContentProvider());
+		viewer.setLabelProvider(new FeaturesLabelProvider());
+
+		Table table = viewer.getTable();
+
+		TableColumn artifactName = new TableColumn(table, SWT.LEFT);
+		artifactName.setText("Name");
+		artifactName.setWidth(300);
+
+		TableColumn artifactVersion = new TableColumn(table, SWT.LEFT);
+		artifactVersion.setText("Version");
+		artifactVersion.setWidth(150);
+
+		table.setLinesVisible(true);
+		table.setHeaderVisible(true);
+
+		return viewer;
 	}
 
 	/**
