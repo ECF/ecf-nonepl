@@ -15,6 +15,7 @@ import org.junit.Test;
 import org.osgi.framework.Bundle;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
+import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.util.roster.AbstractRosterGenerator;
 
 public class InstalledBundlesTest extends AbstractRosterGenerator {
@@ -416,6 +417,10 @@ public class InstalledBundlesTest extends AbstractRosterGenerator {
 		}
 
 		public String getUserInfo() {
+			return null;
+		}
+
+		public Collection<SerializedFeatureWrapper> getInstalledFeatures() {
 			return null;
 		}
 
