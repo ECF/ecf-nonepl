@@ -23,49 +23,49 @@ public class ArtifactsSetOperationHelper<Type> {
 	private final static Logger logger = Logger
 			.getLogger(ArtifactsSetOperationHelper.class.getName());
 
-	private final Set<Type> commonBundles = new TreeSet<Type>();
-	private final Set<Type> differentBundles = new TreeSet<Type>();
-	private final Set<Type> allBundles = new TreeSet<Type>();
-	private final Map<ID, Collection<Type>> userBundles = new HashMap<ID, Collection<Type>>();
-	private Map<Type, Collection<ID>> differentBundleToUser;
+	private final Set<Type> commonArtifacts = new TreeSet<Type>();
+	private final Set<Type> differentArtifacts = new TreeSet<Type>();
+	private final Set<Type> allArtifacts = new TreeSet<Type>();
+	private final Map<ID, Collection<Type>> userArtifacts = new HashMap<ID, Collection<Type>>();
+	private Map<Type, Collection<ID>> differentArtifactsToUser;
 
 	@SuppressWarnings("unchecked")
 	public void handleInstalledArtifacts(
 			List<IInstalledFeaturesService> serviceList, Class<Type> wrapperType) {
 
-		for (final IInstalledFeaturesService featureService : serviceList) {
+		for (final IInstalledFeaturesService service : serviceList) {
 
 			try {
 
 				Collection<Type> installedBundles = null;
 				if (wrapperType.isAssignableFrom(SerializedBundleWrapper.class)) {
-					installedBundles = (Collection<Type>) featureService
+					installedBundles = (Collection<Type>) service
 							.getInstalledBundles();
 
 				}
 
 				if (wrapperType
 						.isAssignableFrom(SerializedFeatureWrapper.class)) {
-					installedBundles = (Collection<Type>) featureService
+					installedBundles = (Collection<Type>) service
 							.getInstalledFeatures();
 				}
 
 				/*
 				 * store the relationship between user and bundles
 				 */
-				ID userID = featureService.getUserID();
-				userBundles.put(userID, installedBundles);
-				allBundles.addAll(installedBundles);
+				ID userID = service.getUserID();
+				userArtifacts.put(userID, installedBundles);
+				allArtifacts.addAll(installedBundles);
 
 				logger.info("Remote installed bundles received");
 
-				if (commonBundles.isEmpty()) {
+				if (commonArtifacts.isEmpty()) {
 					// start with any collection
-					commonBundles.addAll(installedBundles);
+					commonArtifacts.addAll(installedBundles);
 
 				} else {
 					// get the intersection of bundles
-					commonBundles.retainAll(installedBundles);
+					commonArtifacts.retainAll(installedBundles);
 				}
 
 			} catch (Exception e) {
@@ -79,11 +79,11 @@ public class ArtifactsSetOperationHelper<Type> {
 		}
 
 		// the difference between all bundles and interception
-		allBundles.removeAll(commonBundles);
-		differentBundles.addAll(allBundles);
+		allArtifacts.removeAll(commonArtifacts);
+		differentArtifacts.addAll(allArtifacts);
 
-		differentBundleToUser = getRelationshipDifferentBundleToUser(
-				userBundles, differentBundles);
+		differentArtifactsToUser = getRelationshipDifferentBundleToUser(
+				userArtifacts, differentArtifacts);
 	}
 
 	/*
@@ -92,48 +92,48 @@ public class ArtifactsSetOperationHelper<Type> {
 	 * org.eclipse.example is used by user John and Sandy but not by Peter.
 	 */
 	protected Map<Type, Collection<ID>> getRelationshipDifferentBundleToUser(
-			Map<ID, Collection<Type>> userBundles, Set<Type> differentBundles) {
-		Map<Type, Collection<ID>> differentBundleToUser = new HashMap<Type, Collection<ID>>();
+			Map<ID, Collection<Type>> userArtifacts, Set<Type> differentArtifacts) {
+		Map<Type, Collection<ID>> differentArtifactsToUser = new HashMap<Type, Collection<ID>>();
 
-		for (Type differentBundle : differentBundles) {
-			for (ID userID : userBundles.keySet()) {
+		for (Type differentArtifact : differentArtifacts) {
+			for (ID userID : userArtifacts.keySet()) {
 				/*
 				 * check whether user has a different bundle installed
 				 */
-				Collection<Type> userBundleCollection = userBundles.get(userID);
+				Collection<Type> userArtifactsCollection = userArtifacts.get(userID);
 
-				if (userBundleCollection.contains(differentBundle)) {
+				if (userArtifactsCollection.contains(differentArtifact)) {
 					/*
 					 * Check if there is already a key for the given bundle. If
 					 * this is the case add additional user ID
 					 */
-					if (differentBundleToUser.containsKey(differentBundle)) {
-						Collection<ID> collection = differentBundleToUser
-								.get(differentBundle);
+					if (differentArtifactsToUser.containsKey(differentArtifact)) {
+						Collection<ID> collection = differentArtifactsToUser
+								.get(differentArtifact);
 						collection.add(userID);
 					} else {
 						// create new key and collection
 						Collection<ID> user = new ArrayList<ID>();
 						user.add(userID);
-						differentBundleToUser.put(differentBundle, user);
+						differentArtifactsToUser.put(differentArtifact, user);
 					}
 				}
 			}
 		}
 
-		return differentBundleToUser;
+		return differentArtifactsToUser;
 	}
 
 	public Set<Type> getCommonArtifacts() {
-		return this.commonBundles;
+		return this.commonArtifacts;
 	}
 
 	public Set<Type> getDifferentArtifacts() {
-		return this.differentBundles;
+		return this.differentArtifacts;
 	}
 
 	public Map<Type, Collection<ID>> getDifferentArtifactToUser() {
-		return this.differentBundleToUser;
+		return this.differentArtifactsToUser;
 	}
 
 }
