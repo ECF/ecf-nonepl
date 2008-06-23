@@ -2,15 +2,19 @@ package org.remotercp.ecf.session;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
+import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
+import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
@@ -30,6 +34,8 @@ public class SessionServiceImpl implements ISessionService {
 
 	private ECFConnector containter;
 
+	private Map<String, Object> remoteServices = new HashMap<String, Object>();
+
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
 
@@ -43,6 +49,9 @@ public class SessionServiceImpl implements ISessionService {
 
 	public void setContainer(ECFConnector container) {
 		this.containter = container;
+
+		// register local presence listener
+		this.getRosterManager().addPresenceListener(this.getPresenceListener());
 	}
 
 	private IPresenceContainerAdapter getPresenceContainerAdapter() {
@@ -182,6 +191,10 @@ public class SessionServiceImpl implements ISessionService {
 	public void registerRemoteService(String serviceName, Object impl,
 			ID[] targetIDs) {
 
+		// store the service local in order to provide this service to new
+		// connected user
+		this.remoteServices.put(serviceName, impl);
+
 		if (targetIDs == null) {
 			targetIDs = RosterUtil.getUserIDs(getRoster());
 			Assert.isNotNull(targetIDs);
@@ -225,5 +238,42 @@ public class SessionServiceImpl implements ISessionService {
 			}
 		}
 
+	}
+
+	protected IPresenceListener getPresenceListener() {
+		return new IPresenceListener() {
+
+			/*
+			 * Register local services to new connected user
+			 * 
+			 * (non-Javadoc)
+			 * 
+			 * @see org.eclipse.ecf.presence.IPresenceListener#handlePresence(org.eclipse.ecf.core.identity.ID,
+			 *      org.eclipse.ecf.presence.IPresence)
+			 */
+			public void handlePresence(ID fromID, IPresence presence) {
+				if (presence.getType() == IPresence.Type.AVAILABLE) {
+					// wait 5 sec otherwise the registration fails
+					try {
+						Thread.sleep(5000);
+					} catch (InterruptedException e) {
+						e.printStackTrace();
+					}
+					for (String service : SessionServiceImpl.this.remoteServices
+							.keySet()) {
+
+						Object serviceImpl = SessionServiceImpl.this.remoteServices
+								.get(service);
+
+						SessionServiceImpl.this.registerRemoteService(service,
+								serviceImpl, new ID[] { fromID });
+
+						logger.info("Service " + service
+								+ " registered to user: " + fromID.getName());
+					}
+				}
+			}
+
+		};
 	}
 }
