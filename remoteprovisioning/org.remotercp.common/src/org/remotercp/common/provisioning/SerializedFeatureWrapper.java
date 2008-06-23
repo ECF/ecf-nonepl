@@ -7,6 +7,8 @@ public class SerializedFeatureWrapper {
 	private URL updateUrl;
 
 	private String label;
+	
+	private String version;
 
 	public URL getUpdateUrl() {
 		return updateUrl;
@@ -22,6 +24,14 @@ public class SerializedFeatureWrapper {
 
 	public void setLabel(String label) {
 		this.label = label;
+	}
+
+	public String getVersion() {
+		return version;
+	}
+
+	public void setVersion(String version) {
+		this.version = version;
 	}
 
 }
