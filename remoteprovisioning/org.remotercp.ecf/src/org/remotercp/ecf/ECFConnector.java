@@ -1,6 +1,7 @@
 package org.remotercp.ecf;
 
 import java.net.URISyntaxException;
+import java.util.logging.Logger;
 
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.ContainerCreateException;
@@ -15,8 +16,8 @@ import org.eclipse.ecf.core.security.IConnectContext;
 
 public class ECFConnector implements IContainer {
 
-	// private final Logger logger = Logger
-	// .getLogger(ECFConnector.class.getName());
+	private final Logger logger = Logger
+			.getLogger(ECFConnector.class.getName());
 
 	private IContainer container;
 
@@ -35,6 +36,7 @@ public class ECFConnector implements IContainer {
 				((ECFUserID) targetID).getConnectionData());
 
 		container.connect(newID, connectContext);
+		logger.info("Container connected");
 	}
 
 	public void addListener(IContainerListener listener) {
@@ -49,6 +51,7 @@ public class ECFConnector implements IContainer {
 
 	public void disconnect() {
 		this.container.disconnect();
+		logger.info("Container disconnected");
 	}
 
 	public void dispose() {

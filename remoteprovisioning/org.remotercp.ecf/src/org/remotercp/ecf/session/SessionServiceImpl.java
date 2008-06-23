@@ -7,7 +7,6 @@ import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
@@ -18,12 +17,14 @@ import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.remoteservice.Constants;
 import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
+import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
+import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.ecf.ECFConnector;
 import org.remotercp.util.roster.RosterUtil;
 
-public class SessionServiceImpl implements IAdaptable, ISessionService {
+public class SessionServiceImpl implements ISessionService {
 
 	private ConnectionDetails connectionDetails;
 
@@ -31,11 +32,6 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
-
-	@SuppressWarnings("unchecked")
-	public Object getAdapter(Class adapter) {
-		return null;
-	}
 
 	public ConnectionDetails getConnectionDetails() {
 		return connectionDetails;
@@ -60,6 +56,14 @@ public class SessionServiceImpl implements IAdaptable, ISessionService {
 		IRemoteServiceContainerAdapter adapter = (IRemoteServiceContainerAdapter) this.containter
 				.getAdapter(IRemoteServiceContainerAdapter.class);
 		Assert.isNotNull(adapter);
+
+		adapter.addRemoteServiceListener(new IRemoteServiceListener() {
+
+			public void handleServiceEvent(IRemoteServiceEvent event) {
+				logger.info("Remote service event occured: " + event);
+			}
+
+		});
 		return adapter;
 	}
 
