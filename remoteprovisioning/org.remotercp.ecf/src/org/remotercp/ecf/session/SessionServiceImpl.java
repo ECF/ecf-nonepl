@@ -193,7 +193,9 @@ public class SessionServiceImpl implements ISessionService {
 
 		// store the service local in order to provide this service to new
 		// connected user
-		this.remoteServices.put(serviceName, impl);
+		if (!this.remoteServices.containsKey(serviceName)) {
+			this.remoteServices.put(serviceName, impl);
+		}
 
 		if (targetIDs == null) {
 			targetIDs = RosterUtil.getUserIDs(getRoster());
