@@ -24,13 +24,19 @@ public class FeaturesLabelProvider implements ITableLabelProvider {
 
 	public Image getColumnImage(Object element, int columnIndex) {
 		Image image = null;
-		if (element instanceof IFeature) {
-			image = feature;
+
+		switch (columnIndex) {
+		case 0:
+			if (element instanceof IFeature) {
+				image = feature;
+			}
+			if (element instanceof SerializedBundleWrapper) {
+				image = plugin;
+			}
+		default:
+			return image;
 		}
-		if (element instanceof SerializedBundleWrapper) {
-			image = plugin;
-		}
-		return image;
+
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
@@ -40,7 +46,15 @@ public class FeaturesLabelProvider implements ITableLabelProvider {
 		}
 		if (element instanceof SerializedBundleWrapper) {
 			SerializedBundleWrapper bundle = (SerializedBundleWrapper) element;
-			return bundle.getSymbolicName();
+			switch (columnIndex) {
+			case 0:
+				return bundle.getSymbolicName();
+			case 1:
+				return bundle.getBundleVersion();
+
+			default:
+				break;
+			}
 		}
 		return element.toString();
 	}

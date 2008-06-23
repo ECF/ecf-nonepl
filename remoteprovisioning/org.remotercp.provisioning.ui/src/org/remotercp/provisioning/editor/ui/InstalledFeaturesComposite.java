@@ -16,14 +16,15 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.ui.model.WorkbenchLabelProvider;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.swt.widgets.TableColumn;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.provisioning.editor.FeaturesLabelProvider;
 import org.remotercp.provisioning.editor.UserLabelProvider;
 
 public class InstalledFeaturesComposite {
 
-	private TableViewer tableViewer;
+	private TableViewer artifactsViewer;
 
 	private TableViewer differentFeaturesViewer;
 
@@ -61,14 +62,28 @@ public class InstalledFeaturesComposite {
 					/*
 					 * installed features tree viewer
 					 */
-					this.tableViewer = new TableViewer(commonFeaturesGroup,
+					this.artifactsViewer = new TableViewer(commonFeaturesGroup,
 							SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							this.tableViewer.getControl());
-					this.tableViewer
+							this.artifactsViewer.getControl());
+					this.artifactsViewer
 							.setContentProvider(new ArrayContentProvider());
-					this.tableViewer
+					this.artifactsViewer
 							.setLabelProvider(new FeaturesLabelProvider());
+
+					Table table = this.artifactsViewer.getTable();
+
+					TableColumn artifactName = new TableColumn(table, SWT.LEFT);
+					artifactName.setText("Name");
+					artifactName.setWidth(200);
+
+					TableColumn artifactVersion = new TableColumn(table,
+							SWT.LEFT);
+					artifactVersion.setText("Version");
+					artifactVersion.setWidth(100);
+
+					table.setLinesVisible(true);
+					table.setHeaderVisible(true);
 				}
 			}
 			{
@@ -116,6 +131,21 @@ public class InstalledFeaturesComposite {
 									}
 
 								});
+
+						Table table = this.differentFeaturesViewer.getTable();
+
+						TableColumn artifactName = new TableColumn(table,
+								SWT.LEFT);
+						artifactName.setText("Name");
+						artifactName.setWidth(200);
+
+						TableColumn artifactVersion = new TableColumn(table,
+								SWT.LEFT);
+						artifactVersion.setText("Version");
+						artifactVersion.setWidth(100);
+
+						table.setLinesVisible(true);
+						table.setHeaderVisible(true);
 					}
 				}
 				{
@@ -179,7 +209,7 @@ public class InstalledFeaturesComposite {
 	 * @param input
 	 */
 	public void setInstalledInput(Object input) {
-		this.tableViewer.setInput(input);
+		this.artifactsViewer.setInput(input);
 	}
 
 	public void setDifferentInput(Object input) {
