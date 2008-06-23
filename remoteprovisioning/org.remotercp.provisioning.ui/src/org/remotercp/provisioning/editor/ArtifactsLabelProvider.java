@@ -3,8 +3,8 @@ package org.remotercp.provisioning.editor;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.update.core.IFeature;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
+import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.images.ImageKeys;
 
@@ -14,7 +14,7 @@ import org.remotercp.provisioning.images.ImageKeys;
  * @author eugrei
  * 
  */
-public class FeaturesLabelProvider implements ITableLabelProvider {
+public class ArtifactsLabelProvider implements ITableLabelProvider {
 
 	private Image plugin = ProvisioningActivator.getImageDescriptor(
 			ImageKeys.PLUGIN).createImage();
@@ -27,7 +27,7 @@ public class FeaturesLabelProvider implements ITableLabelProvider {
 
 		switch (columnIndex) {
 		case 0:
-			if (element instanceof IFeature) {
+			if (element instanceof SerializedFeatureWrapper) {
 				image = feature;
 			}
 			if (element instanceof SerializedBundleWrapper) {
@@ -40,9 +40,20 @@ public class FeaturesLabelProvider implements ITableLabelProvider {
 	}
 
 	public String getColumnText(Object element, int columnIndex) {
-		if (element instanceof IFeature) {
-			IFeature feature = (IFeature) element;
-			return feature.getVersionedIdentifier().getIdentifier();
+		if (element instanceof SerializedFeatureWrapper) {
+			SerializedFeatureWrapper feature = (SerializedFeatureWrapper) element;
+
+			switch (columnIndex) {
+			case 0:
+				return feature.getLabel();
+
+			case 1:
+				// TODO: return features version
+				break;
+			default:
+				break;
+			}
+
 		}
 		if (element instanceof SerializedBundleWrapper) {
 			SerializedBundleWrapper bundle = (SerializedBundleWrapper) element;

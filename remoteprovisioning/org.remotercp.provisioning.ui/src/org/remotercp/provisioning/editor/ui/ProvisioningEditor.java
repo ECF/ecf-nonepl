@@ -1,19 +1,14 @@
 package org.remotercp.provisioning.editor.ui;
 
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.TreeSet;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
-import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
@@ -31,9 +26,10 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
+import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
+import org.remotercp.provisioning.editor.ArtifactsSetOperationHelper;
 import org.remotercp.provisioning.editor.ProvisioningEditorInput;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
@@ -215,7 +211,7 @@ public class ProvisioningEditor extends EditorPart {
 			handleInstalledBundles(installedFeaturesServiceList);
 			break;
 		case ProvisioningEditorInput.FEATURE:
-			handleInstalledFeatures();
+			handleInstalledFeatures(installedFeaturesServiceList);
 			break;
 		default:
 			break;
@@ -224,7 +220,8 @@ public class ProvisioningEditor extends EditorPart {
 	}
 
 	/*
-	 * Collects the bundle list from selected users and does:
+	 * Collects the installed bundle from selected users rcp applications and
+	 * does:
 	 * 
 	 * 1. displays common bundles (intersection)
 	 * 
@@ -234,133 +231,57 @@ public class ProvisioningEditor extends EditorPart {
 	 */
 	protected void handleInstalledBundles(
 			List<IInstalledFeaturesService> serviceList) {
+		ArtifactsSetOperationHelper<SerializedBundleWrapper> bundleHelper = new ArtifactsSetOperationHelper<SerializedBundleWrapper>();
+		bundleHelper.handleInstalledArtifacts(serviceList,
+				SerializedBundleWrapper.class);
 
-		final Set<SerializedBundleWrapper> commonBundles = new TreeSet<SerializedBundleWrapper>();
-		final Set<SerializedBundleWrapper> differentBundles = new TreeSet<SerializedBundleWrapper>();
-		final Set<SerializedBundleWrapper> allBundles = new TreeSet<SerializedBundleWrapper>();
-		final Map<ID, Collection<SerializedBundleWrapper>> userBundles = new HashMap<ID, Collection<SerializedBundleWrapper>>();
+		final Set<SerializedBundleWrapper> commonBundles = bundleHelper
+				.getCommonArtifacts();
+		final Set<SerializedBundleWrapper> differentBundles = bundleHelper
+				.getDifferentArtifacts();
+		final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = bundleHelper
+				.getDifferentArtifactToUser();
 
-		for (final IInstalledFeaturesService featureService : serviceList) {
-
-			try {
-				Collection<SerializedBundleWrapper> installedBundles = featureService
-						.getInstalledBundles();
-
-				/*
-				 * store the relationship between user and bundles
-				 */
-				ID userID = featureService.getUserID();
-				userBundles.put(userID, installedBundles);
-				allBundles.addAll(installedBundles);
-
-				logger.info("Remote installed bundles received");
-
-				if (commonBundles.isEmpty()) {
-					// start with any collection
-					commonBundles.addAll(installedBundles);
-
-				} else {
-					// get the intersection of bundles
-					commonBundles.retainAll(installedBundles);
-				}
-
-			} catch (Exception e) {
-				IStatus error = new Status(
-						IStatus.ERROR,
-						ProvisioningActivator.PLUGIN_ID,
-						"Unable to get installed bundles on the remote rpc application",
-						e);
-				ErrorView.addError(error);
-			}
-		}
-
-		// the difference between all bundles and interception
-		allBundles.removeAll(commonBundles);
-		differentBundles.addAll(allBundles);
-
-		final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = getRelationshipDifferentBundleToUser(
-				userBundles, differentBundles);
 		// set table input
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				setCommonBundlesInput(commonBundles);
-				setDifferentBundlesInput(differentBundles);
-				setDifferentBundlesToUserRelationship(differentBundleToUser);
+				installedFeaturesComposite.setInstalledInput(commonBundles);
+				installedFeaturesComposite.setDifferentInput(differentBundles);
+				installedFeaturesComposite
+						.setUserBundleInput(differentBundleToUser);
 			}
 		});
+
 	}
 
-	/*
-	 * In oder to see which user have one or more different bundles we have to
-	 * map now bundles to user. The result should be like bundle
-	 * org.eclipse.example is used by user John and Sandy but not by Peter.
-	 */
-	protected Map<SerializedBundleWrapper, Collection<ID>> getRelationshipDifferentBundleToUser(
-			Map<ID, Collection<SerializedBundleWrapper>> userBundles,
-			Set<SerializedBundleWrapper> differentBundles) {
-		Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = new HashMap<SerializedBundleWrapper, Collection<ID>>();
+	protected void handleInstalledFeatures(
+			List<IInstalledFeaturesService> serviceList) {
+		ArtifactsSetOperationHelper<SerializedFeatureWrapper> featuresHelper = new ArtifactsSetOperationHelper<SerializedFeatureWrapper>();
+		featuresHelper.handleInstalledArtifacts(serviceList,
+				SerializedFeatureWrapper.class);
 
-		for (SerializedBundleWrapper differentBundle : differentBundles) {
-			for (ID userID : userBundles.keySet()) {
-				/*
-				 * check whether user has a different bundle installed
-				 */
-				Collection<SerializedBundleWrapper> userBundleCollection = userBundles
-						.get(userID);
+		final Set<SerializedFeatureWrapper> commonFeatures = featuresHelper
+				.getCommonArtifacts();
+		final Set<SerializedFeatureWrapper> differentFeatures = featuresHelper
+				.getDifferentArtifacts();
+		final Map<SerializedFeatureWrapper, Collection<ID>> differentFeaturesToUser = featuresHelper
+				.getDifferentArtifactToUser();
 
-				if (userBundleCollection.contains(differentBundle)) {
-					/*
-					 * Check if there is already a key for the given bundle. If
-					 * this is the case add additional user ID
-					 */
-					if (differentBundleToUser.containsKey(differentBundle)) {
-						Collection<ID> collection = differentBundleToUser
-								.get(differentBundle);
-						collection.add(userID);
-					} else {
-						// create new key and collection
-						Collection<ID> user = new ArrayList<ID>();
-						user.add(userID);
-						differentBundleToUser.put(differentBundle, user);
-					}
-				}
+		// set table input
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				installedFeaturesComposite.setInstalledInput(commonFeatures);
+				installedFeaturesComposite.setDifferentInput(differentFeatures);
+				installedFeaturesComposite
+						.setUserFeaturesInput(differentFeaturesToUser);
 			}
-		}
-
-		return differentBundleToUser;
-	}
-
-	protected void handleInstalledFeatures() {
-		throw new UnsupportedOperationException("MEthod not implemented yet");
+		});
 	}
 
 	@Override
 	public void setFocus() {
 		this.featuresFolder.setFocus();
 
-	}
-
-	/*
-	 * ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-	 * 
-	 * In order to be able to test the above methods extra setInput methods have
-	 * been created
-	 * 
-	 */
-
-	protected void setCommonBundlesInput(
-			final Set<SerializedBundleWrapper> commonBundles) {
-		installedFeaturesComposite.setInstalledInput(commonBundles);
-	}
-
-	protected void setDifferentBundlesInput(
-			final Set<SerializedBundleWrapper> differentBundles) {
-		installedFeaturesComposite.setDifferentInput(differentBundles);
-	}
-
-	protected void setDifferentBundlesToUserRelationship(
-			final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser) {
-		installedFeaturesComposite.setUserInput(differentBundleToUser);
 	}
 
 }

@@ -19,7 +19,8 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
-import org.remotercp.provisioning.editor.FeaturesLabelProvider;
+import org.remotercp.common.provisioning.SerializedFeatureWrapper;
+import org.remotercp.provisioning.editor.ArtifactsLabelProvider;
 import org.remotercp.provisioning.editor.UserLabelProvider;
 
 public class InstalledFeaturesComposite {
@@ -30,7 +31,9 @@ public class InstalledFeaturesComposite {
 
 	private TableViewer userWithDifferentFeaturesViewer;
 
-	private Map<SerializedBundleWrapper, Collection<ID>> userWithDifferentFeaturesInput;
+	private Map<SerializedBundleWrapper, Collection<ID>> userWithDifferentBundlesInput;
+
+	private Map<SerializedFeatureWrapper, Collection<ID>> userWithDifferentFeaturesInput;
 
 	public InstalledFeaturesComposite(SashForm parent, int style) {
 
@@ -95,7 +98,7 @@ public class InstalledFeaturesComposite {
 									public void selectionChanged(
 											SelectionChangedEvent event) {
 										InstalledFeaturesComposite.this
-												.handleDifferentFeaturesSelection();
+												.handleDifferentArtefactsSelection();
 									}
 
 								});
@@ -165,7 +168,7 @@ public class InstalledFeaturesComposite {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(
 				viewer.getControl());
 		viewer.setContentProvider(new ArrayContentProvider());
-		viewer.setLabelProvider(new FeaturesLabelProvider());
+		viewer.setLabelProvider(new ArtifactsLabelProvider());
 
 		Table table = viewer.getTable();
 
@@ -196,11 +199,17 @@ public class InstalledFeaturesComposite {
 		this.differentFeaturesViewer.setInput(input);
 	}
 
-	public void setUserInput(Map<SerializedBundleWrapper, Collection<ID>> input) {
+	public void setUserBundleInput(
+			Map<SerializedBundleWrapper, Collection<ID>> input) {
+		this.userWithDifferentBundlesInput = input;
+	}
+
+	public void setUserFeaturesInput(
+			Map<SerializedFeatureWrapper, Collection<ID>> input) {
 		this.userWithDifferentFeaturesInput = input;
 	}
 
-	private void handleDifferentFeaturesSelection() {
+	private void handleDifferentArtefactsSelection() {
 		/*
 		 * depending on which bundle has been selected from the "different
 		 * bundles group" the user list does change for this bundle
@@ -208,10 +217,18 @@ public class InstalledFeaturesComposite {
 		IStructuredSelection selection = (IStructuredSelection) this.differentFeaturesViewer
 				.getSelection();
 
-		SerializedBundleWrapper bundle = (SerializedBundleWrapper) selection
-				.getFirstElement();
+		Object obj = selection.getFirstElement();
+		Collection<ID> user = null;
 
-		Collection<ID> user = this.userWithDifferentFeaturesInput.get(bundle);
+		if (obj instanceof SerializedBundleWrapper) {
+			SerializedBundleWrapper bundle = (SerializedBundleWrapper) obj;
+			user = this.userWithDifferentBundlesInput.get(bundle);
+		}
+
+		if (obj instanceof SerializedFeatureWrapper) {
+			SerializedFeatureWrapper feature = (SerializedFeatureWrapper) obj;
+			user = this.userWithDifferentFeaturesInput.get(feature);
+		}
 
 		this.userWithDifferentFeaturesViewer.setInput(user);
 	}

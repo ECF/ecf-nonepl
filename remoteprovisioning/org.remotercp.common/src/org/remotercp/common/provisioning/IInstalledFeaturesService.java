@@ -13,6 +13,11 @@ public interface IInstalledFeaturesService {
 	 */
 	public Collection<SerializedBundleWrapper> getInstalledBundles();
 
+	/**
+	 * Returns a list with all installed features on the users rcp application.
+	 */
+	public Collection<SerializedFeatureWrapper> getInstalledFeatures();
+
 	public String getUserInfo();
 
 	/**
