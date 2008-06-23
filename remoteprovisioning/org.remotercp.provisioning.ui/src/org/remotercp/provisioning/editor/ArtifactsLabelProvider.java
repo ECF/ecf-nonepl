@@ -48,8 +48,7 @@ public class ArtifactsLabelProvider implements ITableLabelProvider {
 				return feature.getLabel();
 
 			case 1:
-				// TODO: return features version
-				break;
+				return feature.getVersion();
 			default:
 				break;
 			}
