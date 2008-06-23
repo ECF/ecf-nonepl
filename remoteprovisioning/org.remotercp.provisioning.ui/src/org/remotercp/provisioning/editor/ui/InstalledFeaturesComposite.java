@@ -1,22 +1,25 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.util.Collection;
+import java.util.Map;
+
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
-import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ISelectionChangedListener;
+import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
-import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.update.core.IFeature;
+import org.eclipse.ui.model.WorkbenchLabelProvider;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
-import org.remotercp.provisioning.ProvisioningActivator;
-import org.remotercp.provisioning.images.ImageKeys;
+import org.remotercp.provisioning.editor.FeaturesLabelProvider;
+import org.remotercp.provisioning.editor.UserLabelProvider;
 
 public class InstalledFeaturesComposite {
 
@@ -24,7 +27,9 @@ public class InstalledFeaturesComposite {
 
 	private TableViewer differentFeaturesViewer;
 
-	private TreeViewer userWithDifferentFeaturesViewer;
+	private TableViewer userWithDifferentFeaturesViewer;
+
+	private Map<SerializedBundleWrapper, Collection<ID>> userWithDifferentFeaturesInput;
 
 	public InstalledFeaturesComposite(SashForm parent, int style) {
 
@@ -100,6 +105,17 @@ public class InstalledFeaturesComposite {
 								.setContentProvider(new ArrayContentProvider());
 						this.differentFeaturesViewer
 								.setLabelProvider(new FeaturesLabelProvider());
+
+						this.differentFeaturesViewer
+								.addSelectionChangedListener(new ISelectionChangedListener() {
+
+									public void selectionChanged(
+											SelectionChangedEvent event) {
+										InstalledFeaturesComposite.this
+												.handleDifferentFeaturesSelection();
+									}
+
+								});
 					}
 				}
 				{
@@ -116,7 +132,7 @@ public class InstalledFeaturesComposite {
 						 * tree that displays user/user groups with different
 						 * features installed
 						 */
-						this.userWithDifferentFeaturesViewer = new TreeViewer(
+						this.userWithDifferentFeaturesViewer = new TableViewer(
 								userFordifferentFeaturesGroup, SWT.H_SCROLL
 										| SWT.V_SCROLL | SWT.SINGLE);
 						GridDataFactory.fillDefaults().grab(true, true)
@@ -124,11 +140,10 @@ public class InstalledFeaturesComposite {
 										this.userWithDifferentFeaturesViewer
 												.getControl());
 
-						// XXX this line causes an error???
-						// this.userWithDifferentFeaturesViewer
-						// .setContentProvider(new ArrayContentProvider());
 						this.userWithDifferentFeaturesViewer
-								.setLabelProvider(new FeaturesLabelProvider());
+								.setContentProvider(new ArrayContentProvider());
+						this.userWithDifferentFeaturesViewer
+								.setLabelProvider(new UserLabelProvider());
 					}
 				}
 
@@ -171,71 +186,23 @@ public class InstalledFeaturesComposite {
 		this.differentFeaturesViewer.setInput(input);
 	}
 
-	public void setUserInput(Object input) {
-		this.userWithDifferentFeaturesViewer.setInput(input);
+	public void setUserInput(Map<SerializedBundleWrapper, Collection<ID>> input) {
+		this.userWithDifferentFeaturesInput = input;
 	}
 
-	/**
-	 * Label Provider for the installed features table
-	 * 
-	 * @author eugrei
-	 * 
-	 */
-	private class FeaturesLabelProvider implements ITableLabelProvider {
+	private void handleDifferentFeaturesSelection() {
+		/*
+		 * depending on which bundle has been selected from the "different
+		 * bundles group" the user list does change for this bundle
+		 */
+		IStructuredSelection selection = (IStructuredSelection) this.differentFeaturesViewer
+				.getSelection();
 
-		private Image plugin = ProvisioningActivator.getImageDescriptor(
-				ImageKeys.PLUGIN).createImage();
+		SerializedBundleWrapper bundle = (SerializedBundleWrapper) selection
+				.getFirstElement();
 
-		private Image feature = ProvisioningActivator.getImageDescriptor(
-				ImageKeys.FEATURE).createImage();
+		Collection<ID> user = this.userWithDifferentFeaturesInput.get(bundle);
 
-		public Image getColumnImage(Object element, int columnIndex) {
-			Image image = null;
-			if (element instanceof IFeature) {
-				image = feature;
-			}
-			if (element instanceof SerializedBundleWrapper) {
-				image = plugin;
-			}
-			return image;
-		}
-
-		public String getColumnText(Object element, int columnIndex) {
-			if (element instanceof IFeature) {
-				IFeature feature = (IFeature) element;
-				return feature.getVersionedIdentifier().getIdentifier();
-			}
-			if (element instanceof SerializedBundleWrapper) {
-				SerializedBundleWrapper bundle = (SerializedBundleWrapper) element;
-				return bundle.getSymbolicName();
-			}
-			return element.toString();
-		}
-
-		public void addListener(ILabelProviderListener listener) {
-			// ignore
-
-		}
-
-		// free ressources
-		public void dispose() {
-			this.plugin.dispose();
-			this.plugin = null;
-
-			this.feature.dispose();
-			this.feature = null;
-		}
-
-		public boolean isLabelProperty(Object element, String property) {
-			// ignore
-			return false;
-		}
-
-		public void removeListener(ILabelProviderListener listener) {
-			// ignore
-
-		}
-
+		this.userWithDifferentFeaturesViewer.setInput(user);
 	}
-
 }

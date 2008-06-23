@@ -185,18 +185,5 @@ public class ContactsAdapterFactory implements IAdapterFactory {
 			return ImageKeys.OFFLINE;
 		}
 		return ImageKeys.OFFLINE;
-
-		// IPresence.Mode presence = p != null ? p.getMode() : null;
-		// if (presence == IPresence.Mode.AVAILABLE)
-		// return ImageKeys.ONLINE;
-		// if (presence == IPresence.Mode.AWAY)
-		// return ImageKeys.OFFLINE;
-		// if (presence == IPresence.Mode.EXTENDED_AWAY)
-		// return ImageKeys.AWAY;
-		// if (presence == IPresence.Mode.DND)
-		// return ImageKeys.DO_NOT_DISTURB;
-		// if (presence == IPresence.Mode.INVISIBLE)
-		// return ImageKeys.OFFLINE;
-		// return ImageKeys.OFFLINE;
 	}
 }

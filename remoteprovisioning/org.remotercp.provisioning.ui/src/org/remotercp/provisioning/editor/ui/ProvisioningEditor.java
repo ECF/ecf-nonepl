@@ -224,28 +224,20 @@ public class ProvisioningEditor extends EditorPart {
 	}
 
 	/*
-	 * Collects the bundle list from selected user and does:
+	 * Collects the bundle list from selected users and does:
 	 * 
-	 * 1. display common bundles (inersection)
+	 * 1. displays common bundles (intersection)
 	 * 
-	 * 2. diplay different bundles (difference)
+	 * 2. diplays different bundles (difference)
 	 * 
-	 * 3. display user for different bundles, that means you can see which users
-	 * have different bundles
+	 * 3. displays users for different bundles
 	 */
 	protected void handleInstalledBundles(
 			List<IInstalledFeaturesService> serviceList) {
 
-		/*
-		 * TODO: perform a remote call on all selected user and ask for
-		 * installed features. Display the features in the editor part. To
-		 * display common features a set of all common features has to be
-		 * defined as well as the intersection of different features/bundles
-		 */
 		final Set<SerializedBundleWrapper> commonBundles = new TreeSet<SerializedBundleWrapper>();
 		final Set<SerializedBundleWrapper> differentBundles = new TreeSet<SerializedBundleWrapper>();
 		final Set<SerializedBundleWrapper> allBundles = new TreeSet<SerializedBundleWrapper>();
-
 		final Map<ID, Collection<SerializedBundleWrapper>> userBundles = new HashMap<ID, Collection<SerializedBundleWrapper>>();
 
 		for (final IInstalledFeaturesService featureService : serviceList) {
@@ -282,20 +274,20 @@ public class ProvisioningEditor extends EditorPart {
 			}
 		}
 
-		// the difference between allbundles and interception
+		// the difference between all bundles and interception
 		allBundles.removeAll(commonBundles);
 		differentBundles.addAll(allBundles);
 
 		final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = getRelationshipDifferentBundleToUser(
 				userBundles, differentBundles);
 		// set table input
-		 Display.getDefault().asyncExec(new Runnable() {
+		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-		setCommonBundlesInput(commonBundles);
-		setDifferentBundlesInput(differentBundles);
-		setDifferentBundlesToUserRelationship(differentBundleToUser);
-		 }
-		 });
+				setCommonBundlesInput(commonBundles);
+				setDifferentBundlesInput(differentBundles);
+				setDifferentBundlesToUserRelationship(differentBundleToUser);
+			}
+		});
 	}
 
 	/*
@@ -307,7 +299,6 @@ public class ProvisioningEditor extends EditorPart {
 			Map<ID, Collection<SerializedBundleWrapper>> userBundles,
 			Set<SerializedBundleWrapper> differentBundles) {
 		Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = new HashMap<SerializedBundleWrapper, Collection<ID>>();
-		// Map<String, Collection<ID>> differentBundleToUser = new HashMap<String, Collection<ID>>();
 
 		for (SerializedBundleWrapper differentBundle : differentBundles) {
 			for (ID userID : userBundles.keySet()) {
