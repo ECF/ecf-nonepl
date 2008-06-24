@@ -218,6 +218,18 @@ public class IncomingFiletransferReceiver implements
 
 								if (progressResult == Status.CANCEL_STATUS) {
 									fileTransfer.cancel();
+									try {
+										/*
+										 * wait a sec, otherwise the file won't
+										 * be deleted probably because it's in
+										 * use
+										 */
+										Thread.sleep(1000);
+									} catch (InterruptedException e) {
+										e.printStackTrace();
+									}
+
+									localFile.delete();
 								}
 
 								return progressResult;
@@ -285,7 +297,8 @@ public class IncomingFiletransferReceiver implements
 			protected IStatus handleProgress(IProgressMonitor monitor,
 					final IIncomingFileTransfer fileTransfer) {
 
-				monitor.beginTask("Receiving data...", (int) fileLength);
+				monitor.beginTask("Receiving file: " + localFile.getName(),
+						(int) fileLength);
 
 				for (worked = 0; worked < fileLength && !monitor.isCanceled()
 						&& !fileTransfer.isDone(); worked += diff) {
@@ -319,9 +332,7 @@ public class IncomingFiletransferReceiver implements
 				monitor.done();
 
 				if (monitor.isCanceled()) {
-					// delete local file
-					localFile.delete();
-					logger.info("File transfer cancelled. local file deleted");
+					logger.info("File transfer cancelled.");
 
 					return Status.CANCEL_STATUS;
 				}
