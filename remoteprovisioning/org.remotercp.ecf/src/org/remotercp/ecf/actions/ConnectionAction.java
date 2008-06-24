@@ -68,11 +68,11 @@ public class ConnectionAction implements IWorkbenchWindowPulldownDelegate {
 
 	public void run(IAction action) {
 		
-		System.out.println("Action : " + action);
+		//System.out.println("Action : " + action);
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		System.out.println("Action : " + action + " Selection: " + selection);
+		//System.out.println("Action : " + action + " Selection: " + selection);
 	}
 
 }
