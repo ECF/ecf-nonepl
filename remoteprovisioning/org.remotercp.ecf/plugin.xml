@@ -21,5 +21,23 @@
             class="org.remotercp.ecf.old.XMPPContainerInstantiator">
       </containerFactory>
    </extension>
+   <extension
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.remotercp.ecf.actionSet1"
+            label="Connect Actions"
+            visible="true">
+         <action
+               allowLabelUpdate="true"
+               class="org.remotercp.ecf.actions.ConnectionAction"
+               disabledIcon="icons/network_connect.png"
+               icon="icons/network_disconnect.png"
+               id="org.remotercp.ecf.connectaction"
+               label="Connect"
+               style="pulldown"
+               toolbarPath="Normal/additions">
+         </action>
+      </actionSet>
+   </extension>
 
 </plugin>
