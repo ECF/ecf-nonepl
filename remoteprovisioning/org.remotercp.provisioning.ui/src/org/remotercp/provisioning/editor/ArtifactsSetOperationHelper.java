@@ -9,6 +9,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
@@ -31,21 +32,25 @@ public class ArtifactsSetOperationHelper<Type> {
 
 	@SuppressWarnings("unchecked")
 	public void handleInstalledArtifacts(
-			List<IInstalledFeaturesService> serviceList, Class<Type> wrapperType) {
+			List<IInstalledFeaturesService> serviceList,
+			Class<Type> wrapperType, IProgressMonitor monitor) {
 
 		for (final IInstalledFeaturesService service : serviceList) {
-
 			try {
+				ID userID = service.getUserID();
 
 				Collection<Type> installedBundles = null;
 				if (wrapperType.isAssignableFrom(SerializedBundleWrapper.class)) {
+					monitor.subTask("Receiving bundles from user: "
+							+ userID.getName());
 					installedBundles = (Collection<Type>) service
 							.getInstalledBundles();
-
 				}
 
 				if (wrapperType
 						.isAssignableFrom(SerializedFeatureWrapper.class)) {
+					monitor.subTask("Receiving features from user: "
+							+ userID.getName());
 					installedBundles = (Collection<Type>) service
 							.getInstalledFeatures();
 				}
@@ -53,7 +58,7 @@ public class ArtifactsSetOperationHelper<Type> {
 				/*
 				 * store the relationship between user and bundles
 				 */
-				ID userID = service.getUserID();
+
 				userArtifacts.put(userID, installedBundles);
 				allArtifacts.addAll(installedBundles);
 
@@ -68,6 +73,7 @@ public class ArtifactsSetOperationHelper<Type> {
 					commonArtifacts.retainAll(installedBundles);
 				}
 
+				monitor.worked(1);
 			} catch (Exception e) {
 				IStatus error = new Status(
 						IStatus.ERROR,
@@ -84,6 +90,9 @@ public class ArtifactsSetOperationHelper<Type> {
 
 		differentArtifactsToUser = getRelationshipDifferentBundleToUser(
 				userArtifacts, differentArtifacts);
+
+		// all tasks finished
+		monitor.done();
 	}
 
 	/*
@@ -92,7 +101,8 @@ public class ArtifactsSetOperationHelper<Type> {
 	 * org.eclipse.example is used by user John and Sandy but not by Peter.
 	 */
 	protected Map<Type, Collection<ID>> getRelationshipDifferentBundleToUser(
-			Map<ID, Collection<Type>> userArtifacts, Set<Type> differentArtifacts) {
+			Map<ID, Collection<Type>> userArtifacts,
+			Set<Type> differentArtifacts) {
 		Map<Type, Collection<ID>> differentArtifactsToUser = new HashMap<Type, Collection<ID>>();
 
 		for (Type differentArtifact : differentArtifacts) {
@@ -100,7 +110,8 @@ public class ArtifactsSetOperationHelper<Type> {
 				/*
 				 * check whether user has a different bundle installed
 				 */
-				Collection<Type> userArtifactsCollection = userArtifacts.get(userID);
+				Collection<Type> userArtifactsCollection = userArtifacts
+						.get(userID);
 
 				if (userArtifactsCollection.contains(differentArtifact)) {
 					/*

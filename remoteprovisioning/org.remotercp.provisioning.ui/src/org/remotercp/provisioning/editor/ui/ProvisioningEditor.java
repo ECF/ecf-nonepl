@@ -9,6 +9,9 @@ import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
@@ -208,10 +211,31 @@ public class ProvisioningEditor extends EditorPart {
 		ProvisioningEditorInput editorInput = (ProvisioningEditorInput) getEditorInput();
 		switch (editorInput.getArtifactToShow()) {
 		case ProvisioningEditorInput.BUNDLE:
-			handleInstalledBundles(installedFeaturesServiceList);
+
+			Job handleBundlesJob = new Job("Retrieve remote components") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					handleInstalledBundles(installedFeaturesServiceList,
+							monitor);
+					return Status.OK_STATUS;
+				}
+			};
+			handleBundlesJob.setUser(true);
+			handleBundlesJob.schedule();
+
 			break;
 		case ProvisioningEditorInput.FEATURE:
-			handleInstalledFeatures(installedFeaturesServiceList);
+
+			Job handleFeaturesJob = new Job("Retrieve remote  components") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					handleInstalledFeatures(installedFeaturesServiceList,
+							monitor);
+					return Status.OK_STATUS;
+				}
+			};
+			handleFeaturesJob.setUser(true);
+			handleFeaturesJob.schedule();
 			break;
 		default:
 			break;
@@ -230,10 +254,15 @@ public class ProvisioningEditor extends EditorPart {
 	 * 3. displays users for different bundles
 	 */
 	protected void handleInstalledBundles(
-			List<IInstalledFeaturesService> serviceList) {
+			List<IInstalledFeaturesService> serviceList,
+			IProgressMonitor monitor) {
+
+		monitor.beginTask("Receive remote installed bundles", serviceList
+				.size());
+
 		ArtifactsSetOperationHelper<SerializedBundleWrapper> bundleHelper = new ArtifactsSetOperationHelper<SerializedBundleWrapper>();
 		bundleHelper.handleInstalledArtifacts(serviceList,
-				SerializedBundleWrapper.class);
+				SerializedBundleWrapper.class, monitor);
 
 		final Set<SerializedBundleWrapper> commonBundles = bundleHelper
 				.getCommonArtifacts();
@@ -255,10 +284,15 @@ public class ProvisioningEditor extends EditorPart {
 	}
 
 	protected void handleInstalledFeatures(
-			List<IInstalledFeaturesService> serviceList) {
+			List<IInstalledFeaturesService> serviceList,
+			IProgressMonitor monitor) {
+
+		monitor.beginTask("Receive remote installed features", serviceList
+				.size());
+
 		ArtifactsSetOperationHelper<SerializedFeatureWrapper> featuresHelper = new ArtifactsSetOperationHelper<SerializedFeatureWrapper>();
 		featuresHelper.handleInstalledArtifacts(serviceList,
-				SerializedFeatureWrapper.class);
+				SerializedFeatureWrapper.class, monitor);
 
 		final Set<SerializedFeatureWrapper> commonFeatures = featuresHelper
 				.getCommonArtifacts();
@@ -276,6 +310,7 @@ public class ProvisioningEditor extends EditorPart {
 						.setUserFeaturesInput(differentFeaturesToUser);
 			}
 		});
+
 	}
 
 	@Override

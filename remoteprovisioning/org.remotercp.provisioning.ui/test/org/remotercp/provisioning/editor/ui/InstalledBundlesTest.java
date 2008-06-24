@@ -12,6 +12,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.identity.ID;
 import org.junit.Before;
 import org.junit.Test;
@@ -134,9 +135,8 @@ public class InstalledBundlesTest extends AbstractRosterGenerator {
 		services.add(sandraService);
 		services.add(johnService);
 
-		helper
-				.handleInstalledArtifacts(services,
-						SerializedBundleWrapper.class);
+		helper.handleInstalledArtifacts(services,
+				SerializedBundleWrapper.class, new MyProgressMonitor());
 
 		Set<SerializedBundleWrapper> commonBundles = helper
 				.getCommonArtifacts();
@@ -205,9 +205,8 @@ public class InstalledBundlesTest extends AbstractRosterGenerator {
 		services.add(sandraService);
 		services.add(johnService);
 
-		helper
-				.handleInstalledArtifacts(services,
-						SerializedBundleWrapper.class);
+		helper.handleInstalledArtifacts(services,
+				SerializedBundleWrapper.class, new MyProgressMonitor());
 
 		Set<SerializedBundleWrapper> differentBundles = helper
 				.getDifferentArtifacts();
@@ -274,9 +273,8 @@ public class InstalledBundlesTest extends AbstractRosterGenerator {
 		services.add(johnService);
 
 		ArtifactsSetOperationHelper<SerializedBundleWrapper> helper = new ArtifactsSetOperationHelper<SerializedBundleWrapper>();
-		helper
-				.handleInstalledArtifacts(services,
-						SerializedBundleWrapper.class);
+		helper.handleInstalledArtifacts(services,
+				SerializedBundleWrapper.class, new MyProgressMonitor());
 
 		Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = helper
 				.getDifferentArtifactToUser();
@@ -359,6 +357,42 @@ public class InstalledBundlesTest extends AbstractRosterGenerator {
 
 		public Collection<SerializedFeatureWrapper> getInstalledFeatures() {
 			return null;
+		}
+
+	}
+
+	private class MyProgressMonitor implements IProgressMonitor {
+
+		public void beginTask(String name, int totalWork) {
+
+		}
+
+		public void done() {
+
+		}
+
+		public void internalWorked(double work) {
+
+		}
+
+		public boolean isCanceled() {
+			return false;
+		}
+
+		public void setCanceled(boolean value) {
+
+		}
+
+		public void setTaskName(String name) {
+
+		}
+
+		public void subTask(String name) {
+
+		}
+
+		public void worked(int work) {
+
 		}
 
 	}
