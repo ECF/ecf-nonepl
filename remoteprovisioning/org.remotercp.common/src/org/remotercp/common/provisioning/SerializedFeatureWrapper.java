@@ -16,6 +16,8 @@ public class SerializedFeatureWrapper implements
 
 	private String version;
 
+	private String label;
+
 	public URL getUpdateUrl() {
 		return updateUrl;
 	}
@@ -24,12 +26,12 @@ public class SerializedFeatureWrapper implements
 		this.updateUrl = updateUrl;
 	}
 
-	public String getIdentifier() {
-		return identifier;
+	public String getLabel() {
+		return this.label;
 	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setLabel(String label) {
+		this.label = label;
 	}
 
 	public String getVersion() {
@@ -51,6 +53,14 @@ public class SerializedFeatureWrapper implements
 
 	public int compareTo(SerializedFeatureWrapper feature) {
 		return getIdentifier().compareTo(feature.getIdentifier());
+	}
+
+	public String getIdentifier() {
+		return identifier;
+	}
+
+	public void setIdentifier(String identifier) {
+		this.identifier = identifier;
 	}
 
 }

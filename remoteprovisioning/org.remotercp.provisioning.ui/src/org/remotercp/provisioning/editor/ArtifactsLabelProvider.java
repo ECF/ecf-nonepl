@@ -47,7 +47,7 @@ public class ArtifactsLabelProvider implements ITableLabelProvider {
 
 			switch (columnIndex) {
 			case 0:
-				return wrapper.getIdentifier();
+				return wrapper.getLabel();
 
 			case 1:
 				return wrapper.getVersion();

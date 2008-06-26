@@ -45,6 +45,13 @@ public class ArtifactsSetOperationHelper<Type> {
 							+ userID.getName());
 					installedBundles = (Collection<Type>) service
 							.getInstalledBundles();
+
+					// report error
+					if (installedBundles == null || installedBundles.isEmpty()) {
+						this.reportError(IStatus.WARNING,
+								"No bundles received from user: "
+										+ userID.getName(), null);
+					}
 				}
 
 				if (wrapperType
@@ -53,6 +60,13 @@ public class ArtifactsSetOperationHelper<Type> {
 							+ userID.getName());
 					installedBundles = (Collection<Type>) service
 							.getInstalledFeatures();
+
+					// report error
+					if (installedBundles == null || installedBundles.isEmpty()) {
+						this.reportError(IStatus.WARNING,
+								"No features received from user: "
+										+ userID.getName(), null);
+					}
 				}
 
 				/*
@@ -75,12 +89,11 @@ public class ArtifactsSetOperationHelper<Type> {
 
 				monitor.worked(1);
 			} catch (Exception e) {
-				IStatus error = new Status(
-						IStatus.ERROR,
-						ProvisioningActivator.PLUGIN_ID,
-						"Unable to get installed bundles on the remote rpc application",
-						e);
-				ErrorView.addError(error);
+				this
+						.reportError(
+								IStatus.ERROR,
+								"Unable to get installed bundles on the remote rpc application",
+								e);
 			}
 		}
 
@@ -145,6 +158,12 @@ public class ArtifactsSetOperationHelper<Type> {
 
 	public Map<Type, Collection<ID>> getDifferentArtifactToUser() {
 		return this.differentArtifactsToUser;
+	}
+
+	private void reportError(int severity, String message, Exception e) {
+		IStatus error = new Status(severity, ProvisioningActivator.PLUGIN_ID,
+				message, e);
+		ErrorView.addError(error);
 	}
 
 }

@@ -38,14 +38,18 @@
                icon="icons/features.png"
                id="org.remotercp.provisioning.ui.getInstalledFeaturesAction"
                label="Get installed features"
-               menubarPath="additions">
+               menubarPath="additions"
+               style="push"
+               tooltip="Get remote features">
          </action>
          <action
                class="org.remotercp.provisioning.actions.InstalledBundlesAction"
                icon="icons/plugin.gif"
                id="org.remotercp.provisioning.ui.getInstalledBundlesAction"
                label="Get installed bundles"
-               menubarPath="additions">
+               menubarPath="additions"
+               style="push"
+               tooltip="Get remote bundles">
          </action>
       </objectContribution>
    </extension>

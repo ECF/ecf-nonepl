@@ -2,9 +2,12 @@ package org.remotercp.provisioning.editor.ui;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.graphics.Image;
@@ -13,12 +16,21 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.update.core.IFeature;
+import org.eclipse.update.internal.core.UpdateCore;
+import org.eclipse.update.internal.core.UpdateManagerLogWriter;
+import org.eclipse.update.internal.core.UpdateManagerUtils;
+import org.eclipse.update.internal.core.UpdateSession;
+import org.eclipse.update.internal.search.UpdateSiteAdapter;
+import org.eclipse.update.internal.ui.UpdateUI;
+import org.eclipse.update.internal.ui.model.UpdateModel;
+import org.eclipse.update.search.UpdateSearchRequest;
+import org.eclipse.update.search.UpdateSearchScope;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.images.ImageKeys;
 
 public class AvailableFeaturesComposite {
 
-	private TableViewer tableViewer;
+	private CheckboxTreeViewer checkboxTreeViewer;
 
 	public AvailableFeaturesComposite(SashForm parent, int style) {
 		this.createPartControl(parent, style);
@@ -31,13 +43,10 @@ public class AvailableFeaturesComposite {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(featuresComp);
 
 		{
-			this.tableViewer = new TableViewer(featuresComp, SWT.H_SCROLL
-					| SWT.V_SCROLL | SWT.MULTI);
+			this.checkboxTreeViewer = new CheckboxTreeViewer(featuresComp,
+					SWT.H_SCROLL | SWT.V_SCROLL);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
-					this.tableViewer.getControl());
-			this.tableViewer.setContentProvider(new ArrayContentProvider());
-			this.tableViewer
-					.setLabelProvider(new AvailableFeaturesLabelProvider());
+					this.checkboxTreeViewer.getControl());
 		}
 
 		Composite buttonsComp = new Composite(parent, SWT.None);
@@ -73,7 +82,41 @@ public class AvailableFeaturesComposite {
 	}
 
 	protected void setInput(Object input) {
-		this.tableViewer.setInput(input);
+	}
+	
+
+	private class TreeContentProvider implements ITreeContentProvider {
+
+		public Object[] getChildren(Object parentElement) {
+			
+			return null;
+		}
+
+		public Object getParent(Object element) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public boolean hasChildren(Object element) {
+			// TODO Auto-generated method stub
+			return false;
+		}
+
+		public Object[] getElements(Object inputElement) {
+			// TODO Auto-generated method stub
+			return null;
+		}
+
+		public void dispose() {
+			// do nothing
+
+		}
+
+		public void inputChanged(Viewer viewer, Object oldInput, Object newInput) {
+			// do nothing
+
+		}
+
 	}
 
 	/**

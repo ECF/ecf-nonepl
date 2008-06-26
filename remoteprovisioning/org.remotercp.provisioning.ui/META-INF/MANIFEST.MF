@@ -11,7 +11,8 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.ecf,
  org.remotercp.util,
  org.remotercp.errorhandling,
- org.remotercp.common
+ org.remotercp.common,
+ org.eclipse.update.ui
 Eclipse-LazyStart: true
 Export-Package: org.remotercp.provisioning.bundleexplorer,
  org.remotercp.provisioning.editor,

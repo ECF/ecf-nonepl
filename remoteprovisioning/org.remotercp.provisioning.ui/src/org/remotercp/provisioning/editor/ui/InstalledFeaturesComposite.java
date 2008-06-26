@@ -149,7 +149,7 @@ public class InstalledFeaturesComposite {
 
 			Button uninstall = new Button(installedFeaturesButtonsComposite,
 					SWT.PUSH);
-			uninstall.setText("Uninstall");
+			uninstall.setText("Update");
 
 			// hier können die URLs der Update site und ä. eingesehen und
 			// geändert werden

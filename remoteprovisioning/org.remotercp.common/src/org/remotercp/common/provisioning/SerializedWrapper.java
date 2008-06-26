@@ -4,9 +4,9 @@ import java.io.Serializable;
 
 public interface SerializedWrapper<T> extends Comparable<T>, Serializable {
 
-	public String getIdentifier();
+	public String getLabel();
 
-	public void setIdentifier(String identifier);
+	public void setLabel(String label);
 
 	public String getVersion();
 

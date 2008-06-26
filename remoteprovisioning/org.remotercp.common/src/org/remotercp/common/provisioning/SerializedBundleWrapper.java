@@ -25,12 +25,12 @@ public class SerializedBundleWrapper implements
 		this.bundleId = bundleId;
 	}
 
-	public String getIdentifier() {
+	public String getLabel() {
 		return identifier;
 	}
 
-	public void setIdentifier(String identifier) {
-		this.identifier = identifier;
+	public void setLabel(String label) {
+		this.identifier = label;
 	}
 
 	public int getState() {
@@ -45,13 +45,13 @@ public class SerializedBundleWrapper implements
 	public boolean equals(Object bundle) {
 		if (bundle instanceof SerializedBundleWrapper) {
 			SerializedBundleWrapper bundleWrapper = (SerializedBundleWrapper) bundle;
-			return this.getIdentifier().equals(bundleWrapper.getIdentifier());
+			return this.getLabel().equals(bundleWrapper.getLabel());
 		}
 		return super.equals(bundle);
 	}
 
 	public int compareTo(SerializedBundleWrapper bundle) {
-		return this.getIdentifier().compareTo(bundle.getIdentifier());
+		return this.getLabel().compareTo(bundle.getLabel());
 	}
 
 	public String getVersion() {

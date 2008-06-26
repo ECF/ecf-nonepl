@@ -53,6 +53,14 @@ public class InstalledBundlesAction implements IObjectActionDelegate {
 
 		IWorkbenchPage activePage = this.targetPart.getSite()
 				.getWorkbenchWindow().getActivePage();
+
+		// /*
+		// * close active editor
+		// */
+		// IEditorPart activeEditor = activePage.getActiveEditor();
+		// if (activeEditor != null) {
+		// activePage.closeEditor(activeEditor, true);
+		//		}
 		try {
 			// open editor
 			activePage.openEditor(editorInput, ProvisioningEditor.ID);
