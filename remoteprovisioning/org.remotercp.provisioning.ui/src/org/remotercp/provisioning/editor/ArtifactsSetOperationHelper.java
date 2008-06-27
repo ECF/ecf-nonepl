@@ -27,6 +27,7 @@ public class ArtifactsSetOperationHelper<Type> {
 	private final Set<Type> commonArtifacts = new TreeSet<Type>();
 	private final Set<Type> differentArtifacts = new TreeSet<Type>();
 	private final Set<Type> allArtifacts = new TreeSet<Type>();
+	
 	private final Map<ID, Collection<Type>> userArtifacts = new HashMap<ID, Collection<Type>>();
 	private Map<Type, Collection<ID>> differentArtifactsToUser;
 
@@ -34,6 +35,8 @@ public class ArtifactsSetOperationHelper<Type> {
 	public void handleInstalledArtifacts(
 			List<IInstalledFeaturesService> serviceList,
 			Class<Type> wrapperType, IProgressMonitor monitor) {
+
+		Collection<IStatus> errorMessages = new ArrayList<IStatus>();
 
 		for (final IInstalledFeaturesService service : serviceList) {
 			try {
@@ -48,9 +51,10 @@ public class ArtifactsSetOperationHelper<Type> {
 
 					// report error
 					if (installedBundles == null || installedBundles.isEmpty()) {
-						this.reportError(IStatus.WARNING,
+						errorMessages.add(this.createStatus(IStatus.WARNING,
 								"No bundles received from user: "
-										+ userID.getName(), null);
+										+ userID.getName(), null));
+
 					}
 				}
 
@@ -63,9 +67,9 @@ public class ArtifactsSetOperationHelper<Type> {
 
 					// report error
 					if (installedBundles == null || installedBundles.isEmpty()) {
-						this.reportError(IStatus.WARNING,
+						errorMessages.add(this.createStatus(IStatus.WARNING,
 								"No features received from user: "
-										+ userID.getName(), null);
+										+ userID.getName(), null));
 					}
 				}
 
@@ -89,11 +93,13 @@ public class ArtifactsSetOperationHelper<Type> {
 
 				monitor.worked(1);
 			} catch (Exception e) {
-				this
-						.reportError(
-								IStatus.ERROR,
-								"Unable to get installed bundles on the remote rpc application",
-								e);
+				errorMessages
+						.add(this
+								.createStatus(
+										IStatus.ERROR,
+										"Unable to get installed bundles on the remote rpc application",
+										e));
+
 			}
 		}
 
@@ -103,6 +109,10 @@ public class ArtifactsSetOperationHelper<Type> {
 
 		differentArtifactsToUser = getRelationshipDifferentBundleToUser(
 				userArtifacts, differentArtifacts);
+
+		if (!errorMessages.isEmpty()) {
+			ErrorView.addError(errorMessages);
+		}
 
 		// all tasks finished
 		monitor.done();
@@ -160,10 +170,10 @@ public class ArtifactsSetOperationHelper<Type> {
 		return this.differentArtifactsToUser;
 	}
 
-	private void reportError(int severity, String message, Exception e) {
+	private IStatus createStatus(int severity, String message, Exception e) {
 		IStatus error = new Status(severity, ProvisioningActivator.PLUGIN_ID,
 				message, e);
-		ErrorView.addError(error);
+		return error;
 	}
 
 }

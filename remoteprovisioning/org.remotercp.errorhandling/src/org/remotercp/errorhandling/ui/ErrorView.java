@@ -1,6 +1,7 @@
 package org.remotercp.errorhandling.ui;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 import java.util.logging.Logger;
 
@@ -25,7 +26,6 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
@@ -146,32 +146,42 @@ public class ErrorView extends ViewPart {
 	 *            Logger.Level severity. Is used to display appropriate images
 	 *            like warning or error. Level supported: SEVERE, WARNING, INFO
 	 */
-	public static void addError(IStatus status) {
+	public static synchronized void addError(IStatus status) {
+		Collection<IStatus> error = new ArrayList<IStatus>();
+		error.add(status);
 
-		Image image = getImageBySeverity(status);
-		Assert.isNotNull(image);
+		addError(error);
+	}
 
-		final ErrorMessage message = new ErrorMessage(image, status);
+	public static synchronized void addError(final Collection<IStatus> errors) {
 
-		// find error view reference
-		IViewReference[] viewReferences = PlatformUI.getWorkbench()
-				.getActiveWorkbenchWindow().getActivePage().getViewReferences();
+		try {
+			// find error view reference.
+			ErrorView errorView = (ErrorView) PlatformUI.getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().findView(ID);
 
-		for (IViewReference reference : viewReferences) {
-			if (ID.equalsIgnoreCase(reference.getId())) {
-				// add error message
-				ErrorView errorView = (ErrorView) reference.getView(true);
+			for (IStatus error : errors) {
+				final Image image = getImageBySeverity(error);
+				Assert.isNotNull(image);
+
+				final ErrorMessage message = new ErrorMessage(image, error);
 				errorView.addError(message);
-
-				// bring view to front
-				try {
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-							.getActivePage().showView(ErrorView.ID);
-				} catch (PartInitException e) {
-					e.printStackTrace();
-				}
-				break;
 			}
+
+			ErrorHandlingActivator.getDefault().getWorkbench()
+					.getActiveWorkbenchWindow().getActivePage().findView(ID);
+
+			// bring view to front
+			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+					.getActivePage().showView(ErrorView.ID);
+		} catch (PartInitException e) {
+			e.printStackTrace();
+		} catch (NullPointerException e) {
+			/*
+			 * do nothing. This way retrieving a View performing
+			 * PlatformUI.getWorkbench().... does throw a NullPointer exception,
+			 * if a dialog is in front and not a shell or a workbench window
+			 */
 		}
 	}
 
