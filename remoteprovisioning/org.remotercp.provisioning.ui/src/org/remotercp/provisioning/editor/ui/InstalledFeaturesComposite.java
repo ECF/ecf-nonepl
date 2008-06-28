@@ -76,7 +76,7 @@ public class InstalledFeaturesComposite {
 
 					TableColumn artifactName = new TableColumn(table, SWT.LEFT);
 					artifactName.setText("Name");
-					artifactName.setWidth(300);
+					artifactName.setWidth(400);
 
 					table.setLinesVisible(true);
 					table.setHeaderVisible(true);
