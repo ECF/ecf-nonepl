@@ -77,7 +77,7 @@ public class FeaturesSetOperationHelper {
 						.add(this
 								.createStatus(
 										IStatus.ERROR,
-										"Unable to get installed bundles on the remote rpc application",
+										"Unable to get installed features on the remote rpc application",
 										e));
 
 			}
