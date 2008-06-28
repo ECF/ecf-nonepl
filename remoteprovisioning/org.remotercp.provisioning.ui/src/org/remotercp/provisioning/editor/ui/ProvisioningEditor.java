@@ -28,11 +28,11 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
-import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
-import org.remotercp.provisioning.editor.ArtifactsSetOperationHelper;
+import org.remotercp.provisioning.editor.FeaturesSetOperationHelper;
 import org.remotercp.provisioning.editor.ProvisioningEditorInput;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
@@ -212,16 +212,16 @@ public class ProvisioningEditor extends EditorPart {
 		switch (editorInput.getArtifactToShow()) {
 		case ProvisioningEditorInput.BUNDLE:
 
-			Job handleBundlesJob = new Job("Retrieve remote components") {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					handleInstalledBundles(installedFeaturesServiceList,
-							monitor);
-					return Status.OK_STATUS;
-				}
-			};
-			handleBundlesJob.setUser(true);
-			handleBundlesJob.schedule();
+			// Job handleBundlesJob = new Job("Retrieve remote components") {
+			// @Override
+			// protected IStatus run(IProgressMonitor monitor) {
+			// handleInstalledBundles(installedFeaturesServiceList,
+			// monitor);
+			// return Status.OK_STATUS;
+			// }
+			// };
+			// handleBundlesJob.setUser(true);
+			// handleBundlesJob.schedule();
 
 			break;
 		case ProvisioningEditorInput.FEATURE:
@@ -243,46 +243,48 @@ public class ProvisioningEditor extends EditorPart {
 
 	}
 
+	// protected void handleInstalledBundles(
+	// List<IInstalledFeaturesService> serviceList,
+	// IProgressMonitor monitor) {
+	//
+	// monitor.beginTask("Receive remote installed bundles", serviceList
+	// .size());
+	//
+	// FeaturesSetOperationHelper<SerializedBundleWrapper> bundleHelper = new
+	// FeaturesSetOperationHelper<SerializedBundleWrapper>();
+	// bundleHelper.handleInstalledArtifacts(serviceList,
+	// SerializedBundleWrapper.class, monitor);
+	//
+	// final Set<SerializedBundleWrapper> commonBundles = bundleHelper
+	// .getCommonArtifacts();
+	// final Set<SerializedBundleWrapper> differentBundles = bundleHelper
+	// .getDifferentArtifacts();
+	// final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser
+	// = bundleHelper
+	// .getDifferentArtifactToUser();
+	//
+	// // set table input
+	// Display.getDefault().asyncExec(new Runnable() {
+	// public void run() {
+	// installedFeaturesComposite.setInstalledInput(commonBundles);
+	// installedFeaturesComposite.setDifferentInput(differentBundles);
+	// installedFeaturesComposite
+	// .setUserBundleInput(differentBundleToUser);
+	// }
+	// });
+	//
+	// }
+
 	/*
-	 * Collects the installed bundle from selected users rcp applications and
+	 * Collects the installed features from selected users rcp applications and
 	 * does:
 	 * 
-	 * 1. displays common bundles (intersection)
+	 * 1. displays common features (intersection)
 	 * 
-	 * 2. diplays different bundles (difference)
+	 * 2. diplays different features (difference)
 	 * 
-	 * 3. displays users for different bundles
+	 * 3. displays users for different features
 	 */
-	protected void handleInstalledBundles(
-			List<IInstalledFeaturesService> serviceList,
-			IProgressMonitor monitor) {
-
-		monitor.beginTask("Receive remote installed bundles", serviceList
-				.size());
-
-		ArtifactsSetOperationHelper<SerializedBundleWrapper> bundleHelper = new ArtifactsSetOperationHelper<SerializedBundleWrapper>();
-		bundleHelper.handleInstalledArtifacts(serviceList,
-				SerializedBundleWrapper.class, monitor);
-
-		final Set<SerializedBundleWrapper> commonBundles = bundleHelper
-				.getCommonArtifacts();
-		final Set<SerializedBundleWrapper> differentBundles = bundleHelper
-				.getDifferentArtifacts();
-		final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser = bundleHelper
-				.getDifferentArtifactToUser();
-
-		// set table input
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				installedFeaturesComposite.setInstalledInput(commonBundles);
-				installedFeaturesComposite.setDifferentInput(differentBundles);
-				installedFeaturesComposite
-						.setUserBundleInput(differentBundleToUser);
-			}
-		});
-
-	}
-
 	protected void handleInstalledFeatures(
 			List<IInstalledFeaturesService> serviceList,
 			IProgressMonitor monitor) {
@@ -290,9 +292,13 @@ public class ProvisioningEditor extends EditorPart {
 		monitor.beginTask("Receive remote installed features", serviceList
 				.size());
 
-		ArtifactsSetOperationHelper<SerializedFeatureWrapper> featuresHelper = new ArtifactsSetOperationHelper<SerializedFeatureWrapper>();
-		featuresHelper.handleInstalledArtifacts(serviceList,
-				SerializedFeatureWrapper.class, monitor);
+		FeaturesSetOperationHelper featuresHelper = new FeaturesSetOperationHelper();
+		Collection<IStatus> errors = featuresHelper.handleInstalledFeatures(
+				serviceList, monitor);
+
+		if (!errors.isEmpty()) {
+			ErrorView.addError(errors);
+		}
 
 		final Set<SerializedFeatureWrapper> commonFeatures = featuresHelper
 				.getCommonArtifacts();
@@ -304,10 +310,10 @@ public class ProvisioningEditor extends EditorPart {
 		// set table input
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				installedFeaturesComposite.setInstalledInput(commonFeatures);
-				installedFeaturesComposite.setDifferentInput(differentFeatures);
 				installedFeaturesComposite
-						.setUserFeaturesInput(differentFeaturesToUser);
+						.setCommonFeaturesInput(commonFeatures);
+				installedFeaturesComposite.setDifferentFeaturesInput(
+						differentFeatures, differentFeaturesToUser);
 			}
 		});
 

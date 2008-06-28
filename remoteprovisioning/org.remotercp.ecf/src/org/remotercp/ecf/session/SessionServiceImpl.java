@@ -143,6 +143,7 @@ public class SessionServiceImpl implements ISessionService {
 					T castedService = service.cast(remoteService.getProxy());
 					// T castedService = (T) remoteService.getProxy();
 					Assert.isNotNull(castedService);
+
 					remoteServices.add(castedService);
 					break;
 				}

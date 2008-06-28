@@ -15,7 +15,7 @@ import org.remotercp.provisioning.images.ImageKeys;
  * @author eugrei
  * 
  */
-public class ArtifactsLabelProvider implements ITableLabelProvider {
+public class FeaturesLabelProvider implements ITableLabelProvider {
 
 	private Image plugin = ProvisioningActivator.getImageDescriptor(
 			ImageKeys.PLUGIN).createImage();

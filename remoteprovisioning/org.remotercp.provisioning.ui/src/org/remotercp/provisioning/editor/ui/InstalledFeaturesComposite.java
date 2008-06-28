@@ -1,15 +1,16 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
+import java.util.Set;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
-import org.eclipse.jface.viewers.ISelectionChangedListener;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.SelectionChangedEvent;
 import org.eclipse.jface.viewers.TableViewer;
+import org.eclipse.jface.viewers.TreeNode;
+import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.layout.GridLayout;
@@ -18,22 +19,20 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
-import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
-import org.remotercp.provisioning.editor.ArtifactsLabelProvider;
-import org.remotercp.provisioning.editor.UserLabelProvider;
+import org.remotercp.provisioning.editor.FeaturesLabelProvider;
+import org.remotercp.provisioning.editor.FeaturesTreeContentProvider;
+import org.remotercp.provisioning.editor.FeaturesTreeLabelProvider;
 
 public class InstalledFeaturesComposite {
 
-	private TableViewer artifactsViewer;
+	private TableViewer featuresViewer;
 
-	private TableViewer differentFeaturesViewer;
+	private TreeViewer differentFeaturesViewer;
 
-	private TableViewer userWithDifferentFeaturesViewer;
+	private Group commonFeaturesGroup;
 
-	private Map<SerializedBundleWrapper, Collection<ID>> userWithDifferentBundlesInput;
-
-	private Map<SerializedFeatureWrapper, Collection<ID>> userWithDifferentFeaturesInput;
+	private Group differentFeaturesGroup;
 
 	public InstalledFeaturesComposite(SashForm parent, int style) {
 
@@ -55,8 +54,7 @@ public class InstalledFeaturesComposite {
 					installedFeaturesSash);
 
 			{
-				Group commonFeaturesGroup = new Group(installedFeaturesSash,
-						SWT.None);
+				commonFeaturesGroup = new Group(installedFeaturesSash, SWT.None);
 				commonFeaturesGroup.setText("Common features");
 				commonFeaturesGroup.setLayout(new GridLayout(1, false));
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
@@ -65,74 +63,50 @@ public class InstalledFeaturesComposite {
 					/*
 					 * installed features tree viewer
 					 */
-					this.artifactsViewer = createArtifactTableViewer(commonFeaturesGroup);
+					this.featuresViewer = new TableViewer(commonFeaturesGroup,
+							SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
+					GridDataFactory.fillDefaults().grab(true, true).applyTo(
+							this.featuresViewer.getControl());
+					this.featuresViewer
+							.setContentProvider(new ArrayContentProvider());
+					this.featuresViewer
+							.setLabelProvider(new FeaturesLabelProvider());
+
+					Table table = this.featuresViewer.getTable();
+
+					TableColumn artifactName = new TableColumn(table, SWT.LEFT);
+					artifactName.setText("Name");
+					artifactName.setWidth(300);
+
+					table.setLinesVisible(true);
+					table.setHeaderVisible(true);
+
 				}
 			}
 			{
-				/*
-				 * composite vor diverse features and user with this features
-				 */
-				Composite diverseFeaturesAndUser = new Composite(
-						installedFeaturesSash, SWT.None);
-				diverseFeaturesAndUser.setLayout(new GridLayout(2, true));
-				GridDataFactory.fillDefaults().grab(true, false).applyTo(
-						diverseFeaturesAndUser);
 
+				differentFeaturesGroup = new Group(installedFeaturesSash,
+						SWT.None);
+				differentFeaturesGroup.setText("Different features");
+				differentFeaturesGroup.setLayout(new GridLayout(1, false));
+				GridDataFactory.fillDefaults().grab(true, true).applyTo(
+						differentFeaturesGroup);
 				{
-					Group differentFeaturesGroup = new Group(
-							diverseFeaturesAndUser, SWT.None);
-					differentFeaturesGroup.setText("Different features");
-					differentFeaturesGroup.setLayout(new GridLayout(1, false));
-					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							differentFeaturesGroup);
-					{
 
-						/*
-						 * different features of selected features will be shown
-						 * here
-						 */
-						this.differentFeaturesViewer = createArtifactTableViewer(differentFeaturesGroup);
-						this.differentFeaturesViewer
-								.addSelectionChangedListener(new ISelectionChangedListener() {
+					/*
+					 * different features of selected features will be shown
+					 * here
+					 */
+					this.differentFeaturesViewer = new TreeViewer(
+							differentFeaturesGroup, SWT.H_SCROLL | SWT.V_SCROLL);
+					GridDataFactory.fillDefaults().grab(true, false).applyTo(
+							this.differentFeaturesViewer.getControl());
 
-									public void selectionChanged(
-											SelectionChangedEvent event) {
-										InstalledFeaturesComposite.this
-												.handleDifferentArtefactsSelection();
-									}
-
-								});
-					}
+					this.differentFeaturesViewer
+							.setContentProvider(new FeaturesTreeContentProvider());
+					this.differentFeaturesViewer
+							.setLabelProvider(new FeaturesTreeLabelProvider());
 				}
-				{
-					Group userFordifferentFeaturesGroup = new Group(
-							diverseFeaturesAndUser, SWT.None);
-					userFordifferentFeaturesGroup
-							.setText("User with different features");
-					userFordifferentFeaturesGroup.setLayout(new GridLayout(1,
-							false));
-					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							userFordifferentFeaturesGroup);
-					{
-						/*
-						 * tree that displays user/user groups with different
-						 * features installed
-						 */
-						this.userWithDifferentFeaturesViewer = new TableViewer(
-								userFordifferentFeaturesGroup, SWT.H_SCROLL
-										| SWT.V_SCROLL | SWT.SINGLE);
-						GridDataFactory.fillDefaults().grab(true, true)
-								.applyTo(
-										this.userWithDifferentFeaturesViewer
-												.getControl());
-
-						this.userWithDifferentFeaturesViewer
-								.setContentProvider(new ArrayContentProvider());
-						this.userWithDifferentFeaturesViewer
-								.setLabelProvider(new UserLabelProvider());
-					}
-				}
-
 			}
 			installedFeaturesSash.setWeights(new int[] { 2, 1 });
 		}
@@ -159,77 +133,46 @@ public class InstalledFeaturesComposite {
 		}
 	}
 
-	/*
-	 * creates a table viewer for a given composite
-	 */
-	private TableViewer createArtifactTableViewer(Composite parent) {
-		TableViewer viewer = new TableViewer(parent, SWT.H_SCROLL
-				| SWT.V_SCROLL | SWT.MULTI);
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(
-				viewer.getControl());
-		viewer.setContentProvider(new ArrayContentProvider());
-		viewer.setLabelProvider(new ArtifactsLabelProvider());
-
-		Table table = viewer.getTable();
-
-		TableColumn artifactName = new TableColumn(table, SWT.LEFT);
-		artifactName.setText("Name");
-		artifactName.setWidth(300);
-
-		TableColumn artifactVersion = new TableColumn(table, SWT.LEFT);
-		artifactVersion.setText("Version");
-		artifactVersion.setWidth(150);
-
-		table.setLinesVisible(true);
-		table.setHeaderVisible(true);
-
-		return viewer;
-	}
-
 	/**
 	 * Sets the table viewer input
 	 * 
 	 * @param input
 	 */
-	public void setInstalledInput(Object input) {
-		this.artifactsViewer.setInput(input);
+	public void setCommonFeaturesInput(Set<SerializedFeatureWrapper> input) {
+		this.commonFeaturesGroup.setText("Common features: " + input.size());
+		this.featuresViewer.setInput(input);
 	}
 
-	public void setDifferentInput(Object input) {
-		this.differentFeaturesViewer.setInput(input);
-	}
+	public void setDifferentFeaturesInput(
+			Set<SerializedFeatureWrapper> input,
+			Map<SerializedFeatureWrapper, Collection<ID>> differentFeaturesToUser) {
 
-	public void setUserBundleInput(
-			Map<SerializedBundleWrapper, Collection<ID>> input) {
-		this.userWithDifferentBundlesInput = input;
-	}
+		Collection<TreeNode> featureNodes = new ArrayList<TreeNode>();
 
-	public void setUserFeaturesInput(
-			Map<SerializedFeatureWrapper, Collection<ID>> input) {
-		this.userWithDifferentFeaturesInput = input;
-	}
+		// create tree nodes
+		for (SerializedFeatureWrapper feature : input) {
+			// feature node
+			TreeNode featureNode = new TreeNode(feature);
 
-	private void handleDifferentArtefactsSelection() {
-		/*
-		 * depending on which bundle has been selected from the "different
-		 * bundles group" the user list does change for this bundle
-		 */
-		IStructuredSelection selection = (IStructuredSelection) this.differentFeaturesViewer
-				.getSelection();
+			Collection<TreeNode> userNodes = new ArrayList<TreeNode>();
+			Collection<ID> userIDs = differentFeaturesToUser.get(feature);
 
-		Object obj = selection.getFirstElement();
-		Collection<ID> user = null;
+			// feature node children
+			for (ID user : userIDs) {
+				TreeNode userNode = new TreeNode(user);
+				userNodes.add(userNode);
+				userNode.setParent(featureNode);
+			}
 
-		if (obj instanceof SerializedBundleWrapper) {
-			SerializedBundleWrapper bundle = (SerializedBundleWrapper) obj;
-			user = this.userWithDifferentBundlesInput.get(bundle);
+			featureNode.setChildren(userNodes.toArray(new TreeNode[userNodes
+					.size()]));
+
+			featureNodes.add(featureNode);
+
 		}
 
-		if (obj instanceof SerializedFeatureWrapper) {
-			SerializedFeatureWrapper feature = (SerializedFeatureWrapper) obj;
-			user = this.userWithDifferentFeaturesInput.get(feature);
-		}
-
-		this.userWithDifferentFeaturesViewer.setInput(user);
+		this.differentFeaturesGroup.setText("Different features:"
+				+ featureNodes.size());
+		this.differentFeaturesViewer.setInput(featureNodes);
 	}
 }

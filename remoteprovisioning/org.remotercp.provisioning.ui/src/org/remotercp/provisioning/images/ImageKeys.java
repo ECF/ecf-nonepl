@@ -12,4 +12,6 @@ public class ImageKeys {
 
 	public static final String USER = "icons/chat_online.png";
 
+	public static final String GROUP = "icons/group_16x16.png";
+
 }
