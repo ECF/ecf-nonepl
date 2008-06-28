@@ -154,35 +154,45 @@ public class ErrorView extends ViewPart {
 	}
 
 	public static synchronized void addError(final Collection<IStatus> errors) {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
 
-		try {
-			// find error view reference.
-			ErrorView errorView = (ErrorView) PlatformUI.getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage().findView(ID);
+				try {
+					// find error view reference.
+					ErrorView errorView = (ErrorView) PlatformUI.getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage()
+							.findView(ID);
 
-			for (IStatus error : errors) {
-				final Image image = getImageBySeverity(error);
-				Assert.isNotNull(image);
+					for (IStatus error : errors) {
+						final Image image = getImageBySeverity(error);
+						Assert.isNotNull(image);
 
-				final ErrorMessage message = new ErrorMessage(image, error);
-				errorView.addError(message);
+						final ErrorMessage message = new ErrorMessage(image,
+								error);
+						errorView.addError(message);
+					}
+
+					ErrorHandlingActivator.getDefault().getWorkbench()
+							.getActiveWorkbenchWindow().getActivePage()
+							.findView(ID);
+
+					// bring view to front
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getActivePage().showView(ErrorView.ID);
+				} catch (PartInitException e) {
+					e.printStackTrace();
+				} catch (NullPointerException e) {
+					/*
+					 * do nothing. This way retrieving a View performing
+					 * PlatformUI.getWorkbench().... does throw a NullPointer
+					 * exception, if a dialog is in front and not a shell or a
+					 * workbench window
+					 */
+					e.printStackTrace();
+				}
 			}
+		});
 
-			ErrorHandlingActivator.getDefault().getWorkbench()
-					.getActiveWorkbenchWindow().getActivePage().findView(ID);
-
-			// bring view to front
-			PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-					.getActivePage().showView(ErrorView.ID);
-		} catch (PartInitException e) {
-			e.printStackTrace();
-		} catch (NullPointerException e) {
-			/*
-			 * do nothing. This way retrieving a View performing
-			 * PlatformUI.getWorkbench().... does throw a NullPointer exception,
-			 * if a dialog is in front and not a shell or a workbench window
-			 */
-		}
 	}
 
 	public void addError(final ErrorMessage message) {
