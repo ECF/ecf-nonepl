@@ -178,12 +178,12 @@ public class ContactsAdapterFactory implements IAdapterFactory {
 	 */
 	private String presenceToKey(IPresence p) {
 		if (p.getType() == IPresence.Type.AVAILABLE) {
-			return ImageKeys.ONLINE;
+			return ImageKeys.ONLINE16x16;
 		}
 
 		if (p.getType() == IPresence.Type.UNAVAILABLE) {
-			return ImageKeys.OFFLINE;
+			return ImageKeys.OFFLINE16x16;
 		}
-		return ImageKeys.OFFLINE;
+		return ImageKeys.OFFLINE16x16;
 	}
 }
