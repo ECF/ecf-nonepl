@@ -18,6 +18,9 @@ import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.custom.StackLayout;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -46,6 +49,8 @@ public class ProvisioningEditor extends EditorPart {
 
 	private TabFolder featuresFolder;
 
+	private StackLayout stackLayout;
+
 	private static final Logger logger = Logger
 			.getLogger(ProvisioningEditor.class.getName());
 
@@ -58,10 +63,17 @@ public class ProvisioningEditor extends EditorPart {
 
 	private InstalledFeaturesComposite installedFeaturesComposite;
 
+	private FeaturesVersionsComposite featuresVersionsComposite;
+
 	private AvailableFeaturesComposite availableFeaturesComposite;
+
+	private SashForm installedFeaturesSash;
+
+	private Composite installedFeaturesMainComposite;
 
 	public ProvisioningEditor() {
 		// nothing to do yet
+		this.stackLayout = new StackLayout();
 	}
 
 	@Override
@@ -141,6 +153,7 @@ public class ProvisioningEditor extends EditorPart {
 	@Override
 	public void createPartControl(Composite parent) {
 		Composite main = new Composite(parent, SWT.None);
+		// main.setLayout(stackLayout);
 		main.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
 
@@ -156,12 +169,17 @@ public class ProvisioningEditor extends EditorPart {
 				this.installedFeatureTabItem = new TabItem(this.featuresFolder,
 						SWT.BORDER);
 				this.installedFeatureTabItem.setText("Installed Features");
+
+				installedFeaturesMainComposite = new Composite(
+						this.featuresFolder, SWT.None);
+				installedFeaturesMainComposite.setLayout(stackLayout);
+				GridDataFactory.fillDefaults().grab(true, true).applyTo(
+						installedFeaturesMainComposite);
+
 				{
 
-					SashForm installedFeaturesSash = new SashForm(
-							this.featuresFolder, SWT.HORIZONTAL);
-					this.installedFeatureTabItem
-							.setControl(installedFeaturesSash);
+					installedFeaturesSash = new SashForm(
+							installedFeaturesMainComposite, SWT.HORIZONTAL);
 					installedFeaturesSash.setLayout(new GridLayout(2, false));
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
 							installedFeaturesSash);
@@ -169,10 +187,24 @@ public class ProvisioningEditor extends EditorPart {
 					{
 						installedFeaturesComposite = new InstalledFeaturesComposite(
 								installedFeaturesSash, SWT.None);
+						// Listener
+						installedFeaturesComposite.addButtonListener(
+								new SelectionAdapter() {
+									@Override
+									public void widgetSelected(SelectionEvent e) {
+										ProvisioningEditor.this
+												.handleCheckUpdates();
+									}
+								},
+								InstalledFeaturesComposite.Buttons.CHECK_FOR_UPDATES);
+
 					}
 
 					installedFeaturesSash.setWeights(new int[] { 2, 1 });
 				}
+				this.installedFeatureTabItem
+						.setControl(installedFeaturesMainComposite);
+				stackLayout.topControl = installedFeaturesSash;
 			}
 
 			{
@@ -274,6 +306,21 @@ public class ProvisioningEditor extends EditorPart {
 	// });
 	//
 	// }
+
+	private void handleCheckUpdates() {
+		Collection<SerializedFeatureWrapper> selectedFeatures = this.installedFeaturesComposite
+				.getSelectedFeatures();
+
+		if (this.featuresVersionsComposite == null) {
+			this.featuresVersionsComposite = new FeaturesVersionsComposite(
+					this.installedFeaturesMainComposite, SWT.None);
+		}
+
+		this.featuresVersionsComposite.setInput(selectedFeatures);
+		this.stackLayout.topControl = this.featuresVersionsComposite
+				.getMainControl();
+		this.installedFeaturesMainComposite.layout();
+	}
 
 	/*
 	 * Collects the installed features from selected users rcp applications and

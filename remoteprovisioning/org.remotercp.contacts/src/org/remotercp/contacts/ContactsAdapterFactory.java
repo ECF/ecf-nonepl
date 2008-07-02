@@ -8,6 +8,7 @@ import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
+import org.eclipse.ecf.presence.roster.RosterGroup;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
@@ -25,7 +26,7 @@ public class ContactsAdapterFactory implements IAdapterFactory {
 		}
 
 		public String getLabel(Object o) {
-			IRosterGroup group = (IRosterGroup) o;
+			RosterGroup group = (RosterGroup) o;
 
 			boolean areChildrenRosterEntries = this
 					.areChildrenInstanceOfRosterEntry(group);
@@ -53,13 +54,10 @@ public class ContactsAdapterFactory implements IAdapterFactory {
 			Collection<IRosterEntry> entries = group.getEntries();
 
 			for (IRosterEntry entry : entries) {
-
-				if (entry instanceof IRosterEntry) {
-					IPresence presence = ((IRosterEntry) entry).getPresence();
-					if (presence != null
-							&& presence.getType() != IPresence.Type.UNAVAILABLE) {
-						available++;
-					}
+				IPresence presence = ((IRosterEntry) entry).getPresence();
+				if (presence != null
+						&& presence.getType() != IPresence.Type.UNAVAILABLE) {
+					available++;
 				}
 			}
 
@@ -112,7 +110,7 @@ public class ContactsAdapterFactory implements IAdapterFactory {
 			IRosterEntry entry = ((IRosterEntry) o);
 
 			// return entry.getName() + " (" + entry.getUser() + ")";
-			return entry.getName();
+			return entry.getUser().getName();
 		}
 
 		public ImageDescriptor getImageDescriptor(Object object) {

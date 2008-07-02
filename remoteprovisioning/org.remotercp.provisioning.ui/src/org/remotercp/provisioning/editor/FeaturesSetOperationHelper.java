@@ -15,7 +15,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
-import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 
 public class FeaturesSetOperationHelper {
@@ -29,6 +28,7 @@ public class FeaturesSetOperationHelper {
 
 	private final Map<ID, Collection<SerializedFeatureWrapper>> userFeatures = new HashMap<ID, Collection<SerializedFeatureWrapper>>();
 	private Map<SerializedFeatureWrapper, Collection<ID>> differentFeaturesToUser;
+	private Map<SerializedFeatureWrapper, Collection<ID>> differentFeatureVersionsToUser;
 
 	@SuppressWarnings("unchecked")
 	public Collection<IStatus> handleInstalledFeatures(
@@ -134,6 +134,93 @@ public class FeaturesSetOperationHelper {
 		}
 
 		return differentFeaturesToUser;
+	}
+
+	/**
+	 * This method determines if some user have a different version of a feature
+	 * installed.
+	 * 
+	 * @param userFeatures
+	 * @param allFeatures
+	 * @return
+	 */
+	protected Map<SerializedFeatureWrapper, Collection<ID>> getDifferentFeatureVersionsToUser(
+			Map<ID, Collection<SerializedFeatureWrapper>> userFeatures,
+			Set<SerializedFeatureWrapper> allFeatures) {
+		Map<SerializedFeatureWrapper, Collection<ID>> differentFeatureVersions = new HashMap<SerializedFeatureWrapper, Collection<ID>>();
+
+		for (SerializedFeatureWrapper feature : allFeatures) {
+
+			for (ID userId : userFeatures.keySet()) {
+				Collection<SerializedFeatureWrapper> userFeatureCollection = userFeatures
+						.get(userId);
+
+				/*
+				 * As we are only concerned about common feature versions don't
+				 * consider user without this feature. They will be handled in
+				 * differentFeaturesToUser map.
+				 */
+				boolean hasUserFeatureInstalled = this.hasUserFeature(feature,
+						userFeatureCollection);
+
+				if (hasUserFeatureInstalled) {
+
+					boolean versionDifferen = this.isFeatureVersionDifferen(
+							feature, userFeatureCollection);
+
+					if (versionDifferen) {
+						// is already the feature in the map?
+						if (differentFeatureVersions.containsKey(feature)) {
+							// retrieve user collection
+							Collection<ID> userCollection = differentFeatureVersions
+									.get(feature);
+							userCollection.add(userId);
+						} else {
+							Collection<ID> userCollection = new ArrayList<ID>();
+							userCollection.add(userId);
+							differentFeatureVersions.put(feature,
+									userCollection);
+						}
+					}
+				}
+
+			}
+		}
+
+		return differentFeatureVersions;
+	}
+
+	private boolean hasUserFeature(SerializedFeatureWrapper feature,
+			Collection<SerializedFeatureWrapper> userFeatures) {
+		boolean userHasFeature = false;
+
+		for (SerializedFeatureWrapper userFeature : userFeatures) {
+			// get the right user feature
+			if (feature.getIdentifier().equals(userFeature.getIdentifier())) {
+				userHasFeature = true;
+				break;
+			}
+		}
+		return userHasFeature;
+	}
+
+	protected boolean isFeatureVersionDifferen(
+			SerializedFeatureWrapper feature,
+			Collection<SerializedFeatureWrapper> userFeatures) {
+		boolean versionDifferent = false;
+
+		for (SerializedFeatureWrapper userFeature : userFeatures) {
+			// get the right user feature
+			if (feature.getIdentifier().equals(userFeature.getIdentifier())) {
+				// check version
+				if (!feature.getVersion().equals(userFeature.getVersion())) {
+					versionDifferent = true;
+					break;
+				}
+			}
+		}
+
+		return versionDifferent;
 	}
 
 	public Set<SerializedFeatureWrapper> getCommonArtifacts() {

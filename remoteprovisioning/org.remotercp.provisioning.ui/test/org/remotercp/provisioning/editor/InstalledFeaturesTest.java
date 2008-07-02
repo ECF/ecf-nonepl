@@ -1,13 +1,11 @@
-package org.remotercp.provisioning.editor.ui;
+package org.remotercp.provisioning.editor;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
+import static org.junit.Assert.*;
 
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -104,7 +102,8 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 	protected SerializedFeatureWrapper getFeaturesWrapper(int id, String name,
 			String version) {
 		SerializedFeatureWrapper bundle = new SerializedFeatureWrapper();
-		bundle.setIdentifier(Integer.toString(id));
+		bundle.setIdentifier(name);
+		// label is the displayed name in UI, for now it doesn matter what it is
 		bundle.setLabel(name);
 		bundle.setVersion(version);
 
@@ -331,6 +330,63 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 			}
 		}
 		return null;
+	}
+
+	@Test
+	public void testDifferentFeatureVersions() {
+		FeaturesSetOperationHelper helper = new FeaturesSetOperationHelper();
+
+		SerializedFeatureWrapper feature1 = getFeaturesWrapper(1,
+				"org.eclipse.feature1", "1.0");
+		SerializedFeatureWrapper feature2 = getFeaturesWrapper(1,
+				"org.eclipse.feature2", "1.0");
+		SerializedFeatureWrapper feature3 = getFeaturesWrapper(1,
+				"org.eclipse.feature3", "1.0");
+		SerializedFeatureWrapper feature4 = getFeaturesWrapper(1,
+				"org.eclipse.feature4", "1.0");
+		SerializedFeatureWrapper feature5 = getFeaturesWrapper(1,
+				"org.eclipse.feature5", "1.0");
+
+		Set<SerializedFeatureWrapper> allFeatures = new HashSet<SerializedFeatureWrapper>();
+		allFeatures.add(feature1);
+		allFeatures.add(feature2);
+		allFeatures.add(feature3);
+		allFeatures.add(feature4);
+		allFeatures.add(feature5);
+
+		ID klaus = createUserID("Klaus");
+
+		SerializedFeatureWrapper klausFeature1 = getFeaturesWrapper(1,
+				"org.eclipse.feature1", "1.1");
+		SerializedFeatureWrapper klausFeature2 = getFeaturesWrapper(1,
+				"org.eclipse.feature2", "1.0");
+		SerializedFeatureWrapper klausFeature3 = getFeaturesWrapper(1,
+				"org.eclipse.feature3", "1.3");
+
+		Collection<SerializedFeatureWrapper> klausCollection = new ArrayList<SerializedFeatureWrapper>();
+		klausCollection.add(klausFeature1);
+		klausCollection.add(klausFeature2);
+		klausCollection.add(klausFeature3);
+
+		Map<ID, Collection<SerializedFeatureWrapper>> klausFeatures = new HashMap<ID, Collection<SerializedFeatureWrapper>>();
+		klausFeatures.put(klaus, klausCollection);
+
+		// klaus has 2 features with different versions
+		Map<SerializedFeatureWrapper, Collection<ID>> differentFeatureVersionsToUser = helper
+				.getDifferentFeatureVersionsToUser(klausFeatures, allFeatures);
+		assertEquals(2, differentFeatureVersionsToUser.size());
+
+		// make sure that both feature1 and feature3 are in the map
+		Collection<ID> u1 = getFeature(klausFeature1.getIdentifier(), differentFeatureVersionsToUser);
+		assertNotNull(u1);
+		assertEquals(true, u1.contains(klaus));
+		
+		Collection<ID> u2 = getFeature(klausFeature3.getIdentifier(), differentFeatureVersionsToUser);
+		assertNotNull(u2);
+		assertEquals(true, u2.contains(klaus));
+		
+		Collection<ID> u3 = getFeature(klausFeature2.getIdentifier(), differentFeatureVersionsToUser);
+		assertNull(u3);
 	}
 
 	private class TestRemoteServiceListImpl implements

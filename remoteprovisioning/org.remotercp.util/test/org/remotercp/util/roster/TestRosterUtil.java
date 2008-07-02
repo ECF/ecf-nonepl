@@ -100,4 +100,22 @@ public class TestRosterUtil extends AbstractRosterGenerator {
 			assertFalse(group.getEntries().isEmpty());
 		}
 	}
+
+	@Test
+	public void testHasRosterItem() {
+		RosterGroup rosterGroup1 = new RosterGroup(null, "group1");
+		RosterGroup rosterGroup2 = new RosterGroup(null, "groupNew");
+
+		assertEquals(true, RosterUtil.hasRosterItem(roster, rosterGroup1));
+		assertEquals(false, RosterUtil.hasRosterItem(roster, rosterGroup2));
+
+		IRosterEntry rosterEntry1 = super.createRosterEntry("Mary",
+				rosterGroup1, IPresence.Type.AVAILABLE);
+
+		IRosterEntry rosterEntry2 = super.createRosterEntry("NewPerson",
+				rosterGroup1, IPresence.Type.AVAILABLE);
+
+		assertEquals(true, RosterUtil.hasRosterItem(roster, rosterEntry1));
+		assertEquals(false, RosterUtil.hasRosterItem(roster, rosterEntry2));
+	}
 }

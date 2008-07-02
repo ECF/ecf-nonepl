@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ui.editors">
       <editor
-            class="org.remotercp.provisioning.editor.ui.ProvisioningEditor"
+            class="org.remotercp.provisioning.editor.ProvisioningEditor"
             icon="icons/toolkit_priority.gif"
             id="org.remotercp.provisioning.editor"
             name="Provisioning Editor">

@@ -150,4 +150,60 @@ public class RosterUtil {
 		}
 		return userOnline;
 	}
+
+	/**
+	 * Returns whether a IRoster contains already a given IRosterItem.
+	 * IRosterItem may be either an IRosterGroup or IRosterEntry
+	 * 
+	 * @param roster
+	 * @param item
+	 * @return
+	 */
+	public static boolean hasRosterItem(IRoster roster, IRosterItem item) {
+		boolean rosterContainsItem = false;
+
+		// items may be IRosterGroup and/or IRosterEntry
+		for (Object rosterItem : roster.getItems()) {
+			// compare groups
+			if (rosterItem instanceof IRosterGroup
+					&& item instanceof IRosterGroup) {
+				IRosterGroup tempGroup = (IRosterGroup) rosterItem;
+				IRosterGroup parameterGroup = (IRosterGroup) item;
+
+				if (tempGroup.getName().equals(parameterGroup.getName())) {
+					rosterContainsItem = true;
+					break;
+				}
+			}
+
+			// compare entries
+			if (rosterItem instanceof IRosterEntry
+					&& item instanceof IRosterEntry) {
+				IRosterEntry tempEntry = (IRosterEntry) rosterItem;
+				IRosterEntry parameterEntry = (IRosterEntry) item;
+
+				if (tempEntry.getUser().getID().equals(
+						parameterEntry.getUser().getID())) {
+					rosterContainsItem = true;
+					break;
+				}
+			}
+
+			// compare roster children with given roster item
+			if (rosterItem instanceof IRosterGroup
+					&& item instanceof IRosterEntry) {
+				IRosterGroup group = (IRosterGroup) rosterItem;
+				for (Object groupItem : group.getEntries()) {
+					IRosterEntry tempEntry = (IRosterEntry) groupItem;
+					if (tempEntry.getUser().getID().equals(
+							((IRosterEntry) item).getUser().getID())) {
+						rosterContainsItem = true;
+						break;
+					}
+				}
+			}
+		}
+
+		return rosterContainsItem;
+	}
 }

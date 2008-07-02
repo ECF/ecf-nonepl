@@ -2,20 +2,24 @@ package org.remotercp.provisioning.editor.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
@@ -34,13 +38,25 @@ public class InstalledFeaturesComposite {
 
 	private Group differentFeaturesGroup;
 
+	private Button checkForUpdates;
+
+	private Button uninstall;
+
+	private Button options;
+
+	private Composite main;
+
+	public static enum Buttons {
+		CHECK_FOR_UPDATES, UNINSTALL, OPTIONS
+	};
+
 	public InstalledFeaturesComposite(SashForm parent, int style) {
 
 		this.createPartControl(parent, style);
 	}
 
 	private void createPartControl(SashForm parent, int style) {
-		Composite main = new Composite(parent, SWT.None);
+		main = new Composite(parent, SWT.None);
 		main.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
 
@@ -117,20 +133,48 @@ public class InstalledFeaturesComposite {
 			installedFeaturesButtonsComposite
 					.setLayout(new GridLayout(1, false));
 
-			Button checkForUpdates = new Button(
-					installedFeaturesButtonsComposite, SWT.PUSH);
+			checkForUpdates = new Button(installedFeaturesButtonsComposite,
+					SWT.PUSH);
 			checkForUpdates.setText("Check for updates...");
 
-			Button uninstall = new Button(installedFeaturesButtonsComposite,
-					SWT.PUSH);
-			uninstall.setText("Update");
+			uninstall = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
+			uninstall.setText("Uninstall");
 
-			// hier können die URLs der Update site und ä. eingesehen und
-			// geändert werden
-			Button options = new Button(installedFeaturesButtonsComposite,
-					SWT.PUSH);
+			options = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			options.setText("Options");
 		}
+	}
+
+	protected void addButtonListener(SelectionAdapter listener, Buttons button) {
+		switch (button) {
+		case CHECK_FOR_UPDATES:
+			this.checkForUpdates.addSelectionListener(listener);
+			break;
+		case UNINSTALL:
+			this.uninstall.addSelectionListener(listener);
+			break;
+		case OPTIONS:
+			this.options.addSelectionListener(listener);
+			break;
+		default:
+			break;
+		}
+	}
+
+	protected Collection<SerializedFeatureWrapper> getSelectedFeatures() {
+		IStructuredSelection selection = (IStructuredSelection) this.featuresViewer
+				.getSelection();
+		Object[] selectedElements = selection.toArray();
+
+		Collection<SerializedFeatureWrapper> selectedFeatures = new ArrayList<SerializedFeatureWrapper>();
+		if (selectedElements.length > 0) {
+			for (int feature = 0; feature < selectedElements.length; feature++) {
+				selectedFeatures
+						.add((SerializedFeatureWrapper) selectedElements[feature]);
+			}
+		}
+
+		return selectedFeatures;
 	}
 
 	/**
@@ -174,5 +218,9 @@ public class InstalledFeaturesComposite {
 		this.differentFeaturesGroup.setText("Different features:"
 				+ featureNodes.size());
 		this.differentFeaturesViewer.setInput(featureNodes);
+	}
+
+	protected Control getMainControl() {
+		return main;
 	}
 }

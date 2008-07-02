@@ -14,4 +14,8 @@ public class ImageKeys {
 
 	public static final String GROUP = "icons/group_16x16.png";
 
+	public static final String CHECKED = "icons/checked.gif";
+
+	public static final String UNCHECKED = "icons/unchecked.gif";
+
 }
