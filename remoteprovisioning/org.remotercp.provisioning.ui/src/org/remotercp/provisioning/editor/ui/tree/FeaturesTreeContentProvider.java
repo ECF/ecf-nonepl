@@ -1,4 +1,4 @@
-package org.remotercp.provisioning.editor;
+package org.remotercp.provisioning.editor.ui.tree;
 
 import java.util.List;
 
@@ -17,7 +17,8 @@ public class FeaturesTreeContentProvider implements ITreeContentProvider {
 	}
 
 	public boolean hasChildren(Object element) {
-		return ((TreeNode) element).hasChildren();
+		boolean hasChildren = ((TreeNode) element).hasChildren();
+		return hasChildren;
 	}
 
 	public Object[] getElements(Object inputElement) {

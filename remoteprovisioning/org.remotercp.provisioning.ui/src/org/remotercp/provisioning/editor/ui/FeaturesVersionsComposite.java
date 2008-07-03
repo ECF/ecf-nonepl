@@ -21,7 +21,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
-import org.remotercp.provisioning.editor.FeaturesTreeContentProvider;
+import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.images.ImageKeys;
 
 public class FeaturesVersionsComposite {

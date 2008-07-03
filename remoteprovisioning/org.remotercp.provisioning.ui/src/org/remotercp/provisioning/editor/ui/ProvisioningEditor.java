@@ -2,8 +2,6 @@ package org.remotercp.provisioning.editor.ui;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Map;
-import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -35,8 +33,11 @@ import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
-import org.remotercp.provisioning.editor.FeaturesSetOperationHelper;
 import org.remotercp.provisioning.editor.ProvisioningEditorInput;
+import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeCreator;
+import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTest;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class ProvisioningEditor extends EditorPart {
@@ -339,7 +340,7 @@ public class ProvisioningEditor extends EditorPart {
 		monitor.beginTask("Receive remote installed features", serviceList
 				.size());
 
-		FeaturesSetOperationHelper featuresHelper = new FeaturesSetOperationHelper();
+		FeaturesTreeCreator featuresHelper = new FeaturesTreeCreator();
 		Collection<IStatus> errors = featuresHelper.handleInstalledFeatures(
 				serviceList, monitor);
 
@@ -347,20 +348,29 @@ public class ProvisioningEditor extends EditorPart {
 			ErrorView.addError(errors);
 		}
 
-		final Set<SerializedFeatureWrapper> commonFeatures = featuresHelper
-				.getCommonArtifacts();
-		final Set<SerializedFeatureWrapper> differentFeatures = featuresHelper
-				.getDifferentArtifacts();
-		final Map<SerializedFeatureWrapper, Collection<ID>> differentFeaturesToUser = featuresHelper
-				.getDifferentArtifactToUser();
+		// final Collection<CommonFeaturesTreeNode> commonFeaturesNodes =
+		// featuresHelper
+		// .getCommonFeaturesNodes();
+		// final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
+		// featuresHelper
+		// .getDifferentFeaturesNodes();
+
+		// XXX for Tests only
+		InstalledFeaturesCompositeTest test = new InstalledFeaturesCompositeTest();
+		test.setUp();
+
+		final Collection<CommonFeaturesTreeNode> commonFeaturesNodes = test
+				.getDummyCommonFeatures();
+		final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes = test
+				.getDummyDifferentFeatures();
 
 		// set table input
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				installedFeaturesComposite
-						.setCommonFeaturesInput(commonFeatures);
-				installedFeaturesComposite.setDifferentFeaturesInput(
-						differentFeatures, differentFeaturesToUser);
+						.setCommonFeaturesInput(commonFeaturesNodes);
+				installedFeaturesComposite
+						.setDifferentFeaturesInput(differentFeaturesNodes);
 			}
 		});
 

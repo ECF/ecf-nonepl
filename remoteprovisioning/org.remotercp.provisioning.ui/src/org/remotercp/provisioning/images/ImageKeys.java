@@ -18,4 +18,12 @@ public class ImageKeys {
 
 	public static final String UNCHECKED = "icons/unchecked.gif";
 
+	public static final String CIRCLE_RED = "icons/circle_red_16x16.gif";
+
+	public static final String CIRCLE_GREEN = "icons/circle_green_16x16.gif";
+
+	public static final String CIRCLE_BLUE = "icons/circle_blue_16x16.gif";
+
+	public static final String WARN = "icons/warn.gif";
+
 }

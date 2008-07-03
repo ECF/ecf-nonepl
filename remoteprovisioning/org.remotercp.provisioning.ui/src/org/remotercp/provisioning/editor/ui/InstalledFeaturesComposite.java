@@ -2,16 +2,11 @@ package org.remotercp.provisioning.editor.ui;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
 
-import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
+import org.eclipse.jface.viewers.ILabelDecorator;
+import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -21,16 +16,19 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.Table;
-import org.eclipse.swt.widgets.TableColumn;
+import org.eclipse.swt.widgets.Tree;
+import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.PlatformUI;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
-import org.remotercp.provisioning.editor.FeaturesLabelProvider;
-import org.remotercp.provisioning.editor.FeaturesTreeContentProvider;
-import org.remotercp.provisioning.editor.FeaturesTreeLabelProvider;
+import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.FeaturesTableLabelProvider;
+import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
+import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeLabelProvider;
 
 public class InstalledFeaturesComposite {
 
-	private TableViewer featuresViewer;
+	private TreeViewer commonFeaturesViewer;
 
 	private TreeViewer differentFeaturesViewer;
 
@@ -79,23 +77,31 @@ public class InstalledFeaturesComposite {
 					/*
 					 * installed features tree viewer
 					 */
-					this.featuresViewer = new TableViewer(commonFeaturesGroup,
+					this.commonFeaturesViewer = new TreeViewer(commonFeaturesGroup,
 							SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							this.featuresViewer.getControl());
-					this.featuresViewer
-							.setContentProvider(new ArrayContentProvider());
-					this.featuresViewer
-							.setLabelProvider(new FeaturesLabelProvider());
+							this.commonFeaturesViewer.getControl());
+					this.commonFeaturesViewer
+							.setContentProvider(new FeaturesTreeContentProvider());
+					ILabelDecorator decorator = PlatformUI.getWorkbench()
+							.getDecoratorManager().getLabelDecorator();
+					ILabelProvider provider = new FeaturesTableLabelProvider();
+					this.commonFeaturesViewer
+							.setLabelProvider(new FeaturesTreeLabelProvider(
+									provider, decorator));
 
-					Table table = this.featuresViewer.getTable();
+					Tree tree = this.commonFeaturesViewer.getTree();
 
-					TableColumn artifactName = new TableColumn(table, SWT.LEFT);
-					artifactName.setText("Name");
-					artifactName.setWidth(400);
+					TreeColumn name = new TreeColumn(tree, SWT.LEFT);
+					name.setText("Feature");
+					name.setWidth(200);
 
-					table.setLinesVisible(true);
-					table.setHeaderVisible(true);
+					TreeColumn version = new TreeColumn(tree, SWT.LEFT);
+					version.setText("Version");
+					version.setWidth(200);
+
+					tree.setLinesVisible(true);
+					tree.setHeaderVisible(true);
 
 				}
 			}
@@ -115,13 +121,30 @@ public class InstalledFeaturesComposite {
 					 */
 					this.differentFeaturesViewer = new TreeViewer(
 							differentFeaturesGroup, SWT.H_SCROLL | SWT.V_SCROLL);
-					GridDataFactory.fillDefaults().grab(true, false).applyTo(
+					GridDataFactory.fillDefaults().grab(true, true).applyTo(
 							this.differentFeaturesViewer.getControl());
 
 					this.differentFeaturesViewer
 							.setContentProvider(new FeaturesTreeContentProvider());
+					ILabelDecorator decorator = PlatformUI.getWorkbench()
+							.getDecoratorManager().getLabelDecorator();
+					ILabelProvider provider = new FeaturesTableLabelProvider();
 					this.differentFeaturesViewer
-							.setLabelProvider(new FeaturesTreeLabelProvider());
+							.setLabelProvider(new FeaturesTreeLabelProvider(
+									provider, decorator));
+
+					Tree tree = this.differentFeaturesViewer.getTree();
+
+					TreeColumn name = new TreeColumn(tree, SWT.LEFT);
+					name.setText("Feature");
+					name.setWidth(200);
+
+					TreeColumn version = new TreeColumn(tree, SWT.LEFT);
+					version.setText("Version");
+					version.setWidth(200);
+
+					tree.setLinesVisible(true);
+					tree.setHeaderVisible(true);
 				}
 			}
 			installedFeaturesSash.setWeights(new int[] { 2, 1 });
@@ -162,7 +185,7 @@ public class InstalledFeaturesComposite {
 	}
 
 	protected Collection<SerializedFeatureWrapper> getSelectedFeatures() {
-		IStructuredSelection selection = (IStructuredSelection) this.featuresViewer
+		IStructuredSelection selection = (IStructuredSelection) this.commonFeaturesViewer
 				.getSelection();
 		Object[] selectedElements = selection.toArray();
 
@@ -182,42 +205,17 @@ public class InstalledFeaturesComposite {
 	 * 
 	 * @param input
 	 */
-	public void setCommonFeaturesInput(Set<SerializedFeatureWrapper> input) {
+	public void setCommonFeaturesInput(Collection<CommonFeaturesTreeNode> input) {
 		this.commonFeaturesGroup.setText("Common features: " + input.size());
-		this.featuresViewer.setInput(input);
+		this.commonFeaturesViewer.setInput(input);
 	}
 
 	public void setDifferentFeaturesInput(
-			Set<SerializedFeatureWrapper> input,
-			Map<SerializedFeatureWrapper, Collection<ID>> differentFeaturesToUser) {
-
-		Collection<TreeNode> featureNodes = new ArrayList<TreeNode>();
-
-		// create tree nodes
-		for (SerializedFeatureWrapper feature : input) {
-			// feature node
-			TreeNode featureNode = new TreeNode(feature);
-
-			Collection<TreeNode> userNodes = new ArrayList<TreeNode>();
-			Collection<ID> userIDs = differentFeaturesToUser.get(feature);
-
-			// feature node children
-			for (ID user : userIDs) {
-				TreeNode userNode = new TreeNode(user);
-				userNodes.add(userNode);
-				userNode.setParent(featureNode);
-			}
-
-			featureNode.setChildren(userNodes.toArray(new TreeNode[userNodes
-					.size()]));
-
-			featureNodes.add(featureNode);
-
-		}
+			Collection<DifferentFeaturesTreeNode> input) {
 
 		this.differentFeaturesGroup.setText("Different features:"
-				+ featureNodes.size());
-		this.differentFeaturesViewer.setInput(featureNodes);
+				+ input.size());
+		this.differentFeaturesViewer.setInput(input);
 	}
 
 	protected Control getMainControl() {
