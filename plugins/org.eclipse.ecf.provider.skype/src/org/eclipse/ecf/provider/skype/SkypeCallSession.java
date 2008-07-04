@@ -11,7 +11,9 @@
 
 package org.eclipse.ecf.provider.skype;
 
+import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.internal.provider.skype.Activator;
 import org.eclipse.ecf.internal.provider.skype.Messages;
 import org.eclipse.ecf.provider.skype.identity.SkypeCallSessionID;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
@@ -21,6 +23,7 @@ import org.eclipse.ecf.telephony.call.CallSessionFailureReason;
 import org.eclipse.ecf.telephony.call.CallSessionState;
 import org.eclipse.ecf.telephony.call.ICallSession;
 import org.eclipse.ecf.telephony.call.ICallSessionListener;
+import org.eclipse.ecf.telephony.call.dtmf.IDTMFCallSessionAdapter;
 import org.eclipse.ecf.telephony.call.events.ICallSessionEvent;
 
 import com.skype.Call;
@@ -31,7 +34,7 @@ import com.skype.Call.Status;
 /**
  * 
  */
-public class SkypeCallSession  implements ICallSession {
+public class SkypeCallSession implements ICallSession {
 
 	protected SkypeUserID initiatorID = null;
 	protected SkypeUserID receiverID = null;
@@ -42,7 +45,8 @@ public class SkypeCallSession  implements ICallSession {
 	protected CallSessionFailureReason failureReason = null;
 	protected SkypeCallContainerAdapter adapter = null;
 	protected CallSessionErrorDetails callError = null;
-	
+	protected DTMFHelper dtmfHelper = null;
+
 	protected CallStatusChangedListener callStatusChangedListener = new CallStatusChangedListener() {
 		public void statusChanged(Status status) throws SkypeException {
 			handleStatusChanged(status);
@@ -50,7 +54,7 @@ public class SkypeCallSession  implements ICallSession {
 	};
 
 	protected void fireCallSessionEvent(ICallSessionEvent event) {
-		ICallSessionListener listener = getListener();
+		final ICallSessionListener listener = getListener();
 		if (listener != null) {
 			listener.handleCallSessionEvent(event);
 		}
@@ -59,10 +63,8 @@ public class SkypeCallSession  implements ICallSession {
 	protected SkypeCallContainerAdapter getAdapter() {
 		return adapter;
 	}
-	
-	protected SkypeCallSession(SkypeCallContainerAdapter adapter, SkypeUserID initiatorID,
-			SkypeUserID receiverID, Call call, ICallSessionListener listener)
-			throws SkypeException {
+
+	protected SkypeCallSession(SkypeCallContainerAdapter adapter, SkypeUserID initiatorID, SkypeUserID receiverID, Call call, ICallSessionListener listener) throws SkypeException {
 		this.adapter = null;
 		this.initiatorID = initiatorID;
 		this.call = call;
@@ -71,6 +73,7 @@ public class SkypeCallSession  implements ICallSession {
 		this.listener = listener;
 		this.callState = CallSessionState.PENDING;
 		this.call.addCallStatusChangedListener(callStatusChangedListener);
+		this.dtmfHelper = new DTMFHelper(this.call);
 	}
 
 	protected synchronized void setFailureReason(CallSessionFailureReason reason) {
@@ -83,7 +86,8 @@ public class SkypeCallSession  implements ICallSession {
 			if (this.callState.equals(CallSessionState.FAILED)) {
 				try {
 					setFailureReason(lookupFailureReason(call.getErrorCode()));
-				} catch (SkypeException e) {
+				} catch (final SkypeException e) {
+					Activator.log("Exception setting failure reason", e);
 				}
 			}
 		}
@@ -114,7 +118,7 @@ public class SkypeCallSession  implements ICallSession {
 	}
 
 	protected StringBuffer getStringBufferForEvent(String eventType) {
-		StringBuffer buffer = new StringBuffer(eventType);
+		final StringBuffer buffer = new StringBuffer(eventType);
 		buffer.append("["); //$NON-NLS-1$
 		buffer.append("id=").append( //$NON-NLS-1$
 				getID());
@@ -185,10 +189,8 @@ public class SkypeCallSession  implements ICallSession {
 	public void sendTerminate() throws CallException {
 		try {
 			call.finish();
-		} catch (SkypeException e) {
-			throw new CallException(
-					Messages.SharedObjectCallContainerAdapter_Exception_Skype,
-					e);
+		} catch (final SkypeException e) {
+			throw new CallException(Messages.SharedObjectCallContainerAdapter_Exception_Skype, e);
 		}
 	}
 
@@ -207,7 +209,15 @@ public class SkypeCallSession  implements ICallSession {
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {
-		return null;
+		if (adapter == null)
+			return null;
+		if (adapter.equals(IDTMFCallSessionAdapter.class))
+			return dtmfHelper;
+		if (adapter.isInstance(this)) {
+			return this;
+		}
+		final IAdapterManager adapterManager = Activator.getDefault().getAdapterManager();
+		return (adapterManager == null) ? null : adapterManager.loadAdapter(this, adapter.getName());
 	}
 
 	/*
