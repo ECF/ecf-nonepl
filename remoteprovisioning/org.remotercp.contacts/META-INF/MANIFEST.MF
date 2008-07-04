@@ -11,10 +11,9 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.databinding.beans,
  org.eclipse.jface.databinding,
  org.remotercp.ecf,
- org.remotercp.provisioning.ui,
  org.remotercp.chat,
- org.remotercp.provisioning.update,
  org.remotercp.util,
- org.remotercp.errorhandling
+ org.remotercp.errorhandling,
+ org.remotercp.provisioning.ui
 Eclipse-LazyStart: true
 Export-Package: org.remotercp.contacts.ui

@@ -13,9 +13,8 @@ import org.eclipse.swt.dnd.TransferData;
 
 /*
  * As IRosterItems are not serializable it would be pretty a hack to serialize them. 
- * I rather decided to do the simplest thing that could possibly work and it does so far.
+ * I rather decided to do the simplest thing that could possibly work and  created a singleton (@see DragAndDropSupport) and works pretty well so far.
  */
-@Deprecated
 public class TreeObjectTransfer extends ByteArrayTransfer {
 
 	private static final String TYPE_NAME = "tree-object-transfer-format";

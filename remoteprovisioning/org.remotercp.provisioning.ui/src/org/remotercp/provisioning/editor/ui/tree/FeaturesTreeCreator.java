@@ -137,12 +137,11 @@ public class FeaturesTreeCreator {
 					child.setParent(node);
 
 					/*
-					 * check if user feature version is different from parent.
-					 * If this is the case don't compare all children
+					 * check if user feature version is different from one of
+					 * the nodes children. If one feature is different, it
+					 * doesn't make sence compare the rest as well.
 					 */
-					if (!feature.getVersion().equals(userFeature.getVersion())) {
-						node.setVersionDifferent(true);
-					} else {
+					if (!node.isVersionDifferent) {
 						// compare also children with each other
 						boolean versionDifferent = this
 								.isFeatureVersionDifferent(children,

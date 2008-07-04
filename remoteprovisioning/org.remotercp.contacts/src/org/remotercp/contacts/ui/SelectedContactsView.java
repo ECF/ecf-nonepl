@@ -1,5 +1,8 @@
 package org.remotercp.contacts.ui;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
+
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
@@ -7,8 +10,6 @@ import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterGroup;
-import org.eclipse.jface.action.Action;
-import org.eclipse.jface.action.IToolBarManager;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -23,17 +24,15 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
-import org.remotercp.contacts.ContactsActivator;
 import org.remotercp.contacts.ContactsContentProvider;
 import org.remotercp.contacts.ContactsLabelProvider;
-import org.remotercp.contacts.images.ImageKeys;
 import org.remotercp.util.roster.RosterUtil;
 
 public class SelectedContactsView extends ViewPart {
 
-	private TreeViewer selectedContactsViewer;
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-	private Action installedBundlesAction;
+	private TreeViewer selectedContactsViewer;
 
 	public SelectedContactsView() {
 		// nothing to do
@@ -56,34 +55,10 @@ public class SelectedContactsView extends ViewPart {
 		this.selectedContactsViewer
 				.setFilters(new ViewerFilter[] { new SelectedContactsFilter() });
 
-		this.hookActions();
-
-		this.hookToolbarActions();
-
 		this.hookKeyListener();
 
 		this.initDragAndDropSupport();
 
-	}
-
-	private void hookActions() {
-		this.installedBundlesAction = new Action("Get remote installed bundles") {
-			@Override
-			public void run() {
-			}
-		};
-
-		this.installedBundlesAction.setImageDescriptor(ContactsActivator
-				.imageDescriptorFromPlugin(ContactsActivator.PLUGIN_ID,
-						ImageKeys.BUNDLE));
-		this.installedBundlesAction
-				.setToolTipText("Get remote installed bundles");
-	}
-
-	private void hookToolbarActions() {
-		IToolBarManager toolBarManager = getViewSite().getActionBars()
-				.getToolBarManager();
-		toolBarManager.add(this.installedBundlesAction);
 	}
 
 	private void hookKeyListener() {
@@ -120,7 +95,7 @@ public class SelectedContactsView extends ViewPart {
 		}
 
 		this.selectedContactsViewer.setInput(roster);
-
+		this.pcs.firePropertyChange("Input changed", null, roster);
 	}
 
 	private void initDragAndDropSupport() {
@@ -181,12 +156,19 @@ public class SelectedContactsView extends ViewPart {
 		 */
 		this.selectedContactsViewer.setInput(roster);
 		this.selectedContactsViewer.expandAll();
+
+		// inform listener about input changes
+		pcs.firePropertyChange("Input changed", oldInput, roster);
 	}
 
 	@Override
 	public void setFocus() {
 		this.selectedContactsViewer.getControl().setFocus();
 
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
 	}
 
 	/**

@@ -14,4 +14,6 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.common,
  org.eclipse.update.ui
 Eclipse-LazyStart: true
-Export-Package: org.remotercp.provisioning.editor.ui.tree
+Export-Package: org.remotercp.provisioning.editor,
+ org.remotercp.provisioning.editor.ui,
+ org.remotercp.provisioning.editor.ui.tree

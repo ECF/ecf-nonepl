@@ -10,31 +10,5 @@
             name="Provisioning Editor">
       </editor>
    </extension>
-   <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            adaptable="true"
-            id="org.remotercp.provisioning.ui.rosterItemContribution"
-            objectClass="org.eclipse.ecf.presence.roster.IRosterItem">
-         <action
-               class="org.remotercp.provisioning.actions.InstalledFeaturesAction"
-               icon="icons/features.png"
-               id="org.remotercp.provisioning.ui.getInstalledFeaturesAction"
-               label="Get installed features"
-               menubarPath="additions"
-               style="push"
-               tooltip="Get remote features">
-         </action>
-         <action
-               class="org.remotercp.provisioning.actions.InstalledBundlesAction"
-               icon="icons/plugin.gif"
-               id="org.remotercp.provisioning.ui.getInstalledBundlesAction"
-               label="Get installed bundles"
-               menubarPath="additions"
-               style="push"
-               tooltip="Get remote bundles">
-         </action>
-      </objectContribution>
-   </extension>
 
 </plugin>

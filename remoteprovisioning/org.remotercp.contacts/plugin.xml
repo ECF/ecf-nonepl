@@ -86,5 +86,26 @@
          </action>
       </actionSet>
    </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.remotercp.contacts.selectedContactsViewContribution"
+            targetID="org.remotercp.contacts.selectedContactsView">
+         <menu
+               id="org.remotercp.contacts.installedFeaturesMenu"
+               label="Get remote installed features">
+         </menu>
+         <action
+               class="org.remotercp.contacts.actions.InstalledFeaturesAction"
+               icon="icons/features.png"
+               id="org.remotercp.contacts.installedFeaturesAction"
+               label="Get remote installed Features"
+               menubarPath="additions"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Get remote installed features for selected users">
+         </action>
+      </viewContribution>
+   </extension>
 
 </plugin>

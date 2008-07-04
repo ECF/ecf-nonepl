@@ -61,14 +61,20 @@ public class ProvisioningEditorInput implements IEditorInput {
 	}
 
 	public boolean equals(Object obj) {
-		if (super.equals(obj))
+		ProvisioningEditorInput input = (ProvisioningEditorInput) obj;
+		if (input.hashCode() == hashCode()) {
 			return true;
-		// open only one editor at the same time
-		return true;
+		} else {
+			return false;
+		}
 	}
 
 	public int hashCode() {
-		return this.userIDs.hashCode();
+		int hashCode = 0;
+		for (ID userId : this.userIDs) {
+			hashCode += userId.getName().hashCode();
+		}
+		return hashCode;
 	}
 
 }

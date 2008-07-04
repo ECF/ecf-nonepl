@@ -17,8 +17,6 @@ package org.remotercp.contacts;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
-import org.eclipse.ecf.presence.roster.IRoster;
-import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.jface.viewers.ITreeContentProvider;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.ui.model.IWorkbenchAdapter;
