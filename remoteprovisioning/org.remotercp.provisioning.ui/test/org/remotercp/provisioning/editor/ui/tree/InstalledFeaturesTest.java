@@ -148,7 +148,7 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 
 	@Test
 	public void testGetFeatureFromCollection() {
-		FeaturesTreeCreator creator = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator creator = new InstalledFeaturesTreeCreator();
 		SerializedFeatureWrapper feature1 = creator.getFeatureFromCollection(
 				feature10, allFeatures);
 		assertNotNull(feature1);
@@ -168,7 +168,7 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 
 	@Test
 	public void testIsFeatureVersionDifferent() {
-		FeaturesTreeCreator creator = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator creator = new InstalledFeaturesTreeCreator();
 
 		Collection<CommonFeaturesUserTreeNode> nodes = new ArrayList<CommonFeaturesUserTreeNode>();
 		CommonFeaturesUserTreeNode node1 = new CommonFeaturesUserTreeNode(
@@ -395,7 +395,7 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 
 	@Test
 	public void testDifferenFeatureVersions() {
-		FeaturesTreeCreator creator = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator creator = new InstalledFeaturesTreeCreator();
 
 		Collection<SerializedFeatureWrapper> klausFeatures = new ArrayList<SerializedFeatureWrapper>();
 		klausFeatures.add(feature14);
@@ -512,7 +512,7 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 	// }
 
 	protected Collection<CommonFeaturesTreeNode> getDummyCommonFeatures() {
-		FeaturesTreeCreator creator = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator creator = new InstalledFeaturesTreeCreator();
 
 		Collection<SerializedFeatureWrapper> klausFeatures = new ArrayList<SerializedFeatureWrapper>();
 		klausFeatures.add(feature14);
@@ -570,7 +570,7 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 	}
 
 	protected Collection<DifferentFeaturesTreeNode> getDummyDifferentFeatures() {
-		FeaturesTreeCreator creator = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator creator = new InstalledFeaturesTreeCreator();
 
 		Collection<SerializedFeatureWrapper> klausFeatures = userFeatures
 				.get(klaus);

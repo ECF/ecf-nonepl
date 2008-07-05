@@ -2,6 +2,7 @@ package org.remotercp.provisioning.editor.ui;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -29,15 +30,13 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
-import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ProvisioningEditorInput;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
-import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeCreator;
-import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTest;
+import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTreeCreator;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class ProvisioningEditor extends EditorPart {
@@ -67,8 +66,6 @@ public class ProvisioningEditor extends EditorPart {
 	private FeaturesVersionsComposite featuresVersionsComposite;
 
 	private AvailableFeaturesComposite availableFeaturesComposite;
-
-	private SashForm installedFeaturesSash;
 
 	private Composite installedFeaturesMainComposite;
 
@@ -179,33 +176,18 @@ public class ProvisioningEditor extends EditorPart {
 
 				{
 
-					installedFeaturesSash = new SashForm(
-							installedFeaturesMainComposite, SWT.HORIZONTAL);
-					installedFeaturesSash.setLayout(new GridLayout(2, false));
-					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							installedFeaturesSash);
+					this.installedFeaturesComposite = new InstalledFeaturesComposite(
+							this.installedFeaturesMainComposite, SWT.None);
 
-					{
-						installedFeaturesComposite = new InstalledFeaturesComposite(
-								installedFeaturesSash, SWT.None);
-						// Listener
-						installedFeaturesComposite.addButtonListener(
-								new SelectionAdapter() {
-									@Override
-									public void widgetSelected(SelectionEvent e) {
-										ProvisioningEditor.this
-												.handleCheckUpdates();
-									}
-								},
-								InstalledFeaturesComposite.Buttons.CHECK_FOR_UPDATES);
+					this.featuresVersionsComposite = new FeaturesVersionsComposite(
+							this.installedFeaturesMainComposite, SWT.None);
 
-					}
-
-					installedFeaturesSash.setWeights(new int[] { 2, 1 });
 				}
 				this.installedFeatureTabItem
 						.setControl(installedFeaturesMainComposite);
-				stackLayout.topControl = installedFeaturesSash;
+				stackLayout.topControl = installedFeaturesComposite
+						.getMainControl();
+				installedFeaturesMainComposite.layout();
 			}
 
 			{
@@ -237,6 +219,29 @@ public class ProvisioningEditor extends EditorPart {
 		}
 
 		initEditorInput();
+
+		createListener();
+	}
+
+	private void createListener() {
+
+		installedFeaturesComposite.addButtonListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ProvisioningEditor.this.handleCheckUpdates();
+			}
+		}, InstalledFeaturesComposite.Buttons.CHECK_FOR_UPDATES);
+
+		featuresVersionsComposite.addButtonListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ProvisioningEditor.this.stackLayout.topControl = installedFeaturesComposite
+						.getMainControl();
+				ProvisioningEditor.this.installedFeaturesMainComposite.layout();
+			}
+
+		}, FeaturesVersionsComposite.Buttons.BACK);
+
 	}
 
 	protected void initEditorInput() {
@@ -259,7 +264,7 @@ public class ProvisioningEditor extends EditorPart {
 			break;
 		case ProvisioningEditorInput.FEATURE:
 
-			Job handleFeaturesJob = new Job("Retrieve remote  components") {
+			Job getRemoteFeaturesJob = new Job("Retrieve remote  components") {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
 					handleInstalledFeatures(installedFeaturesServiceList,
@@ -267,8 +272,8 @@ public class ProvisioningEditor extends EditorPart {
 					return Status.OK_STATUS;
 				}
 			};
-			handleFeaturesJob.setUser(true);
-			handleFeaturesJob.schedule();
+			getRemoteFeaturesJob.setUser(true);
+			getRemoteFeaturesJob.schedule();
 			break;
 		default:
 			break;
@@ -276,48 +281,11 @@ public class ProvisioningEditor extends EditorPart {
 
 	}
 
-	// protected void handleInstalledBundles(
-	// List<IInstalledFeaturesService> serviceList,
-	// IProgressMonitor monitor) {
-	//
-	// monitor.beginTask("Receive remote installed bundles", serviceList
-	// .size());
-	//
-	// FeaturesSetOperationHelper<SerializedBundleWrapper> bundleHelper = new
-	// FeaturesSetOperationHelper<SerializedBundleWrapper>();
-	// bundleHelper.handleInstalledArtifacts(serviceList,
-	// SerializedBundleWrapper.class, monitor);
-	//
-	// final Set<SerializedBundleWrapper> commonBundles = bundleHelper
-	// .getCommonArtifacts();
-	// final Set<SerializedBundleWrapper> differentBundles = bundleHelper
-	// .getDifferentArtifacts();
-	// final Map<SerializedBundleWrapper, Collection<ID>> differentBundleToUser
-	// = bundleHelper
-	// .getDifferentArtifactToUser();
-	//
-	// // set table input
-	// Display.getDefault().asyncExec(new Runnable() {
-	// public void run() {
-	// installedFeaturesComposite.setInstalledInput(commonBundles);
-	// installedFeaturesComposite.setDifferentInput(differentBundles);
-	// installedFeaturesComposite
-	// .setUserBundleInput(differentBundleToUser);
-	// }
-	// });
-	//
-	// }
-
 	private void handleCheckUpdates() {
-		Collection<SerializedFeatureWrapper> selectedFeatures = this.installedFeaturesComposite
-				.getSelectedFeatures();
+		Set<CommonFeaturesTreeNode> selectedFeatures = this.installedFeaturesComposite
+				.getInstallableUnits();
 
-		if (this.featuresVersionsComposite == null) {
-			this.featuresVersionsComposite = new FeaturesVersionsComposite(
-					this.installedFeaturesMainComposite, SWT.None);
-		}
-
-		this.featuresVersionsComposite.setInput(selectedFeatures);
+		this.featuresVersionsComposite.setSelectedFeatures(selectedFeatures);
 		this.stackLayout.topControl = this.featuresVersionsComposite
 				.getMainControl();
 		this.installedFeaturesMainComposite.layout();
@@ -340,7 +308,7 @@ public class ProvisioningEditor extends EditorPart {
 		monitor.beginTask("Receive remote installed features", serviceList
 				.size());
 
-		FeaturesTreeCreator featuresHelper = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator featuresHelper = new InstalledFeaturesTreeCreator();
 		Collection<IStatus> errors = featuresHelper.handleInstalledFeatures(
 				serviceList, monitor);
 

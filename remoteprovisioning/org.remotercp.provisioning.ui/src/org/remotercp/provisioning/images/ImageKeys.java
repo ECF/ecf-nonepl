@@ -28,4 +28,8 @@ public class ImageKeys {
 
 	public static final String ATTENTION = "icons/attention_16x16.png";
 
+	public static final String CATEGORY = "icons/category.png";
+	
+	public static final String UPDATESITE = "icons/updatesite.png";
+
 }

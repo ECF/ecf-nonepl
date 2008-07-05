@@ -21,6 +21,7 @@ public class FeaturesTreeContentProvider implements ITreeContentProvider {
 		return hasChildren;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Object[] getElements(Object inputElement) {
 		return ((List) inputElement).toArray();
 	}

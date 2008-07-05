@@ -1,5 +1,7 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -13,7 +15,7 @@ import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
-import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeCreator;
+import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTreeCreator;
 import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTest;
 
 public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
@@ -132,17 +134,24 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 
 	protected SerializedFeatureWrapper getFeaturesWrapper(int id, String name,
 			String identyfier, String version) {
-		SerializedFeatureWrapper bundle = new SerializedFeatureWrapper();
-		bundle.setIdentifier(identyfier);
-		bundle.setLabel(name);
-		bundle.setVersion(version);
+		
+		String url = "http://eugenda.eu.funpic.de/upload/";
+		SerializedFeatureWrapper feature = new SerializedFeatureWrapper();
+		feature.setIdentifier(identyfier);
+		feature.setLabel(name);
+		feature.setVersion(version);
+		try {
+			feature.setUpdateUrl(new URL(url));
+		} catch (MalformedURLException e) {
+			e.printStackTrace();
+		}
 
-		return bundle;
+		return feature;
 
 	}
 
 	public Collection<CommonFeaturesTreeNode> getDummyCommonFeatures() {
-		FeaturesTreeCreator creator = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator creator = new InstalledFeaturesTreeCreator();
 
 		Collection<SerializedFeatureWrapper> klausFeatures = new ArrayList<SerializedFeatureWrapper>();
 		klausFeatures.add(feature14);
@@ -200,7 +209,7 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 	}
 
 	public Collection<DifferentFeaturesTreeNode> getDummyDifferentFeatures() {
-		FeaturesTreeCreator creator = new FeaturesTreeCreator();
+		InstalledFeaturesTreeCreator creator = new InstalledFeaturesTreeCreator();
 
 		Collection<SerializedFeatureWrapper> klausFeatures = userFeatures
 				.get(klaus);

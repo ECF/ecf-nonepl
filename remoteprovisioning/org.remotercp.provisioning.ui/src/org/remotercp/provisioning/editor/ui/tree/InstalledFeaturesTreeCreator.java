@@ -19,10 +19,10 @@ import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
 
-public class FeaturesTreeCreator {
+public class InstalledFeaturesTreeCreator {
 
 	private final static Logger logger = Logger
-			.getLogger(FeaturesTreeCreator.class.getName());
+			.getLogger(InstalledFeaturesTreeCreator.class.getName());
 
 	private final Set<SerializedFeatureWrapper> allFeatures = new TreeSet<SerializedFeatureWrapper>();
 	private final Map<ID, Collection<SerializedFeatureWrapper>> userFeatures = new HashMap<ID, Collection<SerializedFeatureWrapper>>();

@@ -1,12 +1,15 @@
 package org.remotercp.provisioning.editor.ui;
 
-import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.TreeSet;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -21,6 +24,7 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesUserTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTableLabelProvider;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
@@ -44,17 +48,25 @@ public class InstalledFeaturesComposite {
 
 	private Composite main;
 
+	private SashForm sashMain;
+
 	public static enum Buttons {
 		CHECK_FOR_UPDATES, UNINSTALL, OPTIONS
 	};
 
-	public InstalledFeaturesComposite(SashForm parent, int style) {
+	public InstalledFeaturesComposite(Composite parent, int style) {
 
 		this.createPartControl(parent, style);
 	}
 
-	private void createPartControl(SashForm parent, int style) {
-		main = new Composite(parent, SWT.None);
+	private void createPartControl(Composite parent, int style) {
+		sashMain = new SashForm(parent, SWT.HORIZONTAL);
+		sashMain.setLayout(new GridLayout(1, false));
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(
+				sashMain);
+
+		// left composite
+		main = new Composite(sashMain, SWT.NONE);
 		main.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
 
@@ -77,8 +89,9 @@ public class InstalledFeaturesComposite {
 					/*
 					 * installed features tree viewer
 					 */
-					this.commonFeaturesViewer = new TreeViewer(commonFeaturesGroup,
-							SWT.H_SCROLL | SWT.V_SCROLL | SWT.MULTI);
+					this.commonFeaturesViewer = new TreeViewer(
+							commonFeaturesGroup, SWT.H_SCROLL | SWT.V_SCROLL
+									| SWT.MULTI);
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
 							this.commonFeaturesViewer.getControl());
 					this.commonFeaturesViewer
@@ -151,8 +164,8 @@ public class InstalledFeaturesComposite {
 		}
 
 		{
-			Composite installedFeaturesButtonsComposite = new Composite(parent,
-					SWT.None);
+			Composite installedFeaturesButtonsComposite = new Composite(
+					sashMain, SWT.None);
 			installedFeaturesButtonsComposite
 					.setLayout(new GridLayout(1, false));
 
@@ -166,6 +179,8 @@ public class InstalledFeaturesComposite {
 			options = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			options.setText("Options");
 		}
+
+		sashMain.setWeights(new int[] { 2, 1 });
 	}
 
 	protected void addButtonListener(SelectionAdapter listener, Buttons button) {
@@ -184,20 +199,62 @@ public class InstalledFeaturesComposite {
 		}
 	}
 
-	protected Collection<SerializedFeatureWrapper> getSelectedFeatures() {
+	@SuppressWarnings("unchecked")
+	protected Set<CommonFeaturesTreeNode> getInstallableUnits() {
 		IStructuredSelection selection = (IStructuredSelection) this.commonFeaturesViewer
 				.getSelection();
-		Object[] selectedElements = selection.toArray();
+		/*
+		 * selection can be:
+		 * 
+		 * 1. one or more CommonFeaturesTreeNodes
+		 * 
+		 * 1. one or more CommonFeaturesUserTreeNodes
+		 */
+		Set<CommonFeaturesTreeNode> commonFeatureNodes = new TreeSet<CommonFeaturesTreeNode>();
 
-		Collection<SerializedFeatureWrapper> selectedFeatures = new ArrayList<SerializedFeatureWrapper>();
-		if (selectedElements.length > 0) {
-			for (int feature = 0; feature < selectedElements.length; feature++) {
-				selectedFeatures
-						.add((SerializedFeatureWrapper) selectedElements[feature]);
+		Iterator<TreeNode> iter = selection.iterator();
+		while (iter.hasNext()) {
+			TreeNode treeNode = (TreeNode) iter.next();
+			// feature selected for update
+			if (treeNode instanceof CommonFeaturesTreeNode) {
+				CommonFeaturesTreeNode node = (CommonFeaturesTreeNode) treeNode;
+				commonFeatureNodes.add(node);
+			}
+
+			/*
+			 * single users selected for update. If e.g. only two of tree user
+			 * in a CommonFeaturesTreeNode have been selected for an update
+			 * create a new CommonFeatureTreeNode and accumulate this users
+			 * under the new node.
+			 */
+			// TODO: this doesn't work properly! Fixe bug
+			if (treeNode instanceof CommonFeaturesUserTreeNode) {
+				CommonFeaturesUserTreeNode userTreeNode = (CommonFeaturesUserTreeNode) treeNode;
+				SerializedFeatureWrapper feature = (SerializedFeatureWrapper) userTreeNode
+						.getValue();
+				CommonFeaturesTreeNode parent = (CommonFeaturesTreeNode) userTreeNode
+						.getParent();
+				if (commonFeatureNodes.contains(parent)) {
+					parent.addChild(userTreeNode);
+				} else {
+					CommonFeaturesTreeNode commonNode = new CommonFeaturesTreeNode(
+							feature);
+					commonNode.addChild(userTreeNode);
+					commonFeatureNodes.add(commonNode);
+				}
 			}
 		}
 
-		return selectedFeatures;
+		// for (CommonFeaturesTreeNode node : commonFeatureNodes) {
+		// System.out.println("Tree node: "
+		// + ((SerializedFeatureWrapper) node.getValue()).getLabel());
+		// System.out.println("Children: ");
+		// for (CommonFeaturesUserTreeNode child : node.getChildren()) {
+		// System.out.println(child.getUserId().getName());
+		// }
+		// }
+
+		return commonFeatureNodes;
 	}
 
 	/**
@@ -219,6 +276,6 @@ public class InstalledFeaturesComposite {
 	}
 
 	protected Control getMainControl() {
-		return main;
+		return sashMain;
 	}
 }
