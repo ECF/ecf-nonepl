@@ -1,12 +1,10 @@
 package org.remotercp.provisioning.editor.ui;
 
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.ITreeContentProvider;
-import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
@@ -16,15 +14,10 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.update.core.IFeature;
-import org.eclipse.update.internal.core.UpdateCore;
-import org.eclipse.update.internal.core.UpdateManagerLogWriter;
-import org.eclipse.update.internal.core.UpdateManagerUtils;
-import org.eclipse.update.internal.core.UpdateSession;
-import org.eclipse.update.internal.search.UpdateSiteAdapter;
 import org.eclipse.update.internal.ui.UpdateUI;
+import org.eclipse.update.internal.ui.model.DiscoveryFolder;
+import org.eclipse.update.internal.ui.model.SiteBookmark;
 import org.eclipse.update.internal.ui.model.UpdateModel;
-import org.eclipse.update.search.UpdateSearchRequest;
-import org.eclipse.update.search.UpdateSearchScope;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.images.ImageKeys;
 
@@ -83,12 +76,24 @@ public class AvailableFeaturesComposite {
 
 	protected void setInput(Object input) {
 	}
-	
+
+	private SiteBookmark[] getAllSiteBookmarks() {
+		DiscoveryFolder discoveryFolder = new DiscoveryFolder();
+		UpdateModel model = UpdateUI.getDefault().getUpdateModel();
+		Object[] bookmarks = model.getBookmarkLeafs();
+		Object[] sitesToVisit = discoveryFolder.getChildren(discoveryFolder);
+		SiteBookmark[] all = new SiteBookmark[bookmarks.length
+				+ sitesToVisit.length];
+		System.arraycopy(bookmarks, 0, all, 0, bookmarks.length);
+		System.arraycopy(sitesToVisit, 0, all, bookmarks.length,
+				sitesToVisit.length);
+		return all;
+	}
 
 	private class TreeContentProvider implements ITreeContentProvider {
 
 		public Object[] getChildren(Object parentElement) {
-			
+
 			return null;
 		}
 

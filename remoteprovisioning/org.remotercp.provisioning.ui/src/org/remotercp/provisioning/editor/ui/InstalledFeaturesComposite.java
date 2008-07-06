@@ -180,7 +180,7 @@ public class InstalledFeaturesComposite {
 			options.setText("Options");
 		}
 
-		sashMain.setWeights(new int[] { 2, 1 });
+		sashMain.setWeights(new int[] { 75, 25 });
 	}
 
 	protected void addButtonListener(SelectionAdapter listener, Buttons button) {

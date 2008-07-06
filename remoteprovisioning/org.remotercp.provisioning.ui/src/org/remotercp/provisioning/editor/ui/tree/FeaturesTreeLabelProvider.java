@@ -6,7 +6,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.widgets.Display;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.images.ImageKeys;
 
@@ -64,14 +63,6 @@ public class FeaturesTreeLabelProvider extends DecoratingLabelProvider
 		return text;
 	}
 
-	private Display getDisplay() {
-		if (Display.getCurrent() != null) {
-			return Display.getCurrent();
-		} else {
-			return Display.getDefault();
-		}
-	}
-
 	// @Override
 	// public Color getBackground(Object element) {
 	// Color color = null;
@@ -91,7 +82,7 @@ public class FeaturesTreeLabelProvider extends DecoratingLabelProvider
 	// }
 	//
 	// return color;
-	//	}
+	// }
 
 	public void addListener(ILabelProviderListener listener) {
 		// do nothing

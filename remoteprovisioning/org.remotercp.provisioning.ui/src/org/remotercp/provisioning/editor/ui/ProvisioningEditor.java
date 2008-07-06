@@ -69,6 +69,8 @@ public class ProvisioningEditor extends EditorPart {
 
 	private Composite installedFeaturesMainComposite;
 
+	private ProgressReportComposite progressReportComposite;
+
 	public ProvisioningEditor() {
 		// nothing to do yet
 		this.stackLayout = new StackLayout();
@@ -182,6 +184,9 @@ public class ProvisioningEditor extends EditorPart {
 					this.featuresVersionsComposite = new FeaturesVersionsComposite(
 							this.installedFeaturesMainComposite, SWT.None);
 
+					this.progressReportComposite = new ProgressReportComposite(
+							this.installedFeaturesMainComposite, SWT.None);
+
 				}
 				this.installedFeatureTabItem
 						.setControl(installedFeaturesMainComposite);
@@ -241,6 +246,15 @@ public class ProvisioningEditor extends EditorPart {
 			}
 
 		}, FeaturesVersionsComposite.Buttons.BACK);
+
+		featuresVersionsComposite.addButtonListener(new SelectionAdapter() {
+			@Override
+			public void widgetSelected(SelectionEvent e) {
+				ProvisioningEditor.this.stackLayout.topControl = progressReportComposite
+						.getMainControl();
+				ProvisioningEditor.this.installedFeaturesMainComposite.layout();
+			}
+		}, FeaturesVersionsComposite.Buttons.UPDATE);
 
 	}
 

@@ -1,7 +1,9 @@
 package org.remotercp.provisioning.editor.ui;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
@@ -63,6 +65,8 @@ public class FeaturesVersionsComposite {
 	private Button properties;
 
 	private Button back;
+
+	private Set<CommonFeaturesTreeNode> selectedFeatures;
 
 	public FeaturesVersionsComposite(Composite parent, int style) {
 		this.createPartControl(parent, style);
@@ -136,8 +140,10 @@ public class FeaturesVersionsComposite {
 	protected void addButtonListener(SelectionAdapter listener, Buttons button) {
 		switch (button) {
 		case UPDATE:
+			this.update.addSelectionListener(listener);
 			break;
 		case PROPERTIES:
+			this.properties.addSelectionListener(listener);
 			break;
 		case BACK:
 			this.back.addSelectionListener(listener);
@@ -159,6 +165,7 @@ public class FeaturesVersionsComposite {
 	@SuppressWarnings("unchecked")
 	protected void setSelectedFeatures(
 			final Set<CommonFeaturesTreeNode> selectedFeatures) {
+		this.selectedFeatures = selectedFeatures;
 
 		// search for updates in a job
 		Job searchForUpdatesJob = new Job("Search for updates") {
@@ -199,14 +206,21 @@ public class FeaturesVersionsComposite {
 		}
 	}
 
-	private List<FeatureTreeNode> getFeaturesToUpdate(
+	private Map<SerializedFeatureWrapper, List<ISiteFeatureReference>> getFeaturesWithNewerVersions(
 			Set<CommonFeaturesTreeNode> selectedFeatures,
 			final IProgressMonitor monitor) {
-		List<FeatureTreeNode> featuresWithNewerVersions = new ArrayList<FeatureTreeNode>();
+
+		/*
+		 * This map is used to track which newer versions of a feature are
+		 * available and CommonFeaturesTreeNode is used to store which user are
+		 * going to receive the new available updates.
+		 */
+		Map<SerializedFeatureWrapper, List<ISiteFeatureReference>> featuresWithNewerVersions = new HashMap<SerializedFeatureWrapper, List<ISiteFeatureReference>>();
 
 		for (CommonFeaturesTreeNode node : selectedFeatures) {
 			String greatestFeatureVersion = getGreatestFeatureVersion(node);
-			SerializedFeatureWrapper installedFeature = getFeature(node);
+			SerializedFeatureWrapper installedFeature = (SerializedFeatureWrapper) node
+					.getValue();
 
 			monitor.subTask("Searching for new updates for feature "
 					+ installedFeature.getLabel());
@@ -218,66 +232,27 @@ public class FeaturesVersionsComposite {
 				ISiteFeatureReference[] featureReferences = site
 						.getFeatureReferences();
 
+				List<ISiteFeatureReference> remoteFeatures = new ArrayList<ISiteFeatureReference>();
+
 				for (int count = 0; count < featureReferences.length; count++) {
 					ISiteFeatureReference siteFeatureReference = featureReferences[count];
 
 					IFeature remoteFeature = siteFeatureReference
 							.getFeature(null);
 
-					// XXX How do you get the update site label properly???
-					String updateSiteLabel = remoteFeature
-							.getDiscoverySiteEntries()[0].getAnnotation();
-
-					String categoryLabel = siteFeatureReference.getCategories()[0]
-							.getLabel();
-
-					PluginVersionIdentifier remoteFeatureVersion = siteFeatureReference
-							.getFeature(null).getVersionedIdentifier()
+					PluginVersionIdentifier remoteFeatureVersion = remoteFeature.getVersionedIdentifier()
 							.getVersion();
 
 					PluginVersionIdentifier installedFeaturesVersion = new PluginVersionIdentifier(
 							greatestFeatureVersion);
 
-					// if (remoteFeatureVersion
-					// .isGreaterThan(installedFeaturesVersion)) {
-
-					// do it quick and dirty. create update site node
-					FeatureTreeNode updateSiteNode = new FeatureTreeNode(
-							updateSiteLabel);
-					updateSiteNode.setUpdateSiteLabel(true);
-
-					// create category node
-					FeatureTreeNode categoryNode = new FeatureTreeNode(
-							categoryLabel);
-					categoryNode.setCategoryLabel(true);
-
-					// create feature node
-					String version = remoteFeature.getVersionedIdentifier()
-							.getVersion().toString();
-					FeatureTreeNode featuresNode = new FeatureTreeNode(
-							remoteFeature.getLabel() + " " + version);
-					featuresNode.setFeatureLabel(true);
-
-					// put children together
-					categoryNode.addChild(featuresNode);
-					updateSiteNode.addChild(categoryNode);
-
-					featuresWithNewerVersions.add(updateSiteNode);
-
-					// create feature node
-					// if (featuresWithNewerVersions.contains(featuresNode))
-					// {
-					// featuresNode = getFeature(
-					// featuresWithNewerVersions,
-					// (String) featuresNode.getValue());
-					// featuresNode.addChild(child);
-					// } else {
-					// featuresNode.addChild(child);
-					// featuresWithNewerVersions.add(featuresNode);
-					// }
-					// }
-
+					if (remoteFeatureVersion
+							.isGreaterThan(installedFeaturesVersion)) {
+						remoteFeatures.add(siteFeatureReference);
+					}
 				}
+
+				featuresWithNewerVersions.put(installedFeature, remoteFeatures);
 			} catch (CoreException e) {
 				Status status = new Status(Status.ERROR,
 						ProvisioningActivator.PLUGIN_ID,
@@ -293,18 +268,84 @@ public class FeaturesVersionsComposite {
 		return featuresWithNewerVersions;
 	}
 
-	protected SerializedFeatureWrapper getFeature(TreeNode node) {
-		if (node instanceof CommonFeaturesTreeNode) {
-			CommonFeaturesTreeNode commonNode = (CommonFeaturesTreeNode) node;
-			return (SerializedFeatureWrapper) commonNode.getValue();
-		}
-		if (node instanceof CommonFeaturesUserTreeNode) {
-			CommonFeaturesUserTreeNode commonUserNode = (CommonFeaturesUserTreeNode) node;
-			return (SerializedFeatureWrapper) commonUserNode.getValue();
+	private List<FeatureTreeNode> getFeaturesToUpdate(
+			Set<CommonFeaturesTreeNode> selectedFeatures,
+			final IProgressMonitor monitor) {
+
+		Map<SerializedFeatureWrapper, List<ISiteFeatureReference>> featuresWithNewerVersions = getFeaturesWithNewerVersions(
+				selectedFeatures, monitor);
+
+		List<FeatureTreeNode> treeElements = new ArrayList<FeatureTreeNode>();
+
+		// create tree elements
+		for (SerializedFeatureWrapper node : featuresWithNewerVersions.keySet()) {
+			List<ISiteFeatureReference> featureReferences = featuresWithNewerVersions
+					.get(node);
+			if (!featureReferences.isEmpty()) {
+				try {
+
+					ISiteFeatureReference reference = featureReferences.get(0);
+
+					// create update site node
+					String updateSiteLabel = reference.getFeature(null)
+							.getDiscoverySiteEntries()[0].getAnnotation();
+					FeatureTreeNode updateSiteNode = new FeatureTreeNode(
+							updateSiteLabel);
+					updateSiteNode.setUpdateSiteLabel(true);
+
+					// create category node
+					String categoryLabel = reference.getCategories()[0]
+							.getLabel();
+					FeatureTreeNode categoryNode = new FeatureTreeNode(
+							categoryLabel);
+					categoryNode.setCategoryLabel(true);
+
+					updateSiteNode.addChild(categoryNode);
+
+					for (ISiteFeatureReference ref : featureReferences) {
+						IFeature feature;
+
+						feature = ref.getFeature(null);
+
+						String featureVersion = feature
+								.getVersionedIdentifier().getVersion()
+								.toString();
+						String featureLabel = feature.getLabel();
+
+						FeatureTreeNode featureNode = new FeatureTreeNode(
+								featureLabel + " " + featureVersion);
+						featureNode.setFeatureLabel(true);
+
+						// add child
+						categoryNode.addChild(featureNode);
+					}
+
+					treeElements.add(updateSiteNode);
+				} catch (CoreException e) {
+					IStatus error = new Status(Status.ERROR,
+							ProvisioningActivator.PLUGIN_ID,
+							"Unable to retrieve feature information", e);
+					ErrorView.addError(error);
+				}
+			}
 		}
 
-		return null;
+		return treeElements;
 	}
+
+	// protected SerializedFeatureWrapper getFeature(TreeNode node) {
+	// if (node instanceof CommonFeaturesTreeNode) {
+	// CommonFeaturesTreeNode commonNode = (CommonFeaturesTreeNode) node;
+	// return (SerializedFeatureWrapper) commonNode.getValue();
+	// }
+	// if (node instanceof CommonFeaturesUserTreeNode) {
+	// CommonFeaturesUserTreeNode commonUserNode = (CommonFeaturesUserTreeNode)
+	// node;
+	// return (SerializedFeatureWrapper) commonUserNode.getValue();
+	// }
+	//
+	// return null;
+	// }
 
 	protected FeatureTreeNode getFeature(List<FeatureTreeNode> nodes,
 			String identyfier) {
