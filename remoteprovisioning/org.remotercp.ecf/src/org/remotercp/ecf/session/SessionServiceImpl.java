@@ -258,7 +258,7 @@ public class SessionServiceImpl implements ISessionService {
 				if (presence.getType() == IPresence.Type.AVAILABLE) {
 					// wait 5 sec otherwise the registration fails
 					try {
-						Thread.sleep(5000);
+						Thread.sleep(2000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
