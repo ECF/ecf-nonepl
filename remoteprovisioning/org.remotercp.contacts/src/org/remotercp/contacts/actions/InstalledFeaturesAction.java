@@ -69,7 +69,6 @@ public class InstalledFeaturesAction implements IViewActionDelegate {
 		return new PropertyChangeListener() {
 
 			public void propertyChange(PropertyChangeEvent event) {
-				System.out.println("property changed");
 				IRoster input = (IRoster) event.getNewValue();
 				InstalledFeaturesAction.this.onlineUser = RosterUtil
 						.filterOnlineUser(input);
