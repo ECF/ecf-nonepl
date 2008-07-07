@@ -134,7 +134,7 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 
 	protected SerializedFeatureWrapper getFeaturesWrapper(int id, String name,
 			String identyfier, String version) {
-		
+
 		String url = "http://eugenda.eu.funpic.de/upload/";
 		SerializedFeatureWrapper feature = new SerializedFeatureWrapper();
 		feature.setIdentifier(identyfier);
@@ -266,6 +266,18 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 			return features;
 		}
 
+	}
+
+	public ID getJohn() {
+		return john;
+	}
+
+	public ID getSandra() {
+		return sandra;
+	}
+
+	public ID getKlaus() {
+		return klaus;
 	}
 
 	private class MyProgressMonitor implements IProgressMonitor {

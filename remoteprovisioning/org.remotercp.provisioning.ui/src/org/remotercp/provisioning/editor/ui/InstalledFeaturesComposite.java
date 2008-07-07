@@ -14,6 +14,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -23,12 +24,14 @@ import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
+import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesUserTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTableLabelProvider;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeLabelProvider;
+import org.remotercp.provisioning.images.ImageKeys;
 
 public class InstalledFeaturesComposite {
 
@@ -50,11 +53,23 @@ public class InstalledFeaturesComposite {
 
 	private SashForm sashMain;
 
+	private Image checkUpdatesImage;
+
+	private Image uninstallImage;
+
+	private Image propertiesImage;
+
 	public static enum Buttons {
 		CHECK_FOR_UPDATES, UNINSTALL, OPTIONS
 	};
 
 	public InstalledFeaturesComposite(Composite parent, int style) {
+		this.checkUpdatesImage = ProvisioningActivator.getImageDescriptor(
+				ImageKeys.UPDATE).createImage();
+		this.uninstallImage = ProvisioningActivator.getImageDescriptor(
+				ImageKeys.UNINSTALL).createImage();
+		this.propertiesImage = ProvisioningActivator.getImageDescriptor(
+				ImageKeys.PROPERTIES).createImage();
 
 		this.createPartControl(parent, style);
 	}
@@ -62,8 +77,7 @@ public class InstalledFeaturesComposite {
 	private void createPartControl(Composite parent, int style) {
 		sashMain = new SashForm(parent, SWT.HORIZONTAL);
 		sashMain.setLayout(new GridLayout(1, false));
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(
-				sashMain);
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashMain);
 
 		// left composite
 		main = new Composite(sashMain, SWT.NONE);
@@ -172,12 +186,15 @@ public class InstalledFeaturesComposite {
 			checkForUpdates = new Button(installedFeaturesButtonsComposite,
 					SWT.PUSH);
 			checkForUpdates.setText("Check for updates...");
+			checkForUpdates.setImage(checkUpdatesImage);
 
 			uninstall = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			uninstall.setText("Uninstall");
+			uninstall.setImage(uninstallImage);
 
 			options = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			options.setText("Options");
+			options.setImage(propertiesImage);
 		}
 
 		sashMain.setWeights(new int[] { 75, 25 });

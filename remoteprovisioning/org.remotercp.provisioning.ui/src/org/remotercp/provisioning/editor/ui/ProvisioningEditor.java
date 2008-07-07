@@ -330,12 +330,12 @@ public class ProvisioningEditor extends EditorPart {
 			ErrorView.addError(errors);
 		}
 
-		// final Collection<CommonFeaturesTreeNode> commonFeaturesNodes =
-		// featuresHelper
-		// .getCommonFeaturesNodes();
-		// final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
-		// featuresHelper
-		// .getDifferentFeaturesNodes();
+//		 final Collection<CommonFeaturesTreeNode> commonFeaturesNodes =
+//		 featuresHelper
+//		 .getCommonFeaturesNodes();
+//		 final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
+//		 featuresHelper
+//		 .getDifferentFeaturesNodes();
 
 		// XXX for Tests only
 		InstalledFeaturesCompositeTest test = new InstalledFeaturesCompositeTest();
