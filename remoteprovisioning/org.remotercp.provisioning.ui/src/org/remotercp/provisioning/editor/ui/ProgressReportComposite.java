@@ -16,15 +16,12 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Shell;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
-import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.images.ImageKeys;
 
@@ -44,39 +41,45 @@ public class ProgressReportComposite {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
 
 		{
-			new Label(main, SWT.READ_ONLY).setText("Update summary");
+			Group resultGroup = new Group(main, SWT.None);
+			resultGroup.setText("Update summary");
+			resultGroup.setLayout(new GridLayout(1, false));
+			GridDataFactory.fillDefaults().grab(true, true).applyTo(resultGroup);
+			
+			{
+				
+				this.resultTreeViewer = new TreeViewer(resultGroup, SWT.H_SCROLL
+						| SWT.V_SCROLL);
+				Tree tree = resultTreeViewer.getTree();
 
-			this.resultTreeViewer = new TreeViewer(main, SWT.H_SCROLL
-					| SWT.V_SCROLL);
-			Tree tree = resultTreeViewer.getTree();
+				GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
+				this.resultTreeViewer
+						.setContentProvider(new FeaturesTreeContentProvider());
+				ILabelDecorator decorator = PlatformUI.getWorkbench()
+						.getDecoratorManager().getLabelDecorator();
+				this.resultTreeViewer
+						.setLabelProvider(new ResultDecoratingLabelProvider(
+								new ResultTableLabelProvider(), decorator));
 
-			GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
-			this.resultTreeViewer
-					.setContentProvider(new FeaturesTreeContentProvider());
-			ILabelDecorator decorator = PlatformUI.getWorkbench()
-					.getDecoratorManager().getLabelDecorator();
-			this.resultTreeViewer
-					.setLabelProvider(new ResultDecoratingLabelProvider(
-							new ResultTableLabelProvider(), decorator));
+				TreeColumn feature = new TreeColumn(tree, SWT.LEFT);
+				feature.setText("Feature");
+				feature.setWidth(200);
 
-			TreeColumn feature = new TreeColumn(tree, SWT.LEFT);
-			feature.setText("Feature");
-			feature.setWidth(200);
+				TreeColumn version = new TreeColumn(tree, SWT.LEFT);
+				version.setText("Version");
+				version.setWidth(200);
 
-			TreeColumn version = new TreeColumn(tree, SWT.LEFT);
-			version.setText("Version");
-			version.setWidth(200);
+				TreeColumn status = new TreeColumn(tree, SWT.LEFT);
+				status.setText("Status");
+				status.setWidth(200);
 
-			TreeColumn status = new TreeColumn(tree, SWT.LEFT);
-			status.setText("Status");
-			status.setWidth(200);
+				tree.setHeaderVisible(true);
+				tree.setLinesVisible(true);
 
-			tree.setHeaderVisible(true);
-			tree.setLinesVisible(true);
-
-			// XXX For Test only
-			this.resultTreeViewer.setInput(getDummyData());
-			this.resultTreeViewer.expandAll();
+				// XXX For Test only
+				this.resultTreeViewer.setInput(getDummyData());
+				this.resultTreeViewer.expandAll();
+			}
 		}
 
 	}

@@ -15,9 +15,7 @@ import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.jface.layout.GridDataFactory;
-import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
-import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.SWT;
@@ -29,9 +27,9 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.update.core.Feature;
 import org.eclipse.update.core.ICategory;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
@@ -90,41 +88,50 @@ public class FeaturesVersionsComposite {
 		main.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
 		{
-			new Label(main, SWT.READ_ONLY).setText("Update search results");
 
 			SashForm sash = new SashForm(main, SWT.HORIZONTAL);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(sash);
 			{
-				this.featureVersionsViewer = new CheckboxTreeViewer(sash,
-						SWT.V_SCROLL | SWT.H_SCROLL);
+				Group searchResultGroup = new Group(sash, SWT.None);
+				searchResultGroup.setText("Update search results");
+				searchResultGroup.setLayout(new GridLayout(1, false));
+				GridDataFactory.fillDefaults().grab(true, true).applyTo(
+						searchResultGroup);
+				{
 
-				Tree tree = this.featureVersionsViewer.getTree();
-				GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
+					this.featureVersionsViewer = new CheckboxTreeViewer(
+							searchResultGroup, SWT.V_SCROLL | SWT.H_SCROLL);
 
-				this.featureVersionsViewer
-						.setContentProvider(new FeaturesTreeContentProvider());
-				// ILabelDecorator decorator = PlatformUI.getWorkbench()
-				// .getDecoratorManager().getLabelDecorator();
-				// this.featureVersionsViewer
-				// .setLabelProvider(new FeatureVersionsLabelProvider(
-				// new FeaturesVersionTableLabelProvider(), decorator));
-				this.featureVersionsViewer
-						.setLabelProvider(new FeatureVersionsLabelProvider());
+					Tree tree = this.featureVersionsViewer.getTree();
+					GridDataFactory.fillDefaults().grab(true, true).applyTo(
+							tree);
 
-				// If a user checks a checkbox in the tree, check also the
-				// children
-				// this.featureVersionsViewer
-				// .addCheckStateListener(new ICheckStateListener() {
-				//
-				// public void checkStateChanged(
-				// CheckStateChangedEvent event) {
-				// if (event.getChecked()) {
-				// featureVersionsViewer.setSubtreeChecked(
-				// event.getElement(), true);
-				// }
-				// }
-				//
-				// });
+					this.featureVersionsViewer
+							.setContentProvider(new FeaturesTreeContentProvider());
+					// ILabelDecorator decorator = PlatformUI.getWorkbench()
+					// .getDecoratorManager().getLabelDecorator();
+					// this.featureVersionsViewer
+					// .setLabelProvider(new FeatureVersionsLabelProvider(
+					// new FeaturesVersionTableLabelProvider(), decorator));
+					this.featureVersionsViewer
+							.setLabelProvider(new FeatureVersionsLabelProvider());
+
+					// If a user checks a checkbox in the tree, check also the
+					// children
+					// this.featureVersionsViewer
+					// .addCheckStateListener(new ICheckStateListener() {
+					//
+					// public void checkStateChanged(
+					// CheckStateChangedEvent event) {
+					// if (event.getChecked()) {
+					// featureVersionsViewer.setSubtreeChecked(
+					// event.getElement(), true);
+					// }
+					// }
+					//
+					// });
+				}
+
 			}
 
 			{
@@ -444,217 +451,11 @@ public class FeaturesVersionsComposite {
 			AbstractTreeNode node = (AbstractTreeNode) element;
 			return node.getLabel();
 		}
-		// private final ITableLabelProvider provider;
-		// private final ILabelDecorator decorator;
-		//
-		// public FeatureVersionsLabelProvider(ILabelProvider provider,
-		// ILabelDecorator decorator) {
-		// super(provider, decorator);
-		// this.decorator = decorator;
-		// this.provider = (ITableLabelProvider) provider;
-		// }
-		//
-		// public Image getColumnImage(Object element, int columnIndex) {
-		// Image image = provider.getColumnImage(element, columnIndex);
-		// if (decorator != null) {
-		// Image decorated = decorator.decorateImage(image, element);
-		// if (decorated != null) {
-		// return decorated;
-		// }
-		// }
-		// return image;
-		//
-		// }
-		//
-		// public String getColumnText(Object element, int columnIndex) {
-		// String text = provider.getColumnText(element, columnIndex);
-		// if (decorator != null) {
-		// String decorated = decorator.decorateText(text, element);
-		// if (decorated != null) {
-		// return decorated;
-		// }
-		// }
-		// return text;
-		//
-		// }
-
 	}
 
-	// /**
-	// * Table label provider in order to display columns in a treeviewer.
-	// *
-	// * @author Eugen Reiswich
-	// *
-	// */
-	// private class FeaturesVersionTableLabelProvider implements
-	// ITableLabelProvider, ILabelProvider {
-	//
-	// private Image checked = ProvisioningActivator.getImageDescriptor(
-	// ImageKeys.CHECKED).createImage();
-	//
-	// private Image unchecked = ProvisioningActivator.getImageDescriptor(
-	// ImageKeys.UNCHECKED).createImage();
-	//
-	// public Image getColumnImage(Object element, int columnIndex) {
-	// Image image = null;
-	// switch (columnIndex) {
-	// case COLUMN_NAME:
-	// if (element instanceof FeatureTreeNode) {
-	// FeatureTreeNode node = (FeatureTreeNode) element;
-	//
-	// /*
-	// * Display checkboxes only for child elements
-	// */
-	// if (node.getParent() != null
-	// && (!(node.getValue() instanceof String))) {
-	// if (node.isChecked()) {
-	// image = checked;
-	// } else {
-	// image = unchecked;
-	// }
-	// }
-	// }
-	// break;
-	// default:
-	// break;
-	// }
-	// return image;
-	// }
-	//
-	// public String getColumnText(Object element, int columnIndex) {
-	// String text = "";
-	// switch (columnIndex) {
-	// case COLUMN_NAME:
-	// if (element instanceof FeatureTreeNode) {
-	// FeatureTreeNode node = (FeatureTreeNode) element;
-	// if (node.getValue() instanceof SerializedFeatureWrapper) {
-	// SerializedFeatureWrapper feature = (SerializedFeatureWrapper) node
-	// .getValue();
-	// text = feature.getLabel();
-	// }
-	//
-	// if (node.getValue() instanceof String) {
-	// text = (String) node.getValue();
-	// }
-	// }
-	//
-	// break;
-	// case COLUMN_VERSION:
-	// // if (element instanceof FeaturesTreeNode) {
-	// // FeaturesTreeNode node = (FeaturesTreeNode) element;
-	// // if (node.getValue() instanceof SerializedFeatureWrapper) {
-	// // SerializedFeatureWrapper feature = (SerializedFeatureWrapper)
-	// // node
-	// // .getValue();
-	// // text = feature.getVersion();
-	// // }
-	// // }
-	// default:
-	// break;
-	// }
-	// return text;
-	// }
-	//
-	// public void addListener(ILabelProviderListener listener) {
-	// // do nothing
-	//
-	// }
-	//
-	// public void dispose() {
-	// // do nothing
-	//
-	// }
-	//
-	// public boolean isLabelProperty(Object element, String property) {
-	// // do nothing
-	// return false;
-	// }
-	//
-	// public void removeListener(ILabelProviderListener listener) {
-	// // do nothing
-	//
-	// }
-	//
-	// public Image getImage(Object element) {
-	// return null;
-	// }
-	//
-	// public String getText(Object element) {
-	// return null;
-	// }
-	//
-	// }
-
-	// /**
-	// * This class is used to display checked and unched boxes for a features.
-	// *
-	// * @author Eugen Reiswich
-	// *
-	// */
-	// private class FeatureTreeNode extends TreeNode {
-	//
-	// private boolean checked = false;
-	//
-	// private boolean isUpdateSiteLabel = false;
-	//
-	// private boolean isCategoryLabel = false;
-	//
-	// private boolean isFeatureLabel = false;
-	//
-	// public boolean isUpdateSiteLabel() {
-	// return isUpdateSiteLabel;
-	// }
-	//
-	// public void setUpdateSiteLabel(boolean isUpdateSiteLabel) {
-	// this.isUpdateSiteLabel = isUpdateSiteLabel;
-	// }
-	//
-	// public boolean isCategoryLabel() {
-	// return isCategoryLabel;
-	// }
-	//
-	// public void setCategoryLabel(boolean isCategoryLabel) {
-	// this.isCategoryLabel = isCategoryLabel;
-	// }
-	//
-	// public boolean isFeatureLabel() {
-	// return isFeatureLabel;
-	// }
-	//
-	// public void setFeatureLabel(boolean isFeatureLabel) {
-	// this.isFeatureLabel = isFeatureLabel;
-	// }
-	//
-	// public FeatureTreeNode(Object value) {
-	// super(value);
-	// }
-	//
-	// public boolean isChecked() {
-	// return checked;
-	// }
-	//
-	// public void setChecked(boolean checked) {
-	// this.checked = checked;
-	// }
-	//
-	// public void addChild(TreeNode child) {
-	// TreeNode[] children = super.getChildren();
-	// TreeNode[] newChildren = null;
-	// if (children != null) {
-	// newChildren = new TreeNode[children.length + 1];
-	// int i;
-	// for (i = 0; i < children.length; i++) {
-	// newChildren[i] = children[i];
-	// }
-	// newChildren[i] = child;
-	// } else {
-	// newChildren = new TreeNode[1];
-	// newChildren[0] = child;
-	// }
-	//
-	// setChildren(newChildren);
-	// }
-	// }
+	/***************************************************************************
+	 * private tree nodes
+	 **************************************************************************/
 
 	private abstract class AbstractTreeNode extends TreeNode {
 
