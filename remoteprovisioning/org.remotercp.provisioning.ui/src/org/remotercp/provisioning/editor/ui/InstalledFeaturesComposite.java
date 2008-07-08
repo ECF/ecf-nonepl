@@ -20,6 +20,7 @@ import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
@@ -188,13 +189,17 @@ public class InstalledFeaturesComposite {
 			checkForUpdates.setText("Check for updates...");
 			checkForUpdates.setImage(checkUpdatesImage);
 
+			options = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
+			options.setText("Options");
+			options.setImage(propertiesImage);
+			
+			// space label
+			new Label(installedFeaturesButtonsComposite, SWT.None);
+			
 			uninstall = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			uninstall.setText("Uninstall");
 			uninstall.setImage(uninstallImage);
 
-			options = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
-			options.setText("Options");
-			options.setImage(propertiesImage);
 		}
 
 		sashMain.setWeights(new int[] { 75, 25 });
