@@ -44,12 +44,13 @@ public class ProgressReportComposite {
 			Group resultGroup = new Group(main, SWT.None);
 			resultGroup.setText("Update summary");
 			resultGroup.setLayout(new GridLayout(1, false));
-			GridDataFactory.fillDefaults().grab(true, true).applyTo(resultGroup);
-			
+			GridDataFactory.fillDefaults().grab(true, true)
+					.applyTo(resultGroup);
+
 			{
-				
-				this.resultTreeViewer = new TreeViewer(resultGroup, SWT.H_SCROLL
-						| SWT.V_SCROLL);
+
+				this.resultTreeViewer = new TreeViewer(resultGroup,
+						SWT.H_SCROLL | SWT.V_SCROLL);
 				Tree tree = resultTreeViewer.getTree();
 
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
@@ -297,9 +298,16 @@ public class ProgressReportComposite {
 					if ("org.eclipse.feature13".equals(feature.getIdentifier())
 							&& "Klaus".equals(userId.getName())) {
 						image = red;
-					} else {
+					} else if ("org.eclipse.feature15".equals(feature
+							.getIdentifier())
+							&& "John".equals(userId.getName())) {
+						image = red;
+					}
+
+					else {
 						image = green;
 					}
+
 				}
 				break;
 			default:
@@ -346,7 +354,13 @@ public class ProgressReportComposite {
 					if ("org.eclipse.feature13".equals(feature.getIdentifier())
 							&& "Klaus".equals(userId.getName())) {
 						text = "FAILED";
-					} else {
+					} else if ("org.eclipse.feature15".equals(feature
+							.getIdentifier())
+							&& "John".equals(userId.getName())) {
+						text = "ABORTED";
+					}
+
+					else {
 						text = "SUCCESSFULL";
 					}
 				}

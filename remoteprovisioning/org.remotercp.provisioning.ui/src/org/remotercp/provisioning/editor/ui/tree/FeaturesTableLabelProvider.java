@@ -28,6 +28,12 @@ public class FeaturesTableLabelProvider implements ITableLabelProvider,
 	private Image circle_red = ProvisioningActivator.getImageDescriptor(
 			ImageKeys.CIRCLE_RED).createImage();
 
+	private Image error = ProvisioningActivator.getImageDescriptor(
+			ImageKeys.ERROR).createImage();
+
+	private Image ok = ProvisioningActivator.getImageDescriptor(ImageKeys.OK)
+			.createImage();
+
 	private Image attention = ProvisioningActivator.getImageDescriptor(
 			ImageKeys.ATTENTION).createImage();
 
@@ -62,9 +68,9 @@ public class FeaturesTableLabelProvider implements ITableLabelProvider,
 			switch (columnIndex) {
 			case FEATURE_NAME:
 				if (!node.hasUserFeatureInstalled()) {
-					image = circle_red;
+					image = error;
 				} else {
-					image = circle_green;
+					image = ok;
 				}
 				break;
 
