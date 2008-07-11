@@ -1,12 +1,26 @@
 package org.remotercp.common.provisioning;
 
-import java.net.URL;
+import java.util.List;
+
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.update.core.IFeature;
 
 public interface IInstallArtifactService {
 
-	public void installArtifact(String artifactID, URL installSite);
+	// public IStatus installFeature(String featureId, String version,
+	// URL installSite);
+	//
+	// public IStatus updateFeature(String featureId, String version);
+	//
+	// public IStatus uninstallFeature(String featureId, String version);
 
-	public void updateArtifact(String artifactID);
+	public List<IStatus>  installFeatures(IFeature[] features);
 
-	public void uninstallArtifact(String artifactID);
+	public List<IStatus>  updateFeautures(IFeature[] features);
+
+	public List<IStatus>  uninstallFeatures(IFeature[] features);
+
+	public List<IStatus>  uninstallFeatures(String[] featuresIds);
+
+	public void restartApplication();
 }

@@ -1,6 +1,14 @@
 package org.remotercp.common.provisioning;
 
-
+/**
+ * This class is no longer used as this tool only handles features and not
+ * bundles. But this tool can be extended to handle bundles as well.
+ * 
+ * @author Eugen Reiswich
+ * 
+ * @see use instead {@link SerializedFeatureWrapper}
+ */
+@Deprecated
 public class SerializedBundleWrapper implements
 		SerializedWrapper<SerializedBundleWrapper> {
 
