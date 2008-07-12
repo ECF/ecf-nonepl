@@ -30,11 +30,9 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
-import org.eclipse.update.core.ICategory;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
-import org.eclipse.update.core.IURLEntry;
 import org.eclipse.update.core.SiteManager;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.errorhandling.ui.ErrorView;
@@ -42,6 +40,11 @@ import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesUserTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
+import org.remotercp.provisioning.editor.ui.tree.nodes.AbstractTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.CategoryTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.DummyTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.FeatureTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.UpdateSiteTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
 
 public class FeaturesVersionsComposite {
@@ -334,7 +337,7 @@ public class FeaturesVersionsComposite {
 
 					for (ISiteFeatureReference ref : featureReferences) {
 						IFeature feature = ref.getFeature(null);
-						FeaturesTreeNode featureNode = new FeaturesTreeNode(
+						FeatureTreeNode featureNode = new FeatureTreeNode(
 								feature);
 
 						// add child
@@ -358,12 +361,12 @@ public class FeaturesVersionsComposite {
 
 	private List<TreeNode> createNoNewerVersionsAvailableTree(
 			SerializedFeatureWrapper node) {
-		DummyTreeNode dummyUpdateSiteNode = new DummyTreeNode(node
-				.getUpdateUrl().toString(), DummyTreeNode.UPDATESITE);
-		DummyTreeNode dummyCategoryNode = new DummyTreeNode(node.getLabel(),
-				DummyTreeNode.CATEGORY);
-		DummyTreeNode dummyFeatureNode = new DummyTreeNode(
-				"no newer versions found", DummyTreeNode.FEATURE);
+		DummyTreeNode dummyUpdateSiteNode = new DummyTreeNode(node,
+				DummyTreeNode.UPDATESITE, node.getUpdateUrl().toString());
+		DummyTreeNode dummyCategoryNode = new DummyTreeNode(node,
+				DummyTreeNode.CATEGORY, node.getLabel());
+		DummyTreeNode dummyFeatureNode = new DummyTreeNode(node,
+				DummyTreeNode.FEATURE, "no newer versions found");
 
 		dummyCategoryNode.addChild(dummyFeatureNode);
 		dummyUpdateSiteNode.addChild(dummyCategoryNode);
@@ -426,7 +429,7 @@ public class FeaturesVersionsComposite {
 			if (element instanceof CategoryTreeNode) {
 				image = category;
 			}
-			if (element instanceof FeaturesTreeNode) {
+			if (element instanceof FeatureTreeNode) {
 				image = feature;
 			}
 
@@ -451,114 +454,5 @@ public class FeaturesVersionsComposite {
 			AbstractTreeNode node = (AbstractTreeNode) element;
 			return node.getLabel();
 		}
-	}
-
-	/***************************************************************************
-	 * private tree nodes
-	 **************************************************************************/
-
-	private abstract class AbstractTreeNode extends TreeNode {
-
-		public AbstractTreeNode(Object value) {
-			super(value);
-		}
-
-		public abstract String getLabel();
-
-		public void addChild(TreeNode child) {
-			TreeNode[] children = super.getChildren();
-			TreeNode[] newChildren = null;
-			if (children != null) {
-				newChildren = new TreeNode[children.length + 1];
-				int i;
-				for (i = 0; i < children.length; i++) {
-					newChildren[i] = children[i];
-				}
-				newChildren[i] = child;
-			} else {
-				newChildren = new TreeNode[1];
-				newChildren[0] = child;
-			}
-
-			setChildren(newChildren);
-		}
-
-	}
-
-	private class UpdateSiteTreeNode extends AbstractTreeNode {
-
-		public UpdateSiteTreeNode(Object value) {
-			super(value);
-		}
-
-		@Override
-		public String getLabel() {
-			IFeature feature = (IFeature) getValue();
-			IURLEntry updateSiteEntry = feature.getUpdateSiteEntry();
-			return updateSiteEntry.getURL().toString();
-		}
-
-	}
-
-	private class CategoryTreeNode extends AbstractTreeNode {
-
-		public CategoryTreeNode(Object value) {
-			super(value);
-		}
-
-		@Override
-		public String getLabel() {
-			IFeature feature = (IFeature) getValue();
-			IURLEntry updateSiteEntry = feature.getUpdateSiteEntry();
-			ICategory[] categories = feature.getSite().getCategories();
-			/*
-			 * TODO: How do you exactly determine to which category a feature
-			 * belongs???
-			 */
-			if (categories != null) {
-				return categories[0].getLabel();
-			} else {
-				return updateSiteEntry.getAnnotation();
-			}
-		}
-
-	}
-
-	private class FeaturesTreeNode extends AbstractTreeNode {
-
-		public FeaturesTreeNode(Object value) {
-			super(value);
-		}
-
-		@Override
-		public String getLabel() {
-			IFeature feature = (IFeature) getValue();
-			String featureLabel = feature.getLabel();
-			String featureVersion = feature.getVersionedIdentifier()
-					.getVersion().toString();
-			return featureLabel + " " + featureVersion;
-		}
-	}
-
-	private class DummyTreeNode extends AbstractTreeNode {
-		private static final int UPDATESITE = 0;
-		private static final int CATEGORY = 1;
-		private static final int FEATURE = 2;
-		private int nodetype;
-
-		public DummyTreeNode(Object value, int nodetype) {
-			super(value);
-			this.nodetype = nodetype;
-		}
-
-		protected int getNodeType() {
-			return nodetype;
-		}
-
-		@Override
-		public String getLabel() {
-			return getValue().toString();
-		}
-
 	}
 }

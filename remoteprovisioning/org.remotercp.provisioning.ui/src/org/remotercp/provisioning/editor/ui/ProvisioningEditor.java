@@ -16,10 +16,12 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.custom.StackLayout;
 import org.eclipse.swt.events.SelectionAdapter;
 import org.eclipse.swt.events.SelectionEvent;
+import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -50,9 +52,6 @@ public class ProvisioningEditor extends EditorPart {
 	private TabFolder featuresFolder;
 
 	private StackLayout stackLayout;
-
-	private static final Logger logger = Logger
-			.getLogger(ProvisioningEditor.class.getName());
 
 	private List<IInstalledFeaturesService> installedFeaturesServiceList;
 
@@ -162,6 +161,8 @@ public class ProvisioningEditor extends EditorPart {
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
 					this.featuresFolder);
 
+			this.featuresFolder.addSelectionListener(this
+					.getTabFolderListener());
 			{
 				/*
 				 * Installed Features
@@ -226,6 +227,31 @@ public class ProvisioningEditor extends EditorPart {
 		initEditorInput();
 
 		createListener();
+	}
+
+	/*
+	 * As the available features composite takes a long time to initialize do it
+	 * lazy (only if required)
+	 */
+	private SelectionListener getTabFolderListener() {
+		return new SelectionAdapter() {
+			public void widgetSelected(SelectionEvent e) {
+				if (e.item instanceof TabItem) {
+					TabItem tabItem = (TabItem) e.item;
+					if (tabItem
+							.equals(ProvisioningEditor.this.availableFeaturesTabItem)) {
+						BusyIndicator.showWhile(getSite().getShell()
+								.getDisplay(), new Runnable() {
+							public void run() {
+								ProvisioningEditor.this.availableFeaturesComposite
+										.initTreeElements();
+							}
+						});
+					}
+				}
+			}
+
+		};
 	}
 
 	private void createListener() {
@@ -330,12 +356,12 @@ public class ProvisioningEditor extends EditorPart {
 			ErrorView.addError(errors);
 		}
 
-//		 final Collection<CommonFeaturesTreeNode> commonFeaturesNodes =
-//		 featuresHelper
-//		 .getCommonFeaturesNodes();
-//		 final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
-//		 featuresHelper
-//		 .getDifferentFeaturesNodes();
+		// final Collection<CommonFeaturesTreeNode> commonFeaturesNodes =
+		// featuresHelper
+		// .getCommonFeaturesNodes();
+		// final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
+		// featuresHelper
+		// .getDifferentFeaturesNodes();
 
 		// XXX for Tests only
 		InstalledFeaturesCompositeTest test = new InstalledFeaturesCompositeTest();
