@@ -5,7 +5,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.update.core.IFeature;
 
-public interface IInstallArtifactService {
+public interface IInstallFeaturesService {
 
 	// public IStatus installFeature(String featureId, String version,
 	// URL installSite);

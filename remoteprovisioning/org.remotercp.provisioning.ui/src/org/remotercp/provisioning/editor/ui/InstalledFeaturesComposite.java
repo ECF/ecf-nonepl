@@ -1,10 +1,19 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
+import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProvider;
@@ -14,6 +23,7 @@ import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -24,7 +34,11 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.update.core.IFeature;
+import org.osgi.framework.InvalidSyntaxException;
+import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesUserTreeNode;
@@ -32,7 +46,10 @@ import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTableLabelProvider;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeLabelProvider;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class InstalledFeaturesComposite {
 
@@ -59,6 +76,9 @@ public class InstalledFeaturesComposite {
 	private Image uninstallImage;
 
 	private Image propertiesImage;
+
+	private static final Logger logger = Logger
+			.getLogger(InstalledFeaturesComposite.class.getName());
 
 	public static enum Buttons {
 		CHECK_FOR_UPDATES, UNINSTALL, OPTIONS
@@ -192,13 +212,19 @@ public class InstalledFeaturesComposite {
 			options = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			options.setText("Options");
 			options.setImage(propertiesImage);
-			
+
 			// space label
 			new Label(installedFeaturesButtonsComposite, SWT.None);
-			
+
 			uninstall = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			uninstall.setText("Uninstall");
 			uninstall.setImage(uninstallImage);
+			uninstall.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					performUninstall();
+				}
+			});
 
 		}
 
@@ -219,6 +245,112 @@ public class InstalledFeaturesComposite {
 		default:
 			break;
 		}
+	}
+
+	private void performUninstall() {
+		IStructuredSelection selection = (IStructuredSelection) this.commonFeaturesViewer
+				.getSelection();
+		/* determine features to uninstall */
+		final List<CommonFeaturesTreeNode> featuresToUninstall = new ArrayList<CommonFeaturesTreeNode>();
+		for (Iterator iter = selection.iterator(); iter.hasNext();) {
+			Object next = iter.next();
+			if (next instanceof CommonFeaturesTreeNode) {
+				CommonFeaturesTreeNode node = (CommonFeaturesTreeNode) next;
+				featuresToUninstall.add(node);
+			}
+		}
+
+		if (!featuresToUninstall.isEmpty()) {
+			Job uninsatllFeaturesJob = new Job("Uninstall features...") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					monitor.beginTask("Perform uninstall operations...",
+							featuresToUninstall.size());
+
+					uninstall(featuresToUninstall, monitor);
+					return Status.OK_STATUS;
+				}
+			};
+			uninsatllFeaturesJob.setUser(true);
+			uninsatllFeaturesJob.schedule();
+		}
+	}
+
+	private void uninstall(List<CommonFeaturesTreeNode> featuresToUninstall,
+			IProgressMonitor monitor) {
+		ISessionService sessionService = OsgiServiceLocatorUtil
+				.getOSGiService(ProvisioningActivator.getBundleContext(),
+						ISessionService.class);
+
+		for (CommonFeaturesTreeNode node : featuresToUninstall) {
+			IFeature featureToUninstall = (IFeature) node.getValue();
+
+			monitor.subTask("Uninstall feature: "
+					+ featureToUninstall.getLabel());
+			List<ID> userToUpdate = getUserToUpdate(node);
+
+			/* create parent result element */
+			ResultFeatureTreeNode resultNode = new ResultFeatureTreeNode(
+					featuresToUninstall);
+
+			for (ID userId : userToUpdate) {
+				List<IStatus> stateCollector = new ArrayList<IStatus>();
+				// only one user to filter services for
+				ID[] filterIds = new ID[1];
+				filterIds[0] = userId;
+
+				try {
+
+					List<IInstallFeaturesService> remoteUninstallService = sessionService
+							.getRemoteService(IInstallFeaturesService.class,
+									filterIds, null);
+
+					if (remoteUninstallService.isEmpty()) {
+						IStatus error = createStatus(Status.ERROR,
+								"Unable to retrieve remote uninstall service for user: "
+										+ userId.getName(), null);
+						stateCollector.add(error);
+					}
+
+					IFeature[] uninsatll = new IFeature[1];
+					uninsatll[0] = featureToUninstall;
+					List<IStatus> uninstallResult = remoteUninstallService.get(
+							0).uninstallFeatures(uninsatll);
+
+					/* create child nodes for diplaying results */
+					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
+							userId);
+					resultNode.setParent(resultNode);
+					resultUserNode.setUpdateResults(uninstallResult);
+
+					resultNode.addChild(resultUserNode);
+				} catch (ECFException e) {
+					IStatus error = createStatus(Status.ERROR,
+							"Unalbe to retrieve remote uninstall service for user: "
+									+ userId.getName(), null);
+					stateCollector.add(error);
+				} catch (InvalidSyntaxException e) {
+					IStatus error = createStatus(Status.ERROR,
+							"Invalid filter parameter for filtering remote services for user: "
+									+ userId.getName(), null);
+					stateCollector.add(error);
+				}
+			}
+			monitor.worked(1);
+		}
+		monitor.done();
+	}
+
+	/*
+	 * This method retrieves all user assigned to a feature
+	 */
+	private List<ID> getUserToUpdate(CommonFeaturesTreeNode featureNode) {
+		List<ID> userIDs = new ArrayList<ID>();
+		CommonFeaturesUserTreeNode[] children = featureNode.getChildren();
+		for (CommonFeaturesUserTreeNode commonNode : children) {
+			userIDs.add(commonNode.getUserId());
+		}
+		return userIDs;
 	}
 
 	@SuppressWarnings("unchecked")
@@ -277,6 +409,18 @@ public class InstalledFeaturesComposite {
 		// }
 
 		return commonFeatureNodes;
+	}
+
+	private IStatus createStatus(int severity, String message, Exception e) {
+		logger.info(message);
+
+		if (e == null) {
+			return new Status(severity, ProvisioningActivator.PLUGIN_ID,
+					message);
+		} else {
+			return new Status(severity, ProvisioningActivator.PLUGIN_ID,
+					message, e);
+		}
 	}
 
 	/**

@@ -14,19 +14,23 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.PluginVersionIdentifier;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.jface.layout.GridDataFactory;
+import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
+import org.eclipse.jface.viewers.ICheckStateListener;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.SashForm;
 import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
@@ -34,7 +38,10 @@ import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.SiteManager;
+import org.osgi.framework.InvalidSyntaxException;
+import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
@@ -44,8 +51,11 @@ import org.remotercp.provisioning.editor.ui.tree.nodes.AbstractTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.CategoryTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.DummyTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.FeatureTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.UpdateSiteTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class FeaturesVersionsComposite {
 
@@ -73,9 +83,13 @@ public class FeaturesVersionsComposite {
 
 	private Image updateImage;
 
+	private List<FeatureTreeNode> selectedFeaturesForUpdate;
+
 	private Set<CommonFeaturesTreeNode> selectedFeatures;
 
 	public FeaturesVersionsComposite(Composite parent, int style) {
+		this.selectedFeaturesForUpdate = new ArrayList<FeatureTreeNode>();
+
 		this.backImage = ProvisioningActivator.getImageDescriptor(
 				ImageKeys.BACK).createImage();
 		this.propertiesImage = ProvisioningActivator.getImageDescriptor(
@@ -119,6 +133,9 @@ public class FeaturesVersionsComposite {
 					this.featureVersionsViewer
 							.setLabelProvider(new FeatureVersionsLabelProvider());
 
+					this.featureVersionsViewer.addCheckStateListener(this
+							.getCheckStateListener());
+
 					// If a user checks a checkbox in the tree, check also the
 					// children
 					// this.featureVersionsViewer
@@ -144,6 +161,12 @@ public class FeaturesVersionsComposite {
 						buttonComp);
 
 				update = new Button(buttonComp, SWT.PUSH);
+				update.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						performUpdate();
+					}
+				});
 				update.setText("Update");
 				update.setImage(updateImage);
 
@@ -164,6 +187,32 @@ public class FeaturesVersionsComposite {
 		}
 	}
 
+	/*
+	 * Retruns a listener for check box state changes.
+	 */
+	private ICheckStateListener getCheckStateListener() {
+		return new ICheckStateListener() {
+			public void checkStateChanged(CheckStateChangedEvent event) {
+				Object element = event.getElement();
+				if (element instanceof FeatureTreeNode) {
+					FeatureTreeNode node = (FeatureTreeNode) element;
+					/* has feature been added or removed? */
+					if (selectedFeaturesForUpdate.contains(node)) {
+						if (event.getChecked() == false) {
+							selectedFeaturesForUpdate.remove(node);
+						}
+					} else {
+						selectedFeaturesForUpdate.add(node);
+					}
+				}
+			}
+		};
+	}
+
+	public List<FeatureTreeNode> getSelectedFeaturesForUpdate() {
+		return this.selectedFeaturesForUpdate;
+	}
+
 	protected void addButtonListener(SelectionAdapter listener, Buttons button) {
 		switch (button) {
 		case UPDATE:
@@ -180,6 +229,137 @@ public class FeaturesVersionsComposite {
 		}
 	}
 
+	private void performUpdate() {
+		if (!this.selectedFeaturesForUpdate.isEmpty()) {
+			Job updateFeaturesJob = new Job("Update features...") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					monitor.beginTask("Search for new feature versions",
+							selectedFeaturesForUpdate.size());
+
+					updateFeatures(
+							FeaturesVersionsComposite.this.selectedFeaturesForUpdate,
+							monitor);
+
+					return Status.OK_STATUS;
+				}
+			};
+			updateFeaturesJob.setUser(true);
+			updateFeaturesJob.schedule();
+		} else {
+			IStatus info = new Status(Status.INFO,
+					ProvisioningActivator.PLUGIN_ID,
+					"No features for update selected");
+			ErrorView.addError(info);
+		}
+	}
+
+	private void updateFeatures(List<FeatureTreeNode> features,
+			IProgressMonitor monitor) {
+		List<IStatus> stateCollector = new ArrayList<IStatus>();
+
+		ISessionService sessionService = OsgiServiceLocatorUtil
+				.getOSGiService(ProvisioningActivator.getBundleContext(),
+						ISessionService.class);
+
+		for (FeatureTreeNode featureNode : features) {
+			monitor.subTask("Update feature : " + featureNode.getLabel());
+
+			/* retrieve feature from node */
+			IFeature feature = (IFeature) featureNode.getValue();
+
+			/* create result root node with feature */
+			ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
+					feature);
+
+			/* determine users to update */
+			List<ID> userToUpdate = getUserToUpdate(featureNode);
+			ID[] filterIDs = userToUpdate.toArray(new ID[userToUpdate.size()]);
+
+			try {
+				for (ID userId : filterIDs) {
+					/*
+					 * As we need to track update results we have to call the
+					 * remote service for each user seperatly
+					 */
+					ID[] filterId = new ID[1];
+					filterId[0] = userId;
+
+					/* retrieve remote update service for user */
+					List<IInstallFeaturesService> remoteService = sessionService
+							.getRemoteService(IInstallFeaturesService.class,
+									filterId, null);
+
+					if (remoteService.isEmpty()) {
+						IStatus error = new Status(Status.ERROR,
+								ProvisioningActivator.PLUGIN_ID,
+								"Unable to retrieve remote update service for user: "
+										+ userId.getName());
+						stateCollector.add(error);
+					} else if (remoteService.size() > 1) {
+						IStatus warning = new Status(Status.WARNING,
+								ProvisioningActivator.PLUGIN_ID,
+								"More than one update service found for user: "
+										+ userId.getName());
+						stateCollector.add(warning);
+					}
+
+					IFeature[] featuresToUpdate = new IFeature[1];
+					featuresToUpdate[0] = feature;
+
+					List<IStatus> updateResults = remoteService.get(0)
+							.updateFeautures(featuresToUpdate);
+
+					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
+							userId);
+					resultUserNode.setParent(resultFeatureNode);
+					resultUserNode.setUpdateResults(updateResults);
+
+					// add child to parent
+					resultFeatureNode.addChild(resultUserNode);
+				}
+
+			} catch (ECFException e) {
+				IStatus error = new Status(Status.ERROR,
+						ProvisioningActivator.PLUGIN_ID,
+						"Unable to retrieve remote service: "
+								+ IInstallFeaturesService.class.getName(), e);
+				stateCollector.add(error);
+			} catch (InvalidSyntaxException e) {
+				IStatus error = new Status(Status.ERROR,
+						ProvisioningActivator.PLUGIN_ID,
+						"The provided user filter is invalid", e);
+				stateCollector.add(error);
+			}
+
+			monitor.worked(1);
+		}
+		monitor.done();
+	}
+
+	/*
+	 * This method retrieves all user assigned to a feature
+	 */
+	private List<ID> getUserToUpdate(FeatureTreeNode node) {
+		List<ID> userIDs = new ArrayList<ID>();
+		for (CommonFeaturesTreeNode commonNode : this.selectedFeatures) {
+			IFeature selectedFeature = (IFeature) node.getValue();
+			SerializedFeatureWrapper feature = (SerializedFeatureWrapper) node
+					.getValue();
+
+			if (selectedFeature.getVersionedIdentifier().getIdentifier()
+					.equals(feature.getIdentifier())) {
+				CommonFeaturesUserTreeNode[] children = commonNode
+						.getChildren();
+
+				for (CommonFeaturesUserTreeNode userNode : children) {
+					userIDs.add(userNode.getUserId());
+				}
+			}
+		}
+		return userIDs;
+	}
+
 	/**
 	 * This method is used for stacked Layout
 	 * 
@@ -194,8 +374,8 @@ public class FeaturesVersionsComposite {
 			final Set<CommonFeaturesTreeNode> selectedFeatures) {
 		this.selectedFeatures = selectedFeatures;
 
-		// search for updates in a job
-		Job searchForUpdatesJob = new Job("Search for updates") {
+		// search for updates
+		Job searchForUpdatesJob = new Job("Search for updates...") {
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 
@@ -215,22 +395,15 @@ public class FeaturesVersionsComposite {
 	}
 
 	private void setViewerInput(final List<TreeNode> featuresToUpdate) {
-		getDisplay().asyncExec(new Runnable() {
-			public void run() {
-				FeaturesVersionsComposite.this.featureVersionsViewer
-						.setInput(featuresToUpdate);
-				FeaturesVersionsComposite.this.featureVersionsViewer
-						.expandAll();
-			}
-		});
-	}
-
-	private Display getDisplay() {
-		if (Display.getCurrent() == null) {
-			return Display.getDefault();
-		} else {
-			return Display.getCurrent();
-		}
+		this.featureVersionsViewer.getControl().getDisplay().asyncExec(
+				new Runnable() {
+					public void run() {
+						FeaturesVersionsComposite.this.featureVersionsViewer
+								.setInput(featuresToUpdate);
+						FeaturesVersionsComposite.this.featureVersionsViewer
+								.expandAll();
+					}
+				});
 	}
 
 	private Map<SerializedFeatureWrapper, List<ISiteFeatureReference>> getFeaturesWithNewerVersions(
