@@ -1,6 +1,5 @@
 package org.remotercp.contacts.ui;
 
-import java.util.List;
 import java.util.logging.Logger;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -195,9 +194,9 @@ public class ContactsView extends ViewPart {
 
 						selection = getTreeViewerSelection();
 
-						List<IRosterEntry> onlineUser = RosterUtil
-								.filterOnlineUser(selection);
-						if (onlineUser.isEmpty()) {
+						if (RosterUtil.isRosterItemOnline(selection)) {
+							event.doit = true;
+						}else{
 							event.doit = false;
 						}
 

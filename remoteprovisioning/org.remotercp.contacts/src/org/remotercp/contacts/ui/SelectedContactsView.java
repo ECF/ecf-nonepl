@@ -81,20 +81,32 @@ public class SelectedContactsView extends ViewPart {
 		roster.removeItem(item);
 
 		/*
-		 * TODO: selected item might be in a group and not directly belonging to
+		 * selected item might be in a group and not directly belonging to
 		 * roster. Walk through the groups and delete the item in the according
 		 * group
 		 */
-		if (selection instanceof IRosterEntry) {
+		if (selection.getFirstElement() instanceof IRosterEntry) {
 			for (Object rosterItem : roster.getItems()) {
 				if (rosterItem instanceof IRosterGroup) {
 					RosterGroup group = (RosterGroup) rosterItem;
+					/* item will only be removed if group contains the item */
 					group.remove(item);
+
+					// check if group has further items. If not delete the group
+					// as well
+					if (RosterUtil.filterOnlineUser(group).isEmpty()) {
+						roster.removeItem(group);
+					}
+					/* check if roster has further items */
+					if (RosterUtil.filterOnlineUser(roster).isEmpty()) {
+						roster = null;
+					}
 				}
 			}
 		}
 
 		this.selectedContactsViewer.setInput(roster);
+		this.selectedContactsViewer.expandAll();
 		this.pcs.firePropertyChange("Input changed", null, roster);
 	}
 
@@ -123,7 +135,8 @@ public class SelectedContactsView extends ViewPart {
 					@Override
 					public void dragOver(DropTargetEvent event) {
 						/*
-						 * Display symbols as hints whether drop is supported
+						 * Display copy symbol as a hint whether drop is
+						 * supported
 						 */
 						event.detail = DND.DROP_COPY;
 					}
