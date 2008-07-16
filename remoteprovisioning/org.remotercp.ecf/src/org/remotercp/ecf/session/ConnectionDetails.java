@@ -15,15 +15,15 @@
 package org.remotercp.ecf.session;
 
 public class ConnectionDetails {
-	private String userId, server;
+	private String userName, server;
 
-	public ConnectionDetails(String userId, String server) {
-		this.userId = userId;
+	public ConnectionDetails(String userName, String server) {
+		this.userName = userName;
 		this.server = server;
 	}
 
-	public String getUserId() {
-		return userId;
+	public String getUserName() {
+		return userName;
 	}
 
 	public String getServer() {

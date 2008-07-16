@@ -119,7 +119,7 @@ public class ChatLoginWizard extends Wizard {
 			e.printStackTrace();
 			return false;
 		} catch (ContainerConnectException e) {
-			loginPage.setErrorMessage("Username or password is wrong");
+			loginPage.setErrorMessage(e.getMessage());
 			e.printStackTrace();
 			return false;
 		} catch (URISyntaxException e) {

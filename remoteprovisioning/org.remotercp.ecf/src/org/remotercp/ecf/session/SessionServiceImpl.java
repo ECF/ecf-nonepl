@@ -69,7 +69,7 @@ public class SessionServiceImpl implements ISessionService {
 		adapter.addRemoteServiceListener(new IRemoteServiceListener() {
 
 			public void handleServiceEvent(IRemoteServiceEvent event) {
-				logger.info("Remote service event occured: " + event);
+				// logger.info("Remote service event occured: " + event);
 			}
 
 		});
@@ -123,6 +123,8 @@ public class SessionServiceImpl implements ISessionService {
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
 				.getRemoteServiceReferences(null, service.getName(), filter);
 
+		Map<String, T> filteredServices = new HashMap<String, T>();
+
 		// cast the remote service references to proxies
 		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
 
@@ -130,13 +132,24 @@ public class SessionServiceImpl implements ISessionService {
 					.getRemoteService(refs[serviceNumber]);
 			Assert.isNotNull(remoteService);
 
-			IRemoteServiceReference remoteServiceReference = refs[serviceNumber];
-			ID containerID = remoteServiceReference.getContainerID();
-			String containerIDName = containerID.getName();
+			String containerIDName = refs[serviceNumber].getContainerID()
+					.getName();
+			int indexOfContainer = containerIDName.indexOf("@");
+			String containerUserName = containerIDName.substring(0,
+					indexOfContainer);
 
 			for (ID userID : filterIDs) {
 				String userIDName = userID.getName();
-				if (userIDName.equals(containerIDName)) {
+				/*
+				 * XXX workaround for container and roster IDs. Split user names
+				 * and compare only names. This is dangerous as the same user
+				 * can be connected to different XMPP servers.
+				 */
+				int indexOfUser = userIDName.indexOf("@");
+				String userName = userIDName.substring(0, indexOfUser);
+
+				// XXX: this is again not
+				if (containerUserName.equals(userName)) {
 
 					// get proxy for remote service and add service to the
 					// service list
@@ -144,13 +157,22 @@ public class SessionServiceImpl implements ISessionService {
 					// T castedService = (T) remoteService.getProxy();
 					Assert.isNotNull(castedService);
 
-					remoteServices.add(castedService);
+					filteredServices.put(userIDName, castedService);
+					// remoteServices.add(castedService);
 					break;
 				}
 			}
 
 		}
 
+		/*
+		 * XXX: next workaround. If a user connects and disconnects several
+		 * times user services will also be registered several times. Asking for
+		 * a specific service for a user in this method may result in multiple
+		 * services. A map will avoid multiple services and return onyl one
+		 * service per user.
+		 */
+		remoteServices.addAll(filteredServices.values());
 		return remoteServices;
 	}
 
@@ -199,6 +221,7 @@ public class SessionServiceImpl implements ISessionService {
 		}
 
 		if (targetIDs == null) {
+			// register service to all user
 			targetIDs = RosterUtil.getUserIDs(getRoster());
 			Assert.isNotNull(targetIDs);
 		}
@@ -240,7 +263,6 @@ public class SessionServiceImpl implements ISessionService {
 				logger.info("Unget service: " + serviceName);
 			}
 		}
-
 	}
 
 	protected IPresenceListener getPresenceListener() {
@@ -255,13 +277,30 @@ public class SessionServiceImpl implements ISessionService {
 			 *      org.eclipse.ecf.presence.IPresence)
 			 */
 			public void handlePresence(ID fromID, IPresence presence) {
+
+				/*
+				 * Register services to clients that just logged in.
+				 * 
+				 * TODO: this is just a workaround!!! As the admin will usually
+				 * login when other users are already online he won't be able to
+				 * use the remote services as the registration of these services
+				 * happens at the login time. Therefore we push here services to
+				 * just loged in users.
+				 * 
+				 * Try to figure out if the ECF DiscoveryService will do here
+				 * better work.
+				 */
 				if (presence.getType() == IPresence.Type.AVAILABLE) {
-					// wait 5 sec otherwise the registration fails
+					/*
+					 * wait 5 sec so that all local services are registered
+					 * before registering them to remote clients
+					 */
 					try {
-						Thread.sleep(2000);
+						Thread.sleep(3000);
 					} catch (InterruptedException e) {
 						e.printStackTrace();
 					}
+
 					for (String service : SessionServiceImpl.this.remoteServices
 							.keySet()) {
 

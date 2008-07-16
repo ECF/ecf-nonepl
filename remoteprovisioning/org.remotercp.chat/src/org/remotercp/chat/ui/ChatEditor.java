@@ -198,7 +198,7 @@ public class ChatEditor extends EditorPart {
 		// }
 
 		// locale Ausgabe im Editor
-		String from = this.session.getConnectionDetails().getUserId();
+		String from = this.session.getConnectionDetails().getUserName();
 		this.textAusgabe.append("<" + from + ">" + text);
 		this.textAusgabe.append("\n");
 		scrollToEnd();
