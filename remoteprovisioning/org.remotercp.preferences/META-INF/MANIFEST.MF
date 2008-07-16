@@ -1,0 +1,13 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Preferences Plug-in
+Bundle-SymbolicName: org.remotercp.preferences
+Bundle-Version: 1.0.0
+Bundle-Activator: org.remotercp.preferences.PreferencesActivator
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.remotercp.common,
+ org.remotercp.ecf,
+ org.remotercp.util,
+ org.remotercp.libs
+Eclipse-LazyStart: true

@@ -1,0 +1,15 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui Plug-in
+Bundle-SymbolicName: org.remotercp.preferences.ui;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.remotercp.preferences.ui.PreferencesUIActivator
+Bundle-Vendor: Eugen Reiswich
+Require-Bundle: org.eclipse.ui,
+ org.eclipse.core.runtime,
+ org.remotercp.libs,
+ org.remotercp.util,
+ org.remotercp.ecf,
+ org.remotercp.common,
+ org.remotercp.errorhandling
+Eclipse-LazyStart: true
