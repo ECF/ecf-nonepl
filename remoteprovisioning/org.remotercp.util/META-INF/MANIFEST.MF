@@ -13,5 +13,6 @@ Export-Package: org.remotercp.util.dialogs,
  org.remotercp.util.filesize,
  org.remotercp.util.intersection,
  org.remotercp.util.osgi,
+ org.remotercp.util.preferences,
  org.remotercp.util.roster,
  org.remotercp.util.serialize

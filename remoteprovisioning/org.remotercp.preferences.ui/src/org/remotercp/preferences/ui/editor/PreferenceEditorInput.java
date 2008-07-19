@@ -1,16 +1,16 @@
 package org.remotercp.preferences.ui.editor;
 
-import java.util.Map;
+import java.io.File;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
 public class PreferenceEditorInput implements IEditorInput {
-	
-	private final Map<String, String> preferences;
 
-	public PreferenceEditorInput(Map<String, String> preferences) {
+	private final File preferences;
+
+	public PreferenceEditorInput(File preferences) {
 		this.preferences = preferences;
 	}
 
@@ -33,7 +33,7 @@ public class PreferenceEditorInput implements IEditorInput {
 	public String getToolTipText() {
 		return "Edit Remote Preferences";
 	}
-	
+
 	@Override
 	public int hashCode() {
 		return preferences.hashCode();
@@ -44,7 +44,7 @@ public class PreferenceEditorInput implements IEditorInput {
 		return null;
 	}
 
-	public Map<String, String> getPreferences() {
+	public File getPreferences() {
 		return preferences;
 	}
 

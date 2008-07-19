@@ -1,15 +1,11 @@
 package org.remotercp.preferences.service;
 
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
@@ -23,54 +19,53 @@ import org.remotercp.preferences.PreferencesActivator;
 
 public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
-	public Map<String, String> getPreferences(String[] preferenceFilter)
-			throws ECFException {
-		SortedMap<String, String> preferences = new TreeMap<String, String>();
+	public File getPreferences(String[] preferenceFilter) throws ECFException {
+		File preferences = null;
 
 		IPreferencesService preferenceService = Platform
 				.getPreferencesService();
 		IEclipsePreferences rootNode = preferenceService.getRootNode();
 
 		try {
+			preferences = File.createTempFile("preferences", ".ini");
 			/*
-			 * XXX: if boolean preference values are set to false they won't be
-			 * exported. This could be a problem if the admin would like to
+			 * XXX: if boolean preference values are set to "false" they won't
+			 * be exported. This could be a problem if the admin would like to
 			 * change exactly these property!
 			 */
-			File tempFile = File.createTempFile("Tempfile", ".pref");
-			OutputStream out = new FileOutputStream(tempFile);
+			OutputStream out = new FileOutputStream(preferences);
 			preferenceService
 					.exportPreferences(rootNode, out, preferenceFilter);
 			// preferenceService.exportPreferences(rootNode,
 			// new IPreferenceFilter[] { getPreferenceFilter() }, out);
 
-			FileReader reader = new FileReader(tempFile);
-			BufferedReader bufReader = new BufferedReader(reader);
-			String line;
-			int count = 0;
-
-			// first line is the date of the export, ignore it
-			line = bufReader.readLine();
-			count++;
-			while ((line = bufReader.readLine()) != null) {
-
-				/* split keys and values */
-				int keyValueSeparator = line.indexOf("=");
-				String key = line.substring(0, keyValueSeparator);
-				String value = line.substring(keyValueSeparator + 1);
-
-				/*
-				 * store preferences in map. value could not be set yet but key
-				 * must exist!
-				 */
-				if (key != null)
-					preferences.put(key, value);
-
-				// System.out.println("Key: " + key + " value: " + value);
-				count++;
-			}
-			bufReader.close();
-			reader.close();
+			// FileReader reader = new FileReader(tempFile);
+			// BufferedReader bufReader = new BufferedReader(reader);
+			// String line;
+			// int count = 0;
+			//
+			// // first line is the date of the export, ignore it
+			// line = bufReader.readLine();
+			// count++;
+			// while ((line = bufReader.readLine()) != null) {
+			//
+			// /* split keys and values */
+			// int keyValueSeparator = line.indexOf("=");
+			// String key = line.substring(0, keyValueSeparator);
+			// String value = line.substring(keyValueSeparator + 1);
+			//
+			// /*
+			// * store preferences in map. value could not be set yet but key
+			// * must exist!
+			// */
+			// if (key != null)
+			// preferences.put(key, value);
+			//
+			// // System.out.println("Key: " + key + " value: " + value);
+			// count++;
+			// }
+			// bufReader.close();
+			// reader.close();
 
 		} catch (FileNotFoundException e) {
 			IStatus error = new Status(Status.ERROR,

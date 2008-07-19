@@ -1,8 +1,8 @@
 package org.remotercp.preferences.ui.actions;
 
+import java.io.File;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -56,8 +56,7 @@ public class PreferencesAction implements IObjectActionDelegate {
 
 			// usually only one service should be available per user.
 			for (IRemotePreferenceService prefService : remoteService) {
-				Map<String, String> preferences = prefService
-						.getPreferences(new String[] {});
+				File preferences = prefService.getPreferences(new String[] {});
 
 				/* open editor */
 				PreferenceEditorInput prefInput = new PreferenceEditorInput(

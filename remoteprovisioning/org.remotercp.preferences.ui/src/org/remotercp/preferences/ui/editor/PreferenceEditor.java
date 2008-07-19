@@ -1,20 +1,26 @@
 package org.remotercp.preferences.ui.editor;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
+import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.jface.viewers.TextCellEditor;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
@@ -26,16 +32,23 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.remotercp.errorhandling.ui.ErrorView;
+import org.remotercp.preferences.ui.PreferencesUIActivator;
+import org.remotercp.util.preferences.PreferencesUtil;
 
 public class PreferenceEditor extends EditorPart {
 
 	public static final String EDITOR_ID = "org.remotercp.preferences.ui.preferenceEditor";
 
-	private Map<String, String> preferences;
+	private File preferences;
 
 	private TableViewer preferencesViewer;
 
-	private HashMap<String, String> preferenesClone;
+	private SortedMap<String, String> preferenesMapClone;
+
+	private SortedMap<String, String> preferencesMap;
+
+	private SortedMap<String, String> importedPreferencesMap;
 
 	private final static String configurationScope = "/configuration/";
 
@@ -69,13 +82,13 @@ public class PreferenceEditor extends EditorPart {
 
 	@Override
 	public void doSave(IProgressMonitor monitor) {
-		// TODO Auto-generated method stub
+		// do nothing yet
 
 	}
 
 	@Override
 	public void doSaveAs() {
-		// TODO Auto-generated method stub
+		// do nothing yet
 
 	}
 
@@ -87,18 +100,30 @@ public class PreferenceEditor extends EditorPart {
 
 		PreferenceEditorInput editorInput = (PreferenceEditorInput) input;
 		preferences = editorInput.getPreferences();
-		this.preferenesClone = new HashMap<String, String>();
-		this.preferenesClone.putAll(this.preferences);
+
+		try {
+			this.preferencesMap = PreferencesUtil
+					.createPreferencesFromFile(preferences);
+
+			// the clone is used to determine changes in original preferences
+			this.preferenesMapClone = new TreeMap<String, String>();
+			this.preferenesMapClone.putAll(this.preferencesMap);
+		} catch (IOException e) {
+			IStatus error = new Status(Status.ERROR,
+					PreferencesUIActivator.PLUGIN_ID,
+					"Unable to create preferences from file", e);
+			ErrorView.addError(error);
+		}
 	}
 
 	@Override
 	public boolean isDirty() {
-		return !this.preferenesClone.equals(this.preferences);
+		return !this.preferenesMapClone.equals(this.preferences);
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		return !this.preferenesClone.equals(this.preferences);
+		return !this.preferenesMapClone.equals(this.preferences);
 	}
 
 	@Override
@@ -125,7 +150,6 @@ public class PreferenceEditor extends EditorPart {
 			/* only remote value is editable */
 			this.preferencesViewer.setCellEditors(new CellEditor[] { null,
 					new TextCellEditor(table), null });
-
 
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(table);
 			table.setLinesVisible(true);
@@ -155,20 +179,31 @@ public class PreferenceEditor extends EditorPart {
 	private void initViewer() {
 		List<EditableTableItem> items = new ArrayList<EditableTableItem>();
 
-		for (String key : this.preferences.keySet()) {
+		for (String key : this.preferencesMap.keySet()) {
 			EditableTableItem item = new EditableTableItem();
-			String value = this.preferences.get(key);
+			String value = this.preferencesMap.get(key);
 
-			/* remote scopes from keys */
-			if (key.startsWith(configurationScope)) {
-				key = key.replaceAll(configurationScope, "");
-			}
-			if (key.startsWith(instanceScope)) {
-				key = key.replaceAll(instanceScope, "");
-			}
 			item.setKey(key);
 			item.setRemoteValue(value);
 
+			items.add(item);
+		}
+		this.preferencesViewer.setInput(items);
+	}
+
+	/*
+	 * Create a mapping between local and remote preferences
+	 */
+	private void createViewerInput() {
+		List<EditableTableItem> items = new ArrayList<EditableTableItem>();
+		for (String key : this.preferencesMap.keySet()) {
+			EditableTableItem item = new EditableTableItem();
+			item.setKey(key);
+			item.setRemoteValue(this.preferencesMap.get(key));
+
+			if (this.importedPreferencesMap.containsKey(key)) {
+				item.setLocalValue(this.importedPreferencesMap.get(key));
+			}
 			items.add(item);
 		}
 		this.preferencesViewer.setInput(items);
@@ -188,6 +223,7 @@ public class PreferenceEditor extends EditorPart {
 	 */
 	private class EditableTableItem {
 		private String key;
+		private boolean isChanged;
 		private String localValue;
 		private String remoteValue;
 
@@ -214,13 +250,27 @@ public class PreferenceEditor extends EditorPart {
 		public void setRemoteValue(String remoteValue) {
 			this.remoteValue = remoteValue;
 		}
+
+		public boolean isChanged() {
+			return isChanged;
+		}
+
+		public void setChanged(boolean isEdited) {
+			this.isChanged = isEdited;
+		}
 	}
 
 	/*
 	 * Viewer label provider
 	 */
 	private class PreferencesLabelProvider extends LabelProvider implements
-			ITableLabelProvider {
+			ITableLabelProvider, IColorProvider {
+
+		private Color changed = new Color(getEditorSite().getShell()
+				.getDisplay(), 255, 250, 205);
+
+		private Color different = new Color(getEditorSite().getShell()
+				.getDisplay(), 255, 228, 225);
 
 		public Image getColumnImage(Object element, int columnIndex) {
 			return null;
@@ -229,20 +279,54 @@ public class PreferenceEditor extends EditorPart {
 		public String getColumnText(Object element, int columnIndex) {
 			EditableTableItem item = (EditableTableItem) element;
 			String columnText = null;
+			String key = item.getKey();
 			switch (columnIndex) {
 			case 0:
-				columnText = item.getKey();
+				/* remove scopes from keys */
+				if (key.startsWith(configurationScope)) {
+					columnText = key.replaceAll(configurationScope, "");
+				} else if (key.startsWith(instanceScope)) {
+					columnText = key.replaceAll(instanceScope, "");
+				}
 				break;
 			case 1:
-				columnText = item.getRemoteValue();
+				/* do not display values other then above described scopes */
+				if (key.startsWith(configurationScope)
+						|| key.startsWith(instanceScope)) {
+					columnText = item.getRemoteValue();
+				}
 				break;
 			case 2:
-				columnText = item.getLocalValue();
+				/* do not display values other then above described scopes */
+				if (key.startsWith(configurationScope)
+						|| key.startsWith(instanceScope)) {
+					columnText = item.getLocalValue();
+				}
 				break;
 			default:
 				break;
 			}
 			return columnText;
+		}
+
+		public Color getBackground(Object element) {
+			Color color = null;
+			EditableTableItem item = (EditableTableItem) element;
+			if (item.isChanged) {
+				color = changed;
+			} else if (item.getLocalValue() != null
+					&& item.getRemoteValue() != null
+					&& (!item.getLocalValue().equals(item.getRemoteValue()))) {
+				color = different;
+			} else {
+				// color = defaultColor;
+			}
+			return color;
+		}
+
+		public Color getForeground(Object element) {
+			// do nothing
+			return null;
 		}
 	}
 
@@ -272,8 +356,34 @@ public class PreferenceEditor extends EditorPart {
 			EditableTableItem item = (EditableTableItem) tableItem.getData();
 			if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
 				item.setRemoteValue(value.toString());
+				// mark preference as changed/not changed
+				if (item.getRemoteValue().equals(item.getLocalValue())) {
+					item.setChanged(false);
+				} else {
+					item.setChanged(true);
+				}
 			}
 			preferencesViewer.refresh();
+		}
+	}
+
+	/**
+	 * Sets the imported preferences
+	 * 
+	 * @param importedPreferences
+	 */
+	public void setImportedPreferences(File importedPreferences) {
+		try {
+			this.importedPreferencesMap = PreferencesUtil
+					.createPreferencesFromFile(importedPreferences);
+
+			// create viewer input with local preferences
+			this.createViewerInput();
+		} catch (IOException e) {
+			IStatus error = new Status(Status.ERROR,
+					PreferencesUIActivator.PLUGIN_ID,
+					"Unable to create preferences from the imported file", e);
+			ErrorView.addError(error);
 		}
 	}
 }

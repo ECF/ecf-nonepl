@@ -29,14 +29,28 @@
       <editorContribution
             id="org.remotercp.preferences.ui.editorPreferenceAction"
             targetID="org.remotercp.preferences.ui.preferenceEditor">
+         <menu
+               id="org.remotercp.preferences.ui.preferencesMenu"
+               label="Preferences">
+            <separator
+                  name="org.remotercp.preferences.ui.preferencesSeparator">
+            </separator>
+         </menu>
          <action
-               class="org.remotercp.preferences.ui.actions.ComparePreferencesEditorAction"
-               icon="icons/preferences_32x32.png"
-               id="org.remotercp.preferences.ui.comparePreferenceAction"
-               label="Compare preferences"
-               style="push"
-               toolbarPath="additions"
-               tooltip="Compare remote preferences with local preferences">
+               class="org.remotercp.preferences.ui.actions.ImportPreferencesAction"
+               icon="icons/preferences_import_32x32_3.png"
+               id="org.remotercp.preferences.ui.importAction"
+               label="Import preferences"
+               toolbarPath="org.remotercp.preferences.ui.preferencesSeparator"
+               tooltip="Import preferences from file">
+         </action>
+         <action
+               class="org.remotercp.preferences.ui.actions.ExportPreferencesAction"
+               icon="icons/preferences_export.png"
+               id="org.remotercp.preferences.ui.exportAction"
+               label="Export Preferences"
+               toolbarPath="org.remotercp.preferences.ui.preferencesSeparator"
+               tooltip="Export preferences to file">
          </action>
       </editorContribution>
    </extension>
