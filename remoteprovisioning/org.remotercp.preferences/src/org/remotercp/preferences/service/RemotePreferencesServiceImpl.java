@@ -158,7 +158,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 		IStatus okStatus = new SerializableStatus(Status.OK,
 				PreferencesActivator.PLUGIN_ID,
-				"Preferences haven been successfully saved");
+				"Preferences have been successfully saved!");
 		return okStatus;
 	}
 }
