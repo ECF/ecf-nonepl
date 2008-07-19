@@ -4,6 +4,13 @@ import java.io.Serializable;
 
 import org.eclipse.core.runtime.IStatus;
 
+/**
+ * This class is used to provide status information. As the usual Status doesn't
+ * implement the Serializable interface this class is used for remote methods.
+ * 
+ * @author Eugen Reiswich
+ * 
+ */
 public class SerializableStatus implements IStatus, Serializable {
 
 	/**
