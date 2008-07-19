@@ -11,61 +11,43 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.preferences.ConfigurationScope;
+import org.eclipse.core.runtime.preferences.DefaultScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
+import org.eclipse.core.runtime.preferences.IPreferenceFilter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
+import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ecf.core.util.ECFException;
+import org.osgi.service.prefs.BackingStoreException;
+import org.osgi.service.prefs.Preferences;
 import org.remotercp.common.preferences.IRemotePreferenceService;
+import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.preferences.PreferencesActivator;
 
 public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
+	private IPreferencesService preferenceService;
+
 	public File getPreferences(String[] preferenceFilter) throws ECFException {
 		File preferences = null;
 
-		IPreferencesService preferenceService = Platform
-				.getPreferencesService();
-		IEclipsePreferences rootNode = preferenceService.getRootNode();
+		this.preferenceService = Platform.getPreferencesService();
+		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
+
+		// this.printAllPreferences(rootNode);
 
 		try {
 			preferences = File.createTempFile("preferences", ".ini");
 			/*
-			 * XXX: if boolean preference values are set to "false" they won't
-			 * be exported. This could be a problem if the admin would like to
-			 * change exactly these property!
+			 * XXX: if boolean preference values are set to "false" or values
+			 * are null they won't be exported. This could be a problem if the
+			 * admin would like to change exactly these property!
 			 */
 			OutputStream out = new FileOutputStream(preferences);
-			preferenceService
-					.exportPreferences(rootNode, out, preferenceFilter);
+			this.preferenceService.exportPreferences(rootNode,
+					new IPreferenceFilter[] { getPreferenceFilter() }, out);
 			// preferenceService.exportPreferences(rootNode,
 			// new IPreferenceFilter[] { getPreferenceFilter() }, out);
-
-			// FileReader reader = new FileReader(tempFile);
-			// BufferedReader bufReader = new BufferedReader(reader);
-			// String line;
-			// int count = 0;
-			//
-			// // first line is the date of the export, ignore it
-			// line = bufReader.readLine();
-			// count++;
-			// while ((line = bufReader.readLine()) != null) {
-			//
-			// /* split keys and values */
-			// int keyValueSeparator = line.indexOf("=");
-			// String key = line.substring(0, keyValueSeparator);
-			// String value = line.substring(keyValueSeparator + 1);
-			//
-			// /*
-			// * store preferences in map. value could not be set yet but key
-			// * must exist!
-			// */
-			// if (key != null)
-			// preferences.put(key, value);
-			//
-			// // System.out.println("Key: " + key + " value: " + value);
-			// count++;
-			// }
-			// bufReader.close();
-			// reader.close();
 
 		} catch (FileNotFoundException e) {
 			IStatus error = new Status(Status.ERROR,
@@ -87,55 +69,96 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		return preferences;
 	}
 
-	// private IPreferenceFilter getPreferenceFilter() {
-	// return new IPreferenceFilter() {
+	// private void printAllPreferences(IEclipsePreferences rootNode) {
 	//
-	// public Map getMapping(String scope) {
-	// return null;
-	// }
-	//
-	// /*
-	// * InstanceScope == preferences stored in workspace
-	// * ConfigurationScope == all workspaces share the same preferences
-	// *
-	// * (non-Javadoc)
-	// *
-	// * @see org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes()
-	// */
-	// public String[] getScopes() {
-	// return new String[] { InstanceScope.SCOPE,
-	// ConfigurationScope.SCOPE };
-	// }
-	//
-	// };
-	// }
-
-	// protected void getPreferences(Preferences preferences,
-	// Map<String, String> preferencesMap) {
+	// for (String scope : getPreferenceFilter().getScopes()) {
+	// Preferences scopeNode = rootNode.node(scope);
 	// try {
-	// String[] childrenNames = preferences.childrenNames();
-	//
-	// if (childrenNames != null && childrenNames.length > 0) {
-	// /* look recursive for all tree elements */
-	// for (String child : childrenNames) {
-	// Preferences node = preferences.node(child);
-	// getPreferences(node, preferencesMap);
-	// }
-	// }else{
-	// String[] keys = preferences.keys();
-	// for(String key : keys){
-	// preferences.get
-	// }
+	// for (String child : scopeNode.childrenNames()) {
+	// exportNode(scopeNode.node(child), child);
 	// }
 	// } catch (BackingStoreException e) {
 	// // TODO Auto-generated catch block
 	// e.printStackTrace();
 	// }
-	//
+	// }
 	// }
 
-	public void setPreferences(Map<String, String> preferences) {
-		// TODO Auto-generated method stub
+	//
+	// private void exportNode(Preferences preferenceNode, String path)
+	// throws BackingStoreException {
+	// for (String key : preferenceNode.keys()) {
+	// String propertyKey = path + "/" + key;
+	// // Only export the preference if it is not already contained in the
+	// // result. This is so that multiple scopes can be exported without
+	// // conflicting in unexpected ways.
+	// String propertyValue = preferenceNode.get(key, "");
+	//			
+	// System.out.println("Key: " + propertyKey + " value: " + propertyValue);
+	// }
+	//
+	// // recursively export the node's children
+	// for (String child : preferenceNode.childrenNames()) {
+	// exportNode(preferenceNode.node(child), path + "/" + child);
+	// }
+	// }
 
+	private IPreferenceFilter getPreferenceFilter() {
+		return new IPreferenceFilter() {
+
+			public Map getMapping(String scope) {
+				return null;
+			}
+
+			/*
+			 * InstanceScope == preferences stored in workspace
+			 * ConfigurationScope == all workspaces share the same preferences
+			 * 
+			 * (non-Javadoc)
+			 * 
+			 * @see org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes()
+			 */
+			public String[] getScopes() {
+				return new String[] { InstanceScope.SCOPE,
+						ConfigurationScope.SCOPE, DefaultScope.SCOPE };
+			}
+
+		};
+	}
+
+	public IStatus setPreferences(Map<String, String> preferences)
+			throws ECFException {
+
+		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
+
+		for (String key : preferences.keySet()) {
+			try {
+				Preferences node = rootNode.node(key);
+				if (node != null) {
+
+					/* XXX is this the right way to change preferences??? */
+					String name = node.name();
+					Preferences parent = node.parent();
+					parent.sync();
+					// remove old node
+					node.removeNode();
+					String value = preferences.get(key);
+					// create new node
+					parent.put(name, value);
+					parent.flush();
+				}
+			} catch (BackingStoreException e) {
+				IStatus error = new Status(Status.ERROR,
+						PreferencesActivator.PLUGIN_ID,
+						"Unable to store preference with the key: " + key, e);
+				// throw remote exception
+				throw new ECFException(error);
+			}
+		}
+
+		IStatus okStatus = new SerializableStatus(Status.OK,
+				PreferencesActivator.PLUGIN_ID,
+				"Preferences haven been successfully saved");
+		return okStatus;
 	}
 }

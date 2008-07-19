@@ -20,19 +20,21 @@ public class PreferencesUtil {
 		while ((line = bufReader.readLine()) != null) {
 			// first line is the date of the export, ignore it
 			if (!line.startsWith("#")) {
-				
+
 				/* split keys and values */
 				int keyValueSeparator = line.indexOf("=");
 				String key = line.substring(0, keyValueSeparator);
 				String value = line.substring(keyValueSeparator + 1);
-				
+
 				/*
-				 * store preferences in map. value doesn't have to be set yet but
-				 * key must exist!
+				 * store preferences in map.
 				 */
-				if (key != null)
+				if (key != null) {
+					if (value == null)
+						value = "";
 					preferences.put(key, value);
-				System.out.println(line);
+				}
+				// System.out.println(line);
 			}
 
 			count++;

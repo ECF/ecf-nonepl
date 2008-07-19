@@ -13,9 +13,9 @@ import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.IDoubleClickListener;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -225,6 +225,11 @@ public class ErrorView extends ViewPart {
 					.createImage();
 		}
 
+		if (status.getSeverity() == IStatus.OK) {
+			image = ErrorHandlingActivator.getImageDescriptor(ImageKeys.OK)
+					.createImage();
+		}
+
 		return image;
 	}
 
@@ -268,7 +273,8 @@ public class ErrorView extends ViewPart {
 	 * @author Eugen Reiswich
 	 * 
 	 */
-	private class ErrorTableLabelProvider implements ITableLabelProvider {
+	private class ErrorTableLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
 
 		public Image getColumnImage(Object element, int columnIndex) {
 			if (columnIndex == COLUMN_ICON) {
@@ -289,27 +295,5 @@ public class ErrorView extends ViewPart {
 			}
 
 		}
-
-		public void addListener(ILabelProviderListener listener) {
-			// do nithing
-
-		}
-
-		public void dispose() {
-			// do nithing
-
-		}
-
-		public boolean isLabelProperty(Object element, String property) {
-			// do nithing
-			return false;
-		}
-
-		public void removeListener(ILabelProviderListener listener) {
-			// do nithing
-
-		}
-
 	}
-
 }

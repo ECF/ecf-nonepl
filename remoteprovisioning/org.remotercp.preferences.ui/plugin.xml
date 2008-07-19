@@ -2,20 +2,6 @@
 <?eclipse version="3.2"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.popupMenus">
-      <objectContribution
-            id="org.remotercp.preferences.ui.rosterItemContribution"
-            objectClass="org.eclipse.ecf.presence.roster.IRosterItem">
-         <action
-               class="org.remotercp.preferences.ui.actions.PreferencesAction"
-               icon="icons/preferences_16x16.png"
-               id="org.remotercp.preferences.ui.preferencesAction"
-               label="Get Preferences"
-               menubarPath="additions">
-         </action>
-      </objectContribution>
-   </extension>
-   <extension
          point="org.eclipse.ui.editors">
       <editor
             class="org.remotercp.preferences.ui.editor.PreferenceEditor"
@@ -52,7 +38,32 @@
                toolbarPath="org.remotercp.preferences.ui.preferencesSeparator"
                tooltip="Export preferences to file">
          </action>
+         <action
+               class="org.remotercp.preferences.ui.actions.SaveRemotePreferencesAction"
+               icon="icons/filesave_remote.png"
+               id="org.remotercp.preferences.ui.saveAction"
+               label="Save remote preferences"
+               style="push"
+               toolbarPath="org.remotercp.preferences.ui.preferencesSeparator"
+               tooltip="Save preferences to remote user">
+         </action>
       </editorContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.remotercp.preferences.ui.selectedContactsViewContribution"
+            targetID="org.remotercp.contacts.selectedContactsView">
+         <action
+               class="org.remotercp.preferences.ui.actions.RemotePreferencesAction"
+               icon="icons/preferences_16x16.png"
+               id="org.remotercp.preferences.ui.remotePreferencesAction"
+               label="Get remote preferences"
+               menubarPath="additions"
+               style="push"
+               toolbarPath="additions">
+         </action>
+      </viewContribution>
    </extension>
 
 </plugin>

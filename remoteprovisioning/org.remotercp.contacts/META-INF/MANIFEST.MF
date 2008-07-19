@@ -13,7 +13,6 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.ecf,
  org.remotercp.chat,
  org.remotercp.util,
- org.remotercp.errorhandling,
- org.remotercp.provisioning.ui
+ org.remotercp.errorhandling
 Eclipse-LazyStart: true
 Export-Package: org.remotercp.contacts.ui

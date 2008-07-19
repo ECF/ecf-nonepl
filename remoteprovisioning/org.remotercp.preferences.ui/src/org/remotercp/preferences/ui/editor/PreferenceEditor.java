@@ -33,6 +33,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.remotercp.errorhandling.ui.ErrorView;
+import org.remotercp.preferences.ui.EditableTableItem;
 import org.remotercp.preferences.ui.PreferencesUIActivator;
 import org.remotercp.util.preferences.PreferencesUtil;
 
@@ -98,7 +99,7 @@ public class PreferenceEditor extends EditorPart {
 		setInput(input);
 		setSite(site);
 
-		PreferenceEditorInput editorInput = (PreferenceEditorInput) input;
+		PreferencesEditorInput editorInput = (PreferencesEditorInput) input;
 		preferences = editorInput.getPreferences();
 
 		try {
@@ -118,12 +119,14 @@ public class PreferenceEditor extends EditorPart {
 
 	@Override
 	public boolean isDirty() {
-		return !this.preferenesMapClone.equals(this.preferences);
+		// return !this.preferenesMapClone.equals(this.preferences);
+		return false;
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		return !this.preferenesMapClone.equals(this.preferences);
+		// return !this.preferenesMapClone.equals(this.preferences);
+		return true;
 	}
 
 	@Override
@@ -161,11 +164,11 @@ public class PreferenceEditor extends EditorPart {
 
 			TableColumn remoteValue = new TableColumn(table, SWT.LEFT);
 			remoteValue.setText(TableColumns.REMOTE_VALUE.getLabel());
-			remoteValue.setWidth(250);
+			remoteValue.setWidth(200);
 
 			TableColumn localValue = new TableColumn(table, SWT.LEFT);
 			localValue.setText(TableColumns.LOCAL_VALUE.getLabel());
-			localValue.setWidth(250);
+			localValue.setWidth(200);
 
 		}
 		this.initViewer();
@@ -185,7 +188,6 @@ public class PreferenceEditor extends EditorPart {
 
 			item.setKey(key);
 			item.setRemoteValue(value);
-
 			items.add(item);
 		}
 		this.preferencesViewer.setInput(items);
@@ -214,51 +216,14 @@ public class PreferenceEditor extends EditorPart {
 		this.preferencesViewer.getControl().setFocus();
 	}
 
+	@SuppressWarnings("unchecked")
+	public List<EditableTableItem> getViewerInput() {
+		return (List<EditableTableItem>) this.preferencesViewer.getInput();
+	}
+
 	// ##############################
 	// Private classes
 	// ##############################
-
-	/*
-	 * Viewer Input object
-	 */
-	private class EditableTableItem {
-		private String key;
-		private boolean isChanged;
-		private String localValue;
-		private String remoteValue;
-
-		public String getKey() {
-			return key;
-		}
-
-		public void setKey(String localKey) {
-			this.key = localKey;
-		}
-
-		public String getLocalValue() {
-			return localValue;
-		}
-
-		public void setLocalValue(String localValue) {
-			this.localValue = localValue;
-		}
-
-		public String getRemoteValue() {
-			return remoteValue;
-		}
-
-		public void setRemoteValue(String remoteValue) {
-			this.remoteValue = remoteValue;
-		}
-
-		public boolean isChanged() {
-			return isChanged;
-		}
-
-		public void setChanged(boolean isEdited) {
-			this.isChanged = isEdited;
-		}
-	}
 
 	/*
 	 * Viewer label provider
@@ -312,11 +277,10 @@ public class PreferenceEditor extends EditorPart {
 		public Color getBackground(Object element) {
 			Color color = null;
 			EditableTableItem item = (EditableTableItem) element;
-			if (item.isChanged) {
+			if (item.isChanged()) {
 				color = changed;
 			} else if (item.getLocalValue() != null
-					&& item.getRemoteValue() != null
-					&& (!item.getLocalValue().equals(item.getRemoteValue()))) {
+					&& !item.getLocalValue().equals(item.getRemoteValue())) {
 				color = different;
 			} else {
 				// color = defaultColor;
@@ -336,8 +300,14 @@ public class PreferenceEditor extends EditorPart {
 	private class PreferencesCellModifier implements ICellModifier {
 
 		public boolean canModify(Object element, String property) {
-			if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
-				return true;
+			EditableTableItem item = (EditableTableItem) element;
+			String key = item.getKey();
+			if (key.startsWith(configurationScope)
+					|| key.startsWith(instanceScope)) {
+
+				if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
+					return true;
+				}
 			}
 			return false;
 		}

@@ -2,6 +2,7 @@ package org.remotercp.contacts.ui;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.util.List;
 
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.roster.IRoster;
@@ -10,6 +11,7 @@ import org.eclipse.ecf.presence.roster.IRosterGroup;
 import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterGroup;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.viewers.Viewer;
@@ -78,7 +80,11 @@ public class SelectedContactsView extends ViewPart {
 		Roster roster = (Roster) this.selectedContactsViewer.getInput();
 		IRosterItem item = (IRosterItem) selection.getFirstElement();
 
-		roster.removeItem(item);
+		if(item instanceof IRoster){
+			roster = null;
+		}else{
+			roster.removeItem(item);			
+		}
 
 		/*
 		 * selected item might be in a group and not directly belonging to
@@ -104,10 +110,12 @@ public class SelectedContactsView extends ViewPart {
 				}
 			}
 		}
+		List<IRosterEntry> filterOnlineUser = RosterUtil.filterOnlineUser(roster);
+		if(filterOnlineUser.isEmpty()){
+			roster = null;
+		}
 
-		this.selectedContactsViewer.setInput(roster);
-		this.selectedContactsViewer.expandAll();
-		this.pcs.firePropertyChange("Input changed", null, roster);
+		this.setInput(roster);
 	}
 
 	private void initDragAndDropSupport() {
@@ -152,17 +160,19 @@ public class SelectedContactsView extends ViewPart {
 	 */
 	@SuppressWarnings("unchecked")
 	protected void setInput(Object input) {
-		IRoster roster = new Roster(null);
-
-		// put old input to roster
 		IRoster oldInput = (IRoster) this.selectedContactsViewer.getInput();
+
+		IRoster roster = new Roster(null);
 		if (oldInput != null) {
 			roster.getItems().addAll(oldInput.getItems());
 		}
 
 		// check if roster contains already the given input
-		if (!RosterUtil.hasRosterItem(roster, (IRosterItem) input)) {
+		if (input != null
+				&& !RosterUtil.hasRosterItem(roster, (IRosterItem) input)) {
 			roster.getItems().add(input);
+		}else{
+			roster = null;
 		}
 		/*
 		 * now roster has old and new input
@@ -177,11 +187,22 @@ public class SelectedContactsView extends ViewPart {
 	@Override
 	public void setFocus() {
 		this.selectedContactsViewer.getControl().setFocus();
-
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {
 		this.pcs.addPropertyChangeListener(listener);
+	}
+
+	@SuppressWarnings("unchecked")
+	@Override
+	public Object getAdapter(Class adapter) {
+		if (adapter.getName().equals(IPropertyChangeListener.class.getName())) {
+			return this.pcs;
+		}
+		if (adapter.getName().equals(IRoster.class.getName())) {
+			return this.selectedContactsViewer.getInput();
+		}
+		return null;
 	}
 
 	/**

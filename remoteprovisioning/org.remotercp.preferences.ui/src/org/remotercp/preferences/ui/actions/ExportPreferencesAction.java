@@ -18,7 +18,7 @@ import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.ui.PreferencesUIActivator;
-import org.remotercp.preferences.ui.editor.PreferenceEditorInput;
+import org.remotercp.preferences.ui.editor.PreferencesEditorInput;
 
 public class ExportPreferencesAction implements IEditorActionDelegate {
 
@@ -33,33 +33,38 @@ public class ExportPreferencesAction implements IEditorActionDelegate {
 		FileDialog saveDialog = new FileDialog(this.targetEditor
 				.getEditorSite().getShell(), SWT.SAVE);
 		String path = saveDialog.open();
-		File exportPreferences = new File(path);
 
-		PreferenceEditorInput input = (PreferenceEditorInput) this.targetEditor
-				.getEditorInput();
-		File preferences = input.getPreferences();
+		// if dialog has not been canceled export the file
+		if (path != null) {
 
-		// copy preferences to local file
-		try {
-			InputStream in = new FileInputStream(preferences);
-			OutputStream out = new FileOutputStream(exportPreferences);
+			File exportPreferences = new File(path);
 
-			// transfer bytes from in to out
-			byte[] buf = new byte[1024];
-			int len;
-			while ((len = in.read(buf)) > 0) {
-				out.write(buf, 0, len);
+			PreferencesEditorInput input = (PreferencesEditorInput) this.targetEditor
+					.getEditorInput();
+			File preferences = input.getPreferences();
+
+			// copy preferences to local file
+			try {
+				InputStream in = new FileInputStream(preferences);
+				OutputStream out = new FileOutputStream(exportPreferences);
+
+				// transfer bytes from in to out
+				byte[] buf = new byte[1024];
+				int len;
+				while ((len = in.read(buf)) > 0) {
+					out.write(buf, 0, len);
+				}
+			} catch (FileNotFoundException e) {
+				IStatus error = new Status(Status.ERROR,
+						PreferencesUIActivator.PLUGIN_ID,
+						"Error while trying to export preferences occured", e);
+				ErrorView.addError(error);
+			} catch (IOException e) {
+				IStatus error = new Status(Status.ERROR,
+						PreferencesUIActivator.PLUGIN_ID,
+						"Error while trying to export preferences occured", e);
+				ErrorView.addError(error);
 			}
-		} catch (FileNotFoundException e) {
-			IStatus error = new Status(Status.ERROR,
-					PreferencesUIActivator.PLUGIN_ID,
-					"Error while trying to export preferences occured", e);
-			ErrorView.addError(error);
-		} catch (IOException e) {
-			IStatus error = new Status(Status.ERROR,
-					PreferencesUIActivator.PLUGIN_ID,
-					"Error while trying to export preferences occured", e);
-			ErrorView.addError(error);
 		}
 
 	}

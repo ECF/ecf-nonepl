@@ -13,5 +13,7 @@ public class ImageKeys {
 	public static final String INFO = "icons/info6.jpeg";
 
 	public static final String CLEAR = "icons/clear.gif";
+	
+	public static final String OK = "icons/good_16x16.png";
 
 }

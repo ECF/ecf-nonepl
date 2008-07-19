@@ -10,5 +10,22 @@
             name="Provisioning Editor">
       </editor>
    </extension>
+   <extension
+         point="org.eclipse.ui.viewActions">
+      <viewContribution
+            id="org.remotercp.provisioning.ui.provisioningViewContribution"
+            targetID="org.remotercp.contacts.selectedContactsView">
+         <action
+               class="org.remotercp.provisioning.actions.InstalledFeaturesAction"
+               icon="icons/features.png"
+               id="org.remotercp.provisioning.ui.installedFeaturesAction"
+               label="Get installed features"
+               menubarPath="additions"
+               style="push"
+               toolbarPath="additions"
+               tooltip="Get remote installed features for selected users">
+         </action>
+      </viewContribution>
+   </extension>
 
 </plugin>

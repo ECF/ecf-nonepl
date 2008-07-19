@@ -1,20 +1,22 @@
 package org.remotercp.preferences.ui.actions;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.io.File;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.presence.roster.IRosterItem;
+import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.jface.action.IAction;
+import org.eclipse.jface.util.IPropertyChangeListener;
 import org.eclipse.jface.viewers.ISelection;
-import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.ui.IObjectActionDelegate;
+import org.eclipse.ui.IViewActionDelegate;
+import org.eclipse.ui.IViewPart;
 import org.eclipse.ui.IWorkbenchPage;
-import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.InvalidSyntaxException;
@@ -23,16 +25,43 @@ import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.ui.PreferencesUIActivator;
 import org.remotercp.preferences.ui.editor.PreferenceEditor;
-import org.remotercp.preferences.ui.editor.PreferenceEditorInput;
+import org.remotercp.preferences.ui.editor.PreferencesEditorInput;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.roster.RosterUtil;
 
-public class PreferencesAction implements IObjectActionDelegate {
+public class RemotePreferencesAction implements IViewActionDelegate {
 
-	private IStructuredSelection selection;
+	private IViewPart view;
 
-	public void setActivePart(IAction action, IWorkbenchPart targetPart) {
-		// nothing to do yet
+	private IRoster roster;
+
+	private IAction action;
+
+	public void init(IViewPart view) {
+		this.view = view;
+
+		// register listener for changes in view.
+		PropertyChangeSupport pcs = (PropertyChangeSupport) this.view
+				.getAdapter(IPropertyChangeListener.class);
+		pcs.addPropertyChangeListener(getPropertyChangeListener());
+
+		this.roster = (IRoster) this.view.getAdapter(IRoster.class);
+	}
+
+	private PropertyChangeListener getPropertyChangeListener() {
+		return new PropertyChangeListener() {
+			public void propertyChange(PropertyChangeEvent event) {
+				RemotePreferencesAction.this.roster = (IRoster) event
+						.getNewValue();
+
+				if (RemotePreferencesAction.this.roster == null) {
+					RemotePreferencesAction.this.action.setEnabled(false);
+				} else {
+					RemotePreferencesAction.this.action.setEnabled(true);
+				}
+			}
+
+		};
 	}
 
 	public void run(IAction action) {
@@ -43,9 +72,7 @@ public class PreferencesAction implements IObjectActionDelegate {
 		try {
 
 			// get online user
-			ID[] userIDs = RosterUtil
-					.filterOnlineUserAsArray((IRosterItem) this.selection
-							.getFirstElement());
+			ID[] userIDs = RosterUtil.filterOnlineUserAsArray(this.roster);
 
 			List<IRemotePreferenceService> remoteService = sessionService
 					.getRemoteService(IRemotePreferenceService.class, userIDs,
@@ -54,13 +81,17 @@ public class PreferencesAction implements IObjectActionDelegate {
 			IWorkbenchPage activePage = PlatformUI.getWorkbench()
 					.getActiveWorkbenchWindow().getActivePage();
 
-			// usually only one service should be available per user.
-			for (IRemotePreferenceService prefService : remoteService) {
-				File preferences = prefService.getPreferences(new String[] {});
+			/* open for each selected user a new editor */
+			for (int user = 0; user < userIDs.length; user++) {
+				IRemotePreferenceService remotePreferenceService = remoteService
+						.get(user);
+				ID userId = userIDs[user];
+				File preferences = remotePreferenceService
+						.getPreferences(new String[] {});
 
 				/* open editor */
-				PreferenceEditorInput prefInput = new PreferenceEditorInput(
-						preferences);
+				PreferencesEditorInput prefInput = new PreferencesEditorInput(
+						preferences, userId);
 				activePage.openEditor(prefInput, PreferenceEditor.EDITOR_ID);
 			}
 
@@ -83,33 +114,14 @@ public class PreferencesAction implements IObjectActionDelegate {
 					"Unable to open preference ediro", e);
 			ErrorView.addError(editorError);
 		}
-
 	}
 
-	@SuppressWarnings("unchecked")
 	public void selectionChanged(IAction action, ISelection selection) {
-		if (selection instanceof IStructuredSelection) {
-			this.selection = (IStructuredSelection) selection;
-
-			// preference support is only for one user at time available
-			int selectedElements = 0;
-			Iterator iter = this.selection.iterator();
-			while (iter.hasNext()) {
-				iter.next();
-				selectedElements += 1;
-			}
-
-			boolean isItemOnline = RosterUtil
-					.isRosterItemOnline((IRosterItem) this.selection
-							.getFirstElement());
-
-			if (selectedElements > 1) {
-				action.setEnabled(false);
-			} else if (isItemOnline) {
-				action.setEnabled(isItemOnline);
-			}
-
-		}
+		this.action = action;
+		// if (this.roster == null
+		// || RosterUtil.getRosterEntries(this.roster).isEmpty()) {
+		// this.action.setEnabled(false);
+		// }
 	}
 
 }

@@ -2,16 +2,20 @@ package org.remotercp.preferences.ui.editor;
 
 import java.io.File;
 
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IPersistableElement;
 
-public class PreferenceEditorInput implements IEditorInput {
+public class PreferencesEditorInput implements IEditorInput {
 
 	private final File preferences;
 
-	public PreferenceEditorInput(File preferences) {
+	private ID userId;
+
+	public PreferencesEditorInput(File preferences, ID userId) {
 		this.preferences = preferences;
+		this.userId = userId;
 	}
 
 	public boolean exists() {
@@ -46,6 +50,10 @@ public class PreferenceEditorInput implements IEditorInput {
 
 	public File getPreferences() {
 		return preferences;
+	}
+
+	public ID getUserId() {
+		return userId;
 	}
 
 }
