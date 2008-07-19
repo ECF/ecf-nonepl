@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
+import org.eclipse.jface.viewers.CheckboxCellEditor;
 import org.eclipse.jface.viewers.ICellModifier;
 import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
@@ -35,6 +36,7 @@ import org.eclipse.ui.part.EditorPart;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.ui.EditableTableItem;
 import org.remotercp.preferences.ui.PreferencesUIActivator;
+import org.remotercp.preferences.ui.images.ImageKeys;
 import org.remotercp.util.preferences.PreferencesUtil;
 
 public class PreferenceEditor extends EditorPart {
@@ -57,13 +59,13 @@ public class PreferenceEditor extends EditorPart {
 
 	private enum TableColumns {
 
-		KEY("Key", 0), LOCAL_VALUE("Local value", 1), REMOTE_VALUE(
-				"Remote value", 2);
+		KEY("Key", 0), LOCAL_VALUE("Local value", 1), ARROWS("Transfer", 2), REMOTE_VALUE(
+				"Remote value", 3);
 
 		private final String label;
-		private final int columnIndex;
+		private int columnIndex;
 
-		TableColumns(String label, int columnIndex) {
+		TableColumns(String label, final int columnIndex) {
 			this.label = label;
 			this.columnIndex = columnIndex;
 		}
@@ -146,13 +148,18 @@ public class PreferenceEditor extends EditorPart {
 			this.preferencesViewer.setColumnProperties(new String[] {
 					TableColumns.KEY.getLabel(),
 					TableColumns.REMOTE_VALUE.getLabel(),
+					TableColumns.ARROWS.getLabel(),
 					TableColumns.LOCAL_VALUE.getLabel() });
 
 			Table table = this.preferencesViewer.getTable();
 
-			/* only remote value is editable */
+			/*
+			 * only remote value is editable. checkbox cell editor is used as a
+			 * workaround for arrow-buttons
+			 */
 			this.preferencesViewer.setCellEditors(new CellEditor[] { null,
-					new TextCellEditor(table), null });
+					new TextCellEditor(table), new CheckboxCellEditor(table),
+					null });
 
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(table);
 			table.setLinesVisible(true);
@@ -165,6 +172,10 @@ public class PreferenceEditor extends EditorPart {
 			TableColumn remoteValue = new TableColumn(table, SWT.LEFT);
 			remoteValue.setText(TableColumns.REMOTE_VALUE.getLabel());
 			remoteValue.setWidth(200);
+
+			TableColumn arrow = new TableColumn(table, SWT.CENTER);
+			arrow.setText(TableColumns.ARROWS.getLabel());
+			arrow.setWidth(60);
 
 			TableColumn localValue = new TableColumn(table, SWT.LEFT);
 			localValue.setText(TableColumns.LOCAL_VALUE.getLabel());
@@ -237,8 +248,23 @@ public class PreferenceEditor extends EditorPart {
 		private Color different = new Color(getEditorSite().getShell()
 				.getDisplay(), 255, 228, 225);
 
+		private Image arrowLeft = PreferencesUIActivator
+				.imageDescriptorFromPlugin(PreferencesUIActivator.PLUGIN_ID,
+						ImageKeys.ARROW_LEFT).createImage();
+
 		public Image getColumnImage(Object element, int columnIndex) {
-			return null;
+			Image image = null;
+			EditableTableItem item = (EditableTableItem) element;
+			String key = item.getKey();
+
+			if (columnIndex == TableColumns.ARROWS.columnIndex) {
+				if (key.startsWith(configurationScope)
+						|| key.startsWith(instanceScope)) {
+					image = arrowLeft;
+				}
+
+			}
+			return image;
 		}
 
 		public String getColumnText(Object element, int columnIndex) {
@@ -262,12 +288,16 @@ public class PreferenceEditor extends EditorPart {
 				}
 				break;
 			case 2:
+				// do nothing
+				break;
+			case 3:
 				/* do not display values other then above described scopes */
 				if (key.startsWith(configurationScope)
 						|| key.startsWith(instanceScope)) {
 					columnText = item.getLocalValue();
 				}
 				break;
+
 			default:
 				break;
 			}
@@ -305,7 +335,8 @@ public class PreferenceEditor extends EditorPart {
 			if (key.startsWith(configurationScope)
 					|| key.startsWith(instanceScope)) {
 
-				if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
+				if (property.equals(TableColumns.REMOTE_VALUE.getLabel())
+						|| property.equals(TableColumns.ARROWS.getLabel())) {
 					return true;
 				}
 			}
@@ -318,21 +349,34 @@ public class PreferenceEditor extends EditorPart {
 			if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
 				value = item.getRemoteValue();
 			}
+			if (property.equals(TableColumns.ARROWS.getLabel())) {
+				return true;
+			}
 			return value;
 		}
 
 		public void modify(Object element, String property, Object value) {
 			TableItem tableItem = (TableItem) element;
 			EditableTableItem item = (EditableTableItem) tableItem.getData();
+
 			if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
-				item.setRemoteValue(value.toString());
-				// mark preference as changed/not changed
-				if (item.getRemoteValue().equals(item.getLocalValue())) {
-					item.setChanged(false);
-				} else {
-					item.setChanged(true);
+				if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
+					item.setRemoteValue(value.toString());
+					// mark preference as changed/not changed
+					if (item.getRemoteValue().equals(item.getLocalValue())) {
+						item.setChanged(false);
+					} else {
+						item.setChanged(true);
+					}
 				}
 			}
+
+			if (property.equals(TableColumns.ARROWS.getLabel())) {
+				if (item.getLocalValue() != null) {
+					item.setRemoteValue(item.getLocalValue());
+				}
+			}
+
 			preferencesViewer.refresh();
 		}
 	}
