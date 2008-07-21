@@ -10,6 +10,7 @@ import java.util.TreeMap;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -26,6 +27,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
@@ -36,6 +38,7 @@ import org.eclipse.ui.part.EditorPart;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.ui.EditableTableItem;
 import org.remotercp.preferences.ui.PreferencesUIActivator;
+import org.remotercp.preferences.ui.actions.ImportPreferencesAction;
 import org.remotercp.preferences.ui.images.ImageKeys;
 import org.remotercp.util.preferences.PreferencesUtil;
 
@@ -56,6 +59,8 @@ public class PreferenceEditor extends EditorPart {
 	private final static String configurationScope = "/configuration/";
 
 	private final static String instanceScope = "/instance/";
+
+	private ID userId;
 
 	private enum TableColumns {
 
@@ -104,6 +109,8 @@ public class PreferenceEditor extends EditorPart {
 		PreferencesEditorInput editorInput = (PreferencesEditorInput) input;
 		preferences = editorInput.getPreferences();
 
+		userId = editorInput.getUserId();
+
 		try {
 			this.preferencesMap = PreferencesUtil
 					.createPreferencesFromFile(preferences);
@@ -119,15 +126,23 @@ public class PreferenceEditor extends EditorPart {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	@Override
 	public boolean isDirty() {
-		// return !this.preferenesMapClone.equals(this.preferences);
+		List<EditableTableItem> items = (List<EditableTableItem>) this.preferencesViewer
+				.getInput();
+
+		for (EditableTableItem item : items) {
+			if (item.isChanged()) {
+				return true;
+			}
+		}
 		return false;
 	}
 
 	@Override
 	public boolean isSaveAsAllowed() {
-		// return !this.preferenesMapClone.equals(this.preferences);
+
 		return true;
 	}
 
@@ -136,8 +151,10 @@ public class PreferenceEditor extends EditorPart {
 		Group main = new Group(parent, SWT.None);
 		main.setLayout(new GridLayout(1, false));
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(main);
-
 		{
+			new Label(main, SWT.READ_ONLY).setText("Preferenes for user: "
+					+ this.userId.getName());
+
 			this.preferencesViewer = new TableViewer(main);
 			this.preferencesViewer
 					.setContentProvider(new ArrayContentProvider());
@@ -182,6 +199,7 @@ public class PreferenceEditor extends EditorPart {
 			localValue.setWidth(200);
 
 		}
+
 		this.initViewer();
 	}
 
@@ -259,7 +277,13 @@ public class PreferenceEditor extends EditorPart {
 
 			if (columnIndex == TableColumns.ARROWS.columnIndex) {
 				if (key.startsWith(configurationScope)
-						|| key.startsWith(instanceScope)) {
+						|| key.startsWith(instanceScope)
+						/*
+						 * show image-buttons only if local preferences have
+						 * been imported
+						 */
+						&& importedPreferencesMap != null
+						&& !importedPreferencesMap.isEmpty()) {
 					image = arrowLeft;
 				}
 
@@ -288,7 +312,7 @@ public class PreferenceEditor extends EditorPart {
 				}
 				break;
 			case 2:
-				// do nothing
+				// do nothing. Image-buttons are displayed here
 				break;
 			case 3:
 				/* do not display values other then above described scopes */
@@ -349,6 +373,8 @@ public class PreferenceEditor extends EditorPart {
 			if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
 				value = item.getRemoteValue();
 			}
+
+			// XXX: workaround to use images as buttons in cells
 			if (property.equals(TableColumns.ARROWS.getLabel())) {
 				return true;
 			}
@@ -360,29 +386,31 @@ public class PreferenceEditor extends EditorPart {
 			EditableTableItem item = (EditableTableItem) tableItem.getData();
 
 			if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
-				if (property.equals(TableColumns.REMOTE_VALUE.getLabel())) {
-					item.setRemoteValue(value.toString());
-					// mark preference as changed/not changed
-					if (item.getRemoteValue().equals(item.getLocalValue())) {
-						item.setChanged(false);
-					} else {
-						item.setChanged(true);
-					}
+				item.setRemoteValue(value.toString());
+				// mark preference as changed/not changed
+				if (!value.toString().equals(preferencesMap.get(item.getKey()))) {
+					item.setChanged(true);
+				} else {
+					item.setChanged(false);
 				}
 			}
 
+			// BUTTON has been pushed
 			if (property.equals(TableColumns.ARROWS.getLabel())) {
 				if (item.getLocalValue() != null) {
 					item.setRemoteValue(item.getLocalValue());
+					item.setChanged(true);
 				}
 			}
 
 			preferencesViewer.refresh();
+			firePropertyChange(PROP_DIRTY);
 		}
 	}
 
 	/**
-	 * Sets the imported preferences
+	 * Sets the imported preferences. This method is called from the
+	 * {@link ImportPreferencesAction}
 	 * 
 	 * @param importedPreferences
 	 */
@@ -391,7 +419,7 @@ public class PreferenceEditor extends EditorPart {
 			this.importedPreferencesMap = PreferencesUtil
 					.createPreferencesFromFile(importedPreferences);
 
-			// create viewer input with local preferences
+			// create viewer input with combined, local and remote preferences
 			this.createViewerInput();
 		} catch (IOException e) {
 			IStatus error = new Status(Status.ERROR,
