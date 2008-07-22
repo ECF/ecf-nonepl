@@ -76,14 +76,19 @@ public class SelectedContactsView extends ViewPart {
 				});
 	}
 
+	/*
+	 * This method is still buggy! Think of an easier way to remove contacts
+	 * from tree
+	 */
 	private void removeTreeItem(IStructuredSelection selection) {
-		Roster roster = (Roster) this.selectedContactsViewer.getInput();
+		Object oldInput = this.selectedContactsViewer.getInput();
+		Roster roster = (Roster) oldInput;
 		IRosterItem item = (IRosterItem) selection.getFirstElement();
 
-		if(item instanceof IRoster){
+		if (item instanceof IRoster) {
 			roster = null;
-		}else{
-			roster.removeItem(item);			
+		} else {
+			roster.removeItem(item);
 		}
 
 		/*
@@ -110,12 +115,15 @@ public class SelectedContactsView extends ViewPart {
 				}
 			}
 		}
-		List<IRosterEntry> filterOnlineUser = RosterUtil.filterOnlineUser(roster);
-		if(filterOnlineUser.isEmpty()){
+		List<IRosterEntry> filterOnlineUser = RosterUtil
+				.filterOnlineUser(roster);
+		if (filterOnlineUser.isEmpty()) {
 			roster = null;
 		}
 
-		this.setInput(roster);
+		// this.setInput(roster);
+		this.selectedContactsViewer.refresh();
+		pcs.firePropertyChange("Input changed", oldInput, roster);
 	}
 
 	private void initDragAndDropSupport() {
@@ -171,7 +179,7 @@ public class SelectedContactsView extends ViewPart {
 		if (input != null
 				&& !RosterUtil.hasRosterItem(roster, (IRosterItem) input)) {
 			roster.getItems().add(input);
-		}else{
+		} else {
 			roster = null;
 		}
 		/*
