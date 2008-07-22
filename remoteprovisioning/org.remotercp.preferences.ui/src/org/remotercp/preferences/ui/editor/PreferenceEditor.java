@@ -10,6 +10,7 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.CellEditor;
@@ -31,14 +32,19 @@ import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.TableColumn;
 import org.eclipse.swt.widgets.TableItem;
 import org.eclipse.ui.IEditorInput;
+import org.eclipse.ui.IEditorPart;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.osgi.framework.InvalidSyntaxException;
+import org.remotercp.common.preferences.IRemotePreferenceService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.ui.EditableTableItem;
 import org.remotercp.preferences.ui.PreferencesUIActivator;
 import org.remotercp.preferences.ui.actions.ImportPreferencesAction;
 import org.remotercp.preferences.ui.images.ImageKeys;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.preferences.PreferencesUtil;
 
 public class PreferenceEditor extends EditorPart {
@@ -91,7 +97,6 @@ public class PreferenceEditor extends EditorPart {
 	@Override
 	public void doSaveAs() {
 		// do nothing yet
-
 	}
 
 	@Override
@@ -123,6 +128,37 @@ public class PreferenceEditor extends EditorPart {
 	@Override
 	public boolean isSaveAsAllowed() {
 		return true;
+	}
+
+	/**
+	 * This method will be called after the save operation has been performed.
+	 * 
+	 * XXX: remoteService.get(0).getPreferences is quite dangerous to use. Think
+	 * of a different approach
+	 */
+	public void refresh() {
+		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
+				PreferencesUIActivator.getBundleContext(),
+				ISessionService.class);
+		try {
+			List<IRemotePreferenceService> remoteService = sessionService
+					.getRemoteService(IRemotePreferenceService.class,
+							new ID[] { this.userId }, null);
+
+			this.preferencesMap = remoteService.get(0).getPreferences(
+					new String[] {});
+			this.createViewerInput();
+
+			// refresh dirty flag
+			firePropertyChange(IEditorPart.PROP_DIRTY);
+
+		} catch (ECFException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (InvalidSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	@Override
@@ -180,27 +216,29 @@ public class PreferenceEditor extends EditorPart {
 
 		}
 
-		this.initViewer();
+		// this.initViewer();
+		this.createViewerInput();
 	}
 
-	/*
-	 * At the beginning onyl remote preferences are loaded therefore the table
-	 * does only display remote preferences. Afterwards a user can select a file
-	 * with local preferences which will be added to the table.
-	 */
-	private void initViewer() {
-		List<EditableTableItem> items = new ArrayList<EditableTableItem>();
-
-		for (String key : this.preferencesMap.keySet()) {
-			EditableTableItem item = new EditableTableItem();
-			String value = this.preferencesMap.get(key);
-
-			item.setKey(key);
-			item.setRemoteValue(value);
-			items.add(item);
-		}
-		this.preferencesViewer.setInput(items);
-	}
+	// /*
+	// * At the beginning onyl remote preferences are loaded therefore the table
+	// * does only display remote preferences. Afterwards a user can select a
+	// file
+	// * with local preferences which will be added to the table.
+	// */
+	// private void initViewer() {
+	// List<EditableTableItem> items = new ArrayList<EditableTableItem>();
+	//
+	// for (String key : this.preferencesMap.keySet()) {
+	// EditableTableItem item = new EditableTableItem();
+	// String value = this.preferencesMap.get(key);
+	//
+	// item.setKey(key);
+	// item.setRemoteValue(value);
+	// items.add(item);
+	// }
+	// this.preferencesViewer.setInput(items);
+	// }
 
 	/*
 	 * Create a mapping between local and remote preferences
@@ -212,7 +250,8 @@ public class PreferenceEditor extends EditorPart {
 			item.setKey(key);
 			item.setRemoteValue(this.preferencesMap.get(key));
 
-			if (this.importedPreferencesMap.containsKey(key)) {
+			if (this.importedPreferencesMap != null
+					&& this.importedPreferencesMap.containsKey(key)) {
 				item.setLocalValue(this.importedPreferencesMap.get(key));
 			}
 			items.add(item);

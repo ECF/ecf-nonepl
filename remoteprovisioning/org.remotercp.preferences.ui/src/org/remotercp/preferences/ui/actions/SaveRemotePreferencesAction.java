@@ -30,6 +30,8 @@ public class SaveRemotePreferencesAction implements IEditorActionDelegate {
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		this.targetEditor = (PreferenceEditor) targetEditor;
+		
+		// also 
 		this.targetEditor.getEditorSite().getActionBars()
 				.setGlobalActionHandler(ActionFactory.SAVE.getId(), action);
 	}
@@ -79,6 +81,9 @@ public class SaveRemotePreferencesAction implements IEditorActionDelegate {
 							+ userId.getName(), e);
 			ErrorView.addError(error);
 		}
+		
+		// refresh editor
+		this.targetEditor.refresh();
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
