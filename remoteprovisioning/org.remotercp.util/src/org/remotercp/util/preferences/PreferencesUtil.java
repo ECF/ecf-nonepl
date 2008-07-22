@@ -1,9 +1,12 @@
 package org.remotercp.util.preferences;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.util.Map;
 import java.util.SortedMap;
 import java.util.TreeMap;
 
@@ -34,7 +37,6 @@ public class PreferencesUtil {
 						value = "";
 					preferences.put(key, value);
 				}
-				// System.out.println(line);
 			}
 
 			count++;
@@ -45,4 +47,29 @@ public class PreferencesUtil {
 		return preferences;
 	}
 
+	public static File exportPreferencesToFile(Map<String, String> preferences,
+			String path) throws IOException {
+		File preferencesFile = null;
+
+		// check whether user has entred a valid name for file
+		if (path.endsWith(".ini")) {
+			preferencesFile = new File(path);
+		} else {
+			preferencesFile = new File(path + File.pathSeparator
+					+ "preferences.ini");
+		}
+
+		FileWriter fileStream = new FileWriter(preferencesFile);
+		BufferedWriter writer = new BufferedWriter(fileStream);
+
+		for (String key : preferences.keySet()) {
+			String value = preferences.get(key);
+			writer.write(key + "=" + value);
+			// write line break
+			writer.write("\r\n");
+		}
+
+		writer.close();
+		return preferencesFile;
+	}
 }
