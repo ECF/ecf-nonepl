@@ -40,6 +40,8 @@
          </action>
          <action
                class="org.remotercp.preferences.ui.actions.SaveRemotePreferencesAction"
+               disabledIcon="icons/filesave_remote_grey.png"
+               hoverIcon="icons/filesave_remote.png"
                icon="icons/filesave_remote.png"
                id="org.remotercp.preferences.ui.saveAction"
                label="Save remote preferences"
