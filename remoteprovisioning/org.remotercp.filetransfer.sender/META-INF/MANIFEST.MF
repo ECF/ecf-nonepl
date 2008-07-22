@@ -8,5 +8,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.remotercp.ecf,
  org.remotercp.libs,
- org.remotercp.util
+ org.remotercp.util,
+ org.remotercp.errorhandling
 Eclipse-LazyStart: true

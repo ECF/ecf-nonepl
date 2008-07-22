@@ -12,6 +12,10 @@ import org.remotercp.filetransfer.sender.RemoteFileSender;
 import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.roster.RosterUtil;
 
+/*
+ * This action has been formally used for popup menus.
+ */
+@Deprecated
 public class SendFileAction implements IObjectActionDelegate {
 
 	private IStructuredSelection selection;

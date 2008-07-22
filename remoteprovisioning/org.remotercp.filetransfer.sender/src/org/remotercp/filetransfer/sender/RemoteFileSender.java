@@ -28,8 +28,12 @@ import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewPart;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.internal.progress.ProgressView;
 import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.filesize.FilesizeConverterUtil;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
@@ -205,6 +209,7 @@ public class RemoteFileSender {
 			progressJob = new Job("Sending data to: " + userID.getName()) {
 				@Override
 				protected IStatus run(IProgressMonitor monitor) {
+
 					IStatus progressResult = handleProgress(monitor,
 							fileTransfer);
 
@@ -261,6 +266,9 @@ public class RemoteFileSender {
 
 			monitor.beginTask("Sending file: " + fileName, (int) fileLength);
 
+			// set focus
+			setFokusOnProgressView();
+
 			/*
 			 * Run the loop till:
 			 * 
@@ -305,6 +313,28 @@ public class RemoteFileSender {
 			}
 			return Status.OK_STATUS;
 		}
+
+	}
+
+	protected void setFokusOnProgressView() {
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				try {
+
+					// bring view to front
+					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
+							.getActivePage().showView(
+									"org.eclipse.ui.views.ProgressView");
+
+				} catch (PartInitException e) {
+					/*
+					 * do nothing if view not found. A working application is
+					 * more important than a focus on view
+					 */
+					e.printStackTrace();
+				}
+			}
+		});
 
 	}
 }
