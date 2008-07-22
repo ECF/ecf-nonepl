@@ -3,8 +3,8 @@ package org.remotercp.preferences.ui.actions;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
-import java.io.File;
 import java.util.List;
+import java.util.SortedMap;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -86,7 +86,7 @@ public class RemotePreferencesAction implements IViewActionDelegate {
 				IRemotePreferenceService remotePreferenceService = remoteService
 						.get(user);
 				ID userId = userIDs[user];
-				File preferences = remotePreferenceService
+				SortedMap<String, String> preferences = remotePreferenceService
 						.getPreferences(new String[] {});
 
 				/* open editor */

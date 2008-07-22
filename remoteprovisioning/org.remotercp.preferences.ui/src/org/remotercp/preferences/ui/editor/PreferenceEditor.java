@@ -46,8 +46,6 @@ public class PreferenceEditor extends EditorPart {
 
 	public static final String EDITOR_ID = "org.remotercp.preferences.ui.preferenceEditor";
 
-	private File preferences;
-
 	private TableViewer preferencesViewer;
 
 	private SortedMap<String, String> preferenesMapClone;
@@ -107,23 +105,13 @@ public class PreferenceEditor extends EditorPart {
 		setSite(site);
 
 		PreferencesEditorInput editorInput = (PreferencesEditorInput) input;
-		preferences = editorInput.getPreferences();
+		this.preferencesMap = editorInput.getPreferences();
+
+		// the clone is used to determine changes in original preferences
+		this.preferenesMapClone = new TreeMap<String, String>();
+		this.preferenesMapClone.putAll(this.preferencesMap);
 
 		userId = editorInput.getUserId();
-
-		try {
-			this.preferencesMap = PreferencesUtil
-					.createPreferencesFromFile(preferences);
-
-			// the clone is used to determine changes in original preferences
-			this.preferenesMapClone = new TreeMap<String, String>();
-			this.preferenesMapClone.putAll(this.preferencesMap);
-		} catch (IOException e) {
-			IStatus error = new Status(Status.ERROR,
-					PreferencesUIActivator.PLUGIN_ID,
-					"Unable to create preferences from file", e);
-			ErrorView.addError(error);
-		}
 	}
 
 	@SuppressWarnings("unchecked")

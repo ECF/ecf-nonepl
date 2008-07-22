@@ -1,6 +1,6 @@
 package org.remotercp.preferences.ui.editor;
 
-import java.io.File;
+import java.util.SortedMap;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -9,11 +9,12 @@ import org.eclipse.ui.IPersistableElement;
 
 public class PreferencesEditorInput implements IEditorInput {
 
-	private final File preferences;
+	private final SortedMap<String, String> preferences;
 
 	private ID userId;
 
-	public PreferencesEditorInput(File preferences, ID userId) {
+	public PreferencesEditorInput(SortedMap<String, String> preferences,
+			ID userId) {
 		this.preferences = preferences;
 		this.userId = userId;
 	}
@@ -48,7 +49,7 @@ public class PreferencesEditorInput implements IEditorInput {
 		return null;
 	}
 
-	public File getPreferences() {
+	public SortedMap<String, String> getPreferences() {
 		return preferences;
 	}
 

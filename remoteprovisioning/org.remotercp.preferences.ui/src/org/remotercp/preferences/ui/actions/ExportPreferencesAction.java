@@ -1,12 +1,7 @@
 package org.remotercp.preferences.ui.actions;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -19,6 +14,7 @@ import org.eclipse.ui.IEditorPart;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.ui.PreferencesUIActivator;
 import org.remotercp.preferences.ui.editor.PreferencesEditorInput;
+import org.remotercp.util.preferences.PreferencesUtil;
 
 public class ExportPreferencesAction implements IEditorActionDelegate {
 
@@ -37,34 +33,41 @@ public class ExportPreferencesAction implements IEditorActionDelegate {
 		// if dialog has not been canceled export the file
 		if (path != null) {
 
-			File exportPreferences = new File(path);
-
-			PreferencesEditorInput input = (PreferencesEditorInput) this.targetEditor
+		PreferencesEditorInput input = (PreferencesEditorInput) this.targetEditor
 					.getEditorInput();
-			File preferences = input.getPreferences();
-
-			// copy preferences to local file
-			try {
-				InputStream in = new FileInputStream(preferences);
-				OutputStream out = new FileOutputStream(exportPreferences);
-
-				// transfer bytes from in to out
-				byte[] buf = new byte[1024];
-				int len;
-				while ((len = in.read(buf)) > 0) {
-					out.write(buf, 0, len);
-				}
-			} catch (FileNotFoundException e) {
-				IStatus error = new Status(Status.ERROR,
-						PreferencesUIActivator.PLUGIN_ID,
-						"Error while trying to export preferences occured", e);
-				ErrorView.addError(error);
+			 Map<String, String> preferences = input.getPreferences();
+			 
+			 try {
+				PreferencesUtil.exportPreferencesToFile(preferences, path);
 			} catch (IOException e) {
 				IStatus error = new Status(Status.ERROR,
 						PreferencesUIActivator.PLUGIN_ID,
 						"Error while trying to export preferences occured", e);
 				ErrorView.addError(error);
 			}
+
+//			// copy preferences to local file
+//			try {
+//				InputStream in = new FileInputStream(preferences);
+//				OutputStream out = new FileOutputStream(exportPreferences);
+//
+//				// transfer bytes from in to out
+//				byte[] buf = new byte[1024];
+//				int len;
+//				while ((len = in.read(buf)) > 0) {
+//					out.write(buf, 0, len);
+//				}
+//			} catch (FileNotFoundException e) {
+//				IStatus error = new Status(Status.ERROR,
+//						PreferencesUIActivator.PLUGIN_ID,
+//						"Error while trying to export preferences occured", e);
+//				ErrorView.addError(error);
+//			} catch (IOException e) {
+//				IStatus error = new Status(Status.ERROR,
+//						PreferencesUIActivator.PLUGIN_ID,
+//						"Error while trying to export preferences occured", e);
+//				ErrorView.addError(error);
+//			}
 		}
 
 	}
