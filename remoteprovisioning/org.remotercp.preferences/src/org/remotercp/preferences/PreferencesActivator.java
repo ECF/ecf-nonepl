@@ -56,13 +56,13 @@ public class PreferencesActivator extends AbstractUIPlugin {
 	}
 
 	protected void registerRemoteServices() {
-		this.sessionService = OsgiServiceLocatorUtil.getOSGiService(
-				bundleContext, ISessionService.class);
-		Assert.isNotNull(sessionService);
-
-		this.sessionService.registerRemoteService(
-				IRemotePreferenceService.class.getName(),
-				new RemotePreferencesServiceImpl(), null);
+//		this.sessionService = OsgiServiceLocatorUtil.getOSGiService(
+//				bundleContext, ISessionService.class);
+//		Assert.isNotNull(sessionService);
+//
+//		this.sessionService.registerRemoteService(
+//				IRemotePreferenceService.class.getName(),
+//				new RemotePreferencesServiceImpl(), null);
 	}
 
 	/**

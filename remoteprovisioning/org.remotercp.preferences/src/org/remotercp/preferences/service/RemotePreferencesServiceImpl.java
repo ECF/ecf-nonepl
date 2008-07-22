@@ -6,7 +6,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
+import java.util.SortedMap;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -22,14 +24,19 @@ import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
 import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.common.status.SerializableStatus;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
+import org.remotercp.util.preferences.PreferencesUtil;
 
 public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 	private IPreferencesService preferenceService;
 
-	public File getPreferences(String[] preferenceFilter) throws ECFException {
-		File preferences = null;
+	public SortedMap<String, String> getPreferences(String[] preferenceFilter)
+			throws ECFException {
+		SortedMap<String, String> preferencesMap = null;
+		File preferencesFile = null;
 
 		this.preferenceService = Platform.getPreferencesService();
 		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
@@ -37,17 +44,20 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		// this.printAllPreferences(rootNode);
 
 		try {
-			preferences = File.createTempFile("preferences", ".ini");
+			preferencesFile = File.createTempFile("preferences", ".ini");
 			/*
 			 * XXX: if boolean preference values are set to "false" or values
 			 * are null they won't be exported. This could be a problem if the
 			 * admin would like to change exactly these property!
 			 */
-			OutputStream out = new FileOutputStream(preferences);
+			OutputStream out = new FileOutputStream(preferencesFile);
 			this.preferenceService.exportPreferences(rootNode,
 					new IPreferenceFilter[] { getPreferenceFilter() }, out);
 			// preferenceService.exportPreferences(rootNode,
 			// new IPreferenceFilter[] { getPreferenceFilter() }, out);
+
+			preferencesMap = PreferencesUtil
+					.createPreferencesFromFile(preferencesFile);
 
 		} catch (FileNotFoundException e) {
 			IStatus error = new Status(Status.ERROR,
@@ -66,7 +76,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			throw new ECFException(error);
 		}
 
-		return preferences;
+		return preferencesMap;
 	}
 
 	// private void printAllPreferences(IEclipsePreferences rootNode) {
@@ -106,6 +116,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 	private IPreferenceFilter getPreferenceFilter() {
 		return new IPreferenceFilter() {
 
+			@SuppressWarnings("unchecked")
 			public Map getMapping(String scope) {
 				return null;
 			}
@@ -116,7 +127,9 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			 * 
 			 * (non-Javadoc)
 			 * 
-			 * @see org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes()
+			 * @see
+			 * org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes
+			 * ()
 			 */
 			public String[] getScopes() {
 				return new String[] { InstanceScope.SCOPE,
@@ -160,5 +173,15 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 				PreferencesActivator.PLUGIN_ID,
 				"Preferences have been successfully saved!");
 		return okStatus;
+	}
+
+	@Override
+	public void startService() {
+		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
+				PreferencesActivator.getBundleContext(), ISessionService.class);
+		Assert.isNotNull(sessionService);
+
+		sessionService.registerRemoteService(IRemotePreferenceService.class
+				.getName(), new RemotePreferencesServiceImpl(), null);
 	}
 }
