@@ -127,9 +127,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			 * 
 			 * (non-Javadoc)
 			 * 
-			 * @see
-			 * org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes
-			 * ()
+			 * @see org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes ()
 			 */
 			public String[] getScopes() {
 				return new String[] { InstanceScope.SCOPE,
@@ -175,7 +173,6 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		return okStatus;
 	}
 
-	@Override
 	public void startService() {
 		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
 				PreferencesActivator.getBundleContext(), ISessionService.class);
