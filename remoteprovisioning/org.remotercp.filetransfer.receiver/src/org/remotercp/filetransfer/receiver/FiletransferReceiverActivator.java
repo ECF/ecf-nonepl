@@ -41,16 +41,16 @@ public class FiletransferReceiverActivator extends AbstractUIPlugin {
 	}
 
 	private void registerFiletransferListener() {
-		ISessionService service = OsgiServiceLocatorUtil.getOSGiService(
-				getBundleContext(), ISessionService.class);
-		Assert.isNotNull(service);
-
-		ISendFileTransferContainerAdapter adapter = (ISendFileTransferContainerAdapter) service
-				.getContainer().getAdapter(
-						ISendFileTransferContainerAdapter.class);
-		Assert.isNotNull(adapter);
-
-		adapter.addListener(new IncomingFiletransferReceiver());
+//		ISessionService service = OsgiServiceLocatorUtil.getOSGiService(
+//				getBundleContext(), ISessionService.class);
+//		Assert.isNotNull(service);
+//
+//		ISendFileTransferContainerAdapter adapter = (ISendFileTransferContainerAdapter) service
+//				.getContainer().getAdapter(
+//						ISendFileTransferContainerAdapter.class);
+//		Assert.isNotNull(adapter);
+//
+//		adapter.addListener(new IncomingFiletransferReceiver());
 	}
 
 	/*

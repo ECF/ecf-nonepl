@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -48,8 +47,6 @@ public class PreferenceEditor extends EditorPart {
 
 	private TableViewer preferencesViewer;
 
-	private SortedMap<String, String> preferenesMapClone;
-
 	private SortedMap<String, String> preferencesMap;
 
 	private SortedMap<String, String> importedPreferencesMap;
@@ -89,7 +86,6 @@ public class PreferenceEditor extends EditorPart {
 	@Override
 	public void doSave(IProgressMonitor monitor) {
 		// do nothing yet
-
 	}
 
 	@Override
@@ -106,10 +102,6 @@ public class PreferenceEditor extends EditorPart {
 
 		PreferencesEditorInput editorInput = (PreferencesEditorInput) input;
 		this.preferencesMap = editorInput.getPreferences();
-
-		// the clone is used to determine changes in original preferences
-		this.preferenesMapClone = new TreeMap<String, String>();
-		this.preferenesMapClone.putAll(this.preferencesMap);
 
 		userId = editorInput.getUserId();
 	}
@@ -130,7 +122,6 @@ public class PreferenceEditor extends EditorPart {
 
 	@Override
 	public boolean isSaveAsAllowed() {
-
 		return true;
 	}
 
@@ -143,7 +134,8 @@ public class PreferenceEditor extends EditorPart {
 			new Label(main, SWT.READ_ONLY).setText("Preferenes for user: "
 					+ this.userId.getName());
 
-			this.preferencesViewer = new TableViewer(main);
+			this.preferencesViewer = new TableViewer(main, SWT.MULTI
+					| SWT.FULL_SELECTION);
 			this.preferencesViewer
 					.setContentProvider(new ArrayContentProvider());
 			this.preferencesViewer
@@ -264,8 +256,8 @@ public class PreferenceEditor extends EditorPart {
 			String key = item.getKey();
 
 			if (columnIndex == TableColumns.ARROWS.columnIndex) {
-				if (key.startsWith(configurationScope)
-						|| key.startsWith(instanceScope)
+				if ((key.startsWith(configurationScope) || key
+						.startsWith(instanceScope))
 						/*
 						 * show image-buttons only if local preferences have
 						 * been imported
@@ -324,8 +316,6 @@ public class PreferenceEditor extends EditorPart {
 			} else if (item.getLocalValue() != null
 					&& !item.getLocalValue().equals(item.getRemoteValue())) {
 				color = different;
-			} else {
-				// color = defaultColor;
 			}
 			return color;
 		}

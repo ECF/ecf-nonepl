@@ -5,6 +5,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -14,6 +15,7 @@ import org.eclipse.ecf.filetransfer.IFileTransferInfo;
 import org.eclipse.ecf.filetransfer.IFileTransferListener;
 import org.eclipse.ecf.filetransfer.IIncomingFileTransfer;
 import org.eclipse.ecf.filetransfer.IIncomingFileTransferRequestListener;
+import org.eclipse.ecf.filetransfer.ISendFileTransferContainerAdapter;
 import org.eclipse.ecf.filetransfer.IncomingFileTransferException;
 import org.eclipse.ecf.filetransfer.events.IFileTransferEvent;
 import org.eclipse.ecf.filetransfer.events.IFileTransferRequestEvent;
@@ -34,12 +36,15 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
+import org.remotercp.common.servicelauncher.IRemoteServiceLauncher;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.filetransfer.receiver.dialogs.AcceptFiletransferDialog;
 import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.filesize.FilesizeConverterUtil;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class IncomingFiletransferReceiver implements
-		IIncomingFileTransferRequestListener {
+		IIncomingFileTransferRequestListener, IRemoteServiceLauncher {
 
 	private Logger logger = Logger.getLogger(IncomingFiletransferReceiver.class
 			.getName());
@@ -340,5 +345,21 @@ public class IncomingFiletransferReceiver implements
 				return Status.OK_STATUS;
 			}
 		};
+	}
+
+	@Override
+	public void startService() {
+		ISessionService service = OsgiServiceLocatorUtil.getOSGiService(
+				FiletransferReceiverActivator.getBundleContext(),
+				ISessionService.class);
+		Assert.isNotNull(service);
+
+		ISendFileTransferContainerAdapter adapter = (ISendFileTransferContainerAdapter) service
+				.getContainer().getAdapter(
+						ISendFileTransferContainerAdapter.class);
+		Assert.isNotNull(adapter);
+
+		adapter.addListener(new IncomingFiletransferReceiver());
+
 	}
 }

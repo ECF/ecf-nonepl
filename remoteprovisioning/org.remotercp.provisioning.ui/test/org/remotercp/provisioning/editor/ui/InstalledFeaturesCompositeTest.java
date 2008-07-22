@@ -266,6 +266,12 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 			return features;
 		}
 
+		@Override
+		public void startService() {
+			// TODO Auto-generated method stub
+			
+		}
+
 	}
 
 	public ID getJohn() {

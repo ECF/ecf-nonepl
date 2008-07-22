@@ -6,7 +6,7 @@
          <meta.schema plugin="org.remotercp.login" id="org.remotercp.remoteService" name="Remote Service"/>
       </appinfo>
       <documentation>
-         [Enter description of this extension point.]
+         This extension can be used to register services which will be launched at start up of the application.
       </documentation>
    </annotation>
 
@@ -48,6 +48,11 @@
    </element>
 
    <element name="remoteService">
+      <annotation>
+         <documentation>
+            This extension can be used to register services which will be launched at start up of the application.
+         </documentation>
+      </annotation>
       <complexType>
          <attribute name="id" type="string" use="required">
             <annotation>

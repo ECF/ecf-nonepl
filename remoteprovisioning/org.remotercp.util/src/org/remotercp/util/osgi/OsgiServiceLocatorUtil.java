@@ -5,7 +5,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class OsgiServiceLocatorUtil {
 
-	public static <T> T getOSGiService(BundleContext context, Class<T> service)
+	public synchronized static <T> T getOSGiService(BundleContext context, Class<T> service)
 			throws ClassCastException {
 
 		ServiceTracker serviceTracker = new ServiceTracker(context, service

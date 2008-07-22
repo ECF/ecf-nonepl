@@ -13,6 +13,7 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
+import org.eclipse.ui.actions.ActionFactory;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.ecf.session.ISessionService;
@@ -26,11 +27,11 @@ import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 public class SaveRemotePreferencesAction implements IEditorActionDelegate {
 
 	private PreferenceEditor targetEditor;
-	private IStatus status;
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		this.targetEditor = (PreferenceEditor) targetEditor;
-
+		this.targetEditor.getEditorSite().getActionBars()
+				.setGlobalActionHandler(ActionFactory.SAVE.getId(), action);
 	}
 
 	public void run(IAction action) {
@@ -64,7 +65,8 @@ public class SaveRemotePreferencesAction implements IEditorActionDelegate {
 			IRemotePreferenceService remotePreferenceService = remoteServices
 					.get(0);
 
-			IStatus result = remotePreferenceService.setPreferences(changedPreferences);
+			IStatus result = remotePreferenceService
+					.setPreferences(changedPreferences);
 			ErrorView.addError(result);
 
 		} catch (ECFException e) {
