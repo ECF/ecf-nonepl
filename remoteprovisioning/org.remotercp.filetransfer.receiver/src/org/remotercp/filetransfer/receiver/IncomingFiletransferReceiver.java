@@ -347,7 +347,6 @@ public class IncomingFiletransferReceiver implements
 		};
 	}
 
-	@Override
 	public void startService() {
 		ISessionService service = OsgiServiceLocatorUtil.getOSGiService(
 				FiletransferReceiverActivator.getBundleContext(),
