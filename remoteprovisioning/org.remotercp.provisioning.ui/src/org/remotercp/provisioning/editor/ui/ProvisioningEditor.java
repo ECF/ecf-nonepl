@@ -306,6 +306,10 @@ public class ProvisioningEditor extends EditorPart {
 						// evt.getNewValue() contains ResultFeatureTreeNodes
 						ProvisioningEditor.this.progressReportComposite
 								.setInput(evt.getNewValue());
+						ProvisioningEditor.this.stackLayout.topControl = progressReportComposite
+								.getMainControl();
+						ProvisioningEditor.this.installedFeaturesMainComposite
+								.layout();
 					}
 				});
 

@@ -3,7 +3,6 @@ package org.remotercp.provisioning.editor.ui;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.layout.GridDataFactory;

@@ -312,10 +312,15 @@ public class FeaturesVersionsComposite {
 						stateCollector.add(warning);
 					}
 
-					IFeature[] featuresToUpdate = new IFeature[1];
-					featuresToUpdate[0] = feature;
+					/* as IFeature is not serializable we have to wrap them */
+					SerializedFeatureWrapper[] featuresToUpdate = new SerializedFeatureWrapper[1];
+					featuresToUpdate[0] = SerializedFeatureWrapper
+							.createFeatureWrapper(feature);
 
-					List<IStatus> updateResults = remoteService.get(0)
+					IInstallFeaturesService installFeaturesService = remoteService
+							.get(0);
+
+					List<IStatus> updateResults = installFeaturesService
 							.updateFeautures(featuresToUpdate);
 
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
@@ -352,7 +357,7 @@ public class FeaturesVersionsComposite {
 		List<ID> userIDs = new ArrayList<ID>();
 		for (CommonFeaturesTreeNode commonNode : this.selectedFeatures) {
 			IFeature selectedFeature = (IFeature) node.getValue();
-			SerializedFeatureWrapper feature = (SerializedFeatureWrapper) node
+			SerializedFeatureWrapper feature = (SerializedFeatureWrapper) commonNode
 					.getValue();
 
 			if (selectedFeature.getVersionedIdentifier().getIdentifier()

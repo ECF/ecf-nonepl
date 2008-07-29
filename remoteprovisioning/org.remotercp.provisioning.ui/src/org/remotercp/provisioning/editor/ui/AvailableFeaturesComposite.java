@@ -47,6 +47,7 @@ import org.eclipse.update.internal.ui.wizards.NewUpdateSiteDialog;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
+import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.progress.handler.ProgressViewHandler;
@@ -372,14 +373,18 @@ public class AvailableFeaturesComposite {
 			final Feature feature = (Feature) featureNode.getValue();
 
 			ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
-					feature);
+					SerializedFeatureWrapper.createFeatureWrapper(feature));
 			for (ID userId : userIDs) {
 				performInstallation(feature, userId, resultFeatureNode);
 			}
 
+			// XXX: this method will support more than one feature installation.
+			// results have to be collected in a list
+			List<ResultFeatureTreeNode> resultNodes = new ArrayList<ResultFeatureTreeNode>();
+			resultNodes.add(resultFeatureNode);
+
 			// send result to listener
-			pcs.firePropertyChange(UpdateConstants.INSTALL, null,
-					resultFeatureNode);
+			pcs.firePropertyChange(UpdateConstants.INSTALL, null, resultNodes);
 		}
 	}
 
@@ -408,8 +413,13 @@ public class AvailableFeaturesComposite {
 									+ userId.getName(),
 							IProgressMonitor.UNKNOWN);
 
+					/* as IFeature is not serializable we have to wrap them */
+					SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
+					featuresToInstall[0] = SerializedFeatureWrapper
+							.createFeatureWrapper(feature);
+
 					List<IStatus> results = installFeatureService
-							.installFeatures(new IFeature[] { feature });
+							.installFeatures(featuresToInstall);
 
 					ResultUserTreeNode userNode = new ResultUserTreeNode(userId);
 					userNode.setUpdateResults(results);
