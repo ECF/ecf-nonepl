@@ -2,6 +2,9 @@ package org.remotercp.common.provisioning;
 
 import java.net.URL;
 
+import org.eclipse.update.core.IFeature;
+import org.eclipse.update.core.VersionedIdentifier;
+
 public class SerializedFeatureWrapper implements
 		SerializedWrapper<SerializedFeatureWrapper> {
 
@@ -61,6 +64,41 @@ public class SerializedFeatureWrapper implements
 
 	public void setIdentifier(String identifier) {
 		this.identifier = identifier;
+	}
+
+	/**
+	 * This method will create a serializable Feature wrapper which can be used
+	 * for remote operations.
+	 * 
+	 * @param feature
+	 *            The feature which values have to be wrapped
+	 * @return {@link SerializedFeatureWrapper} with values from the given
+	 *         feature
+	 */
+	public static SerializedFeatureWrapper createFeatureWrapper(IFeature feature) {
+
+		VersionedIdentifier versionedIdentifier = feature
+				.getVersionedIdentifier();
+		String featureId = versionedIdentifier.getIdentifier();
+		String version = versionedIdentifier.getVersion().toString();
+		String label = feature.getLabel();
+
+		// versionedIdentifier.add(id);
+		// installedFeatures.add(feature);
+
+		URL updateUrl = null;
+		if (feature.getUpdateSiteEntry() != null) {
+			updateUrl = feature.getUpdateSiteEntry().getURL();
+
+		}
+
+		SerializedFeatureWrapper featureWrapper = new SerializedFeatureWrapper();
+		featureWrapper.setIdentifier(featureId);
+		featureWrapper.setLabel(label);
+		featureWrapper.setUpdateUrl(updateUrl);
+		featureWrapper.setVersion(version);
+
+		return featureWrapper;
 	}
 
 }

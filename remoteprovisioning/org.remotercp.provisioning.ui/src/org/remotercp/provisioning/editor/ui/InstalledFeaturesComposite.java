@@ -1,5 +1,7 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
@@ -8,6 +10,7 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -29,6 +32,7 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
@@ -36,9 +40,11 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.update.core.IFeature;
 import org.osgi.framework.InvalidSyntaxException;
+import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesUserTreeNode;
@@ -77,6 +83,8 @@ public class InstalledFeaturesComposite {
 
 	private Image propertiesImage;
 
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+
 	private static final Logger logger = Logger
 			.getLogger(InstalledFeaturesComposite.class.getName());
 
@@ -93,6 +101,14 @@ public class InstalledFeaturesComposite {
 				ImageKeys.PROPERTIES).createImage();
 
 		this.createPartControl(parent, style);
+	}
+
+	protected void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
+	}
+
+	protected void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
 	}
 
 	private void createPartControl(Composite parent, int style) {
@@ -231,6 +247,9 @@ public class InstalledFeaturesComposite {
 		sashMain.setWeights(new int[] { 75, 25 });
 	}
 
+	/*
+	 * TODO: change button listener to PropertyChangeListener
+	 */
 	protected void addButtonListener(SelectionAdapter listener, Buttons button) {
 		switch (button) {
 		case CHECK_FOR_UPDATES:
@@ -267,7 +286,16 @@ public class InstalledFeaturesComposite {
 					monitor.beginTask("Perform uninstall operations...",
 							featuresToUninstall.size());
 
-					uninstall(featuresToUninstall, monitor);
+					final List<ResultFeatureTreeNode> resultNodes = uninstall(
+							featuresToUninstall, monitor);
+
+					getDisplay().asyncExec(new Runnable() {
+						public void run() {
+							pcs.firePropertyChange(UpdateConstants.UNINSTALL,
+									null, resultNodes);
+						}
+					});
+
 					return Status.OK_STATUS;
 				}
 			};
@@ -276,14 +304,22 @@ public class InstalledFeaturesComposite {
 		}
 	}
 
-	private void uninstall(List<CommonFeaturesTreeNode> featuresToUninstall,
+	private Display getDisplay() {
+		return commonFeaturesViewer.getControl().getDisplay();
+	}
+
+	private List<ResultFeatureTreeNode> uninstall(
+			List<CommonFeaturesTreeNode> featuresToUninstall,
 			IProgressMonitor monitor) {
 		ISessionService sessionService = OsgiServiceLocatorUtil
 				.getOSGiService(ProvisioningActivator.getBundleContext(),
 						ISessionService.class);
 
+		final List<ResultFeatureTreeNode> resultNodes = new ArrayList<ResultFeatureTreeNode>();
+
 		for (CommonFeaturesTreeNode node : featuresToUninstall) {
-			IFeature featureToUninstall = (IFeature) node.getValue();
+			SerializedFeatureWrapper featureToUninstall = (SerializedFeatureWrapper) node
+					.getValue();
 
 			monitor.subTask("Uninstall feature: "
 					+ featureToUninstall.getLabel());
@@ -291,7 +327,7 @@ public class InstalledFeaturesComposite {
 
 			/* create parent result element */
 			ResultFeatureTreeNode resultNode = new ResultFeatureTreeNode(
-					featuresToUninstall);
+					featureToUninstall);
 
 			for (ID userId : userToUpdate) {
 				List<IStatus> stateCollector = new ArrayList<IStatus>();
@@ -301,26 +337,29 @@ public class InstalledFeaturesComposite {
 
 				try {
 
-					List<IInstallFeaturesService> remoteUninstallService = sessionService
+					List<IInstallFeaturesService> remoteUninstallServices = sessionService
 							.getRemoteService(IInstallFeaturesService.class,
 									filterIds, null);
 
-					if (remoteUninstallService.isEmpty()) {
+					if (remoteUninstallServices.isEmpty()) {
 						IStatus error = createStatus(Status.ERROR,
 								"Unable to retrieve remote uninstall service for user: "
 										+ userId.getName(), null);
-						stateCollector.add(error);
+						ErrorView.addError(error);
 					}
 
-					IFeature[] uninsatll = new IFeature[1];
-					uninsatll[0] = featureToUninstall;
-					List<IStatus> uninstallResult = remoteUninstallService.get(
-							0).uninstallFeatures(uninsatll);
+					String[] uninstallIds = new String[1];
+					uninstallIds[0] = featureToUninstall.getIdentifier();
+
+					IInstallFeaturesService remoteUninstallService = remoteUninstallServices
+							.get(0);
+					List<IStatus> uninstallResult = remoteUninstallService
+							.uninstallFeatures(uninstallIds);
 
 					/* create child nodes for diplaying results */
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
-					resultNode.setParent(resultNode);
+					resultUserNode.setParent(resultNode);
 					resultUserNode.setUpdateResults(uninstallResult);
 
 					resultNode.addChild(resultUserNode);
@@ -337,8 +376,11 @@ public class InstalledFeaturesComposite {
 				}
 			}
 			monitor.worked(1);
+			// collect result nodes
+			resultNodes.add(resultNode);
 		}
 		monitor.done();
+		return resultNodes;
 	}
 
 	/*

@@ -1,5 +1,7 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.beans.PropertyChangeEvent;
+import java.beans.PropertyChangeListener;
 import java.util.Collection;
 import java.util.List;
 import java.util.Set;
@@ -31,6 +33,7 @@ import org.eclipse.ui.IEditorInput;
 import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
+import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
@@ -70,6 +73,8 @@ public class ProvisioningEditor extends EditorPart {
 
 	private ProgressReportComposite progressReportComposite;
 
+	private ID[] userIDs;
+
 	public ProvisioningEditor() {
 		// nothing to do yet
 		this.stackLayout = new StackLayout();
@@ -98,10 +103,7 @@ public class ProvisioningEditor extends EditorPart {
 					.getOSGiService(ProvisioningActivator.getBundleContext(),
 							ISessionService.class);
 
-			// get selected userIDs which are going to be remote managed
-			ID[] userIDs = ((ProvisioningEditorInput) getEditorInput())
-					.getUserIDs();
-
+			userIDs = ((ProvisioningEditorInput) getEditorInput()).getUserIDs();
 			/*
 			 * get the remote osgi services for selected users
 			 */
@@ -215,7 +217,7 @@ public class ProvisioningEditor extends EditorPart {
 
 					{
 						availableFeaturesComposite = new AvailableFeaturesComposite(
-								availableFeaturesSash, SWT.None);
+								availableFeaturesSash, SWT.None, userIDs);
 					}
 					availableFeaturesSash.setWeights(new int[] { 2, 1 });
 
@@ -263,6 +265,22 @@ public class ProvisioningEditor extends EditorPart {
 			}
 		}, InstalledFeaturesComposite.Buttons.CHECK_FOR_UPDATES);
 
+		installedFeaturesComposite
+				.addPropertyChangeListener(new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getPropertyName().equals(
+								UpdateConstants.UNINSTALL)) {
+							// set input
+							ProvisioningEditor.this.progressReportComposite
+									.setInput(evt.getNewValue());
+							ProvisioningEditor.this.stackLayout.topControl = progressReportComposite
+									.getMainControl();
+							ProvisioningEditor.this.installedFeaturesMainComposite
+									.layout();
+						}
+					}
+				});
+
 		featuresVersionsComposite.addButtonListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -281,6 +299,15 @@ public class ProvisioningEditor extends EditorPart {
 				ProvisioningEditor.this.installedFeaturesMainComposite.layout();
 			}
 		}, FeaturesVersionsComposite.Buttons.UPDATE);
+
+		availableFeaturesComposite
+				.addPropertyChangeListener(new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						// evt.getNewValue() contains ResultFeatureTreeNodes
+						ProvisioningEditor.this.progressReportComposite
+								.setInput(evt.getNewValue());
+					}
+				});
 
 	}
 
@@ -356,21 +383,21 @@ public class ProvisioningEditor extends EditorPart {
 			ErrorView.addError(errors);
 		}
 
-		// final Collection<CommonFeaturesTreeNode> commonFeaturesNodes =
-		// featuresHelper
-		// .getCommonFeaturesNodes();
-		// final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
-		// featuresHelper
-		// .getDifferentFeaturesNodes();
+		final Collection<CommonFeaturesTreeNode> commonFeaturesNodes = featuresHelper
+				.getCommonFeaturesNodes();
+		final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes = featuresHelper
+				.getDifferentFeaturesNodes();
 
 		// XXX for Tests only
-		InstalledFeaturesCompositeTest test = new InstalledFeaturesCompositeTest();
-		test.setUp();
-
-		final Collection<CommonFeaturesTreeNode> commonFeaturesNodes = test
-				.getDummyCommonFeatures();
-		final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes = test
-				.getDummyDifferentFeatures();
+		// InstalledFeaturesCompositeTest test = new
+		// InstalledFeaturesCompositeTest();
+		// test.setUp();
+		//
+		// final Collection<CommonFeaturesTreeNode> commonFeaturesNodes = test
+		// .getDummyCommonFeatures();
+		// final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
+		// test
+		// .getDummyDifferentFeatures();
 
 		// set table input
 		Display.getDefault().asyncExec(new Runnable() {

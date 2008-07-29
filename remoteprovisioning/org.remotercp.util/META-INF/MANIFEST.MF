@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: Util Plug-in
 Bundle-SymbolicName: org.remotercp.util
 Bundle-Version: 1.0.0
-Bundle-Activator: org.remotercp.util.Activator
+Bundle-Activator: org.remotercp.util.UtilActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.remotercp.libs,
  org.eclipse.ui,
@@ -15,4 +15,5 @@ Export-Package: org.remotercp.util.dialogs,
  org.remotercp.util.osgi,
  org.remotercp.util.preferences,
  org.remotercp.util.roster,
- org.remotercp.util.serialize
+ org.remotercp.util.serialize,
+ org.remotercp.util.status

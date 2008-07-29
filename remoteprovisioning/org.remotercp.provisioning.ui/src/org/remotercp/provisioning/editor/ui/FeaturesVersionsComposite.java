@@ -61,9 +61,7 @@ public class FeaturesVersionsComposite {
 
 	private CheckboxTreeViewer featureVersionsViewer;
 
-	private static final int COLUMN_NAME = 0;
-
-	private static final int COLUMN_VERSION = 1;
+	// private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	public static enum Buttons {
 		UPDATE, PROPERTIES, BACK
@@ -99,6 +97,16 @@ public class FeaturesVersionsComposite {
 
 		this.createPartControl(parent, style);
 	}
+
+	// protected void addPropertyChangeListener(PropertyChangeListener listener)
+	// {
+	// this.pcs.addPropertyChangeListener(listener);
+	// }
+	//
+	// protected void removePropertyChangeListener(PropertyChangeListener
+	// listener) {
+	// this.pcs.removePropertyChangeListener(listener);
+	// }
 
 	protected void createPartControl(Composite parent, int style) {
 		main = new Composite(parent, style);

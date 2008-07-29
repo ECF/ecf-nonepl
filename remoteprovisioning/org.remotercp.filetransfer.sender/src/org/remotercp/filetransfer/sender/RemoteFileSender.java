@@ -34,6 +34,7 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.internal.progress.ProgressView;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
+import org.remotercp.progress.handler.ProgressViewHandler;
 import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.filesize.FilesizeConverterUtil;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
@@ -266,7 +267,6 @@ public class RemoteFileSender {
 
 			monitor.beginTask("Sending file: " + fileName, (int) fileLength);
 
-			// set focus
 			setFokusOnProgressView();
 
 			/*
@@ -317,24 +317,6 @@ public class RemoteFileSender {
 	}
 
 	protected void setFokusOnProgressView() {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				try {
-
-					// bring view to front
-					PlatformUI.getWorkbench().getActiveWorkbenchWindow()
-							.getActivePage().showView(
-									"org.eclipse.ui.views.ProgressView");
-
-				} catch (PartInitException e) {
-					/*
-					 * do nothing if view not found. A working application is
-					 * more important than a focus on view
-					 */
-					e.printStackTrace();
-				}
-			}
-		});
-
+		ProgressViewHandler.setFocus();
 	}
 }

@@ -1,14 +1,20 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
 import org.eclipse.jface.viewers.ITreeViewerListener;
@@ -16,38 +22,80 @@ import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeExpansionEvent;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.custom.BusyIndicator;
 import org.eclipse.swt.custom.SashForm;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.update.core.Feature;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.SiteManager;
 import org.eclipse.update.internal.ui.UpdateUI;
+import org.eclipse.update.internal.ui.UpdateUIMessages;
 import org.eclipse.update.internal.ui.model.DiscoveryFolder;
 import org.eclipse.update.internal.ui.model.SiteBookmark;
 import org.eclipse.update.internal.ui.model.UpdateModel;
+import org.eclipse.update.internal.ui.wizards.NewUpdateSiteDialog;
+import org.osgi.framework.InvalidSyntaxException;
+import org.remotercp.common.constants.UpdateConstants;
+import org.remotercp.common.provisioning.IInstallFeaturesService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
+import org.remotercp.progress.handler.ProgressViewHandler;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.nodes.AbstractTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.CategoryTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.DummyTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.FeatureTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.UpdateSiteTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class AvailableFeaturesComposite {
 
-	private CheckboxTreeViewer checkboxTreeViewer;
+	private CheckboxTreeViewer bookmarksTreeViewer;
+	private Shell shell;
+	private final ID[] userIDs;
+	private ISessionService sessionService;
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
-	public AvailableFeaturesComposite(SashForm parent, int style) {
+	public AvailableFeaturesComposite(SashForm parent, int style, ID[] userIDs) {
+		this.userIDs = userIDs;
+		this.init();
+
 		this.createPartControl(parent, style);
+		this.shell = parent.getShell();
 	}
 
+	private void init() {
+		sessionService = OsgiServiceLocatorUtil
+				.getOSGiService(ProvisioningActivator.getBundleContext(),
+						ISessionService.class);
+		Assert.isNotNull(sessionService);
+	}
+
+	public void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
+	}
+
+	public void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
+	}
+
+	/*
+	 * Creates all GUI elements
+	 */
 	private void createPartControl(SashForm parent, int style) {
 
 		Composite featuresComp = new Composite(parent, SWT.None);
@@ -55,20 +103,17 @@ public class AvailableFeaturesComposite {
 		GridDataFactory.fillDefaults().grab(true, true).applyTo(featuresComp);
 
 		{
-			this.checkboxTreeViewer = new CheckboxTreeViewer(featuresComp,
+			this.bookmarksTreeViewer = new CheckboxTreeViewer(featuresComp,
 					SWT.H_SCROLL | SWT.V_SCROLL);
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
-					this.checkboxTreeViewer.getControl());
+					this.bookmarksTreeViewer.getControl());
 
-			this.checkboxTreeViewer
+			this.bookmarksTreeViewer
 					.setContentProvider(new FeaturesTreeContentProvider());
-			this.checkboxTreeViewer
+			this.bookmarksTreeViewer
 					.setLabelProvider(new FeatureVersionsLabelProvider());
 
-			// this.checkboxTreeViewer.addSelectionChangedListener(this
-			// .getSelectionChangedListener());
-			//			
-			this.checkboxTreeViewer.addTreeListener(getTreeViewerListener());
+			this.bookmarksTreeViewer.addTreeListener(getTreeViewerListener());
 
 		}
 
@@ -78,6 +123,12 @@ public class AvailableFeaturesComposite {
 		{
 			Button install = new Button(buttonsComp, SWT.PUSH);
 			install.setText("Install...");
+			install.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					installFeature();
+				}
+			});
 
 			Button properties = new Button(buttonsComp, SWT.PUSH);
 			properties.setText("Properties...");
@@ -87,18 +138,35 @@ public class AvailableFeaturesComposite {
 
 			Button refresh = new Button(buttonsComp, SWT.PUSH);
 			refresh.setText("Refresh");
+			refresh.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					initTreeElements();
+				}
+			});
 
 			// dummy label to make space
 			new Label(buttonsComp, SWT.None);
 
-			Button manageSites = new Button(buttonsComp, SWT.PUSH);
-			manageSites.setText("Manage sites...");
-
 			Button addSite = new Button(buttonsComp, SWT.PUSH);
 			addSite.setText("Add site...");
+			addSite.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					addBookmarkSite();
+				}
+
+			});
 
 			Button removeSites = new Button(buttonsComp, SWT.PUSH);
-			removeSites.setText("Remote sites...");
+			removeSites.setText("Remove site...");
+			removeSites.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					removeBookmarkSite();
+				}
+
+			});
 
 		}
 
@@ -107,8 +175,9 @@ public class AvailableFeaturesComposite {
 
 	/**
 	 * This method does create initial tree elements which are basically nothing
-	 * than descriptions for bookmarked remote sites
+	 * than descriptions for bookmarked remote sites.
 	 */
+	@SuppressWarnings("restriction")
 	protected void initTreeElements() {
 		List<UpdateSiteTreeNode> nodes = new ArrayList<UpdateSiteTreeNode>();
 		SiteBookmark[] allSiteBookmarks = getAllSiteBookmarks();
@@ -124,12 +193,12 @@ public class AvailableFeaturesComposite {
 			nodes.add(node);
 		}
 
-		this.checkboxTreeViewer.setInput(nodes);
+		this.bookmarksTreeViewer.setInput(nodes);
 
 	}
 
 	@SuppressWarnings( { "restriction", "unchecked" })
-	protected void createTreeElements(
+	protected void createCategoryTreeElements(
 			final ISiteFeatureReference[] searchForFeatures,
 			final SiteBookmark bookmark, final UpdateSiteTreeNode node) {
 		final List<IStatus> stateCollector = new ArrayList<IStatus>();
@@ -150,7 +219,8 @@ public class AvailableFeaturesComposite {
 	private void refreshViewer(final UpdateSiteTreeNode node) {
 		getDisplay().asyncExec(new Runnable() {
 			public void run() {
-				checkboxTreeViewer.refresh();
+
+				bookmarksTreeViewer.refresh();
 			}
 		});
 	}
@@ -227,6 +297,147 @@ public class AvailableFeaturesComposite {
 		return all;
 	}
 
+	@SuppressWarnings("restriction")
+	private void addBookmarkSite() {
+		NewUpdateSiteDialog updateSiteDialog = new NewUpdateSiteDialog(shell,
+				getAllSiteBookmarks());
+		updateSiteDialog.create();
+		updateSiteDialog.getShell().setText("Create new update site");
+		updateSiteDialog.open();
+
+		// add the new bookmark to treeviewer
+		this.initTreeElements();
+	}
+
+	/*
+	 * XXX: this code has been copied from
+	 * org.eclipse.update.internal.ui.wizards.SitePage
+	 */
+	private void removeBookmarkSite() {
+		BusyIndicator.showWhile(bookmarksTreeViewer.getControl().getDisplay(),
+				new Runnable() {
+					@SuppressWarnings("restriction")
+					public void run() {
+						UpdateModel updateModel = UpdateUI.getDefault()
+								.getUpdateModel();
+						Object[] checkedElements = bookmarksTreeViewer
+								.getCheckedElements();
+
+						// remove all selected bookmarks
+						for (Object checkedElement : checkedElements) {
+							if (checkedElement instanceof UpdateSiteTreeNode) {
+								UpdateSiteTreeNode node = (UpdateSiteTreeNode) checkedElement;
+
+								SiteBookmark bookmark = (SiteBookmark) node
+										.getValue();
+								String selName = bookmark.getLabel();
+								boolean answer = MessageDialog
+										.openQuestion(
+												bookmarksTreeViewer
+														.getControl()
+														.getShell(),
+												UpdateUIMessages.SitePage_remove_location_conf_title,
+												UpdateUIMessages.SitePage_remove_location_conf
+														+ " " + selName); //$NON-NLS-1$
+
+								if (answer && !bookmark.isReadOnly()) {
+									updateModel.removeBookmark(bookmark);
+								}
+							}
+						}
+					}
+				});
+
+		// refresh the treeviewer
+		this.initTreeElements();
+	}
+
+	private void installFeature() {
+		final Shell shell = bookmarksTreeViewer.getControl().getShell();
+		final Object[] checkedElements = bookmarksTreeViewer
+				.getCheckedElements();
+
+		if (checkedElements.length > 1) {
+			MessageBox error = new MessageBox(shell, SWT.ICON_WARNING);
+			error
+					.setMessage("The installation of several features is not supported yet");
+			error.open();
+		} else if (!(checkedElements[0] instanceof FeatureTreeNode)) {
+			MessageBox error = new MessageBox(shell, SWT.ICON_WARNING);
+			error.setMessage("You have not selected a feature to install.");
+			error.open();
+		} else {
+			// get the feature to install
+			final FeatureTreeNode featureNode = (FeatureTreeNode) checkedElements[0];
+			final Feature feature = (Feature) featureNode.getValue();
+
+			ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
+					feature);
+			for (ID userId : userIDs) {
+				performInstallation(feature, userId, resultFeatureNode);
+			}
+
+			// send result to listener
+			pcs.firePropertyChange(UpdateConstants.INSTALL, null,
+					resultFeatureNode);
+		}
+	}
+
+	/*
+	 * This method will install one feature on a remote user's machine
+	 */
+	private void performInstallation(final Feature feature, final ID userId,
+			final ResultFeatureTreeNode resultFeatureNode) {
+		try {
+			List<IInstallFeaturesService> remoteServices = sessionService
+					.getRemoteService(IInstallFeaturesService.class,
+							new ID[] { userId }, null);
+
+			// there should be only one service per user available
+			Assert.isTrue(remoteServices.size() == 1);
+
+			final IInstallFeaturesService installFeatureService = remoteServices
+					.get(0);
+
+			Job installJob = new Job("Install feature") {
+				@Override
+				protected IStatus run(IProgressMonitor monitor) {
+					// TODO: show real progress if possible
+					monitor.beginTask(
+							"Perform install operation on remote user machine: "
+									+ userId.getName(),
+							IProgressMonitor.UNKNOWN);
+
+					List<IStatus> results = installFeatureService
+							.installFeatures(new IFeature[] { feature });
+
+					ResultUserTreeNode userNode = new ResultUserTreeNode(userId);
+					userNode.setUpdateResults(results);
+
+					// add node to parent
+					resultFeatureNode.addChild(userNode);
+
+					monitor.done();
+
+					// always return ok, errors will be handled in the
+					// ProgressReportComposite
+					return Status.OK_STATUS;
+
+				}
+			};
+			// display progress in progress bar
+			installJob.setUser(false);
+			installJob.schedule();
+
+			// set focus
+			ProgressViewHandler.setFocus();
+		} catch (ECFException e) {
+			e.printStackTrace();
+		} catch (InvalidSyntaxException e) {
+			e.printStackTrace();
+		}
+	}
+
 	protected ITreeViewerListener getTreeViewerListener() {
 		return new ITreeViewerListener() {
 
@@ -245,11 +456,9 @@ public class AvailableFeaturesComposite {
 							"Create category nodes") {
 						@Override
 						protected IStatus run(IProgressMonitor monitor) {
-
 							ISiteFeatureReference[] searchForFeatures = searchForFeatures(bookmark);
-
-							createTreeElements(searchForFeatures, bookmark,
-									node);
+							createCategoryTreeElements(searchForFeatures,
+									bookmark, node);
 							return Status.OK_STATUS;
 						}
 					};

@@ -13,7 +13,7 @@ public class ProgressActivator extends AbstractUIPlugin {
 
 	// The shared instance
 	private static ProgressActivator plugin;
-	
+
 	/**
 	 * The constructor
 	 */
@@ -22,6 +22,7 @@ public class ProgressActivator extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
@@ -31,6 +32,7 @@ public class ProgressActivator extends AbstractUIPlugin {
 
 	/*
 	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
@@ -40,7 +42,7 @@ public class ProgressActivator extends AbstractUIPlugin {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static ProgressActivator getDefault() {

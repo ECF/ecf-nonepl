@@ -8,7 +8,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.update.core,
  org.remotercp.libs
 Eclipse-LazyStart: true
-Export-Package: org.remotercp.common.preferences,
+Export-Package: org.remotercp.common.constants,
+ org.remotercp.common.preferences,
  org.remotercp.common.provisioning,
  org.remotercp.common.servicelauncher,
  org.remotercp.common.status

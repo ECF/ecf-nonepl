@@ -1,12 +1,7 @@
 package org.remotercp.preferences;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.remotercp.common.preferences.IRemotePreferenceService;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.preferences.service.RemotePreferencesServiceImpl;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -21,7 +16,6 @@ public class PreferencesActivator extends AbstractUIPlugin {
 
 	private static BundleContext bundleContext;
 
-	private ISessionService sessionService;
 
 	/**
 	 * The constructor
@@ -39,7 +33,6 @@ public class PreferencesActivator extends AbstractUIPlugin {
 		plugin = this;
 		bundleContext = context;
 
-		this.registerRemoteServices();
 	}
 
 	/*
@@ -49,21 +42,10 @@ public class PreferencesActivator extends AbstractUIPlugin {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
-		this.sessionService.ungetRemoteService(null,
-				IRemotePreferenceService.class.getName(), null);
 		super.stop(context);
 
 	}
 
-	protected void registerRemoteServices() {
-//		this.sessionService = OsgiServiceLocatorUtil.getOSGiService(
-//				bundleContext, ISessionService.class);
-//		Assert.isNotNull(sessionService);
-//
-//		this.sessionService.registerRemoteService(
-//				IRemotePreferenceService.class.getName(),
-//				new RemotePreferencesServiceImpl(), null);
-	}
 
 	/**
 	 * Returns the shared instance

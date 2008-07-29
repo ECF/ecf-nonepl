@@ -3,13 +3,15 @@ package org.remotercp.provisioning.editor.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
+import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProvider;
-import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.ITableLabelProvider;
+import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.swt.SWT;
@@ -23,7 +25,10 @@ import org.eclipse.ui.PlatformUI;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
+import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
+import org.remotercp.util.status.StatusUtil;
 
 public class ProgressReportComposite {
 
@@ -78,56 +83,36 @@ public class ProgressReportComposite {
 				tree.setLinesVisible(true);
 
 				// XXX For Test only
-				this.resultTreeViewer.setInput(getDummyData());
-				this.resultTreeViewer.expandAll();
+				// this.resultTreeViewer.setInput(getDummyData());
+				// this.resultTreeViewer.expandAll();
 			}
 		}
 
 	}
 
-	// protected Composite getProgressPart(Composite parent, int style) {
-	// Composite progress = new Composite(parent, style);
-	// progress.setLayout(new GridLayout(2, false));
-	// GridDataFactory.fillDefaults().grab(true, false).applyTo(progress);
-	//
-	// {
-	// Label user = new Label(progress, SWT.READ_ONLY);
-	// user.setText("Test");
-	//
-	// ProgressBar progressBar = new ProgressBar(progress,
-	// SWT.INDETERMINATE);
-	// GridDataFactory.fillDefaults().grab(true, false).applyTo(
-	// progressBar);
-	// }
-	//
-	// return progress;
-	// }
-
-	// public static void main(String[] args) {
-	// Display display = new Display();
-	// Shell shell = new Shell(display);
-	// shell.setLayout(new GridLayout(1, false));
-	// GridDataFactory.fillDefaults().grab(true, true).applyTo(shell);
-	// shell.setSize(400, 400);
-	//
-	// new ProgressReportComposite(shell, SWT.None);
-	//
-	// shell.open();
-	// // Set up the event loop.
-	// while (!shell.isDisposed()) {
-	// if (!display.readAndDispatch()) {
-	// // If no more entries in event queue
-	// display.sleep();
-	// }
-	// }
-	//
-	// display.dispose();
-	// }
-
 	protected Composite getMainControl() {
 		return main;
 	}
 
+	/*
+	 * This method will be called by other composites to provide results, which
+	 * are going to be displayed in this composite
+	 */
+	protected void setInput(final Object input) {
+		this.resultTreeViewer.getControl().getDisplay().asyncExec(
+				new Runnable() {
+					public void run() {
+						ProgressReportComposite.this.resultTreeViewer
+								.setInput(input);
+						ProgressReportComposite.this.resultTreeViewer
+								.expandAll();
+					}
+				});
+	}
+
+	/*
+	 * XXX: for tests only used
+	 */
 	private List<TreeNode> getDummyData() {
 		InstalledFeaturesCompositeTest helper = new InstalledFeaturesCompositeTest();
 		helper.setUp();
@@ -141,7 +126,7 @@ public class ProgressReportComposite {
 		feature1.setLabel("Fature 12");
 		feature1.setVersion("1.2.0");
 
-		ResultTreeNode node1 = new ResultTreeNode(feature1);
+		ResultFeatureTreeNode node1 = new ResultFeatureTreeNode(feature1);
 
 		ResultUserTreeNode child1Node1 = new ResultUserTreeNode(klaus);
 		child1Node1.setParent(node1);
@@ -161,7 +146,7 @@ public class ProgressReportComposite {
 		feature2.setLabel("Feature 13");
 		feature2.setVersion("1.1.0");
 
-		ResultTreeNode node2 = new ResultTreeNode(feature2);
+		ResultFeatureTreeNode node2 = new ResultFeatureTreeNode(feature2);
 		ResultUserTreeNode child1Node2 = new ResultUserTreeNode(sandra);
 		child1Node2.setParent(node2);
 		ResultUserTreeNode child2Node2 = new ResultUserTreeNode(klaus);
@@ -180,7 +165,7 @@ public class ProgressReportComposite {
 		feature3.setLabel("Feature 15");
 		feature3.setVersion("1.3.0");
 
-		ResultTreeNode node3 = new ResultTreeNode(feature3);
+		ResultFeatureTreeNode node3 = new ResultFeatureTreeNode(feature3);
 		ResultUserTreeNode child1Node3 = new ResultUserTreeNode(john);
 		child1Node3.setParent(node3);
 		ResultUserTreeNode child2Node3 = new ResultUserTreeNode(sandra);
@@ -199,22 +184,6 @@ public class ProgressReportComposite {
 		treeNodes.add(node3);
 
 		return treeNodes;
-	}
-
-	private class ResultUserTreeNode extends TreeNode {
-
-		public ResultUserTreeNode(Object value) {
-			super(value);
-		}
-
-	}
-
-	private class ResultTreeNode extends TreeNode {
-
-		public ResultTreeNode(Object value) {
-			super(value);
-		}
-
 	}
 
 	private class ResultDecoratingLabelProvider extends DecoratingLabelProvider
@@ -256,8 +225,8 @@ public class ProgressReportComposite {
 
 	}
 
-	private class ResultTableLabelProvider implements ITableLabelProvider,
-			ILabelProvider {
+	private class ResultTableLabelProvider extends LabelProvider implements
+			ITableLabelProvider {
 
 		private final static int COLUMN_NAME = 0;
 		private final static int COLUMN_VERSION = 1;
@@ -269,17 +238,20 @@ public class ProgressReportComposite {
 		private Image user = ProvisioningActivator.getImageDescriptor(
 				ImageKeys.USER).createImage();
 
-		private Image red = ProvisioningActivator.getImageDescriptor(
+		private Image error = ProvisioningActivator.getImageDescriptor(
 				ImageKeys.ERROR).createImage();
 
-		private Image green = ProvisioningActivator.getImageDescriptor(
+		private Image ok = ProvisioningActivator.getImageDescriptor(
 				ImageKeys.OK).createImage();
+
+		private Image warn = ProvisioningActivator.getImageDescriptor(
+				ImageKeys.WARN).createImage();
 
 		public Image getColumnImage(Object element, int columnIndex) {
 			Image image = null;
 			switch (columnIndex) {
 			case COLUMN_NAME:
-				if (element instanceof ResultTreeNode) {
+				if (element instanceof ResultFeatureTreeNode) {
 					image = feature;
 				}
 				if (element instanceof ResultUserTreeNode) {
@@ -289,25 +261,18 @@ public class ProgressReportComposite {
 			case COLUMN_STATUS:
 				if (element instanceof ResultUserTreeNode) {
 					ResultUserTreeNode node = (ResultUserTreeNode) element;
-					ResultTreeNode parent = (ResultTreeNode) node.getParent();
-					SerializedFeatureWrapper feature = (SerializedFeatureWrapper) parent
-							.getValue();
+					int result = StatusUtil
+							.checkStatus(node.getUpdateResults());
 
-					ID userId = (ID) node.getValue();
-
-					if ("org.eclipse.feature13".equals(feature.getIdentifier())
-							&& "Klaus".equals(userId.getName())) {
-						image = red;
-					} else if ("org.eclipse.feature15".equals(feature
-							.getIdentifier())
-							&& "John".equals(userId.getName())) {
-						image = red;
+					if (result == Status.OK) {
+						image = ok;
+					} else if (result == Status.WARNING) {
+						image = warn;
+					} else if (result == Status.ERROR) {
+						image = error;
+					} else if (result == Status.CANCEL) {
+						image = warn;
 					}
-
-					else {
-						image = green;
-					}
-
 				}
 				break;
 			default:
@@ -320,8 +285,8 @@ public class ProgressReportComposite {
 			String text = "";
 			switch (columnIndex) {
 			case COLUMN_NAME:
-				if (element instanceof ResultTreeNode) {
-					ResultTreeNode node = (ResultTreeNode) element;
+				if (element instanceof ResultFeatureTreeNode) {
+					ResultFeatureTreeNode node = (ResultFeatureTreeNode) element;
 					SerializedFeatureWrapper feature = (SerializedFeatureWrapper) node
 							.getValue();
 					text = feature.getLabel();
@@ -335,7 +300,8 @@ public class ProgressReportComposite {
 			case COLUMN_VERSION:
 				if (element instanceof ResultUserTreeNode) {
 					ResultUserTreeNode node = (ResultUserTreeNode) element;
-					ResultTreeNode parent = (ResultTreeNode) node.getParent();
+					ResultFeatureTreeNode parent = (ResultFeatureTreeNode) node
+							.getParent();
 					SerializedFeatureWrapper feature = (SerializedFeatureWrapper) parent
 							.getValue();
 					text = feature.getVersion();
@@ -345,23 +311,19 @@ public class ProgressReportComposite {
 				if (element instanceof ResultUserTreeNode) {
 
 					ResultUserTreeNode node = (ResultUserTreeNode) element;
-					ResultTreeNode parent = (ResultTreeNode) node.getParent();
-					SerializedFeatureWrapper feature = (SerializedFeatureWrapper) parent
-							.getValue();
+					int result = StatusUtil
+							.checkStatus(node.getUpdateResults());
 
-					ID userId = (ID) node.getValue();
-
-					if ("org.eclipse.feature13".equals(feature.getIdentifier())
-							&& "Klaus".equals(userId.getName())) {
-						text = "FAILED";
-					} else if ("org.eclipse.feature15".equals(feature
-							.getIdentifier())
-							&& "John".equals(userId.getName())) {
-						text = "ABORTED";
-					}
-
-					else {
+					if (result == Status.OK) {
 						text = "SUCCESSFULL";
+					} else if (result == Status.WARNING) {
+						text = "WARNING";
+					} else if (result == Status.ERROR) {
+						text = "FAILED";
+					} else if (result == Status.CANCEL) {
+						text = "ABORTED";
+					} else {
+						text = "UNKNOWN";
 					}
 				}
 				break;
@@ -369,34 +331,6 @@ public class ProgressReportComposite {
 				break;
 			}
 			return text;
-		}
-
-		public void addListener(ILabelProviderListener listener) {
-			// do nothing
-
-		}
-
-		public void dispose() {
-			// do nothing
-
-		}
-
-		public boolean isLabelProperty(Object element, String property) {
-			// do nothing
-			return false;
-		}
-
-		public void removeListener(ILabelProviderListener listener) {
-			// do nothing
-
-		}
-
-		public Image getImage(Object element) {
-			return null;
-		}
-
-		public String getText(Object element) {
-			return null;
 		}
 
 	}
