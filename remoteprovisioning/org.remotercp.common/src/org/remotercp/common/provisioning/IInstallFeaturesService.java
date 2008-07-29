@@ -3,14 +3,13 @@ package org.remotercp.common.provisioning;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.update.core.IFeature;
 import org.remotercp.common.servicelauncher.IRemoteServiceLauncher;
 
 public interface IInstallFeaturesService extends IRemoteServiceLauncher {
 
-	public List<IStatus> installFeatures(IFeature[] features);
+	public List<IStatus> installFeatures(SerializedFeatureWrapper[] features);
 
-	public List<IStatus> updateFeautures(IFeature[] features);
+	public List<IStatus> updateFeautures(SerializedFeatureWrapper[] features);
 
 	// public List<IStatus> uninstallFeatures(IFeature[] features);
 

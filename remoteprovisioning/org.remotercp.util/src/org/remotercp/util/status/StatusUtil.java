@@ -16,7 +16,7 @@ public class StatusUtil {
 	 * @return The most severe problem if found otherwise Status.OK
 	 */
 	public static int checkStatus(List<IStatus> statusList) {
-		int severity = -1;
+		int severity = Status.OK;
 
 		for (IStatus status : statusList) {
 			if (status.getSeverity() == Status.ERROR) {

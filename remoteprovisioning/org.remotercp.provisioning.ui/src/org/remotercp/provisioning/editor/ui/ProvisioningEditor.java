@@ -54,7 +54,9 @@ public class ProvisioningEditor extends EditorPart {
 
 	private TabFolder featuresFolder;
 
-	private StackLayout stackLayout;
+	private StackLayout installedFeaturesStackLayout;
+
+	private StackLayout availableFeaturesStackLayout;
 
 	private List<IInstalledFeaturesService> installedFeaturesServiceList;
 
@@ -71,13 +73,18 @@ public class ProvisioningEditor extends EditorPart {
 
 	private Composite installedFeaturesMainComposite;
 
-	private ProgressReportComposite progressReportComposite;
+	private ProgressReportComposite updateProgressReportComposite;
 
 	private ID[] userIDs;
 
+	private Composite availableFeaturesMainComposite;
+
+	private ProgressReportComposite installProgressReportComposite;
+
 	public ProvisioningEditor() {
 		// nothing to do yet
-		this.stackLayout = new StackLayout();
+		this.installedFeaturesStackLayout = new StackLayout();
+		this.availableFeaturesStackLayout = new StackLayout();
 	}
 
 	@Override
@@ -175,7 +182,8 @@ public class ProvisioningEditor extends EditorPart {
 
 				installedFeaturesMainComposite = new Composite(
 						this.featuresFolder, SWT.None);
-				installedFeaturesMainComposite.setLayout(stackLayout);
+				installedFeaturesMainComposite
+						.setLayout(installedFeaturesStackLayout);
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(
 						installedFeaturesMainComposite);
 
@@ -187,13 +195,13 @@ public class ProvisioningEditor extends EditorPart {
 					this.featuresVersionsComposite = new FeaturesVersionsComposite(
 							this.installedFeaturesMainComposite, SWT.None);
 
-					this.progressReportComposite = new ProgressReportComposite(
+					this.updateProgressReportComposite = new ProgressReportComposite(
 							this.installedFeaturesMainComposite, SWT.None);
 
 				}
 				this.installedFeatureTabItem
 						.setControl(installedFeaturesMainComposite);
-				stackLayout.topControl = installedFeaturesComposite
+				installedFeaturesStackLayout.topControl = installedFeaturesComposite
 						.getMainControl();
 				installedFeaturesMainComposite.layout();
 			}
@@ -207,19 +215,27 @@ public class ProvisioningEditor extends EditorPart {
 				this.availableFeaturesTabItem.setText("Available Features");
 
 				{
-					SashForm availableFeaturesSash = new SashForm(
-							this.featuresFolder, SWT.HORIZONTAL);
-					this.availableFeaturesTabItem
-							.setControl(availableFeaturesSash);
-					availableFeaturesSash.setLayout(new GridLayout(2, false));
+					this.availableFeaturesMainComposite = new Composite(
+							this.featuresFolder, SWT.None);
+					this.availableFeaturesMainComposite
+							.setLayout(this.availableFeaturesStackLayout);
 					GridDataFactory.fillDefaults().grab(true, true).applyTo(
-							availableFeaturesSash);
+							availableFeaturesMainComposite);
 
 					{
 						availableFeaturesComposite = new AvailableFeaturesComposite(
-								availableFeaturesSash, SWT.None, userIDs);
+								availableFeaturesMainComposite, SWT.None,
+								userIDs);
+
+						this.installProgressReportComposite = new ProgressReportComposite(
+								availableFeaturesMainComposite, SWT.None);
+
 					}
-					availableFeaturesSash.setWeights(new int[] { 2, 1 });
+					this.availableFeaturesTabItem
+							.setControl(availableFeaturesMainComposite);
+					availableFeaturesStackLayout.topControl = availableFeaturesComposite
+							.getMainControl();
+					availableFeaturesMainComposite.layout();
 
 				}
 
@@ -258,6 +274,7 @@ public class ProvisioningEditor extends EditorPart {
 
 	private void createListener() {
 
+		// check for update button
 		installedFeaturesComposite.addButtonListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
@@ -265,15 +282,16 @@ public class ProvisioningEditor extends EditorPart {
 			}
 		}, InstalledFeaturesComposite.Buttons.CHECK_FOR_UPDATES);
 
+		// uninstall operation
 		installedFeaturesComposite
 				.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
 						if (evt.getPropertyName().equals(
 								UpdateConstants.UNINSTALL)) {
 							// set input
-							ProvisioningEditor.this.progressReportComposite
+							ProvisioningEditor.this.updateProgressReportComposite
 									.setInput(evt.getNewValue());
-							ProvisioningEditor.this.stackLayout.topControl = progressReportComposite
+							ProvisioningEditor.this.installedFeaturesStackLayout.topControl = updateProgressReportComposite
 									.getMainControl();
 							ProvisioningEditor.this.installedFeaturesMainComposite
 									.layout();
@@ -281,34 +299,53 @@ public class ProvisioningEditor extends EditorPart {
 					}
 				});
 
+		// back button
 		featuresVersionsComposite.addButtonListener(new SelectionAdapter() {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
-				ProvisioningEditor.this.stackLayout.topControl = installedFeaturesComposite
+				ProvisioningEditor.this.installedFeaturesStackLayout.topControl = installedFeaturesComposite
 						.getMainControl();
 				ProvisioningEditor.this.installedFeaturesMainComposite.layout();
 			}
 
 		}, FeaturesVersionsComposite.Buttons.BACK);
 
-		featuresVersionsComposite.addButtonListener(new SelectionAdapter() {
-			@Override
-			public void widgetSelected(SelectionEvent e) {
-				ProvisioningEditor.this.stackLayout.topControl = progressReportComposite
-						.getMainControl();
-				ProvisioningEditor.this.installedFeaturesMainComposite.layout();
-			}
-		}, FeaturesVersionsComposite.Buttons.UPDATE);
+		// featuresVersionsComposite.addButtonListener(new SelectionAdapter() {
+		// @Override
+		// public void widgetSelected(SelectionEvent e) {
+		// ProvisioningEditor.this.installedFeaturesStackLayout.topControl =
+		// updateProgressReportComposite
+		// .getMainControl();
+		// ProvisioningEditor.this.installedFeaturesMainComposite.layout();
+		// }
+		// }, FeaturesVersionsComposite.Buttons.UPDATE);
 
+		// update button
+		featuresVersionsComposite
+				.addPropertyChangeListener(new PropertyChangeListener() {
+					public void propertyChange(PropertyChangeEvent evt) {
+						if (evt.getPropertyName()
+								.equals(UpdateConstants.UPDATE)) {
+							ProvisioningEditor.this.updateProgressReportComposite
+									.setInput(evt.getNewValue());
+
+							ProvisioningEditor.this.installedFeaturesStackLayout.topControl = updateProgressReportComposite
+									.getMainControl();
+							ProvisioningEditor.this.installedFeaturesMainComposite
+									.layout();
+						}
+					}
+				});
+
+		// install button
 		availableFeaturesComposite
 				.addPropertyChangeListener(new PropertyChangeListener() {
 					public void propertyChange(PropertyChangeEvent evt) {
-						// evt.getNewValue() contains ResultFeatureTreeNodes
-						ProvisioningEditor.this.progressReportComposite
+						ProvisioningEditor.this.installProgressReportComposite
 								.setInput(evt.getNewValue());
-						ProvisioningEditor.this.stackLayout.topControl = progressReportComposite
+						ProvisioningEditor.this.availableFeaturesStackLayout.topControl = installProgressReportComposite
 								.getMainControl();
-						ProvisioningEditor.this.installedFeaturesMainComposite
+						ProvisioningEditor.this.availableFeaturesMainComposite
 								.layout();
 					}
 				});
@@ -357,7 +394,7 @@ public class ProvisioningEditor extends EditorPart {
 				.getInstallableUnits();
 
 		this.featuresVersionsComposite.setSelectedFeatures(selectedFeatures);
-		this.stackLayout.topControl = this.featuresVersionsComposite
+		this.installedFeaturesStackLayout.topControl = this.featuresVersionsComposite
 				.getMainControl();
 		this.installedFeaturesMainComposite.layout();
 	}

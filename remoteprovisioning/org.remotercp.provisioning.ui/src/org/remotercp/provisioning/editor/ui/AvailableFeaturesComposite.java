@@ -30,7 +30,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
@@ -70,8 +70,9 @@ public class AvailableFeaturesComposite {
 	private final ID[] userIDs;
 	private ISessionService sessionService;
 	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private SashForm sashMain;
 
-	public AvailableFeaturesComposite(SashForm parent, int style, ID[] userIDs) {
+	public AvailableFeaturesComposite(Composite parent, int style, ID[] userIDs) {
 		this.userIDs = userIDs;
 		this.init();
 
@@ -97,81 +98,88 @@ public class AvailableFeaturesComposite {
 	/*
 	 * Creates all GUI elements
 	 */
-	private void createPartControl(SashForm parent, int style) {
-
-		Composite featuresComp = new Composite(parent, SWT.None);
-		featuresComp.setLayout(new GridLayout(1, false));
-		GridDataFactory.fillDefaults().grab(true, true).applyTo(featuresComp);
-
+	private void createPartControl(Composite parent, int style) {
+		sashMain = new SashForm(parent, SWT.HORIZONTAL);
+		sashMain.setLayout(new GridLayout(2, false));
+		GridDataFactory.fillDefaults().grab(true, true).applyTo(sashMain);
 		{
-			this.bookmarksTreeViewer = new CheckboxTreeViewer(featuresComp,
-					SWT.H_SCROLL | SWT.V_SCROLL);
+			Composite featuresComp = new Composite(sashMain, SWT.None);
+			featuresComp.setLayout(new GridLayout(1, false));
 			GridDataFactory.fillDefaults().grab(true, true).applyTo(
-					this.bookmarksTreeViewer.getControl());
+					featuresComp);
 
-			this.bookmarksTreeViewer
-					.setContentProvider(new FeaturesTreeContentProvider());
-			this.bookmarksTreeViewer
-					.setLabelProvider(new FeatureVersionsLabelProvider());
+			{
+				this.bookmarksTreeViewer = new CheckboxTreeViewer(featuresComp,
+						SWT.H_SCROLL | SWT.V_SCROLL);
+				GridDataFactory.fillDefaults().grab(true, true).applyTo(
+						this.bookmarksTreeViewer.getControl());
 
-			this.bookmarksTreeViewer.addTreeListener(getTreeViewerListener());
+				this.bookmarksTreeViewer
+						.setContentProvider(new FeaturesTreeContentProvider());
+				this.bookmarksTreeViewer
+						.setLabelProvider(new FeatureVersionsLabelProvider());
 
+				this.bookmarksTreeViewer
+						.addTreeListener(getTreeViewerListener());
+
+			}
 		}
-
-		Composite buttonsComp = new Composite(parent, SWT.None);
-		buttonsComp.setLayout(new GridLayout(1, false));
 
 		{
-			Button install = new Button(buttonsComp, SWT.PUSH);
-			install.setText("Install...");
-			install.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					installFeature();
-				}
-			});
+			Composite buttonsComp = new Composite(sashMain, SWT.None);
+			buttonsComp.setLayout(new GridLayout(1, false));
 
-			Button properties = new Button(buttonsComp, SWT.PUSH);
-			properties.setText("Properties...");
+			{
+				Button install = new Button(buttonsComp, SWT.PUSH);
+				install.setText("Install...");
+				install.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						installFeature();
+					}
+				});
 
-			// dummy label to make space
-			new Label(buttonsComp, SWT.None);
+				Button properties = new Button(buttonsComp, SWT.PUSH);
+				properties.setText("Properties...");
 
-			Button refresh = new Button(buttonsComp, SWT.PUSH);
-			refresh.setText("Refresh");
-			refresh.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					initTreeElements();
-				}
-			});
+				// dummy label to make space
+				new Label(buttonsComp, SWT.None);
 
-			// dummy label to make space
-			new Label(buttonsComp, SWT.None);
+				Button refresh = new Button(buttonsComp, SWT.PUSH);
+				refresh.setText("Refresh");
+				refresh.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						initTreeElements();
+					}
+				});
 
-			Button addSite = new Button(buttonsComp, SWT.PUSH);
-			addSite.setText("Add site...");
-			addSite.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					addBookmarkSite();
-				}
+				// dummy label to make space
+				new Label(buttonsComp, SWT.None);
 
-			});
+				Button addSite = new Button(buttonsComp, SWT.PUSH);
+				addSite.setText("Add site...");
+				addSite.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						addBookmarkSite();
+					}
 
-			Button removeSites = new Button(buttonsComp, SWT.PUSH);
-			removeSites.setText("Remove site...");
-			removeSites.addSelectionListener(new SelectionAdapter() {
-				@Override
-				public void widgetSelected(SelectionEvent e) {
-					removeBookmarkSite();
-				}
+				});
 
-			});
+				Button removeSites = new Button(buttonsComp, SWT.PUSH);
+				removeSites.setText("Remove site...");
+				removeSites.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+						removeBookmarkSite();
+					}
 
+				});
+
+			}
 		}
-
-		// this.initTreeElements();
+		sashMain.setWeights(new int[] { 80, 20 });
 	}
 
 	/**
@@ -218,7 +226,7 @@ public class AvailableFeaturesComposite {
 	}
 
 	private void refreshViewer(final UpdateSiteTreeNode node) {
-		getDisplay().asyncExec(new Runnable() {
+		bookmarksTreeViewer.getControl().getDisplay().asyncExec(new Runnable() {
 			public void run() {
 
 				bookmarksTreeViewer.refresh();
@@ -353,6 +361,10 @@ public class AvailableFeaturesComposite {
 		this.initTreeElements();
 	}
 
+	protected Control getMainControl() {
+		return sashMain;
+	}
+
 	private void installFeature() {
 		final Shell shell = bookmarksTreeViewer.getControl().getShell();
 		final Object[] checkedElements = bookmarksTreeViewer
@@ -372,80 +384,96 @@ public class AvailableFeaturesComposite {
 			final FeatureTreeNode featureNode = (FeatureTreeNode) checkedElements[0];
 			final Feature feature = (Feature) featureNode.getValue();
 
-			ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
-					SerializedFeatureWrapper.createFeatureWrapper(feature));
-			for (ID userId : userIDs) {
-				performInstallation(feature, userId, resultFeatureNode);
-			}
-
 			// XXX: this method will support more than one feature installation.
-			// results have to be collected in a list
-			List<ResultFeatureTreeNode> resultNodes = new ArrayList<ResultFeatureTreeNode>();
-			resultNodes.add(resultFeatureNode);
-
-			// send result to listener
-			pcs.firePropertyChange(UpdateConstants.INSTALL, null, resultNodes);
+			performInstallation(feature, userIDs);
 		}
 	}
 
 	/*
 	 * This method will install one feature on a remote user's machine
 	 */
-	private void performInstallation(final Feature feature, final ID userId,
-			final ResultFeatureTreeNode resultFeatureNode) {
-		try {
-			List<IInstallFeaturesService> remoteServices = sessionService
-					.getRemoteService(IInstallFeaturesService.class,
-							new ID[] { userId }, null);
+	private void performInstallation(final Feature feature, final ID[] userIDs) {
 
-			// there should be only one service per user available
-			Assert.isTrue(remoteServices.size() == 1);
+		Job installJob = new Job("Install feature") {
+			@Override
+			protected IStatus run(IProgressMonitor monitor) {
+				final ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
+						SerializedFeatureWrapper.createFeatureWrapper(feature));
 
-			final IInstallFeaturesService installFeatureService = remoteServices
-					.get(0);
+				// TODO: show real progress if possible
+				monitor
+						.beginTask(
+								"Perform install operation on remote user applications",
+								IProgressMonitor.UNKNOWN);
 
-			Job installJob = new Job("Install feature") {
-				@Override
-				protected IStatus run(IProgressMonitor monitor) {
-					// TODO: show real progress if possible
-					monitor.beginTask(
-							"Perform install operation on remote user machine: "
-									+ userId.getName(),
-							IProgressMonitor.UNKNOWN);
+				for (final ID userId : userIDs) {
+					try {
+						monitor.subTask("Installing features on machine: "
+								+ userId.getName());
 
-					/* as IFeature is not serializable we have to wrap them */
-					SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
-					featuresToInstall[0] = SerializedFeatureWrapper
-							.createFeatureWrapper(feature);
+						List<IInstallFeaturesService> remoteServices = sessionService
+								.getRemoteService(
+										IInstallFeaturesService.class,
+										new ID[] { userId }, null);
 
-					List<IStatus> results = installFeatureService
-							.installFeatures(featuresToInstall);
+						// there should be only one service per user available
+						Assert.isTrue(remoteServices.size() == 1);
 
-					ResultUserTreeNode userNode = new ResultUserTreeNode(userId);
-					userNode.setUpdateResults(results);
+						final IInstallFeaturesService installFeatureService = remoteServices
+								.get(0);
 
-					// add node to parent
-					resultFeatureNode.addChild(userNode);
+						/* as IFeature is not serializable we have to wrap them */
+						SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
+						featuresToInstall[0] = SerializedFeatureWrapper
+								.createFeatureWrapper(feature);
 
-					monitor.done();
+						/* perform remote call */
+						List<IStatus> results = installFeatureService
+								.installFeatures(featuresToInstall);
 
-					// always return ok, errors will be handled in the
-					// ProgressReportComposite
-					return Status.OK_STATUS;
+						installFeatureService.restartApplication();
 
+						ResultUserTreeNode userNode = new ResultUserTreeNode(
+								userId);
+						userNode.setUpdateResults(results);
+						userNode.setParent(resultFeatureNode);
+
+						// add node to parent
+						resultFeatureNode.addChild(userNode);
+					} catch (ECFException e) {
+						e.printStackTrace();
+					} catch (InvalidSyntaxException e) {
+						e.printStackTrace();
+					}
 				}
-			};
-			// display progress in progress bar
-			installJob.setUser(false);
-			installJob.schedule();
 
-			// set focus
-			ProgressViewHandler.setFocus();
-		} catch (ECFException e) {
-			e.printStackTrace();
-		} catch (InvalidSyntaxException e) {
-			e.printStackTrace();
-		}
+				monitor.done();
+				bookmarksTreeViewer.getControl().getDisplay().asyncExec(
+						new Runnable() {
+							public void run() {
+								// TODO: change this static behaviour to dynamic
+								// one. There can more than one feature
+								// installed by user.
+								List<ResultFeatureTreeNode> resultNodes = new ArrayList<ResultFeatureTreeNode>();
+								resultNodes.add(resultFeatureNode);
+								pcs.firePropertyChange(UpdateConstants.INSTALL,
+										null, resultNodes);
+							}
+						});
+
+				// always return ok, errors will be handled in the
+				// ProgressReportComposite
+				return Status.OK_STATUS;
+
+			}
+		};
+		// display progress in progress bar
+		installJob.setUser(false);
+		installJob.schedule();
+
+		// set focus
+		ProgressViewHandler.setFocus();
+
 	}
 
 	protected ITreeViewerListener getTreeViewerListener() {
@@ -551,14 +579,6 @@ public class AvailableFeaturesComposite {
 		public String getText(Object element) {
 			AbstractTreeNode node = (AbstractTreeNode) element;
 			return node.getLabel();
-		}
-	}
-
-	private Display getDisplay() {
-		if (Display.getCurrent() == null) {
-			return Display.getDefault();
-		} else {
-			return Display.getCurrent();
 		}
 	}
 }

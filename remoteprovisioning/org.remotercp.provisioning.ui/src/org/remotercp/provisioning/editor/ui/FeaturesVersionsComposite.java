@@ -1,5 +1,7 @@
 package org.remotercp.provisioning.editor.ui;
 
+import java.beans.PropertyChangeListener;
+import java.beans.PropertyChangeSupport;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -39,6 +41,7 @@ import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.SiteManager;
 import org.osgi.framework.InvalidSyntaxException;
+import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
@@ -61,7 +64,7 @@ public class FeaturesVersionsComposite {
 
 	private CheckboxTreeViewer featureVersionsViewer;
 
-	// private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
+	private PropertyChangeSupport pcs = new PropertyChangeSupport(this);
 
 	public static enum Buttons {
 		UPDATE, PROPERTIES, BACK
@@ -98,15 +101,13 @@ public class FeaturesVersionsComposite {
 		this.createPartControl(parent, style);
 	}
 
-	// protected void addPropertyChangeListener(PropertyChangeListener listener)
-	// {
-	// this.pcs.addPropertyChangeListener(listener);
-	// }
-	//
-	// protected void removePropertyChangeListener(PropertyChangeListener
-	// listener) {
-	// this.pcs.removePropertyChangeListener(listener);
-	// }
+	protected void addPropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.addPropertyChangeListener(listener);
+	}
+
+	protected void removePropertyChangeListener(PropertyChangeListener listener) {
+		this.pcs.removePropertyChangeListener(listener);
+	}
 
 	protected void createPartControl(Composite parent, int style) {
 		main = new Composite(parent, style);
@@ -270,6 +271,8 @@ public class FeaturesVersionsComposite {
 				.getOSGiService(ProvisioningActivator.getBundleContext(),
 						ISessionService.class);
 
+		final List<ResultFeatureTreeNode> resultNodes = new ArrayList<ResultFeatureTreeNode>();
+
 		for (FeatureTreeNode featureNode : features) {
 			monitor.subTask("Update feature : " + featureNode.getLabel());
 
@@ -278,7 +281,9 @@ public class FeaturesVersionsComposite {
 
 			/* create result root node with feature */
 			ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
-					feature);
+					SerializedFeatureWrapper.createFeatureWrapper(feature));
+
+			resultNodes.add(resultFeatureNode);
 
 			/* determine users to update */
 			List<ID> userToUpdate = getUserToUpdate(featureNode);
@@ -320,8 +325,11 @@ public class FeaturesVersionsComposite {
 					IInstallFeaturesService installFeaturesService = remoteService
 							.get(0);
 
+					/* perform remote call */
 					List<IStatus> updateResults = installFeaturesService
 							.updateFeautures(featuresToUpdate);
+
+					installFeaturesService.restartApplication();
 
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
@@ -348,6 +356,18 @@ public class FeaturesVersionsComposite {
 			monitor.worked(1);
 		}
 		monitor.done();
+
+		/*
+		 * as we are in the job thread we have do asyncExec the property fire
+		 * operation
+		 */
+		featureVersionsViewer.getControl().getDisplay().asyncExec(
+				new Runnable() {
+					public void run() {
+						pcs.firePropertyChange(UpdateConstants.UPDATE, null,
+								resultNodes);
+					}
+				});
 	}
 
 	/*
