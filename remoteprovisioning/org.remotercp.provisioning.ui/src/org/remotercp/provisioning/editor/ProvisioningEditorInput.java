@@ -61,12 +61,14 @@ public class ProvisioningEditorInput implements IEditorInput {
 	}
 
 	public boolean equals(Object obj) {
-		ProvisioningEditorInput input = (ProvisioningEditorInput) obj;
-		if (input.hashCode() == hashCode()) {
-			return true;
-		} else {
-			return false;
+		if (obj instanceof ProvisioningEditorInput) {
+
+			ProvisioningEditorInput input = (ProvisioningEditorInput) obj;
+			if (input.hashCode() == hashCode()) {
+				return true;
+			}
 		}
+		return false;
 	}
 
 	public int hashCode() {

@@ -13,7 +13,6 @@ import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
-import org.eclipse.ui.actions.ActionFactory;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.ecf.session.ISessionService;
@@ -30,10 +29,6 @@ public class SaveRemotePreferencesAction implements IEditorActionDelegate {
 
 	public void setActiveEditor(IAction action, IEditorPart targetEditor) {
 		this.targetEditor = (PreferenceEditor) targetEditor;
-		
-		// also 
-		this.targetEditor.getEditorSite().getActionBars()
-				.setGlobalActionHandler(ActionFactory.SAVE.getId(), action);
 	}
 
 	public void run(IAction action) {

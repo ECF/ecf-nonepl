@@ -271,7 +271,7 @@ public class ProgressReportComposite {
 					} else if (result == Status.ERROR) {
 						image = error;
 					} else if (result == Status.CANCEL) {
-						image = warn;
+						image = error;
 					}
 				}
 				break;

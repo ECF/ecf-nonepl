@@ -22,6 +22,9 @@ public class StatusUtil {
 			if (status.getSeverity() == Status.ERROR) {
 				return Status.ERROR;
 			}
+			if(status.getSeverity() == Status.CANCEL){
+				return Status.CANCEL;
+			}
 			if (status.getSeverity() == Status.WARNING) {
 				severity = Status.WARNING;
 			}

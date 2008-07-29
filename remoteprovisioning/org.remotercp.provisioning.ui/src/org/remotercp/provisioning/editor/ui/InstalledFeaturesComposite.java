@@ -353,15 +353,29 @@ public class InstalledFeaturesComposite {
 
 					IInstallFeaturesService remoteUninstallService = remoteUninstallServices
 							.get(0);
-					List<IStatus> uninstallResult = remoteUninstallService
-							.uninstallFeatures(uninstallIds);
+
+					List<IStatus> uninstallResult = null;
+					// ask client if updates can be performed
+					IStatus acceptUpdate = remoteUninstallService
+							.acceptUpdate();
+					if (acceptUpdate.getSeverity() == Status.OK) {
+						// perform uninstall operation
+						uninstallResult = remoteUninstallService
+								.uninstallFeatures(uninstallIds);
+
+						// perform restart
+						remoteUninstallService.restartApplication();
+					} else {
+						// update has been cancelled by user
+						uninstallResult = new ArrayList<IStatus>();
+						uninstallResult.add(acceptUpdate);
+					}
 
 					/* create child nodes for diplaying results */
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
 					resultUserNode.setParent(resultNode);
 					resultUserNode.setUpdateResults(uninstallResult);
-
 					resultNode.addChild(resultUserNode);
 				} catch (ECFException e) {
 					IStatus error = createStatus(Status.ERROR,
