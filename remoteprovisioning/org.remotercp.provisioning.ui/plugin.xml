@@ -25,6 +25,15 @@
                toolbarPath="additions"
                tooltip="Get remote installed features for selected users">
          </action>
+         <action
+               class="org.remotercp.provisioning.actions.RestartApplicationAction"
+               icon="icons/restart_16x16.png"
+               id="org.remotercp.provisioning.ui.restartAction"
+               label="Restart Remote Application"
+               menubarPath="end"
+               toolbarPath="end"
+               tooltip="Restart the remote user&apos;s application">
+         </action>
       </viewContribution>
    </extension>
 

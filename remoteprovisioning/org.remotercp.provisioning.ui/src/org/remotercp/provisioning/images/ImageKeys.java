@@ -29,21 +29,23 @@ public class ImageKeys {
 	public static final String ATTENTION = "icons/attention_16x16.png";
 
 	public static final String CATEGORY = "icons/category.png";
-	
+
 	public static final String UPDATESITE = "icons/updatesite.png";
-	
+
 	public static final String UPDATE = "icons/update_16x16.png";
-	
+
 	public static final String UPDATE2 = "icons/update_2_16x16.png";
-	
+
 	public static final String PROPERTIES = "icons/properties_16x16.png";
-	
+
 	public static final String UNINSTALL = "icons/uninstall_16x16.png";
-	
+
 	public static final String BACK = "icons/back_16x16.png";
-	
+
 	public static final String OK = "icons/ok.png";
-	
+
 	public static final String ERROR = "icons/error_16x16.png";
+
+	public static final String RESTART = "icons/restart_16x16.png";
 
 }

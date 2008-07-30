@@ -329,8 +329,6 @@ public class FeaturesVersionsComposite {
 					List<IStatus> updateResults = installFeaturesService
 							.updateFeautures(featuresToUpdate);
 
-					installFeaturesService.restartApplication();
-
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
 					resultUserNode.setParent(resultFeatureNode);

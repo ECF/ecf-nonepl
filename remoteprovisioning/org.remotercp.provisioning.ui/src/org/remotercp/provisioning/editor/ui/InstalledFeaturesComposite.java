@@ -10,7 +10,6 @@ import java.util.Set;
 import java.util.TreeSet;
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -37,8 +36,9 @@ import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
+import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.update.core.IFeature;
+import org.eclipse.ui.internal.IWorkbenchConstants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
@@ -362,9 +362,6 @@ public class InstalledFeaturesComposite {
 						// perform uninstall operation
 						uninstallResult = remoteUninstallService
 								.uninstallFeatures(uninstallIds);
-
-						// perform restart
-						remoteUninstallService.restartApplication();
 					} else {
 						// update has been cancelled by user
 						uninstallResult = new ArrayList<IStatus>();

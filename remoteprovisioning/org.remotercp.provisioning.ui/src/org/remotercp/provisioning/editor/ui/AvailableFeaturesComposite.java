@@ -431,8 +431,6 @@ public class AvailableFeaturesComposite {
 						List<IStatus> results = installFeatureService
 								.installFeatures(featuresToInstall);
 
-						installFeatureService.restartApplication();
-
 						ResultUserTreeNode userNode = new ResultUserTreeNode(
 								userId);
 						userNode.setUpdateResults(results);
