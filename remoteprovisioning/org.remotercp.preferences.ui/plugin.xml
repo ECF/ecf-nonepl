@@ -62,8 +62,8 @@
                id="org.remotercp.preferences.ui.remotePreferencesAction"
                label="Get remote preferences"
                menubarPath="additions"
-               style="push"
-               toolbarPath="additions">
+               toolbarPath="additions"
+               tooltip="Get remote preferences of the selected user">
          </action>
       </viewContribution>
    </extension>
