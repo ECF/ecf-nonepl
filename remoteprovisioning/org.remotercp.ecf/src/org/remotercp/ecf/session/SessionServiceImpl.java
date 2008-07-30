@@ -122,6 +122,8 @@ public class SessionServiceImpl implements ISessionService {
 		 */
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
 				.getRemoteServiceReferences(null, service.getName(), filter);
+		logger.info("Service references for service found: "
+				+ service.getName() + " - " + refs.length);
 
 		Map<String, T> filteredServices = new HashMap<String, T>();
 
