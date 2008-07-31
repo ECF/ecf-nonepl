@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
@@ -32,6 +33,9 @@ import org.remotercp.util.preferences.PreferencesUtil;
 public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 	private IPreferencesService preferenceService;
+
+	private final static Logger logger = Logger
+			.getLogger(RemotePreferencesServiceImpl.class.getName());
 
 	public SortedMap<String, String> getPreferences(String[] preferenceFilter)
 			throws ECFException {
@@ -174,6 +178,9 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 	}
 
 	public void startService() {
+		logger.info("********* Starting service: "
+				+ RemotePreferencesServiceImpl.class.getName() + "********");
+
 		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
 				PreferencesActivator.getBundleContext(), ISessionService.class);
 		Assert.isNotNull(sessionService);

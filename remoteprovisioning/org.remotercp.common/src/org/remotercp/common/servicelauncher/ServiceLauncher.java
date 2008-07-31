@@ -16,9 +16,14 @@ public class ServiceLauncher {
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
 				.getExtensionPoint("org.remotercp.remoteService");
 		Assert.isNotNull(extensionPoint);
-		
+
 		IConfigurationElement[] configurationElements = extensionPoint
 				.getConfigurationElements();
+
+		if (configurationElements == null || configurationElements.length == 0) {
+			logger
+					.severe("No remote services started. ExtensionPont has not registered extensions");
+		}
 
 		for (IConfigurationElement element : configurationElements) {
 			try {

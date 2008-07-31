@@ -104,6 +104,8 @@ public class SessionServiceImpl implements ISessionService {
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = (IRemoteServiceContainerAdapter) this.containter
 				.getAdapter(IRemoteServiceContainerAdapter.class);
 
+		logger.info("Container status: " + this.containter.toString());
+
 		/*
 		 * XXX: according to Scott Lewis the filterIDs have to be containerIDs
 		 * and not rosterIDs, therefore the IRemoteServiceReferences are not

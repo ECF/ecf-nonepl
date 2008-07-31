@@ -348,6 +348,10 @@ public class IncomingFiletransferReceiver implements
 	}
 
 	public void startService() {
+
+		logger.info("******* Starting service: "
+				+ IncomingFiletransferReceiver.class.getName() + " ********");
+
 		ISessionService service = OsgiServiceLocatorUtil.getOSGiService(
 				FiletransferReceiverActivator.getBundleContext(),
 				ISessionService.class);
