@@ -101,8 +101,7 @@ public class SessionServiceImpl implements ISessionService {
 			String filter) throws ECFException, InvalidSyntaxException {
 		List<T> remoteServices = new ArrayList<T>();
 
-		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = (IRemoteServiceContainerAdapter) this.containter
-				.getAdapter(IRemoteServiceContainerAdapter.class);
+		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
 
 		logger.info("Container status: " + this.containter.toString());
 
