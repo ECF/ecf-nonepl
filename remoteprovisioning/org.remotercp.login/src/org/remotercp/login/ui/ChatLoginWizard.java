@@ -33,6 +33,7 @@ import org.remotercp.ecf.session.ConnectionDetails;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.login.ImageKeys;
 import org.remotercp.login.LoginActivator;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class ChatLoginWizard extends Wizard {
 
@@ -102,9 +103,8 @@ public class ChatLoginWizard extends Wizard {
 			ConnectionDetails connectionDetails = new ConnectionDetails(
 					userName, server);
 
-			// Session session = Session.getInstance();
-			ISessionService session = LoginActivator.getDefault().getService(
-					ISessionService.class);
+			ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
+					LoginActivator.getBundleContext(), ISessionService.class);
 			session.setConnectionDetails(connectionDetails);
 			session.setContainer(connector);
 

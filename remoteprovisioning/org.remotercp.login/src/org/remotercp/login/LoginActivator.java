@@ -3,7 +3,6 @@ package org.remotercp.login;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceReference;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -16,7 +15,7 @@ public class LoginActivator extends AbstractUIPlugin {
 	// The shared instance
 	private static LoginActivator plugin;
 
-	private BundleContext context;
+	private static BundleContext bundlecontext;
 
 	/**
 	 * The constructor
@@ -32,18 +31,7 @@ public class LoginActivator extends AbstractUIPlugin {
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
 		plugin = this;
-		this.context = context;
-	}
-
-	@SuppressWarnings("unchecked")
-	public <T> T getService(Class<T> service) {
-		ServiceReference serviceReference = this.context
-				.getServiceReference(service.getName());
-		if (serviceReference != null) {
-			T foundService = (T) context.getService(serviceReference);
-			return foundService;
-		}
-		return null;
+		bundlecontext = context;
 	}
 
 	/*
@@ -63,6 +51,10 @@ public class LoginActivator extends AbstractUIPlugin {
 	 */
 	public static LoginActivator getDefault() {
 		return plugin;
+	}
+
+	public static BundleContext getBundleContext() {
+		return bundlecontext;
 	}
 
 	public static ImageDescriptor getImageDescriptor(String imageFilePath) {
