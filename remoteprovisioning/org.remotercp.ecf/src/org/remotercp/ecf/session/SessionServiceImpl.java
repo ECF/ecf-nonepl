@@ -124,8 +124,6 @@ public class SessionServiceImpl implements ISessionService {
 		 */
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
 				.getRemoteServiceReferences(null, service.getName(), filter);
-		logger.info("Service references for service found: "
-				+ service.getName() + " - " + refs.length);
 
 		Map<String, T> filteredServices = new HashMap<String, T>();
 
@@ -289,14 +287,14 @@ public class SessionServiceImpl implements ISessionService {
 				 * login when other users are already online he won't be able to
 				 * use the remote services as the registration of these services
 				 * happens at the login time. Therefore we push here services to
-				 * just loged in users.
+				 * just logged in users.
 				 * 
 				 * Try to figure out if the ECF DiscoveryService will do here
 				 * better work.
 				 */
 				if (presence.getType() == IPresence.Type.AVAILABLE) {
 					/*
-					 * wait 5 sec so that all local services are registered
+					 * wait 3 sec so that all local services are registered
 					 * before registering them to remote clients
 					 */
 					try {
