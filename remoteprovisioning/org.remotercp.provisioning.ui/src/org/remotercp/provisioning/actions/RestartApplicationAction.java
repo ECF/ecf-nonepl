@@ -21,6 +21,7 @@ import org.eclipse.ui.IViewPart;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.roster.RosterUtil;
@@ -84,8 +85,11 @@ public class RestartApplicationAction implements IViewActionDelegate {
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
 						IStatus acceptUpdate = featuresService.acceptUpdate();
-						if (acceptUpdate.getSeverity() == Status.OK)
+						if (acceptUpdate.getSeverity() == Status.OK) {
 							featuresService.restartApplication();
+						} else {
+							ErrorView.addError(acceptUpdate);
+						}
 						return acceptUpdate;
 					}
 				};
