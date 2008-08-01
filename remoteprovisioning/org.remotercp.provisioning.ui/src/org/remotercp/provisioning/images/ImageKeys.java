@@ -42,7 +42,7 @@ public class ImageKeys {
 
 	public static final String BACK = "icons/back_16x16.png";
 
-	public static final String OK = "icons/ok.png";
+	public static final String OK = "icons/ok_16x16.png";
 
 	public static final String ERROR = "icons/error_16x16.png";
 
