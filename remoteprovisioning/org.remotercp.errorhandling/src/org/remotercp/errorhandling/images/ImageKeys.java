@@ -8,7 +8,7 @@ public class ImageKeys {
 
 	public static final String ERROR = "icons/error.gif";
 
-	public static final String WARNING = "icons/warn.gif";
+	public static final String WARNING = "icons/warning_16x16.png";
 
 	public static final String INFO = "icons/info6.jpeg";
 

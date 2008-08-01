@@ -24,7 +24,7 @@ public class ImageKeys {
 
 	public static final String CIRCLE_BLUE = "icons/circle_blue_16x16.gif";
 
-	public static final String WARN = "icons/warn.gif";
+	public static final String WARN = "icons/warning_16x16.png";
 
 	public static final String ATTENTION = "icons/attention_16x16.png";
 
