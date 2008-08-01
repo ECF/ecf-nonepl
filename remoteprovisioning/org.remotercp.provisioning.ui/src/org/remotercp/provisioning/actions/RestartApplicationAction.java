@@ -6,8 +6,10 @@ import java.beans.PropertyChangeSupport;
 import java.util.List;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.roster.IRoster;
@@ -72,10 +74,23 @@ public class RestartApplicationAction implements IViewActionDelegate {
 					.getRemoteService(IInstallFeaturesService.class, userIDs,
 							null);
 
-			for (IInstallFeaturesService featuresService : remoteService) {
-				IStatus acceptUpdate = featuresService.acceptUpdate();
-				if (acceptUpdate.getSeverity() == Status.OK)
-					featuresService.restartApplication();
+			for (final IInstallFeaturesService featuresService : remoteService) {
+				/*
+				 * as each user can independently decide to restart his
+				 * application perform the request in a job and don't wait for
+				 * the commitment of each user.
+				 */
+				Job restartJob = new Job("Restart remote application") {
+					@Override
+					protected IStatus run(IProgressMonitor monitor) {
+						IStatus acceptUpdate = featuresService.acceptUpdate();
+						if (acceptUpdate.getSeverity() == Status.OK)
+							featuresService.restartApplication();
+						return acceptUpdate;
+					}
+				};
+				restartJob.setUser(false);
+				restartJob.schedule();
 			}
 
 		} catch (ECFException e) {
