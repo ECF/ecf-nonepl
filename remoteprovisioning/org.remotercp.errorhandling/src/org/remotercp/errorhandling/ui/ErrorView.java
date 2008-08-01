@@ -220,6 +220,11 @@ public class ErrorView extends ViewPart {
 					.getImageDescriptor(ImageKeys.WARNING).createImage();
 		}
 
+		if (status.getSeverity() == IStatus.CANCEL) {
+			image = ErrorHandlingActivator
+					.getImageDescriptor(ImageKeys.WARNING).createImage();
+		}
+
 		if (status.getSeverity() == IStatus.INFO) {
 			image = ErrorHandlingActivator.getImageDescriptor(ImageKeys.INFO)
 					.createImage();
