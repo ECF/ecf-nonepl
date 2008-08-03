@@ -4,7 +4,9 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.IPresence;
+import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
@@ -26,8 +28,11 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
+import org.remotercp.contacts.ContactsActivator;
 import org.remotercp.contacts.ContactsContentProvider;
 import org.remotercp.contacts.ContactsLabelProvider;
+import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.roster.RosterUtil;
 
 public class SelectedContactsView extends ViewPart {
@@ -60,6 +65,30 @@ public class SelectedContactsView extends ViewPart {
 		this.hookKeyListener();
 
 		this.initDragAndDropSupport();
+
+		this.hookPresenceListener();
+
+	}
+
+	private void hookPresenceListener() {
+		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
+				ContactsActivator.getBundleContext(), ISessionService.class);
+		sessionService.getRosterManager().addPresenceListener(
+				new IPresenceListener() {
+
+					@Override
+					public void handlePresence(ID fromID, IPresence presence) {
+
+						SelectedContactsView.this.selectedContactsViewer
+								.getControl().getDisplay().asyncExec(
+										new Runnable() {
+											public void run() {
+												SelectedContactsView.this.selectedContactsViewer
+														.refresh();
+											}
+										});
+					}
+				});
 
 	}
 
