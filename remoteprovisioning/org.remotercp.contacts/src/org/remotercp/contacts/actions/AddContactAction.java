@@ -4,13 +4,21 @@ import org.eclipse.ecf.presence.roster.RosterGroup;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
+import org.eclipse.swt.SWT;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.remotercp.util.dialogs.RemoteExceptionHandler;
 
+/**
+ * This action does open a dialog where a new user can be added to the contacts
+ * list.
+ * 
+ * @author Eugen Reiswich
+ * @date 03.08.2008
+ * 
+ */
 public class AddContactAction implements IWorkbenchWindowActionDelegate {
 
-	@SuppressWarnings("unused")
 	private IWorkbenchWindow window;
 
 	// TreeViewer Selection
@@ -28,10 +36,15 @@ public class AddContactAction implements IWorkbenchWindowActionDelegate {
 
 	public void run(IAction action) {
 
-		UnsupportedOperationException unsupportedOperationException = new UnsupportedOperationException(
-				"Method is not supported yet");
-		RemoteExceptionHandler.handleException(unsupportedOperationException,
-				"Method has to be written fist");
+		// UnsupportedOperationException unsupportedOperationException = new
+		// UnsupportedOperationException(
+		// "Method is not supported yet");
+		// RemoteExceptionHandler.handleException(unsupportedOperationException,
+		// "Method has to be written fist");
+
+		MessageBox error = new MessageBox(window.getShell(), SWT.ICON_ERROR);
+		error.setMessage("This method is not supported yet");
+		error.open();
 		// ErrorView.addError("Severe error", Level.SEVERE);
 		// ErrorView.addError("Warning message", Level.WARNING);
 		// ErrorView.addError("Info message", Level.INFO);

@@ -70,13 +70,6 @@
             id="org.eclipsercp.hyperbola.actionSet"
             label="Action Set"
             visible="true">
-         <menu
-               id="org.eclipsercp.hyperbola.menu"
-               label="Menu">
-            <separator
-                  name="org.eclipsercp.hyperbola.separator">
-            </separator>
-         </menu>
          <action
                class="org.remotercp.contacts.actions.AddContactAction"
                icon="icons/add_contact.png"
