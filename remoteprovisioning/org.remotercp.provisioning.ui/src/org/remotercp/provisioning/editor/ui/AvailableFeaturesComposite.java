@@ -139,8 +139,19 @@ public class AvailableFeaturesComposite {
 					}
 				});
 
-				Button properties = new Button(buttonsComp, SWT.PUSH);
+				final Button properties = new Button(buttonsComp, SWT.PUSH);
 				properties.setText("Properties...");
+				properties.addSelectionListener(new SelectionAdapter() {
+					@Override
+					public void widgetSelected(SelectionEvent e) {
+
+						MessageBox unsupported = new MessageBox(properties
+								.getShell(), SWT.ICON_ERROR);
+						unsupported
+								.setMessage("This method is not supported yet");
+						unsupported.open();
+					}
+				});
 
 				// dummy label to make space
 				new Label(buttonsComp, SWT.None);

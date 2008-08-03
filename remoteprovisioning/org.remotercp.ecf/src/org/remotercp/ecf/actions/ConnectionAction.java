@@ -9,6 +9,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowPulldownDelegate;
 import org.remotercp.ecf.ECFActivator;
@@ -20,7 +21,7 @@ public class ConnectionAction implements IWorkbenchWindowPulldownDelegate {
 	private MenuItem connect, disconnect;
 	private Image connectImage, disconnectImage;
 
-	public Menu getMenu(Control parent) {
+	public Menu getMenu(final Control parent) {
 		connection = new Menu(parent);
 
 		connect = new MenuItem(connection, SWT.PUSH);
@@ -36,6 +37,10 @@ public class ConnectionAction implements IWorkbenchWindowPulldownDelegate {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("Connect selected");
+				MessageBox unsupported = new MessageBox(parent.getShell(),
+						SWT.ICON_ERROR);
+				unsupported.setMessage("This method is not supported yet");
+				unsupported.open();
 			}
 		});
 
@@ -50,6 +55,10 @@ public class ConnectionAction implements IWorkbenchWindowPulldownDelegate {
 			@Override
 			public void widgetSelected(SelectionEvent e) {
 				System.out.println("Disconnect selected");
+				MessageBox unsupported = new MessageBox(parent.getShell(),
+						SWT.ICON_ERROR);
+				unsupported.setMessage("This method is not supported yet");
+				unsupported.open();
 			}
 		});
 
@@ -67,12 +76,13 @@ public class ConnectionAction implements IWorkbenchWindowPulldownDelegate {
 	}
 
 	public void run(IAction action) {
-		
-		//System.out.println("Action : " + action);
+
+		// System.out.println("Action : " + action);
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
-		//System.out.println("Action : " + action + " Selection: " + selection);
+		// System.out.println("Action : " + action + " Selection: " +
+		// selection);
 	}
 
 }

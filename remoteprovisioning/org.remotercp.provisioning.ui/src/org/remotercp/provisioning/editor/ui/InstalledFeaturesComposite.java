@@ -34,6 +34,7 @@ import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.IWorkbenchActionConstants;
@@ -228,6 +229,15 @@ public class InstalledFeaturesComposite {
 			options = new Button(installedFeaturesButtonsComposite, SWT.PUSH);
 			options.setText("Options");
 			options.setImage(propertiesImage);
+			options.addSelectionListener(new SelectionAdapter() {
+				@Override
+				public void widgetSelected(SelectionEvent e) {
+					MessageBox unsupported = new MessageBox(options.getShell(),
+							SWT.ICON_ERROR);
+					unsupported.setMessage("This method is not supported yet");
+					unsupported.open();
+				}
+			});
 
 			// space label
 			new Label(installedFeaturesButtonsComposite, SWT.None);
