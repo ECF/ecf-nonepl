@@ -22,14 +22,12 @@ import java.util.Map;
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.Platform;
 import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.jface.viewers.IColorProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.ui.model.IWorkbenchAdapter;
 
-public class ContactsLabelProvider extends LabelProvider implements
-		IColorProvider {
+public class ContactsLabelProvider extends LabelProvider {
 
 	private Map<ImageDescriptor, Image> imageTable = new HashMap<ImageDescriptor, Image>(
 			7);
@@ -85,50 +83,4 @@ public class ContactsLabelProvider extends LabelProvider implements
 	public Color getBackground(Object element) {
 		return null;
 	}
-
-	/**
-	 * This is a breach with the IAdaptable pattern but no other simple solution
-	 * found yet.
-	 * 
-	 * The idea behind getForeground(...) is to color all selected online user,
-	 * which are going to be remote managed in a different color. Hence if the
-	 * administrator will be disturbed for a while he still knows which user he
-	 * is going to remote manage.
-	 * 
-	 * @param selection
-	 */
-	public Color getForeground(Object element) {
-		// if (this.selection != null) {
-		// IRosterItem rosterItem = (IRosterItem) element;
-		//
-		// // check whether selecttion matches the element
-		// if (this.selection.equals(rosterItem)) {
-		// // color the root element
-		// return Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-		// }
-		//
-		// // check whether children of a group have to be colored either
-		// if (this.selection instanceof IRosterGroup
-		// && rosterItem instanceof IRosterEntry) {
-		// IRosterEntry rosterEntry = (IRosterEntry) rosterItem;
-		//
-		// List<IRosterEntry> filterOnlineUser = RosterUtil
-		// .filterOnlineUser(this.selection);
-		//
-		// /*
-		// * The current elements has to be a member of the selected group
-		// * and online in order to be colored
-		// */
-		// if (filterOnlineUser.contains(rosterEntry)
-		// && rosterEntry.getParent().equals(this.selection)) {
-		// return Display.getDefault().getSystemColor(SWT.COLOR_BLUE);
-		//				}
-		//			}
-		//		}
-		return null;
-	}
-	//
-	// public void setSelection(IRosterItem selection) {
-	// this.selection = selection;
-	// }
 }
