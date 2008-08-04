@@ -76,7 +76,6 @@ public class SelectedContactsView extends ViewPart {
 		sessionService.getRosterManager().addPresenceListener(
 				new IPresenceListener() {
 
-					@Override
 					public void handlePresence(ID fromID, IPresence presence) {
 
 						SelectedContactsView.this.selectedContactsViewer
