@@ -14,6 +14,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.remoteservice.IRemoteCall;
+import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -48,6 +50,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
+import org.remotercp.ecf.RemoteMethodConstants;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.progress.handler.ProgressViewHandler;
@@ -406,6 +409,7 @@ public class AvailableFeaturesComposite {
 	private void performInstallation(final Feature feature, final ID[] userIDs) {
 
 		Job installJob = new Job("Install feature") {
+			@SuppressWarnings("unchecked")
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				final ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
@@ -422,26 +426,51 @@ public class AvailableFeaturesComposite {
 						monitor.subTask("Installing features on machine: "
 								+ userId.getName());
 
-						List<IInstallFeaturesService> remoteServices = sessionService
-								.getRemoteService(
+						IRemoteService[] remoteServiceReference = sessionService
+								.getRemoteServiceReference(
 										IInstallFeaturesService.class,
 										new ID[] { userId }, null);
 
-						// there should be only one service per user available
-						Assert.isTrue(remoteServices.size() == 1);
-
-						final IInstallFeaturesService installFeatureService = remoteServices
-								.get(0);
+						Assert.isTrue(remoteServiceReference.length == 1);
+						IRemoteService remoteInstallService = remoteServiceReference[0];
 
 						/* as IFeature is not serializable we have to wrap them */
-						SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
+						final SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
 						featuresToInstall[0] = SerializedFeatureWrapper
 								.createFeatureWrapper(feature);
 
-						/* perform remote call */
-						List<IStatus> results = installFeatureService
-								.installFeatures(featuresToInstall);
+						IRemoteCall installFeaturesCall = new IRemoteCall() {
 
+							public String getMethod() {
+								return RemoteMethodConstants.INSTALL_METHOD;
+							}
+
+							public Object[] getParameters() {
+								return new Object[] { featuresToInstall };
+							}
+
+							public long getTimeout() {
+								/*
+								 * The timeout depends on the feature download
+								 * size. Assume a slow download rate of 10kB/sec
+								 */
+								long kBSize = feature.getDownloadSize() / 1024;
+								long timeout = kBSize / 10;
+
+								if (timeout == 0) {
+									// feature size not available, set timeout
+									// to 5 min - is just a guess
+									timeout = 300000;
+								}
+								return timeout;
+							}
+						};
+
+						/* perform remote call */
+						List<IStatus> results = (List<IStatus>) remoteInstallService
+								.callSynch(installFeaturesCall);
+
+						// create result nodes
 						ResultUserTreeNode userNode = new ResultUserTreeNode(
 								userId);
 						userNode.setUpdateResults(results);
@@ -461,7 +490,7 @@ public class AvailableFeaturesComposite {
 						new Runnable() {
 							public void run() {
 								// TODO: change this static behaviour to dynamic
-								// one. There can more than one feature
+								// one. There can be more than one feature
 								// installed by user.
 								List<ResultFeatureTreeNode> resultNodes = new ArrayList<ResultFeatureTreeNode>();
 								resultNodes.add(resultFeatureNode);
@@ -492,6 +521,7 @@ public class AvailableFeaturesComposite {
 				// do nothing
 			}
 
+			@SuppressWarnings("restriction")
 			public void treeExpanded(TreeExpansionEvent event) {
 				if (event.getElement() instanceof UpdateSiteTreeNode) {
 					final UpdateSiteTreeNode node = (UpdateSiteTreeNode) event
@@ -517,6 +547,7 @@ public class AvailableFeaturesComposite {
 		};
 	}
 
+	@SuppressWarnings("restriction")
 	protected ISiteFeatureReference[] searchForFeatures(
 			final SiteBookmark bookmark) {
 		ISiteFeatureReference[] featureReferences = null;

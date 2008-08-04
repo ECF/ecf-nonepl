@@ -8,6 +8,8 @@ import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.remoteservice.IRemoteCall;
+import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.ecf.ECFConnector;
 
@@ -75,4 +77,28 @@ public interface ISessionService {
 	 */
 	public <T> List<T> getRemoteService(Class<T> service, ID[] filterIDs,
 			String filter) throws ECFException, InvalidSyntaxException;
+
+	/**
+	 * The above method getRemoteService(...) is easy to use as methods can be
+	 * performed directly on the returned Interface. However in some scenarios
+	 * e.g. update, install operations it might take a long time to perform a
+	 * remote operation (features have to be downloaded first etc). Methods
+	 * performed on a proxy have a default time out of 30 sec. which is not
+	 * customizable. Therefore the above method can't be used in some scenarios
+	 * and we have to use this method to get a service reference and perform an
+	 * {@link IRemoteCall} with a user defined time out.
+	 * 
+	 * @param service
+	 *            The service name to get a remote service of
+	 * @param filterIDs
+	 *            User Ids to get a remote service for
+	 * @param filter
+	 *            Additional filter which checks if the service properties do
+	 *            match the given filer. May be null if all services should be
+	 *            found
+	 * @return An array of remote services for given user and filter
+	 * @throws InvalidSyntaxException
+	 */
+	public IRemoteService[] getRemoteServiceReference(Class service,
+			ID[] filterIDs, String filter) throws InvalidSyntaxException;
 }

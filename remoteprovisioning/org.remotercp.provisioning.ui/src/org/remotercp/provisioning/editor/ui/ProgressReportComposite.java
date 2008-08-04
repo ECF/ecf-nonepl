@@ -3,12 +3,18 @@ package org.remotercp.provisioning.editor.ui;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.jface.dialogs.ErrorDialog;
+import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
+import org.eclipse.jface.viewers.DoubleClickEvent;
+import org.eclipse.jface.viewers.IDoubleClickListener;
 import org.eclipse.jface.viewers.ILabelDecorator;
 import org.eclipse.jface.viewers.ILabelProvider;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
@@ -18,6 +24,7 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Group;
+import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
@@ -27,7 +34,10 @@ import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
+import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.status.StatusUtil;
+
+import com.google.inject.spi.Message;
 
 public class ProgressReportComposite {
 
@@ -54,7 +64,8 @@ public class ProgressReportComposite {
 			{
 
 				this.resultTreeViewer = new TreeViewer(resultGroup,
-						SWT.H_SCROLL | SWT.V_SCROLL);
+						SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+
 				Tree tree = resultTreeViewer.getTree();
 
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(tree);
@@ -81,12 +92,51 @@ public class ProgressReportComposite {
 				tree.setHeaderVisible(true);
 				tree.setLinesVisible(true);
 
+				this.resultTreeViewer
+						.addDoubleClickListener(new IDoubleClickListener() {
+
+							public void doubleClick(DoubleClickEvent event) {
+								showStatus(event);
+							}
+						});
+
 				// XXX For Test only
 				// this.resultTreeViewer.setInput(getDummyData());
 				// this.resultTreeViewer.expandAll();
 			}
 		}
 
+	}
+
+	private void showStatus(DoubleClickEvent event) {
+		IStructuredSelection selection = (IStructuredSelection) event
+				.getSelection();
+		Object element = selection.getFirstElement();
+		if (element instanceof ResultUserTreeNode) {
+			ResultUserTreeNode userNode = (ResultUserTreeNode) element;
+			List<IStatus> updateResults = userNode.getUpdateResults();
+
+			// open a dialog for each status message
+			for (IStatus status : updateResults) {
+				if (status.isOK()) {
+					MessageBox okMessage = new MessageBox(this.main.getShell(),
+							SWT.ICON_INFORMATION);
+					okMessage.setMessage(status.getMessage());
+					okMessage.open();
+				} else if (status.getSeverity() == Status.ERROR
+						|| status.getSeverity() == Status.CANCEL) {
+					MessageBox errorBox = new MessageBox(this.main.getShell(),
+							SWT.ICON_ERROR);
+					errorBox.setMessage(status.getMessage());
+					errorBox.open();
+				} else {
+					MessageBox unknown = new MessageBox(this.main.getShell(),
+							SWT.ICON_INFORMATION);
+					unknown.setMessage(status.getMessage());
+					unknown.open();
+				}
+			}
+		}
 	}
 
 	protected Composite getMainControl() {

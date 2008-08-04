@@ -19,6 +19,7 @@ import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.remoteservice.Constants;
+import org.eclipse.ecf.remoteservice.IRemoteCall;
 import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
 import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
@@ -175,6 +176,72 @@ public class SessionServiceImpl implements ISessionService {
 		 */
 		remoteServices.addAll(filteredServices.values());
 		return remoteServices;
+	}
+
+	/**
+	 * The above method getRemoteService(...) is easy to use as methods can be
+	 * performed directly on the returned Interface. However in some scenarios
+	 * e.g. update, install operations it might take a long time to perform a
+	 * remote operation (features have to be downloaded first etc). Methods
+	 * performed on a proxy have a default time out of 30 sec. which is not
+	 * customizable. Therefore the above method can't be used in some scenarios
+	 * and we have to use this method to get a service reference and perform an
+	 * {@link IRemoteCall} with a user defined time out.
+	 * 
+	 * @param service
+	 *            The service name to get a remote service of
+	 * @param filterIDs
+	 *            User Ids to get a remote service for
+	 * @param filter
+	 *            Additional filter which checks if the service properties do
+	 *            match the given filer. May be null if all services should be
+	 *            found
+	 * @return An array of remote services for given user and filter
+	 * @throws InvalidSyntaxException
+	 */
+	public IRemoteService[] getRemoteServiceReference(Class service,
+			ID[] filterIDs, String filter) throws InvalidSyntaxException {
+		IRemoteService serviceReferences[] = null;
+		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
+
+		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
+				.getRemoteServiceReferences(null, service.getName(), filter);
+
+		Map<String, IRemoteService> filteredServices = new HashMap<String, IRemoteService>();
+
+		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
+
+			IRemoteService remoteService = remoteServiceContainerAdapter
+					.getRemoteService(refs[serviceNumber]);
+			Assert.isNotNull(remoteService);
+
+			String containerIDName = refs[serviceNumber].getContainerID()
+					.getName();
+			int indexOfContainer = containerIDName.indexOf("@");
+			String containerUserName = containerIDName.substring(0,
+					indexOfContainer);
+
+			for (ID userID : filterIDs) {
+				String userIDName = userID.getName();
+				/*
+				 * XXX workaround for container and roster IDs. Split user names
+				 * and compare only names. This is dangerous as the same user
+				 * can be connected to different XMPP servers.
+				 */
+				int indexOfUser = userIDName.indexOf("@");
+				String userName = userIDName.substring(0, indexOfUser);
+
+				if (containerUserName.equals(userName)) {
+
+					filteredServices.put(userIDName, remoteService);
+					break;
+				}
+			}
+
+		}
+		serviceReferences = filteredServices.values().toArray(
+				new IRemoteService[filteredServices.size()]);
+		return serviceReferences;
 	}
 
 	public IRosterManager getRosterManager() {

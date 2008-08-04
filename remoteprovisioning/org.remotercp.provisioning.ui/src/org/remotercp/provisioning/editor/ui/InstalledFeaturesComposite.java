@@ -364,19 +364,21 @@ public class InstalledFeaturesComposite {
 					IInstallFeaturesService remoteUninstallService = remoteUninstallServices
 							.get(0);
 
-					List<IStatus> uninstallResult = null;
-					// ask client if updates can be performed
-					IStatus acceptUpdate = remoteUninstallService
-							.acceptUpdate();
-					if (acceptUpdate.getSeverity() == Status.OK) {
-						// perform uninstall operation
-						uninstallResult = remoteUninstallService
-								.uninstallFeatures(uninstallIds);
-					} else {
-						// update has been cancelled by user
-						uninstallResult = new ArrayList<IStatus>();
-						uninstallResult.add(acceptUpdate);
-					}
+					// List<IStatus> uninstallResult = null;
+					// // ask client if updates can be performed
+					// IStatus acceptUpdate = remoteUninstallService
+					// .acceptUpdate();
+					// if (acceptUpdate.getSeverity() == Status.OK) {
+					//
+					// } else {
+					// // update has been cancelled by user
+					// uninstallResult = new ArrayList<IStatus>();
+					// uninstallResult.add(acceptUpdate);
+					// }
+
+					// perform uninstall operation
+					List<IStatus> uninstallResult = remoteUninstallService
+							.uninstallFeatures(uninstallIds);
 
 					/* create child nodes for diplaying results */
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(

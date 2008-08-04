@@ -10,6 +10,7 @@ import java.util.Set;
 import java.util.SortedSet;
 import java.util.TreeSet;
 
+import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
@@ -18,6 +19,8 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.remoteservice.IRemoteCall;
+import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -44,6 +47,7 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
+import org.remotercp.ecf.RemoteMethodConstants;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
@@ -263,6 +267,7 @@ public class FeaturesVersionsComposite {
 		}
 	}
 
+	@SuppressWarnings("unchecked")
 	private void updateFeatures(List<FeatureTreeNode> features,
 			IProgressMonitor monitor) {
 		List<IStatus> stateCollector = new ArrayList<IStatus>();
@@ -277,7 +282,7 @@ public class FeaturesVersionsComposite {
 			monitor.subTask("Update feature : " + featureNode.getLabel());
 
 			/* retrieve feature from node */
-			IFeature feature = (IFeature) featureNode.getValue();
+			final IFeature feature = (IFeature) featureNode.getValue();
 
 			/* create result root node with feature */
 			ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
@@ -293,41 +298,55 @@ public class FeaturesVersionsComposite {
 				for (ID userId : filterIDs) {
 					/*
 					 * As we need to track update results we have to call the
-					 * remote service for each user seperatly
+					 * remote service for each user separatly
 					 */
-					ID[] filterId = new ID[1];
-					filterId[0] = userId;
+					ID[] filterIds = new ID[1];
+					filterIds[0] = userId;
 
 					/* retrieve remote update service for user */
-					List<IInstallFeaturesService> remoteService = sessionService
-							.getRemoteService(IInstallFeaturesService.class,
-									filterId, null);
-
-					if (remoteService.isEmpty()) {
-						IStatus error = new Status(Status.ERROR,
-								ProvisioningActivator.PLUGIN_ID,
-								"Unable to retrieve remote update service for user: "
-										+ userId.getName());
-						stateCollector.add(error);
-					} else if (remoteService.size() > 1) {
-						IStatus warning = new Status(Status.WARNING,
-								ProvisioningActivator.PLUGIN_ID,
-								"More than one update service found for user: "
-										+ userId.getName());
-						stateCollector.add(warning);
-					}
+					IRemoteService[] remoteServiceReference = sessionService
+							.getRemoteServiceReference(
+									IInstallFeaturesService.class, filterIds,
+									null);
+					Assert.isTrue(remoteServiceReference.length == 1);
+					IRemoteService remoteUpdateService = remoteServiceReference[0];
 
 					/* as IFeature is not serializable we have to wrap them */
-					SerializedFeatureWrapper[] featuresToUpdate = new SerializedFeatureWrapper[1];
+					final SerializedFeatureWrapper[] featuresToUpdate = new SerializedFeatureWrapper[1];
 					featuresToUpdate[0] = SerializedFeatureWrapper
 							.createFeatureWrapper(feature);
 
-					IInstallFeaturesService installFeaturesService = remoteService
-							.get(0);
+					IRemoteCall updateFeaturesCall = new IRemoteCall() {
+
+						public String getMethod() {
+							return RemoteMethodConstants.UPDATE_METHOD;
+						}
+
+						public Object[] getParameters() {
+							return new Object[] { featuresToUpdate };
+						}
+
+						public long getTimeout() {
+							/*
+							 * The timeout depends on the feature download size.
+							 * Assume a slow download rate of 10kB/sec
+							 */
+							long kBSize = feature.getDownloadSize() / 1024;
+							long timeout = kBSize / 10;
+
+							if (timeout == 0) {
+								// feature size not available, set timeout
+								// to 5 min - is just a guess
+								timeout = 300000;
+							}
+							return timeout;
+						}
+
+					};
 
 					/* perform remote call */
-					List<IStatus> updateResults = installFeaturesService
-							.updateFeautures(featuresToUpdate);
+					List<IStatus> updateResults = (List<IStatus>) remoteUpdateService
+							.callSynch(updateFeaturesCall);
 
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
