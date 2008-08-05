@@ -78,14 +78,15 @@ public class SessionServiceImpl implements ISessionService {
 	}
 
 	/**
-	 * Returns a list of remote service references for a given service. The
-	 * given service might me provided by several user though there might be
-	 * more than one service available
+	 * Returns a list of remote service proxies for a given service. The given
+	 * service might me provided by several users though there might be more
+	 * than one service available. Use filterIDs and filter to delimit the
+	 * amount of services.
 	 * 
 	 * @param <T>
 	 *            The service type
 	 * @param service
-	 *            The needed remote service name
+	 *            The needed remote service name. (Use yourinterface.class)
 	 * @param filterIDs
 	 *            User IDs work as a filter though remote services will be
 	 *            limited to the given user. May be null if the service should
@@ -119,15 +120,17 @@ public class SessionServiceImpl implements ISessionService {
 		 * XXX this is a workaround for the above mentioned problem. The idea is
 		 * to get all remote services and ask each serviceReference for the
 		 * containerID. Afterwards the containerIDName will be matched with the
-		 * given rosterIDs in order to filter only those service which are
+		 * given rosterIDName in order to filter only those services which are
 		 * requested (filterIDs).
 		 */
+
+		/* 1. get all available services */
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
 				.getRemoteServiceReferences(null, service.getName(), filter);
 
 		Map<String, T> filteredServices = new HashMap<String, T>();
 
-		// cast the remote service references to proxies
+		/* 2. filter services for the given rosterIDs */
 		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
 
 			IRemoteService remoteService = remoteServiceContainerAdapter
@@ -145,48 +148,48 @@ public class SessionServiceImpl implements ISessionService {
 				/*
 				 * XXX workaround for container and roster IDs. Split user names
 				 * and compare only names. This is dangerous as the same user
-				 * can be connected to different XMPP servers.
+				 * can be connected to different XMPP servers. Solution needed!
 				 */
 				int indexOfUser = userIDName.indexOf("@");
 				String userName = userIDName.substring(0, indexOfUser);
 
-				// XXX: this is again not
 				if (containerUserName.equals(userName)) {
 
 					// get proxy for remote service and add service to the
 					// service list
 					T castedService = service.cast(remoteService.getProxy());
-					// T castedService = (T) remoteService.getProxy();
 					Assert.isNotNull(castedService);
 
+					/*
+					 * XXX: next workaround. If a user connects and disconnects
+					 * several times user services will also be registered
+					 * several times. Asking for a specific service for a user
+					 * in this method may result in multiple services. A map
+					 * will avoid multiple services and return only one service
+					 * per user.
+					 */
 					filteredServices.put(userIDName, castedService);
-					// remoteServices.add(castedService);
 					break;
 				}
 			}
 
 		}
 
-		/*
-		 * XXX: next workaround. If a user connects and disconnects several
-		 * times user services will also be registered several times. Asking for
-		 * a specific service for a user in this method may result in multiple
-		 * services. A map will avoid multiple services and return onyl one
-		 * service per user.
-		 */
 		remoteServices.addAll(filteredServices.values());
 		return remoteServices;
 	}
 
 	/**
 	 * The above method getRemoteService(...) is easy to use as methods can be
-	 * performed directly on the returned Interface. However in some scenarios
-	 * e.g. update, install operations it might take a long time to perform a
-	 * remote operation (features have to be downloaded first etc). Methods
-	 * performed on a proxy have a default time out of 30 sec. which is not
-	 * customizable. Therefore the above method can't be used in some scenarios
-	 * and we have to use this method to get a service reference and perform an
+	 * performed directly on the returned proxy. However in some scenarios e.g.
+	 * update, install operations it might take a long time to perform a remote
+	 * operation (features have to be downloaded first etc). Methods performed
+	 * on a proxy have a default time out of 30 sec. which is not customizable.
+	 * Therefore the above method can't be used in some scenarios and we have to
+	 * use this method to get a service reference and perform an
 	 * {@link IRemoteCall} with a user defined time out.
+	 * 
+	 * XXX: this method contains same workarounds as the above mentioned method.
 	 * 
 	 * @param service
 	 *            The service name to get a remote service of
@@ -223,11 +226,7 @@ public class SessionServiceImpl implements ISessionService {
 
 			for (ID userID : filterIDs) {
 				String userIDName = userID.getName();
-				/*
-				 * XXX workaround for container and roster IDs. Split user names
-				 * and compare only names. This is dangerous as the same user
-				 * can be connected to different XMPP servers.
-				 */
+
 				int indexOfUser = userIDName.indexOf("@");
 				String userName = userIDName.substring(0, indexOfUser);
 
@@ -275,6 +274,7 @@ public class SessionServiceImpl implements ISessionService {
 	 * @param classType
 	 *            The service name
 	 * @param impl
+	 *            The service implementation
 	 * @param targetIDs
 	 *            Buddies, who are to receive service registration. If
 	 *            <code>null</code> all buddies in roster will be taken
@@ -282,7 +282,7 @@ public class SessionServiceImpl implements ISessionService {
 	public void registerRemoteService(String serviceName, Object impl,
 			ID[] targetIDs) {
 
-		// store the service local in order to provide this service to new
+		// store the service locally in order to provide this service to new
 		// connected user
 		if (!this.remoteServices.containsKey(serviceName)) {
 			this.remoteServices.put(serviceName, impl);
@@ -305,6 +305,9 @@ public class SessionServiceImpl implements ISessionService {
 	}
 
 	/**
+	 * Unget a remote service. This operation should actually be called if a
+	 * client disconnects. Ask ECF devs if this happens. If yes, delete this
+	 * method.
 	 * 
 	 * @param idFilter
 	 *            The user id array for which the service should be unget
@@ -333,6 +336,16 @@ public class SessionServiceImpl implements ISessionService {
 		}
 	}
 
+	/*
+	 * Register services to clients that just logged in.
+	 * 
+	 * TODO: this is a workaround!!! As the admin will usually login when other
+	 * users are already connected he won't be able to use the remote services
+	 * as the registration of these services happens at the login time.
+	 * Therefore we push here services to just logged in users.
+	 * 
+	 * Try to figure out if the ECF DiscoveryService will do here better work.
+	 */
 	protected IPresenceListener getPresenceListener() {
 		return new IPresenceListener() {
 
@@ -346,18 +359,6 @@ public class SessionServiceImpl implements ISessionService {
 			 */
 			public void handlePresence(ID fromID, IPresence presence) {
 
-				/*
-				 * Register services to clients that just logged in.
-				 * 
-				 * TODO: this is just a workaround!!! As the admin will usually
-				 * login when other users are already online he won't be able to
-				 * use the remote services as the registration of these services
-				 * happens at the login time. Therefore we push here services to
-				 * just logged in users.
-				 * 
-				 * Try to figure out if the ECF DiscoveryService will do here
-				 * better work.
-				 */
 				if (presence.getType() == IPresence.Type.AVAILABLE) {
 					/*
 					 * wait 3 sec so that all local services are registered
