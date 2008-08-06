@@ -12,6 +12,7 @@
 package org.eclipse.ecf.provider.twitter.container;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
@@ -35,6 +36,7 @@ import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
 
+import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
 
@@ -95,7 +97,21 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		try {
 			return this.getTwitter().getFriends();
 		} catch (final TwitterException e) {
-			throw new ECFException(e);
+			throw new ECFException("Exception getting twitter friends", e);
+		}
+	}
+
+	Date lastFriendsTimelineDate;
+
+	List getTwitterFriendsTimeline() throws ECFException {
+		try {
+			// XXX this seems to *always* return the list of all statuses in the last 24 hours
+			// Even if a 'since' date is provided, it returns all statuses within last 24 hours...strange
+			final List results = (lastFriendsTimelineDate == null) ? this.getTwitter().getFriendsTimeline(targetID.getName()) : this.getTwitter().getFriendsTimeline(targetID.getName(), lastFriendsTimelineDate);
+			lastFriendsTimelineDate = new Date();
+			return results;
+		} catch (final TwitterException e) {
+			throw new ECFException("Exception getting friends timeline", e);
 		}
 	}
 
@@ -158,9 +174,14 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 				this.targetID = (TwitterID) targetID;
 				// Create user
 				final User localUser = new User(targetID, this.twitter.getUserId() + " [Twitter]");
+				// Set local user in chat manager...this creates roster
 				rosterManager.setUser(localUser);
-				final TwitterUser[] twitterUsers = getTwitterUsersFromFriends();
-				rosterManager.addTwitterFriendsToRoster(twitterUsers);
+				// Then get twitter friends from server
+				refreshTwitterFriends();
+				// Then get friend's status from server
+				refreshTwitterStatuses();
+				// Start refresh thread
+				// XXX startAutoRefresher();
 			} catch (final ContainerConnectException e) {
 				this.targetID = null;
 				throw e;
@@ -172,6 +193,71 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		fireContainerEvent(new ContainerConnectedEvent(getID(), this.targetID));
 	}
 
+	private AutoRefreshThread autoRefreshThread;
+
+	class AutoRefreshThread extends Thread {
+
+		int refreshDelay = 60000;
+		boolean done = false;
+		Object lock = new Object();
+
+		public AutoRefreshThread(String name) {
+			setName(name);
+			setDaemon(true);
+		}
+
+		public void run() {
+			synchronized (lock) {
+				while (!done) {
+					try {
+						lock.wait(refreshDelay);
+						refreshTwitterFriends();
+						refreshTwitterStatuses();
+					} catch (final ECFException e) {
+						// XXX todo...this would be caused by some twitter failure...should probably
+						// disconnect or leave up to user
+					} catch (final InterruptedException e) {
+						// ignore
+					}
+				}
+			}
+		}
+
+		public void finish() {
+			synchronized (lock) {
+				this.done = true;
+				lock.notify();
+			}
+		}
+	}
+
+	void startAutoRefresher() {
+		if (autoRefreshThread == null) {
+			autoRefreshThread = new AutoRefreshThread("Twitter AutoRefresh");
+			autoRefreshThread.start();
+		}
+	}
+
+	void stopAutoRefresher() {
+		if (autoRefreshThread != null) {
+			autoRefreshThread.finish();
+			autoRefreshThread = null;
+		}
+	}
+
+	void refreshTwitterFriends() throws ECFException {
+		final TwitterUser[] twitterUsers = getTwitterUsersFromFriends();
+		// Add to roster
+		rosterManager.addTwitterFriendsToRoster(twitterUsers);
+	}
+
+	void refreshTwitterStatuses() throws ECFException {
+		// Then get friend's status messages
+		final List statuses = getTwitterFriendsTimeline();
+		// Add notify message listeners
+		chatManager.handleStatusMessages((Status[]) statuses.toArray(new Status[] {}));
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.IContainer#disconnect()
 	 */
@@ -179,6 +265,7 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		final ID id = this.targetID;
 		fireContainerEvent(new ContainerDisconnectingEvent(getID(), id));
 		synchronized (connectLock) {
+			stopAutoRefresher();
 			if (twitter != null) {
 				twitter = null;
 				targetID = null;

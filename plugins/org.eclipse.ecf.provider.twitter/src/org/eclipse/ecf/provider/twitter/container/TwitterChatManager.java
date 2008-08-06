@@ -11,22 +11,32 @@
 
 package org.eclipse.ecf.provider.twitter.container;
 
+import java.util.Iterator;
 import java.util.Map;
+import java.util.Vector;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.IIMMessageListener;
+import org.eclipse.ecf.presence.history.IHistory;
 import org.eclipse.ecf.presence.history.IHistoryManager;
+import org.eclipse.ecf.presence.im.ChatMessage;
+import org.eclipse.ecf.presence.im.ChatMessageEvent;
 import org.eclipse.ecf.presence.im.IChat;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
 
+import twitter4j.Status;
+import twitter4j.User;
+
 /**
  *
  */
 public class TwitterChatManager implements IChatManager {
+
+	private final Vector chatListeners = new Vector();
 
 	private final TwitterContainer container;
 
@@ -45,6 +55,55 @@ public class TwitterChatManager implements IChatManager {
 		}
 	};
 
+	IHistoryManager historyManager = new IHistoryManager() {
+		public IHistory getHistory(ID targetID, Map options) {
+			return null;
+		}
+
+		public boolean isActive() {
+			return false;
+		}
+
+		public void setActive(boolean active) {
+		}
+
+		public Object getAdapter(Class adapter) {
+			return null;
+		}
+
+	};
+
+	void handleStatusMessages(Status[] statuses) {
+		for (int i = 0; i < statuses.length; i++) {
+			handleStatusMessage(statuses[i]);
+		}
+	}
+
+	/**
+	 * @param status
+	 */
+	private void handleStatusMessage(Status status) {
+		if (status == null)
+			return;
+		final User tUser = status.getUser();
+		if (tUser == null)
+			return;
+		final TwitterUser twitterUser = new TwitterUser(tUser);
+		final String chat = status.getText();
+		fireMessageListeners(twitterUser, chat);
+	}
+
+	/**
+	 * @param twitterUser
+	 * @param chat
+	 */
+	private void fireMessageListeners(TwitterUser twitterUser, String chat) {
+		for (final Iterator i = chatListeners.iterator(); i.hasNext();) {
+			final IIMMessageListener l = (IIMMessageListener) i.next();
+			l.handleMessageEvent(new ChatMessageEvent(twitterUser.getID(), new ChatMessage(twitterUser.getID(), chat)));
+		}
+	}
+
 	public TwitterChatManager(TwitterContainer twitterContainer) {
 		this.container = twitterContainer;
 	}
@@ -53,8 +112,7 @@ public class TwitterChatManager implements IChatManager {
 	 * @see org.eclipse.ecf.presence.im.IChatManager#addMessageListener(org.eclipse.ecf.presence.IIMMessageListener)
 	 */
 	public void addMessageListener(IIMMessageListener listener) {
-		// TODO Auto-generated method stub
-
+		chatListeners.add(listener);
 	}
 
 	/* (non-Javadoc)
@@ -75,7 +133,7 @@ public class TwitterChatManager implements IChatManager {
 	 * @see org.eclipse.ecf.presence.im.IChatManager#getHistoryManager()
 	 */
 	public IHistoryManager getHistoryManager() {
-		return null;
+		return historyManager;
 	}
 
 	/* (non-Javadoc)
@@ -89,8 +147,7 @@ public class TwitterChatManager implements IChatManager {
 	 * @see org.eclipse.ecf.presence.im.IChatManager#removeMessageListener(org.eclipse.ecf.presence.IIMMessageListener)
 	 */
 	public void removeMessageListener(IIMMessageListener listener) {
-		// TODO Auto-generated method stub
-
+		chatListeners.remove(listener);
 	}
 
 }
