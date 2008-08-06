@@ -102,17 +102,46 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 	}
 
 	Date lastFriendsTimelineDate;
+	List lastFriendsStatuses = new ArrayList();
 
 	List getTwitterFriendsTimeline() throws ECFException {
 		try {
 			// XXX this seems to *always* return the list of all statuses in the last 24 hours
 			// Even if a 'since' date is provided, it returns all statuses within last 24 hours...strange
-			final List results = (lastFriendsTimelineDate == null) ? this.getTwitter().getFriendsTimeline(targetID.getName()) : this.getTwitter().getFriendsTimeline(targetID.getName(), lastFriendsTimelineDate);
+			//final List results = (lastFriendsTimelineDate == null) ? this.getTwitter().getFriendsTimeline(targetID.getName()) : this.getTwitter().getFriendsTimeline(targetID.getName(), lastFriendsTimelineDate);
+			// XXX in the mean time, we'll simply keep track/hold onto old statuses...and do a manual
+			// diff
+			final List results = getTwitterFriendsTimelineDiff();
 			lastFriendsTimelineDate = new Date();
 			return results;
 		} catch (final TwitterException e) {
 			throw new ECFException("Exception getting friends timeline", e);
 		}
+	}
+
+	List getTwitterFriendsTimelineDiff() throws TwitterException, ECFException {
+		final List twitterList = this.getTwitter().getFriendsTimeline();
+		return diffFriendsTimeline(twitterList);
+	}
+
+	List diffFriendsTimeline(List twitterList) {
+		for (final Iterator i = twitterList.iterator(); i.hasNext();) {
+			final Status s = (Status) i.next();
+			if (lastFriendsContains(s)) {
+				i.remove();
+			}
+		}
+		lastFriendsStatuses.addAll(twitterList);
+		return twitterList;
+	}
+
+	boolean lastFriendsContains(Status newStatus) {
+		for (final Iterator i = lastFriendsStatuses.iterator(); i.hasNext();) {
+			final Status oldStatus = (Status) i.next();
+			if (oldStatus.getId() == newStatus.getId())
+				return true;
+		}
+		return false;
 	}
 
 	TwitterUser[] getTwitterUsersFromFriends() throws ECFException {
@@ -181,7 +210,7 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 				// Then get friend's status from server
 				refreshTwitterStatuses();
 				// Start refresh thread
-				// XXX startAutoRefresher();
+				startAutoRefresher();
 			} catch (final ContainerConnectException e) {
 				this.targetID = null;
 				throw e;
@@ -211,6 +240,8 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 				while (!done) {
 					try {
 						lock.wait(refreshDelay);
+						if (getTwitter() == null)
+							return;
 						refreshTwitterFriends();
 						refreshTwitterStatuses();
 					} catch (final ECFException e) {
@@ -266,6 +297,7 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		fireContainerEvent(new ContainerDisconnectingEvent(getID(), id));
 		synchronized (connectLock) {
 			stopAutoRefresher();
+			lastFriendsStatuses.clear();
 			if (twitter != null) {
 				twitter = null;
 				targetID = null;
