@@ -55,8 +55,7 @@ public class PreferencesUtil {
 		if (path.endsWith(".ini")) {
 			preferencesFile = new File(path);
 		} else {
-			preferencesFile = new File(path + File.pathSeparator
-					+ "preferences.ini");
+			preferencesFile = new File(path + ".ini");
 		}
 
 		FileWriter fileStream = new FileWriter(preferencesFile);
