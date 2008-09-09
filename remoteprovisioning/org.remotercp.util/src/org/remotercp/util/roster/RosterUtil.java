@@ -18,7 +18,7 @@ public class RosterUtil {
 	 * Returns an array with user IDs for all user of a given IRoster item
 	 * 
 	 */
-	public static ID[] getUserIDs(IRoster roster) {
+	public synchronized static ID[] getUserIDs(IRoster roster) {
 		List<IRosterEntry> entries = getRosterEntries(roster);
 
 		ID[] ids = getUserIDs(entries);
@@ -26,7 +26,7 @@ public class RosterUtil {
 		return ids;
 	}
 
-	public static ID[] getUserIDs(List<IRosterEntry> rosterEntries) {
+	public synchronized static ID[] getUserIDs(List<IRosterEntry> rosterEntries) {
 		ID[] ids = new ID[rosterEntries.size()];
 
 		for (int entry = 0; entry < rosterEntries.size(); entry++) {
@@ -46,7 +46,7 @@ public class RosterUtil {
 	 *            The {@link IRosterItem} that containes {@link IRosterEntry}
 	 * @return A list with {@link IRosterEntry} objects
 	 */
-	public static List<IRosterEntry> getRosterEntries(IRosterItem item) {
+	public synchronized static List<IRosterEntry> getRosterEntries(IRosterItem item) {
 
 		List<IRosterEntry> entries = new ArrayList<IRosterEntry>();
 
@@ -56,7 +56,7 @@ public class RosterUtil {
 
 	}
 
-	private static List<IRosterEntry> searchRecursiveForRosterEntries(
+	private synchronized static List<IRosterEntry> searchRecursiveForRosterEntries(
 			List<IRosterEntry> entries, IRosterItem item) {
 		if (item instanceof IRoster) {
 			IRoster roster = (IRoster) item;
@@ -120,7 +120,7 @@ public class RosterUtil {
 	 *            presence
 	 * @return
 	 */
-	public static ID[] filterOnlineUserAsArray(IRosterItem item) {
+	public synchronized static ID[] filterOnlineUserAsArray(IRosterItem item) {
 		List<IRosterEntry> onlineUser = filterOnlineUser(item);
 		IRosterEntry[] rosterEntries = (IRosterEntry[]) onlineUser
 				.toArray(new IRosterEntry[onlineUser.size()]);
@@ -138,7 +138,7 @@ public class RosterUtil {
 	 * the group is online. If the selected item is a user, check if the user is
 	 * online
 	 */
-	public static boolean isRosterItemOnline(IRosterItem item) {
+	public synchronized static boolean isRosterItemOnline(IRosterItem item) {
 		List<IRosterEntry> entries = getRosterEntries(item);
 
 		boolean userOnline = false;
@@ -159,7 +159,7 @@ public class RosterUtil {
 	 * @param item
 	 * @return
 	 */
-	public static boolean hasRosterItem(IRoster roster, IRosterItem item) {
+	public synchronized static boolean hasRosterItem(IRoster roster, IRosterItem item) {
 		boolean rosterContainsItem = false;
 
 		// items may be IRosterGroup and/or IRosterEntry
