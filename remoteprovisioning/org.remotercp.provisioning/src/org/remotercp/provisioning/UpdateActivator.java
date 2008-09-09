@@ -10,7 +10,7 @@ import org.osgi.framework.BundleContext;
 public class UpdateActivator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.remotercp.provisioning.update";
+	public static final String PLUGIN_ID = "org.remotercp.provisioning";
 
 	// The shared instance
 	private static UpdateActivator plugin;
