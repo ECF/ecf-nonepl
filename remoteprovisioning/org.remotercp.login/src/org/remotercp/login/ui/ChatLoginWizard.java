@@ -141,7 +141,7 @@ public class ChatLoginWizard extends Wizard {
 
 		protected ChatLoginPage() {
 			super("Login");
-			setTitle("Chat Login-Dialog");
+			setTitle("Remote RCP Login-Dialog");
 			setDescription("Please enter your user name and password");
 			setPageComplete(false);
 
