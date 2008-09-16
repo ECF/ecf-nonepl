@@ -23,7 +23,7 @@ import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
  * @date 16.09.2008
  * 
  */
-public class ConnectionFactory {
+public class HeadlessConnection {
 
 	/**
 	 * Creates a connection to an server.
@@ -65,6 +65,7 @@ public class ConnectionFactory {
 				LoginActivator.getBundleContext(), ISessionService.class);
 		session.setConnectionDetails(connectionDetails);
 		session.setContainer(connector);
+		
 	}
 
 }
