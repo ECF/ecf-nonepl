@@ -7,13 +7,13 @@
       		category="org.eclipse.ui"
             class="org.eclipse.pde.internal.runtime.logview.LogView"
             id="org.eclipse.pde.runtime.LogView"
-            name="Error View">
+            name="Status View">
       </view>
       <view
             class="org.remotercp.errorhandling.ui.ErrorView"
             icon="icons/info6.jpeg"
             id="org.remotercp.errorhandling.errorview"
-            name="Error View">
+            name="Status View">
       </view>
    </extension>
    <extension
