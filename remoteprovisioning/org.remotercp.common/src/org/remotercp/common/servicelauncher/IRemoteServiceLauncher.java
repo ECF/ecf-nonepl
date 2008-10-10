@@ -2,6 +2,6 @@ package org.remotercp.common.servicelauncher;
 
 public interface IRemoteServiceLauncher {
 	
-	public void startService();
+	public void startServices();
 
 }

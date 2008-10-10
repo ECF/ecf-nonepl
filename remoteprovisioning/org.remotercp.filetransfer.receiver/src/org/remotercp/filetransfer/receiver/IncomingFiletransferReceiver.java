@@ -347,7 +347,7 @@ public class IncomingFiletransferReceiver implements
 		};
 	}
 
-	public void startService() {
+	public void startServices() {
 
 		logger.info("******* Starting service: "
 				+ IncomingFiletransferReceiver.class.getName() + " ********");

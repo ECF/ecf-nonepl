@@ -177,7 +177,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		return okStatus;
 	}
 
-	public void startService() {
+	public void startServices() {
 		logger.info("********* Starting service: "
 				+ RemotePreferencesServiceImpl.class.getName() + "********");
 

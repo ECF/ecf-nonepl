@@ -129,7 +129,7 @@ public class InstalledFeaturesServiceImpl implements IInstalledFeaturesService {
 		return this.userID;
 	}
 
-	public void startService() {
+	public void startServices() {
 		logger.info("******* Starting service: "
 				+ InstalledFeaturesServiceImpl.class.getName() + " ********");
 

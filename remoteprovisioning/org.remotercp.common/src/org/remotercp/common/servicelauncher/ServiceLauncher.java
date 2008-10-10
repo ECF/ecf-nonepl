@@ -8,6 +8,13 @@ import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
 
+/**
+ * This class is used to create executables for the extension point
+ * "org.remotercp.remoteService".
+ * 
+ * @author eugrei
+ * 
+ */
 public class ServiceLauncher {
 	private final static Logger logger = Logger.getLogger(ServiceLauncher.class
 			.getName());
@@ -21,8 +28,8 @@ public class ServiceLauncher {
 				.getConfigurationElements();
 
 		if (configurationElements == null || configurationElements.length == 0) {
-			logger
-					.severe("No remote services started. ExtensionPont has not registered extensions");
+			logger.severe("No remote services started. "
+					+ "ExtensionPont has not registered extensions");
 		}
 
 		for (IConfigurationElement element : configurationElements) {
@@ -33,7 +40,7 @@ public class ServiceLauncher {
 
 				if (executableExtension instanceof IRemoteServiceLauncher) {
 					IRemoteServiceLauncher launcher = (IRemoteServiceLauncher) executableExtension;
-					launcher.startService();
+					launcher.startServices();
 				}
 			} catch (CoreException e) {
 				logger

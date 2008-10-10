@@ -564,7 +564,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * This method does register the remote InstallFeatureService as a remote
 	 * operation.
 	 */
-	public void startService() {
+	public void startServices() {
 		LOGGER.info("******* Starting service: "
 				+ InstallFeaturesServiceImpl.class.getName() + " *******");
 
