@@ -627,7 +627,7 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 			return features;
 		}
 
-		public void startService() {
+		public void startServices() {
 			// TODO Auto-generated method stub
 
 		}

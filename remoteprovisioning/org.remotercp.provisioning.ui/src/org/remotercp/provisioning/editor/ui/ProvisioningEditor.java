@@ -430,15 +430,15 @@ public class ProvisioningEditor extends EditorPart {
 				.getDifferentFeaturesNodes();
 
 		// XXX for Tests only
-		// InstalledFeaturesCompositeTest test = new
-		// InstalledFeaturesCompositeTest();
-		// test.setUp();
-		//
-		// final Collection<CommonFeaturesTreeNode> commonFeaturesNodes = test
-		// .getDummyCommonFeatures();
-		// final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
-		// test
-		// .getDummyDifferentFeatures();
+//		 InstalledFeaturesCompositeTest test = new
+//		 InstalledFeaturesCompositeTest();
+//		 test.setUp();
+//		
+//		 final Collection<CommonFeaturesTreeNode> commonFeaturesNodes = test
+//		 .getDummyCommonFeatures();
+//		 final Collection<DifferentFeaturesTreeNode> differentFeaturesNodes =
+//		 test
+//		 .getDummyDifferentFeatures();
 
 		// set table input
 		Display.getDefault().asyncExec(new Runnable() {

@@ -266,7 +266,7 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 			return features;
 		}
 
-		public void startService() {
+		public void startServices() {
 			// TODO Auto-generated method stub
 
 		}
