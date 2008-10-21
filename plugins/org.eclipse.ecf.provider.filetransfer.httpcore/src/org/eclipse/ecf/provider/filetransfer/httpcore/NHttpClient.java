@@ -1,7 +1,7 @@
 /*
  * $HeadURL$
- * $Revision: 1.1 $
- * $Date: 2008/10/04 00:11:21 $
+ * $Revision: 1.2 $
+ * $Date: 2008/10/21 16:17:29 $
  *
  * ====================================================================
  * Licensed to the Apache Software Foundation (ASF) under one
@@ -33,8 +33,11 @@ package org.eclipse.ecf.provider.filetransfer.httpcore;
 import java.io.IOException;
 import java.io.InterruptedIOException;
 import java.net.InetSocketAddress;
+import java.util.Arrays;
 import java.util.concurrent.CountDownLatch;
 
+import org.apache.http.ConnectionReuseStrategy;
+import org.apache.http.HttpConnectionMetrics;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpHost;
@@ -45,6 +48,8 @@ import org.apache.http.params.BasicHttpParams;
 import org.apache.http.impl.nio.DefaultClientIOEventDispatch;
 import org.apache.http.impl.nio.reactor.DefaultConnectingIOReactor;
 import org.apache.http.message.BasicHttpRequest;
+import org.apache.http.nio.ContentDecoder;
+import org.apache.http.nio.NHttpClientConnection;
 import org.apache.http.nio.NHttpConnection;
 import org.apache.http.nio.protocol.BufferingHttpClientHandler;
 import org.apache.http.nio.protocol.EventListener;
@@ -53,12 +58,14 @@ import org.apache.http.nio.reactor.ConnectingIOReactor;
 import org.apache.http.nio.reactor.IOEventDispatch;
 import org.apache.http.nio.reactor.SessionRequest;
 import org.apache.http.nio.reactor.SessionRequestCallback;
+import org.apache.http.nio.util.ByteBufferAllocator;
 import org.apache.http.params.CoreConnectionPNames;
 import org.apache.http.params.HttpParams;
 import org.apache.http.params.CoreProtocolPNames;
 import org.apache.http.protocol.BasicHttpProcessor;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.protocol.ExecutionContext;
+import org.apache.http.protocol.HttpProcessor;
 import org.apache.http.protocol.RequestConnControl;
 import org.apache.http.protocol.RequestContent;
 import org.apache.http.protocol.RequestExpectContinue;
@@ -89,9 +96,10 @@ public class NHttpClient {
         
         // We are going to use this object to synchronize between the 
         // I/O event and main threads
-        CountDownLatch requestCount = new CountDownLatch(3);
+        //CountDownLatch requestCount = new CountDownLatch(3);
+        CountDownLatch requestCount = new CountDownLatch(1);
         
-        BufferingHttpClientHandler handler = new BufferingHttpClientHandler(
+        BufferingHttpClientHandler handler = new MyBufferingHttpClientHandler(
                 httpproc,
                 new MyHttpRequestExecutionHandler(requestCount),
                 new DefaultConnectionReuseStrategy(),
@@ -117,23 +125,12 @@ public class NHttpClient {
         });
         t.start();
 
-        SessionRequest[] reqs = new SessionRequest[3];
+        SessionRequest[] reqs = new SessionRequest[1];
         reqs[0] = ioReactor.connect(
-                new InetSocketAddress("www.yahoo.com", 80), 
+                new InetSocketAddress("ftp.osuosl.org", 80), 
                 null, 
-                new HttpHost("www.yahoo.com"),
+                new HttpHost("ftp.osuosl.org"),
                 new MySessionRequestCallback(requestCount));
-        reqs[1] = ioReactor.connect(
-                new InetSocketAddress("www.google.com", 80), 
-                null,
-                new HttpHost("www.google.ch"),
-                new MySessionRequestCallback(requestCount));
-        reqs[2] = ioReactor.connect(
-                new InetSocketAddress("www.apache.org", 80), 
-                null,
-                new HttpHost("www.apache.org"),
-                new MySessionRequestCallback(requestCount));
-     
         // Block until all connections signal
         // completion of the request execution
         requestCount.await();
@@ -182,14 +179,15 @@ public class NHttpClient {
                 System.out.println("Sending request to " + targetHost);
                 System.out.println("--------------");
                 
-                return new BasicHttpRequest("GET", "/");
+                //http://ftp.osuosl.org/pub/eclipse/technology/ecf/org.eclipse.ecf.examples-1.0.3.v20070927-1821.zip      
+                return new BasicHttpRequest("GET", "/pub/eclipse/technology/ecf/org.eclipse.ecf.examples-1.0.3.v20070927-1821.zip");
             } else {
                 // No new request to submit
                 return null;
             }
         }
-        
-        public void handleResponse(final HttpResponse response, final HttpContext context) {
+       public void handleResponse(final HttpResponse response, final HttpContext context) {
+    	   System.out.println("handleResponse");
             HttpEntity entity = response.getEntity();
             try {
                 String content = EntityUtils.toString(entity);
@@ -197,8 +195,9 @@ public class NHttpClient {
                 System.out.println("--------------");
                 System.out.println(response.getStatusLine());
                 System.out.println("--------------");
-                System.out.println("Document length: " + content.length());
+                System.out.println("Document length: " + entity.getContentLength());
                 System.out.println("--------------");
+                //System.out.println("Content: "+content);
             } catch (IOException ex) {
                 System.err.println("I/O error: " + ex.getMessage());
             }
@@ -261,4 +260,33 @@ public class NHttpClient {
         
     }
 
+    static class MyBufferingHttpClientHandler extends BufferingHttpClientHandler {
+
+		public MyBufferingHttpClientHandler(HttpProcessor httpProcessor,
+				HttpRequestExecutionHandler execHandler,
+				ConnectionReuseStrategy connStrategy,
+				ByteBufferAllocator allocator, HttpParams params) {
+			super(httpProcessor, execHandler, connStrategy, allocator, params);
+		}
+
+		public MyBufferingHttpClientHandler(BasicHttpProcessor httpproc,
+				MyHttpRequestExecutionHandler myHttpRequestExecutionHandler,
+				DefaultConnectionReuseStrategy defaultConnectionReuseStrategy,
+				HttpParams params) {
+			super(httpproc,myHttpRequestExecutionHandler,defaultConnectionReuseStrategy,params);
+		}
+    	public void inputReady(NHttpClientConnection conn,
+    			ContentDecoder decoder) {
+    		super.inputReady(conn, decoder);
+    		HttpConnectionMetrics metrics = conn.getMetrics();
+    		System.out.println("received bytes="+metrics.getReceivedBytesCount());
+    	}
+
+    	public void responseReceived(NHttpClientConnection conn) {
+    		HttpResponse response = conn.getHttpResponse();
+    		System.out.println("response received="+Arrays.asList(response.getAllHeaders()));
+    		super.responseReceived(conn);
+    	}
+    	
+    }
 }
