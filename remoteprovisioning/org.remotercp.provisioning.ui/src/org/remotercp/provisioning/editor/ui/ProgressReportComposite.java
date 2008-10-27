@@ -6,8 +6,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.dialogs.TitleAreaDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -34,10 +32,7 @@ import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
-import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.status.StatusUtil;
-
-import com.google.inject.spi.Message;
 
 public class ProgressReportComposite {
 
@@ -364,7 +359,7 @@ public class ProgressReportComposite {
 							.checkStatus(node.getUpdateResults());
 
 					if (result == Status.OK) {
-						text = "SUCCESSFULL";
+						text = "SUCCESSFUL";
 					} else if (result == Status.WARNING) {
 						text = "WARNING";
 					} else if (result == Status.ERROR) {
