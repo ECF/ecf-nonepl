@@ -9,7 +9,8 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.pde.runtime
 Eclipse-LazyStart: true
-Export-Package: org.remotercp.util.dialogs,
+Export-Package: org.remotercp.util.authorization,
+ org.remotercp.util.dialogs,
  org.remotercp.util.filesize,
  org.remotercp.util.intersection,
  org.remotercp.util.osgi,
