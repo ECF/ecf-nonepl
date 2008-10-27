@@ -5,8 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
+import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
@@ -24,10 +26,12 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
+import org.remotercp.util.authorization.ExtensionRegistryHelper;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.preferences.PreferencesUtil;
 
@@ -46,20 +50,16 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		this.preferenceService = Platform.getPreferencesService();
 		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
 
-		// this.printAllPreferences(rootNode);
-
 		try {
 			preferencesFile = File.createTempFile("preferences", ".ini");
 			/*
 			 * XXX: if boolean preference values are set to "false" or values
 			 * are null they won't be exported. This could be a problem if the
-			 * admin would like to change exactly these property!
+			 * admin would like to change exactly these properties!
 			 */
 			OutputStream out = new FileOutputStream(preferencesFile);
 			this.preferenceService.exportPreferences(rootNode,
 					new IPreferenceFilter[] { getPreferenceFilter() }, out);
-			// preferenceService.exportPreferences(rootNode,
-			// new IPreferenceFilter[] { getPreferenceFilter() }, out);
 
 			preferencesMap = PreferencesUtil
 					.createPreferencesFromFile(preferencesFile);
@@ -84,40 +84,6 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		return preferencesMap;
 	}
 
-	// private void printAllPreferences(IEclipsePreferences rootNode) {
-	//
-	// for (String scope : getPreferenceFilter().getScopes()) {
-	// Preferences scopeNode = rootNode.node(scope);
-	// try {
-	// for (String child : scopeNode.childrenNames()) {
-	// exportNode(scopeNode.node(child), child);
-	// }
-	// } catch (BackingStoreException e) {
-	// // TODO Auto-generated catch block
-	// e.printStackTrace();
-	// }
-	// }
-	// }
-
-	//
-	// private void exportNode(Preferences preferenceNode, String path)
-	// throws BackingStoreException {
-	// for (String key : preferenceNode.keys()) {
-	// String propertyKey = path + "/" + key;
-	// // Only export the preference if it is not already contained in the
-	// // result. This is so that multiple scopes can be exported without
-	// // conflicting in unexpected ways.
-	// String propertyValue = preferenceNode.get(key, "");
-	//			
-	// System.out.println("Key: " + propertyKey + " value: " + propertyValue);
-	// }
-	//
-	// // recursively export the node's children
-	// for (String child : preferenceNode.childrenNames()) {
-	// exportNode(preferenceNode.node(child), path + "/" + child);
-	// }
-	// }
-
 	private IPreferenceFilter getPreferenceFilter() {
 		return new IPreferenceFilter() {
 
@@ -132,7 +98,9 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			 * 
 			 * (non-Javadoc)
 			 * 
-			 * @see org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes ()
+			 * @see
+			 * org.eclipse.core.runtime.preferences.IPreferenceFilter#getScopes
+			 * ()
 			 */
 			public String[] getScopes() {
 				return new String[] { InstanceScope.SCOPE,
@@ -142,9 +110,62 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		};
 	}
 
+	/**
+	 * This method sets local preferences for the given key-value pairs.
+	 * 
+	 * @param preferences
+	 *            The key/value preference pairs
+	 * @param fromId
+	 *            The ID of the client who requests to change the preferences
+	 *            remotely
+	 * @return A status which describes the success of this method
+	 */
 	public IStatus setPreferences(Map<String, String> preferences, ID fromId)
 			throws ECFException {
 
+		// check if authorization has been provided
+		try {
+			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
+					.getExecutablesForExtensionPoint("org.remotercp.authorization");
+
+			for (Object executable : executablesForExtensionPoint) {
+				if (executable instanceof IOperationAuthorization) {
+					IOperationAuthorization operation = (IOperationAuthorization) executable;
+					boolean canExecute = operation.canExecute(fromId,
+							"setPreferences");
+					if (canExecute) {
+						return this.changePreferences(preferences, fromId);
+					}
+				}
+			}
+
+		} catch (NullPointerException e) {
+			logger
+					.log(Level.WARNING,
+							"No extensions found for extension point org.remotercp.authorization");
+			/*
+			 * authorization extension has not been provided, ignore
+			 * authorization and keep on going
+			 */
+			return this.changePreferences(preferences, fromId);
+		} catch (CoreException e1) {
+			logger.log(Level.SEVERE, "org.remotercp.authorization");
+		}
+
+		return new Status(Status.ERROR, PreferencesActivator.PLUGIN_ID,
+				"Unable to store preference");
+	}
+
+	/**
+	 * This method changes the existing preferences to the new provided values.
+	 * 
+	 * @param preferences
+	 * @param fromId
+	 * @return
+	 * @throws ECFException
+	 */
+	private IStatus changePreferences(Map<String, String> preferences, ID fromId)
+			throws ECFException {
 		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
 
 		for (String key : preferences.keySet()) {
