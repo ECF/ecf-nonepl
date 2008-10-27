@@ -1,14 +1,15 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Common Plug-in
-Bundle-SymbolicName: org.remotercp.common
+Bundle-SymbolicName: org.remotercp.common;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.update.core,
  org.remotercp.libs
 Eclipse-LazyStart: true
-Export-Package: org.remotercp.common.constants,
+Export-Package: org.remotercp.common.authorization,
+ org.remotercp.common.constants,
  org.remotercp.common.preferences,
  org.remotercp.common.provisioning,
  org.remotercp.common.servicelauncher,
