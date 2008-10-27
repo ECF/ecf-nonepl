@@ -39,6 +39,8 @@ public class SessionServiceImpl implements ISessionService {
 
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
+	
+	private boolean servicesInitialized = false;
 
 	public ConnectionDetails getConnectionDetails() {
 		return connectionDetails;
@@ -360,14 +362,18 @@ public class SessionServiceImpl implements ISessionService {
 			public void handlePresence(ID fromID, IPresence presence) {
 
 				if (presence.getType() == IPresence.Type.AVAILABLE) {
-					/*
-					 * wait 3 sec so that all local services are registered
-					 * before registering them to remote clients
-					 */
-					try {
-						Thread.sleep(3000);
-					} catch (InterruptedException e) {
-						e.printStackTrace();
+					
+					if(!servicesInitialized){						
+						/*
+						 * wait 3 sec so that all local services are registered
+						 * before registering them to remote clients
+						 */
+						try {
+							Thread.sleep(3000);
+						} catch (InterruptedException e) {
+							e.printStackTrace();
+						}
+						servicesInitialized = true;
 					}
 
 					for (String service : SessionServiceImpl.this.remoteServices
