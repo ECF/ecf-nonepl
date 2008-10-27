@@ -128,6 +128,14 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
 					.getExecutablesForExtensionPoint("org.remotercp.authorization");
 
+			if (executablesForExtensionPoint.isEmpty()) {
+				/*
+				 * authorization extension has not been provided, ignore
+				 * authorization and keep on going
+				 */
+				return this.changePreferences(preferences, fromId);
+			}
+
 			for (Object executable : executablesForExtensionPoint) {
 				if (executable instanceof IOperationAuthorization) {
 					IOperationAuthorization operation = (IOperationAuthorization) executable;
@@ -140,16 +148,12 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			}
 
 		} catch (NullPointerException e) {
-			logger
-					.log(Level.WARNING,
-							"No extensions found for extension point org.remotercp.authorization");
-			/*
-			 * authorization extension has not been provided, ignore
-			 * authorization and keep on going
-			 */
-			return this.changePreferences(preferences, fromId);
+			logger.log(Level.WARNING,
+					"No extension point org.remotercp.authorization found");
 		} catch (CoreException e1) {
-			logger.log(Level.SEVERE, "org.remotercp.authorization");
+			logger
+					.log(Level.SEVERE,
+							"org.remotercp.authorization unable to instantiate executables ");
 		}
 
 		return new Status(Status.ERROR, PreferencesActivator.PLUGIN_ID,
