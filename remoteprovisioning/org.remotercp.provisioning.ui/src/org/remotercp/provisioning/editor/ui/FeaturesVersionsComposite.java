@@ -315,6 +315,8 @@ public class FeaturesVersionsComposite {
 					final SerializedFeatureWrapper[] featuresToUpdate = new SerializedFeatureWrapper[1];
 					featuresToUpdate[0] = SerializedFeatureWrapper
 							.createFeatureWrapper(feature);
+					
+					final ID fromId = sessionService.getContainer().getConnectedID();
 
 					IRemoteCall updateFeaturesCall = new IRemoteCall() {
 
@@ -323,7 +325,7 @@ public class FeaturesVersionsComposite {
 						}
 
 						public Object[] getParameters() {
-							return new Object[] { featuresToUpdate };
+							return new Object[] { featuresToUpdate, fromId };
 						}
 
 						public long getTimeout() {

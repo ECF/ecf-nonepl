@@ -20,6 +20,7 @@ import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.core.runtime.preferences.IPreferenceFilter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
@@ -141,7 +142,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		};
 	}
 
-	public IStatus setPreferences(Map<String, String> preferences)
+	public IStatus setPreferences(Map<String, String> preferences, ID fromId)
 			throws ECFException {
 
 		IEclipsePreferences rootNode = this.preferenceService.getRootNode();

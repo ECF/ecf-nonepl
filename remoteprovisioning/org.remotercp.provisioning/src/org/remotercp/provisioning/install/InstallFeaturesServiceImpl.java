@@ -17,6 +17,7 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
@@ -324,7 +325,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * @return A list of {@link IStatus} objects which contains the result of
 	 *         the uninstall operation e.g. errors, warnings and ok status
 	 */
-	public List<IStatus> uninstallFeatures(String[] featuresIds) {
+	public List<IStatus> uninstallFeatures(String[] featuresIds, ID fromId) {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 		Set<IFeature> correspondingFeatures = new HashSet<IFeature>();
 
@@ -402,7 +403,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * This method can be called if all installs/updates/uninstalls have been
 	 * finished in order to apply changes to the running application.
 	 */
-	public void restartApplication() {
+	public void restartApplication(ID fromId) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
 				PlatformUI.getWorkbench().restart();
@@ -418,7 +419,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * @return The status whether client has accepted (Status.OK) the update or
 	 *         cancelled (Status.CANCELLED)
 	 */
-	public IStatus acceptUpdate() {
+	public IStatus acceptUpdate(ID fromId) {
 		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
 				UpdateActivator.getBundleContext(), ISessionService.class);
 		final String userName = sessionService.getConnectionDetails()
@@ -452,7 +453,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	/**
 	 * This method will install the provided features in user's RCP application.
 	 */
-	public List<IStatus> installFeatures(SerializedFeatureWrapper[] features) {
+	public List<IStatus> installFeatures(SerializedFeatureWrapper[] features,
+			ID fromId) {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 		List<IFeature> featuresToUpdate = new ArrayList<IFeature>();
 		try {
@@ -537,9 +539,10 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * An update is a mix of uninstall old feature and install the new feature.
 	 * Therefore we can call installFeatures method.
 	 */
-	public List<IStatus> updateFeautures(SerializedFeatureWrapper[] features) {
+	public List<IStatus> updateFeautures(SerializedFeatureWrapper[] features,
+			ID fromId) {
 
-		List<IStatus> installResult = this.installFeatures(features);
+		List<IStatus> installResult = this.installFeatures(features, fromId);
 
 		return installResult;
 	}

@@ -65,6 +65,7 @@ public class RestartApplicationAction implements IViewActionDelegate {
 		ISessionService sessionService = OsgiServiceLocatorUtil
 				.getOSGiService(ProvisioningActivator.getBundleContext(),
 						ISessionService.class);
+		final ID fromId = sessionService.getContainer().getConnectedID();
 		Assert.isNotNull(sessionService);
 
 		ID[] userIDs = RosterUtil.getUserIDs(this.roster);
@@ -84,9 +85,9 @@ public class RestartApplicationAction implements IViewActionDelegate {
 				Job restartJob = new Job("Restart remote application") {
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
-						IStatus acceptUpdate = featuresService.acceptUpdate();
+						IStatus acceptUpdate = featuresService.acceptUpdate(fromId);
 						if (acceptUpdate.getSeverity() == Status.OK) {
-							featuresService.restartApplication();
+							featuresService.restartApplication(fromId);
 						} else {
 							ErrorView.addError(acceptUpdate);
 						}
