@@ -33,12 +33,14 @@ import org.eclipse.update.internal.operations.OperationFactory;
 import org.eclipse.update.operations.IInstallFeatureOperation;
 import org.eclipse.update.operations.IOperation;
 import org.eclipse.update.operations.OperationsManager;
+import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.provisioning.UpdateActivator;
 import org.remotercp.provisioning.dialogs.AcceptUpdateDialog;
+import org.remotercp.util.authorization.ExtensionRegistryHelper;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.status.StatusUtil;
 
@@ -326,44 +328,55 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 *         the uninstall operation e.g. errors, warnings and ok status
 	 */
 	public List<IStatus> uninstallFeatures(String[] featuresIds, ID fromId) {
+		// is user fromId allowed to execute this operation?
+		boolean canExecute = this.checkAuthorization(fromId,
+				"uninstallFeatures");
+
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 		Set<IFeature> correspondingFeatures = new HashSet<IFeature>();
+		if (canExecute) {
 
-		List<String> featureStringIds = Arrays.asList(featuresIds);
+			List<String> featureStringIds = Arrays.asList(featuresIds);
 
-		/* get local installed features */
-		try {
-			IFeatureReference[] featureReferences = getFeatureReferences();
+			/* get local installed features */
+			try {
+				IFeatureReference[] featureReferences = getFeatureReferences();
 
-			for (IFeatureReference ref : featureReferences) {
-				IFeature feature = ref.getFeature(null);
-				String featureId = feature.getVersionedIdentifier()
-						.getIdentifier();
+				for (IFeatureReference ref : featureReferences) {
+					IFeature feature = ref.getFeature(null);
+					String featureId = feature.getVersionedIdentifier()
+							.getIdentifier();
 
-				// features found?
-				if (featureStringIds.contains(featureId)) {
-					correspondingFeatures.add(feature);
+					// features found?
+					if (featureStringIds.contains(featureId)) {
+						correspondingFeatures.add(feature);
+					}
 				}
+
+				// perform update
+				if (!correspondingFeatures.isEmpty()) {
+					IFeature[] featuresToUninstall = (IFeature[]) correspondingFeatures
+							.toArray(new IFeature[correspondingFeatures.size()]);
+					List<IStatus> updateStatus = uninstallFeatures(featuresToUninstall);
+
+					int uninstallOK = StatusUtil.checkStatus(updateStatus);
+					if (uninstallOK == Status.OK) {
+						IStatus okStatus = createStatus(Status.OK,
+								"Features have been uninstalled", null);
+						statusCollector.add(okStatus);
+					}
+				}
+
+			} catch (CoreException e) {
+				IStatus error = createStatus(Status.ERROR,
+						"Unable to retrieve the ISite configuration", e);
+				statusCollector.add(error);
 			}
 
-			// perform update
-			if (!correspondingFeatures.isEmpty()) {
-				IFeature[] featuresToUninstall = (IFeature[]) correspondingFeatures
-						.toArray(new IFeature[correspondingFeatures.size()]);
-				List<IStatus> updateStatus = uninstallFeatures(featuresToUninstall);
-
-				int uninstallOK = StatusUtil.checkStatus(updateStatus);
-				if (uninstallOK == Status.OK) {
-					IStatus okStatus = createStatus(Status.OK,
-							"Features have been uninstalled", null);
-					statusCollector.add(okStatus);
-				}
-			}
-
-		} catch (CoreException e) {
-			IStatus error = createStatus(Status.ERROR,
-					"Unable to retrieve the ISite configuration", e);
-			statusCollector.add(error);
+		} else {
+			IStatus authorizationFailed = createStatus(Status.ERROR,
+					"Authorization failed.", null);
+			statusCollector.add(authorizationFailed);
 		}
 
 		return statusCollector;
@@ -404,11 +417,18 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * finished in order to apply changes to the running application.
 	 */
 	public void restartApplication(ID fromId) {
-		Display.getDefault().asyncExec(new Runnable() {
-			public void run() {
-				PlatformUI.getWorkbench().restart();
-			}
-		});
+		// is user fromId allowed to execute this operation?
+		boolean canExecute = this.checkAuthorization(fromId,
+				"restartApplication");
+
+		if (canExecute) {
+			Display.getDefault().asyncExec(new Runnable() {
+				public void run() {
+					PlatformUI.getWorkbench().restart();
+				}
+			});
+		}
+
 	}
 
 	/**
@@ -457,44 +477,55 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 			ID fromId) {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 		List<IFeature> featuresToUpdate = new ArrayList<IFeature>();
-		try {
-			for (SerializedFeatureWrapper serializedFeature : features) {
-				ISite site = SiteManager.getSite(serializedFeature
-						.getUpdateUrl(), null);
 
-				ISiteFeatureReference[] featureReferences = site
-						.getFeatureReferences();
+		// is user fromId allowed to execute this operation?
+		boolean canExecute = this.checkAuthorization(fromId, "installFeatures");
+		if (canExecute) {
 
-				for (ISiteFeatureReference featureReference : featureReferences) {
-					IFeature feature = featureReference.getFeature(null);
-					String featureId = feature.getVersionedIdentifier()
-							.getIdentifier();
-					String featureVersion = feature.getVersionedIdentifier()
-							.getVersion().toString();
-					if (featureId.equals(serializedFeature.getIdentifier())) {
-						// right feature for update found. now get the right
-						// version
-						if (featureVersion.equals(serializedFeature
-								.getVersion())) {
-							featuresToUpdate.add(feature);
+			try {
+				for (SerializedFeatureWrapper serializedFeature : features) {
+					ISite site = SiteManager.getSite(serializedFeature
+							.getUpdateUrl(), null);
+
+					ISiteFeatureReference[] featureReferences = site
+							.getFeatureReferences();
+
+					for (ISiteFeatureReference featureReference : featureReferences) {
+						IFeature feature = featureReference.getFeature(null);
+						String featureId = feature.getVersionedIdentifier()
+								.getIdentifier();
+						String featureVersion = feature
+								.getVersionedIdentifier().getVersion()
+								.toString();
+						if (featureId.equals(serializedFeature.getIdentifier())) {
+							// right feature for update found. now get the right
+							// version
+							if (featureVersion.equals(serializedFeature
+									.getVersion())) {
+								featuresToUpdate.add(feature);
+							}
 						}
 					}
 				}
+
+				// now perform the update
+				IFeature[] featuresReadyForUpdate = featuresToUpdate
+						.toArray(new IFeature[featuresToUpdate.size()]);
+
+				List<IStatus> installResult = this
+						.installFeatures(featuresReadyForUpdate);
+				statusCollector.addAll(installResult);
+			} catch (CoreException e) {
+				IStatus error = createStatus(
+						Status.ERROR,
+						"Unable to retrieve the ISite configuration while trying to install features.",
+						e);
+				statusCollector.add(error);
 			}
-
-			// now perform the update
-			IFeature[] featuresReadyForUpdate = featuresToUpdate
-					.toArray(new IFeature[featuresToUpdate.size()]);
-
-			List<IStatus> installResult = this
-					.installFeatures(featuresReadyForUpdate);
-			statusCollector.addAll(installResult);
-		} catch (CoreException e) {
-			IStatus error = createStatus(
-					Status.ERROR,
-					"Unable to retrieve the ISite configuration while trying to install features.",
-					e);
-			statusCollector.add(error);
+		} else {
+			IStatus authorizationFailed = createStatus(Status.ERROR,
+					"Authorization failed.", null);
+			statusCollector.add(authorizationFailed);
 		}
 
 		return statusCollector;
@@ -541,8 +572,16 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 */
 	public List<IStatus> updateFeautures(SerializedFeatureWrapper[] features,
 			ID fromId) {
-
-		List<IStatus> installResult = this.installFeatures(features, fromId);
+		List<IStatus> installResult = new ArrayList<IStatus>();
+		// is user fromId allowed to execute this operation?
+		boolean canExecute = this.checkAuthorization(fromId, "updateFeatures");
+		if (canExecute) {
+			installResult = this.installFeatures(features, fromId);
+		} else {
+			IStatus authorizationFailed = createStatus(Status.ERROR,
+					"Authorization failed.", null);
+			installResult.add(authorizationFailed);
+		}
 
 		return installResult;
 	}
@@ -561,6 +600,33 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 					message, e);
 		}
 
+	}
+
+	private boolean checkAuthorization(ID fromId, String methodId) {
+		boolean authorized = false;
+		try {
+			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
+					.getExecutablesForExtensionPoint("org.remotercp.authorization");
+			if (executablesForExtensionPoint.isEmpty()) {
+				/*
+				 * no extension provided, ignore authorization
+				 */
+				authorized = true;
+			} else {
+				// authorization provided, check authorization
+				for (Object executable : executablesForExtensionPoint) {
+					if (executable instanceof IOperationAuthorization) {
+						IOperationAuthorization operation = (IOperationAuthorization) executable;
+						authorized = operation.canExecute(fromId, methodId);
+					}
+				}
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return authorized;
 	}
 
 	/***************************************************************************
