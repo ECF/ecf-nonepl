@@ -16,7 +16,9 @@ import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.IJobChangeEvent;
 import org.eclipse.core.runtime.jobs.Job;
+import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -99,8 +101,23 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 
 				}
 
-				this.executeInstallOperations(statusCollector,
+				Job installJob = this.createInstallJob(statusCollector,
 						installOperations);
+				installJob.setUser(true);
+				installJob.schedule();
+
+				installJob.addJobChangeListener(new JobChangeAdapter() {
+					@Override
+					public void done(IJobChangeEvent event) {
+						if (event.getResult().isOK()) {
+							// job good
+							System.out.println("Hallo");
+						} else {
+							// job failed
+							System.out.println("Hooho");
+						}
+					}
+				});
 
 				// operation successful
 				IStatus okstatus = createStatus(Status.OK,
@@ -123,6 +140,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 			statusCollector.add(status);
 
 		}
+		System.out.println("Installation finished");
 		return statusCollector;
 	}
 
@@ -140,8 +158,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * @param installOperations
 	 *            List of install operations to execute
 	 */
-	protected void executeInstallOperations(
-			final List<IStatus> statusCollector,
+	protected Job createInstallJob(final List<IStatus> statusCollector,
 			final List<IInstallFeatureOperation> installOperations) {
 
 		Job installFeatureJob = new Job("Install Features...") {
@@ -219,7 +236,6 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 						IStatus error = createStatus(Status.ERROR,
 								"Unable to install feature: "
 										+ feature.getLabel(), e);
-						;
 						statusCollector.add(error);
 					}
 					monitor.worked(1);
@@ -229,9 +245,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 				return Status.OK_STATUS;
 			}
 		};
-		installFeatureJob.setUser(true);
-		installFeatureJob.schedule();
 
+		return installFeatureJob;
 	}
 
 	/*
