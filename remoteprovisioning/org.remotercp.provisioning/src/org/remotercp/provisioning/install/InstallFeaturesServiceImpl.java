@@ -31,7 +31,6 @@ import org.eclipse.update.internal.operations.OperationFactory;
 import org.eclipse.update.operations.IInstallFeatureOperation;
 import org.eclipse.update.operations.IOperation;
 import org.eclipse.update.operations.OperationsManager;
-import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.common.status.SerializableStatus;
@@ -289,7 +288,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 */
 	public List<IStatus> uninstallFeatures(String[] featuresIds, ID fromId) {
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = this.checkAuthorization(fromId,
+		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
 				"uninstallFeatures");
 
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
@@ -383,7 +382,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	public List<IStatus> restartApplication(ID fromId) {
 		final List<IStatus> statusCollector = new ArrayList<IStatus>();
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = this.checkAuthorization(fromId,
+		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
 				"restartApplication");
 
 		if (canExecute) {
@@ -455,7 +454,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 		List<IFeature> featuresToUpdate = new ArrayList<IFeature>();
 
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = this.checkAuthorization(fromId, "installFeatures");
+		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
+				"installFeatures");
 		if (canExecute) {
 
 			try {
@@ -554,7 +554,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 			ID fromId) {
 		List<IStatus> installResult = new ArrayList<IStatus>();
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = this.checkAuthorization(fromId, "updateFeatures");
+		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
+				"updateFeatures");
 		if (canExecute) {
 			installResult = this.installFeatures(features, fromId);
 		} else {
@@ -584,33 +585,6 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 					message, e);
 		}
 
-	}
-
-	private boolean checkAuthorization(ID fromId, String methodId) {
-		boolean authorized = false;
-		try {
-			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
-					.getExecutablesForExtensionPoint("org.remotercp.authorization");
-			if (executablesForExtensionPoint.isEmpty()) {
-				/*
-				 * no extension provided, ignore authorization
-				 */
-				authorized = true;
-			} else {
-				// authorization provided, check authorization
-				for (Object executable : executablesForExtensionPoint) {
-					if (executable instanceof IOperationAuthorization) {
-						IOperationAuthorization operation = (IOperationAuthorization) executable;
-						authorized = operation.canExecute(fromId, methodId);
-					}
-				}
-			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-		return authorized;
 	}
 
 	/***************************************************************************

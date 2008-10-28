@@ -5,10 +5,10 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.SortedMap;
-import java.util.logging.Level;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
@@ -26,7 +26,6 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
@@ -120,87 +119,48 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 	 *            remotely
 	 * @return A status which describes the success of this method
 	 */
-	public IStatus setPreferences(Map<String, String> preferences, ID fromId)
-			throws ECFException {
+	public List<IStatus> setPreferences(Map<String, String> preferences,
+			ID fromId) throws ECFException {
+		List<IStatus> statusCollector = new ArrayList<IStatus>();
 
 		// check if authorization has been provided
-		try {
-			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
-					.getExecutablesForExtensionPoint("org.remotercp.authorization");
+		boolean authorized = ExtensionRegistryHelper.checkAuthorization(fromId,
+				"setPreferences");
+		if (authorized) {
+			IEclipsePreferences rootNode = this.preferenceService.getRootNode();
 
-			if (executablesForExtensionPoint.isEmpty()) {
-				/*
-				 * authorization extension has not been provided, ignore
-				 * authorization and keep on going
-				 */
-				return this.changePreferences(preferences, fromId);
-			}
+			for (String key : preferences.keySet()) {
+				try {
+					Preferences node = rootNode.node(key);
+					if (node != null) {
 
-			for (Object executable : executablesForExtensionPoint) {
-				if (executable instanceof IOperationAuthorization) {
-					IOperationAuthorization operation = (IOperationAuthorization) executable;
-					boolean canExecute = operation.canExecute(fromId,
-							"setPreferences");
-					if (canExecute) {
-						return this.changePreferences(preferences, fromId);
+						/* XXX is this the right way to change preferences??? */
+						String name = node.name();
+						Preferences parent = node.parent();
+						parent.sync();
+						// remove old node
+						node.removeNode();
+						String value = preferences.get(key);
+						// create new node
+						parent.put(name, value);
+						parent.flush();
 					}
+				} catch (BackingStoreException e) {
+					IStatus error = new Status(Status.ERROR,
+							PreferencesActivator.PLUGIN_ID,
+							"Unable to store preference with the key: " + key,
+							e);
+					statusCollector.add(error);
 				}
 			}
 
-		} catch (NullPointerException e) {
-			logger.log(Level.WARNING,
-					"No extension point org.remotercp.authorization found");
-		} catch (CoreException e1) {
-			logger
-					.log(Level.SEVERE,
-							"org.remotercp.authorization unable to instantiate executables ");
+			IStatus okStatus = new SerializableStatus(Status.OK,
+					PreferencesActivator.PLUGIN_ID,
+					"Preferences have been successfully saved!");
+			statusCollector.add(okStatus);
 		}
 
-		return new Status(Status.ERROR, PreferencesActivator.PLUGIN_ID,
-				"Unable to store preference");
-	}
-
-	/**
-	 * This method changes the existing preferences to the new provided values.
-	 * 
-	 * @param preferences
-	 * @param fromId
-	 * @return
-	 * @throws ECFException
-	 */
-	private IStatus changePreferences(Map<String, String> preferences, ID fromId)
-			throws ECFException {
-		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
-
-		for (String key : preferences.keySet()) {
-			try {
-				Preferences node = rootNode.node(key);
-				if (node != null) {
-
-					/* XXX is this the right way to change preferences??? */
-					String name = node.name();
-					Preferences parent = node.parent();
-					parent.sync();
-					// remove old node
-					node.removeNode();
-					String value = preferences.get(key);
-					// create new node
-					parent.put(name, value);
-					parent.flush();
-				}
-			} catch (BackingStoreException e) {
-				IStatus error = new Status(Status.ERROR,
-						PreferencesActivator.PLUGIN_ID,
-						"Unable to store preference with the key: " + key, e);
-				// throw remote exception
-				throw new ECFException(error);
-			}
-		}
-
-		IStatus okStatus = new SerializableStatus(Status.OK,
-				PreferencesActivator.PLUGIN_ID,
-				"Preferences have been successfully saved!");
-		return okStatus;
+		return statusCollector;
 	}
 
 	public void startServices() {

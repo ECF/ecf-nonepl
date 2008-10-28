@@ -7,6 +7,8 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.ecf.core.identity.ID;
+import org.remotercp.common.authorization.IOperationAuthorization;
 
 /**
  * This helper class is responsible for processes regarding the extension
@@ -17,6 +19,45 @@ import org.eclipse.core.runtime.Platform;
  * 
  */
 public class ExtensionRegistryHelper {
+
+	/**
+	 * This method checks whether a user is allowed to perform remote operations
+	 * 
+	 * @param fromId
+	 *            The requesting user instance
+	 * 
+	 * @param methodId
+	 *            The method the user wishes to perform
+	 * 
+	 * @return True, if user is allowed to perfrom remote operations, otherwise
+	 *         false
+	 */
+	public static boolean checkAuthorization(ID fromId, String methodId) {
+		boolean authorized = false;
+		try {
+			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
+					.getExecutablesForExtensionPoint("org.remotercp.authorization");
+			if (executablesForExtensionPoint.isEmpty()) {
+				/*
+				 * no extension provided, ignore authorization
+				 */
+				authorized = true;
+			} else {
+				// authorization provided, check authorization
+				for (Object executable : executablesForExtensionPoint) {
+					if (executable instanceof IOperationAuthorization) {
+						IOperationAuthorization operation = (IOperationAuthorization) executable;
+						authorized = operation.canExecute(fromId, methodId);
+					}
+				}
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+		return authorized;
+	}
 
 	/**
 	 * Returns the executable objects for a given extension point if any exist.
@@ -53,5 +94,4 @@ public class ExtensionRegistryHelper {
 
 		return executables;
 	}
-
 }
