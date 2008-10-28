@@ -30,7 +30,6 @@ import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
-import org.remotercp.util.authorization.ExtensionRegistryHelper;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.preferences.PreferencesUtil;
 
@@ -49,16 +48,20 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		this.preferenceService = Platform.getPreferencesService();
 		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
 
+		// this.printAllPreferences(rootNode);
+
 		try {
 			preferencesFile = File.createTempFile("preferences", ".ini");
 			/*
 			 * XXX: if boolean preference values are set to "false" or values
 			 * are null they won't be exported. This could be a problem if the
-			 * admin would like to change exactly these properties!
+			 * admin would like to change exactly these property!
 			 */
 			OutputStream out = new FileOutputStream(preferencesFile);
 			this.preferenceService.exportPreferences(rootNode,
 					new IPreferenceFilter[] { getPreferenceFilter() }, out);
+			// preferenceService.exportPreferences(rootNode,
+			// new IPreferenceFilter[] { getPreferenceFilter() }, out);
 
 			preferencesMap = PreferencesUtil
 					.createPreferencesFromFile(preferencesFile);
@@ -82,6 +85,40 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 		return preferencesMap;
 	}
+
+	// private void printAllPreferences(IEclipsePreferences rootNode) {
+	//
+	// for (String scope : getPreferenceFilter().getScopes()) {
+	// Preferences scopeNode = rootNode.node(scope);
+	// try {
+	// for (String child : scopeNode.childrenNames()) {
+	// exportNode(scopeNode.node(child), child);
+	// }
+	// } catch (BackingStoreException e) {
+	// // TODO Auto-generated catch block
+	// e.printStackTrace();
+	// }
+	// }
+	// }
+
+	//
+	// private void exportNode(Preferences preferenceNode, String path)
+	// throws BackingStoreException {
+	// for (String key : preferenceNode.keys()) {
+	// String propertyKey = path + "/" + key;
+	// // Only export the preference if it is not already contained in the
+	// // result. This is so that multiple scopes can be exported without
+	// // conflicting in unexpected ways.
+	// String propertyValue = preferenceNode.get(key, "");
+	//			
+	// System.out.println("Key: " + propertyKey + " value: " + propertyValue);
+	// }
+	//
+	// // recursively export the node's children
+	// for (String child : preferenceNode.childrenNames()) {
+	// exportNode(preferenceNode.node(child), path + "/" + child);
+	// }
+	// }
 
 	private IPreferenceFilter getPreferenceFilter() {
 		return new IPreferenceFilter() {
@@ -109,57 +146,40 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		};
 	}
 
-	/**
-	 * This method sets local preferences for the given key-value pairs.
-	 * 
-	 * @param preferences
-	 *            The key/value preference pairs
-	 * @param fromId
-	 *            The ID of the client who requests to change the preferences
-	 *            remotely
-	 * @return A status which describes the success of this method
-	 */
 	public List<IStatus> setPreferences(Map<String, String> preferences,
 			ID fromId) throws ECFException {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 
-		// check if authorization has been provided
-		boolean authorized = ExtensionRegistryHelper.checkAuthorization(fromId,
-				"setPreferences");
-		if (authorized) {
-			IEclipsePreferences rootNode = this.preferenceService.getRootNode();
+		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
 
-			for (String key : preferences.keySet()) {
-				try {
-					Preferences node = rootNode.node(key);
-					if (node != null) {
+		for (String key : preferences.keySet()) {
+			try {
+				Preferences node = rootNode.node(key);
+				if (node != null) {
 
-						/* XXX is this the right way to change preferences??? */
-						String name = node.name();
-						Preferences parent = node.parent();
-						parent.sync();
-						// remove old node
-						node.removeNode();
-						String value = preferences.get(key);
-						// create new node
-						parent.put(name, value);
-						parent.flush();
-					}
-				} catch (BackingStoreException e) {
-					IStatus error = new Status(Status.ERROR,
-							PreferencesActivator.PLUGIN_ID,
-							"Unable to store preference with the key: " + key,
-							e);
-					statusCollector.add(error);
+					/* XXX is this the right way to change preferences??? */
+					String name = node.name();
+					Preferences parent = node.parent();
+					parent.sync();
+					// remove old node
+					node.removeNode();
+					String value = preferences.get(key);
+					// create new node
+					parent.put(name, value);
+					parent.flush();
 				}
+			} catch (BackingStoreException e) {
+				IStatus error = new Status(Status.ERROR,
+						PreferencesActivator.PLUGIN_ID,
+						"Unable to store preference with the key: " + key, e);
+				statusCollector.add(error);
 			}
-
-			IStatus okStatus = new SerializableStatus(Status.OK,
-					PreferencesActivator.PLUGIN_ID,
-					"Preferences have been successfully saved!");
-			statusCollector.add(okStatus);
 		}
 
+		IStatus okStatus = new SerializableStatus(Status.OK,
+				PreferencesActivator.PLUGIN_ID,
+				"Preferences have been successfully saved!");
+		statusCollector.add(okStatus);
 		return statusCollector;
 	}
 
