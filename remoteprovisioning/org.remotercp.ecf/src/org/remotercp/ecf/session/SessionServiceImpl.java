@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
+import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
@@ -26,7 +27,9 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
+import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.ecf.ECFConnector;
+import org.remotercp.util.authorization.ExtensionRegistryHelper;
 import org.remotercp.util.roster.RosterUtil;
 
 public class SessionServiceImpl implements ISessionService {
@@ -378,21 +381,64 @@ public class SessionServiceImpl implements ISessionService {
 						servicesInitialized = true;
 					}
 
-					for (String service : SessionServiceImpl.this.remoteServices
-							.keySet()) {
+					boolean authorized = checkAuthorization(fromID);
+					if (authorized) {
+						// perform remote method registration
+						for (String service : SessionServiceImpl.this.remoteServices
+								.keySet()) {
 
-						Object serviceImpl = SessionServiceImpl.this.remoteServices
-								.get(service);
+							Object serviceImpl = SessionServiceImpl.this.remoteServices
+									.get(service);
 
-						SessionServiceImpl.this.registerRemoteService(service,
-								serviceImpl, new ID[] { fromID });
+							SessionServiceImpl.this.registerRemoteService(
+									service, serviceImpl, new ID[] { fromID });
 
-						logger.info("Service " + service
-								+ " registered to user: " + fromID.getName());
+							logger.info("Service " + service
+									+ " registered to user: "
+									+ fromID.getName());
+						}
 					}
+
 				}
 			}
 
 		};
+	}
+
+	/*
+	 * This method checks whether the provided user has the authorization to
+	 * receive remote method registrations. This check will only be performed if
+	 * an authorization extension has been provided.
+	 * 
+	 * @param fromId The user ID to check the authorization for
+	 * 
+	 * @return True if user is authorized to receive remote service
+	 * registrations, otherwise false
+	 */
+	private boolean checkAuthorization(ID fromId) {
+		boolean authorized = false;
+		try {
+			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
+					.getExecutablesForExtensionPoint("org.remotercp.authorization");
+			if (executablesForExtensionPoint.isEmpty()) {
+				// no extensions for extension point provided, ignore
+				// authorization
+				authorized = true;
+			} else {
+				for (Object executable : executablesForExtensionPoint) {
+					if (executable instanceof IOperationAuthorization) {
+						IOperationAuthorization operation = (IOperationAuthorization) executable;
+						authorized = operation.canExecute(fromId,
+								"registerRemoteServices");
+					}
+				}
+			}
+		} catch (NullPointerException e) {
+			e.printStackTrace();
+		} catch (CoreException e) {
+			e.printStackTrace();
+		}
+
+		return authorized;
 	}
 }
