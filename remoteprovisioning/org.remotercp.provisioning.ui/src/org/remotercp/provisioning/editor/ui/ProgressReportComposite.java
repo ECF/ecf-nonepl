@@ -1,6 +1,5 @@
 package org.remotercp.provisioning.editor.ui;
 
-import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
@@ -16,7 +15,6 @@ import org.eclipse.jface.viewers.ILabelProvider;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
-import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
@@ -106,10 +104,6 @@ public class ProgressReportComposite {
 								showStatus(event);
 							}
 						});
-
-				// XXX For Test only
-				// this.resultTreeViewer.setInput(getDummyData());
-				// this.resultTreeViewer.expandAll();
 			}
 		}
 
@@ -194,82 +188,6 @@ public class ProgressReportComposite {
 				dialog = null;
 			}
 		}
-	}
-
-	/*
-	 * XXX: for tests only used
-	 */
-	private List<TreeNode> getDummyData() {
-		InstalledFeaturesCompositeTest helper = new InstalledFeaturesCompositeTest();
-		helper.setUp();
-		ID klaus = helper.getKlaus();
-		ID sandra = helper.getSandra();
-		ID john = helper.getJohn();
-
-		List<TreeNode> treeNodes = new ArrayList<TreeNode>();
-		SerializedFeatureWrapper feature1 = new SerializedFeatureWrapper();
-		feature1.setIdentifier("org.eclipse.feature12");
-		feature1.setLabel("Fature 12");
-		feature1.setVersion("1.2.0");
-
-		ResultFeatureTreeNode node1 = new ResultFeatureTreeNode(feature1);
-
-		ResultUserTreeNode child1Node1 = new ResultUserTreeNode(klaus);
-		child1Node1.setParent(node1);
-		ResultUserTreeNode child2Node1 = new ResultUserTreeNode(sandra);
-		child2Node1.setParent(node1);
-		ResultUserTreeNode child3Node1 = new ResultUserTreeNode(john);
-		child3Node1.setParent(node1);
-
-		TreeNode[] children1 = new TreeNode[3];
-		children1[0] = child1Node1;
-		children1[1] = child2Node1;
-		children1[2] = child3Node1;
-		node1.setChildren(children1);
-
-		SerializedFeatureWrapper feature2 = new SerializedFeatureWrapper();
-		feature2.setIdentifier("org.eclipse.feature13");
-		feature2.setLabel("Feature 13");
-		feature2.setVersion("1.1.0");
-
-		ResultFeatureTreeNode node2 = new ResultFeatureTreeNode(feature2);
-		ResultUserTreeNode child1Node2 = new ResultUserTreeNode(sandra);
-		child1Node2.setParent(node2);
-		ResultUserTreeNode child2Node2 = new ResultUserTreeNode(klaus);
-		child2Node2.setParent(node2);
-		ResultUserTreeNode child3Node2 = new ResultUserTreeNode(john);
-		child3Node2.setParent(node2);
-
-		TreeNode[] children2 = new TreeNode[3];
-		children2[0] = child1Node2;
-		children2[1] = child2Node2;
-		children2[2] = child3Node2;
-		node2.setChildren(children2);
-
-		SerializedFeatureWrapper feature3 = new SerializedFeatureWrapper();
-		feature3.setIdentifier("org.eclipse.feature15");
-		feature3.setLabel("Feature 15");
-		feature3.setVersion("1.3.0");
-
-		ResultFeatureTreeNode node3 = new ResultFeatureTreeNode(feature3);
-		ResultUserTreeNode child1Node3 = new ResultUserTreeNode(john);
-		child1Node3.setParent(node3);
-		ResultUserTreeNode child2Node3 = new ResultUserTreeNode(sandra);
-		child2Node3.setParent(node3);
-		ResultUserTreeNode child3Node3 = new ResultUserTreeNode(klaus);
-		child3Node3.setParent(node3);
-
-		TreeNode[] children3 = new TreeNode[3];
-		children3[0] = child1Node3;
-		children3[1] = child2Node3;
-		children3[2] = child3Node3;
-		node3.setChildren(children3);
-
-		treeNodes.add(node1);
-		treeNodes.add(node2);
-		treeNodes.add(node3);
-
-		return treeNodes;
 	}
 
 	private class ResultDecoratingLabelProvider extends DecoratingLabelProvider

@@ -102,6 +102,11 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 				this.executeInstallOperations(statusCollector,
 						installOperations);
 
+				// operation successful
+				IStatus okstatus = createStatus(Status.OK,
+						"Features have been successfully installed", null);
+				statusCollector.add(okstatus);
+
 			} catch (CoreException e) {
 				IStatus status = createStatus(Status.ERROR,
 						"Unable to retrieve the IConfigureSite", e);
