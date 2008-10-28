@@ -115,7 +115,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 			statusCollector.add(status);
 
 		}
-		System.out.println("Installation finished");
+		LOGGER.info("Install operation finished");
 		return statusCollector;
 	}
 
