@@ -381,7 +381,9 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 		} else {
 			IStatus authorizationFailed = createStatus(
 					Status.ERROR,
-					"Authorization failed. Only administrators are allowed to perform uninstall operations.",
+					"Authorization failed for user: "
+							+ fromId.getName()
+							+ ". Only administrators are allowed to perform uninstall operations.",
 					null);
 			statusCollector.add(authorizationFailed);
 		}
@@ -441,7 +443,9 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 		} else {
 			IStatus authorizationFailed = createStatus(
 					Status.ERROR,
-					"Authorization failed. Only administrators are allowed to perform restart operations.",
+					"Authorization failed for user: "
+							+ fromId.getName()
+							+ ". Only administrators are allowed to perform restart operations.",
 					null);
 			statusCollector.add(authorizationFailed);
 		}
@@ -542,7 +546,9 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 		} else {
 			IStatus authorizationFailed = createStatus(
 					Status.ERROR,
-					"Authorization failed. Only administrators are allowed to perform install operations.",
+					"Authorization failedfor user: "
+							+ fromId.getName()
+							+ ". Only administrators are allowed to perform install operations.",
 					null);
 			statusCollector.add(authorizationFailed);
 		}
@@ -599,7 +605,9 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 		} else {
 			IStatus authorizationFailed = createStatus(
 					Status.ERROR,
-					"Authorization failed. Only administrators are allowed to perform update operations.",
+					"Authorization failed for user: "
+							+ fromId.getName()
+							+ ". Only administrators are allowed to perform update operations.",
 					null);
 			installResult.add(authorizationFailed);
 		}
