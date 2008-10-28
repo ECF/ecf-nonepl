@@ -30,6 +30,7 @@ import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
+import org.remotercp.util.authorization.ExtensionRegistryHelper;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.preferences.PreferencesUtil;
 
@@ -150,36 +151,52 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			ID fromId) throws ECFException {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 
-		IEclipsePreferences rootNode = this.preferenceService.getRootNode();
+		boolean userAuthorized = ExtensionRegistryHelper.checkAuthorization(
+				fromId, "setPreferences");
 
-		for (String key : preferences.keySet()) {
-			try {
-				Preferences node = rootNode.node(key);
-				if (node != null) {
+		if (userAuthorized) {
 
-					/* XXX is this the right way to change preferences??? */
-					String name = node.name();
-					Preferences parent = node.parent();
-					parent.sync();
-					// remove old node
-					node.removeNode();
-					String value = preferences.get(key);
-					// create new node
-					parent.put(name, value);
-					parent.flush();
+			IEclipsePreferences rootNode = this.preferenceService.getRootNode();
+
+			for (String key : preferences.keySet()) {
+				try {
+					Preferences node = rootNode.node(key);
+					if (node != null) {
+
+						/* XXX is this the right way to change preferences??? */
+						String name = node.name();
+						Preferences parent = node.parent();
+						parent.sync();
+						// remove old node
+						node.removeNode();
+						String value = preferences.get(key);
+						// create new node
+						parent.put(name, value);
+						parent.flush();
+					}
+				} catch (BackingStoreException e) {
+					IStatus error = new Status(Status.ERROR,
+							PreferencesActivator.PLUGIN_ID,
+							"Unable to store preference with the key: " + key,
+							e);
+					statusCollector.add(error);
 				}
-			} catch (BackingStoreException e) {
-				IStatus error = new Status(Status.ERROR,
-						PreferencesActivator.PLUGIN_ID,
-						"Unable to store preference with the key: " + key, e);
-				statusCollector.add(error);
 			}
+
+			IStatus okStatus = new SerializableStatus(Status.OK,
+					PreferencesActivator.PLUGIN_ID,
+					"Preferences have been successfully saved!");
+			statusCollector.add(okStatus);
+		} else {
+			IStatus authorizationFailed = new SerializableStatus(
+					Status.ERROR,
+					PreferencesActivator.PLUGIN_ID,
+					"Authorization failed for user: "
+							+ fromId.getName()
+							+ ". Only administrators are allowed to perform uninstall operations.");
+			statusCollector.add(authorizationFailed);
 		}
 
-		IStatus okStatus = new SerializableStatus(Status.OK,
-				PreferencesActivator.PLUGIN_ID,
-				"Preferences have been successfully saved!");
-		statusCollector.add(okStatus);
 		return statusCollector;
 	}
 
