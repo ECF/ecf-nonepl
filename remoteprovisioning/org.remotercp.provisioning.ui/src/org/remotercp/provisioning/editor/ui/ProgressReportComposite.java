@@ -6,6 +6,7 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -17,17 +18,21 @@ import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.jface.viewers.TreeViewer;
+import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.MessageBox;
+import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.ProvisioningActivator;
+import org.remotercp.provisioning.dialogs.OperationReportWizard;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
@@ -60,6 +65,13 @@ public class ProgressReportComposite {
 
 				this.resultTreeViewer = new TreeViewer(resultGroup,
 						SWT.H_SCROLL | SWT.V_SCROLL | SWT.FULL_SELECTION);
+
+				this.resultTreeViewer
+						.addDoubleClickListener(new IDoubleClickListener() {
+							public void doubleClick(DoubleClickEvent event) {
+								showOperationResult(event);
+							}
+						});
 
 				Tree tree = resultTreeViewer.getTree();
 
@@ -152,6 +164,36 @@ public class ProgressReportComposite {
 								.expandAll();
 					}
 				});
+	}
+
+	/*
+	 * This method opens a dialog where the result of an operation will be
+	 * displayed.
+	 * 
+	 * @param event The object that has been selected. This object is a column
+	 * in the result table.
+	 */
+	private void showOperationResult(DoubleClickEvent event) {
+		IStructuredSelection selection = (IStructuredSelection) event
+				.getSelection();
+
+		if (selection.getFirstElement() instanceof ResultUserTreeNode) {
+			ResultUserTreeNode node = (ResultUserTreeNode) selection
+					.getFirstElement();
+			List<IStatus> updateResults = node.getUpdateResults();
+
+			Display display = Display.getDefault();
+			Shell shell = new Shell(display);
+			OperationReportWizard wizard = new OperationReportWizard(
+					updateResults);
+			WizardDialog dialog = new WizardDialog(shell, wizard);
+			dialog.create();
+			int open = dialog.open();
+			if (open == Dialog.OK) {
+				wizard.dispose();
+				dialog = null;
+			}
+		}
 	}
 
 	/*
@@ -376,7 +418,5 @@ public class ProgressReportComposite {
 			}
 			return text;
 		}
-
 	}
-
 }
