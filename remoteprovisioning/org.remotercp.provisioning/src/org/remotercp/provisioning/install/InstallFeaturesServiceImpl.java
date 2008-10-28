@@ -168,14 +168,6 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 											+ " was succesfully uninstalled",
 									null);
 							statusCollector.add(statusOK);
-						} else {
-							IStatus warningStatus = createStatus(
-									Status.WARNING,
-									"Feature "
-											+ feature.getLabel()
-											+ " was installed, but old feature could not be uninstalled",
-									null);
-							statusCollector.add(warningStatus);
 						}
 					}
 				} else {
