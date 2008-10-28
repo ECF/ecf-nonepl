@@ -70,7 +70,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * @return The result of the installation process collected in a List of
 	 *         {@link IStatus} objects.
 	 */
-	public List<IStatus> installFeatures(IFeature[] features) {
+	private List<IStatus> installFeatures(IFeature[] features) {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 		List<IInstallFeatureOperation> installOperations = new ArrayList<IInstallFeatureOperation>();
 
@@ -231,7 +231,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * This method performs the uninstall operation for the given features.
 	 */
 	@SuppressWarnings("restriction")
-	protected List<IStatus> uninstallFeatures(IFeature[] features) {
+	private List<IStatus> uninstallFeatures(IFeature[] features) {
 		/*
 		 * if uninstall was successfull this list will contain only one OK
 		 * status, else errors are stored here
@@ -375,7 +375,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * @return
 	 * @throws CoreException
 	 */
-	protected IFeatureReference[] getFeatureReferences() throws CoreException {
+	private IFeatureReference[] getFeatureReferences() throws CoreException {
 		List<IFeatureReference> featureReferences = new ArrayList<IFeatureReference>();
 		IConfiguredSite[] configuredSites = getConfiguration()
 				.getConfiguredSites();
@@ -393,7 +393,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 				.toArray(new IFeatureReference[featureReferences.size()]);
 	}
 
-	protected IInstallConfiguration getConfiguration() throws CoreException {
+	private IInstallConfiguration getConfiguration() throws CoreException {
 		IInstallConfiguration currentConfiguration = SiteManager.getLocalSite()
 				.getCurrentConfiguration();
 		return currentConfiguration;
@@ -550,7 +550,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	/*
 	 * This method will create a serializable status and log the status message.
 	 */
-	protected IStatus createStatus(int severity, String message, Exception e) {
+	private IStatus createStatus(int severity, String message, Exception e) {
 		LOGGER.info(message);
 
 		if (e == null) {
