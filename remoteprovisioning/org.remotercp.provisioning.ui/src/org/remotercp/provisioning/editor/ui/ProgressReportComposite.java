@@ -181,7 +181,7 @@ public class ProgressReportComposite {
 			OperationReportWizard wizard = new OperationReportWizard(
 					updateResults);
 			WizardDialog dialog = new WizardDialog(shell, wizard);
-			dialog.create();
+			//dialog.create();
 			int open = dialog.open();
 			if (open == Dialog.OK) {
 				wizard.dispose();
