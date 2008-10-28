@@ -176,17 +176,14 @@ public class ProgressReportComposite {
 					.getFirstElement();
 			List<IStatus> updateResults = node.getUpdateResults();
 
-			Display display = Display.getDefault();
+			Display display = this.resultTreeViewer.getTree().getDisplay();
 			Shell shell = new Shell(display);
+
 			OperationReportWizard wizard = new OperationReportWizard(
 					updateResults);
 			WizardDialog dialog = new WizardDialog(shell, wizard);
-			//dialog.create();
-			int open = dialog.open();
-			if (open == Dialog.OK) {
-				wizard.dispose();
-				dialog = null;
-			}
+			// dialog.create();
+			dialog.open();
 		}
 	}
 
