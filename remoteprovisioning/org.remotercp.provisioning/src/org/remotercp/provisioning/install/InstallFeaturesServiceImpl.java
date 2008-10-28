@@ -12,13 +12,9 @@ import java.util.concurrent.locks.ReentrantLock;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.CoreException;
-import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.core.runtime.jobs.IJobChangeEvent;
-import org.eclipse.core.runtime.jobs.Job;
-import org.eclipse.core.runtime.jobs.JobChangeAdapter;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
@@ -101,28 +97,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 
 				}
 
-				Job installJob = this.createInstallJob(statusCollector,
-						installOperations);
-				installJob.setUser(true);
-				installJob.schedule();
-
-				installJob.addJobChangeListener(new JobChangeAdapter() {
-					@Override
-					public void done(IJobChangeEvent event) {
-						if (event.getResult().isOK()) {
-							// job good
-							System.out.println("Hallo");
-						} else {
-							// job failed
-							System.out.println("Hooho");
-						}
-					}
-				});
-
-				// operation successful
-				IStatus okstatus = createStatus(Status.OK,
-						"Features have been successfully installed", null);
-				statusCollector.add(okstatus);
+				this.executeInstallation(statusCollector, installOperations);
 
 			} catch (CoreException e) {
 				IStatus status = createStatus(Status.ERROR,
@@ -146,7 +121,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 
 	/**
 	 * This method performs the installation for the given install commands and
-	 * records errors occured during the install operations.
+	 * records errors occurred during the install operations.
 	 * 
 	 * In addition to that this method calls the uninstall operation, if an old
 	 * feature exists for a given new feature to install.
@@ -158,95 +133,68 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * @param installOperations
 	 *            List of install operations to execute
 	 */
-	protected Job createInstallJob(final List<IStatus> statusCollector,
+	protected void executeInstallation(final List<IStatus> statusCollector,
 			final List<IInstallFeatureOperation> installOperations) {
 
-		Job installFeatureJob = new Job("Install Features...") {
-			@Override
-			protected IStatus run(IProgressMonitor monitor) {
-				monitor.beginTask(
-						"Download and install features from remote site",
-						installOperations.size());
+		/*
+		 * TODO: replace this with OperationsManager.getOperationFactory(
+		 * ).createBatchInstallOperation[]
+		 */
+		for (IInstallFeatureOperation installOperation : installOperations) {
+			IFeature feature = installOperation.getFeature();
 
-				/*
-				 * TODO: replace this with
-				 * OperationsManager.getOperationFactory(
-				 * ).createBatchInstallOperation[]
-				 */
-				for (IInstallFeatureOperation installOperation : installOperations) {
-					IFeature feature = installOperation.getFeature();
-					monitor
-							.subTask("Installing feature: "
-									+ feature.getLabel());
+			LOGGER.info("Installing: " + feature.getLabel());
+			try {
+				boolean success = installOperation.execute(null, null);
+				if (success) {
+					IStatus installOk = createStatus(Status.OK, "Feature "
+							+ feature.getLabel()
+							+ " was successfully installed", null);
+					statusCollector.add(installOk);
 
-					LOGGER.info("Installing: " + feature.getLabel());
-					try {
-						boolean success = installOperation.execute(monitor,
-								null);
-						if (success) {
-							IStatus installOk = createStatus(Status.OK,
-									"Feature " + feature.getLabel()
-											+ " was successfully installed",
-									null);
-							statusCollector.add(installOk);
+					IFeature oldFeature = installOperation.getOldFeature();
+					if (oldFeature != null) {
+						IFeature[] uninstallFeature = new IFeature[1];
+						uninstallFeature[0] = oldFeature;
 
-							IFeature oldFeature = installOperation
-									.getOldFeature();
-							if (oldFeature != null) {
-								IFeature[] uninstallFeature = new IFeature[1];
-								uninstallFeature[0] = oldFeature;
-								monitor.subTask("Uninstalling old feature: "
-										+ oldFeature.getLabel());
-								List<IStatus> uninstallStatus = uninstallFeatures(uninstallFeature);
+						List<IStatus> uninstallStatus = uninstallFeatures(uninstallFeature);
 
-								int checkStatus = StatusUtil
-										.checkStatus(uninstallStatus);
+						int checkStatus = StatusUtil
+								.checkStatus(uninstallStatus);
 
-								if (checkStatus == Status.OK) {
-									IStatus statusOK = createStatus(
-											Status.OK,
-											"Feature: "
-													+ oldFeature.getLabel()
-													+ " was succesfully uninstalled",
-											null);
-									statusCollector.add(statusOK);
-								} else {
-									IStatus warningStatus = createStatus(
-											Status.WARNING,
-											"Feature "
-													+ feature.getLabel()
-													+ " was installed, but old feature could not be uninstalled",
-											null);
-									statusCollector.add(warningStatus);
-								}
-							}
-						} else {
+						if (checkStatus == Status.OK) {
 							IStatus statusOK = createStatus(Status.OK,
-									"Feature: " + feature.getLabel()
-											+ " was installed", null);
+									"Old feature: " + oldFeature.getLabel()
+											+ " was succesfully uninstalled",
+									null);
 							statusCollector.add(statusOK);
+						} else {
+							IStatus warningStatus = createStatus(
+									Status.WARNING,
+									"Feature "
+											+ feature.getLabel()
+											+ " was installed, but old feature could not be uninstalled",
+									null);
+							statusCollector.add(warningStatus);
 						}
-
-					} catch (CoreException e) {
-						IStatus error = createStatus(Status.ERROR,
-								"Unable to install feature: "
-										+ feature.getLabel(), e);
-						statusCollector.add(error);
-					} catch (InvocationTargetException e) {
-						IStatus error = createStatus(Status.ERROR,
-								"Unable to install feature: "
-										+ feature.getLabel(), e);
-						statusCollector.add(error);
 					}
-					monitor.worked(1);
+				} else {
+					IStatus statusOK = createStatus(Status.OK, "Feature: "
+							+ feature.getLabel() + " was installed", null);
+					statusCollector.add(statusOK);
 				}
-				monitor.done();
 
-				return Status.OK_STATUS;
+			} catch (CoreException e) {
+				IStatus error = createStatus(Status.ERROR,
+						"Unable to install feature: " + feature.getLabel(), e);
+				statusCollector.add(error);
+			} catch (InvocationTargetException e) {
+				IStatus error = createStatus(Status.ERROR,
+						"Unable to install feature: " + feature.getLabel(), e);
+				statusCollector.add(error);
 			}
-		};
+		}
 
-		return installFeatureJob;
 	}
 
 	/*
