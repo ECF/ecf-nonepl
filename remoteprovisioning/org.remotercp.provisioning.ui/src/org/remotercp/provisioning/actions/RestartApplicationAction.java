@@ -85,9 +85,12 @@ public class RestartApplicationAction implements IViewActionDelegate {
 				Job restartJob = new Job("Restart remote application") {
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
-						IStatus acceptUpdate = featuresService.acceptUpdate(fromId);
+						IStatus acceptUpdate = featuresService
+								.acceptUpdate(fromId);
 						if (acceptUpdate.getSeverity() == Status.OK) {
-							featuresService.restartApplication(fromId);
+							List<IStatus> restartResults = featuresService
+									.restartApplication(fromId);
+							ErrorView.addError(restartResults);
 						} else {
 							ErrorView.addError(acceptUpdate);
 						}

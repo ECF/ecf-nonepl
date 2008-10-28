@@ -379,8 +379,10 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 			}
 
 		} else {
-			IStatus authorizationFailed = createStatus(Status.ERROR,
-					"Authorization failed.", null);
+			IStatus authorizationFailed = createStatus(
+					Status.ERROR,
+					"Authorization failed. Only administrators are allowed to perform uninstall operations.",
+					null);
 			statusCollector.add(authorizationFailed);
 		}
 
@@ -421,7 +423,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * This method can be called if all installs/updates/uninstalls have been
 	 * finished in order to apply changes to the running application.
 	 */
-	public void restartApplication(ID fromId) {
+	public List<IStatus> restartApplication(ID fromId) {
+		final List<IStatus> statusCollector = new ArrayList<IStatus>();
 		// is user fromId allowed to execute this operation?
 		boolean canExecute = this.checkAuthorization(fromId,
 				"restartApplication");
@@ -430,10 +433,19 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 			Display.getDefault().asyncExec(new Runnable() {
 				public void run() {
 					PlatformUI.getWorkbench().restart();
+					IStatus authorizationFailed = createStatus(Status.ERROR,
+							"Application has been sucessfully restarted", null);
+					statusCollector.add(authorizationFailed);
 				}
 			});
+		} else {
+			IStatus authorizationFailed = createStatus(
+					Status.ERROR,
+					"Authorization failed. Only administrators are allowed to perform restart operations.",
+					null);
+			statusCollector.add(authorizationFailed);
 		}
-
+		return statusCollector;
 	}
 
 	/**
@@ -528,8 +540,10 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 				statusCollector.add(error);
 			}
 		} else {
-			IStatus authorizationFailed = createStatus(Status.ERROR,
-					"Authorization failed.", null);
+			IStatus authorizationFailed = createStatus(
+					Status.ERROR,
+					"Authorization failed. Only administrators are allowed to perform install operations.",
+					null);
 			statusCollector.add(authorizationFailed);
 		}
 
@@ -583,8 +597,10 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 		if (canExecute) {
 			installResult = this.installFeatures(features, fromId);
 		} else {
-			IStatus authorizationFailed = createStatus(Status.ERROR,
-					"Authorization failed.", null);
+			IStatus authorizationFailed = createStatus(
+					Status.ERROR,
+					"Authorization failed. Only administrators are allowed to perform update operations.",
+					null);
 			installResult.add(authorizationFailed);
 		}
 

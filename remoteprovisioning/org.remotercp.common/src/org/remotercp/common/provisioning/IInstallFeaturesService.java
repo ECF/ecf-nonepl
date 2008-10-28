@@ -16,7 +16,7 @@ public interface IInstallFeaturesService extends IRemoteServiceLauncher {
 
 	public List<IStatus> uninstallFeatures(String[] featureIds, ID fromId);
 
-	public void restartApplication(ID fromId);
+	public List<IStatus> restartApplication(ID fromId);
 
 	public IStatus acceptUpdate(ID fromId);
 }
