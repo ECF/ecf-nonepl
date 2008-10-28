@@ -5,7 +5,6 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.DecoratingLabelProvider;
 import org.eclipse.jface.viewers.DoubleClickEvent;
@@ -23,7 +22,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Group;
-import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
@@ -96,48 +94,9 @@ public class ProgressReportComposite {
 
 				tree.setHeaderVisible(true);
 				tree.setLinesVisible(true);
-
-				this.resultTreeViewer
-						.addDoubleClickListener(new IDoubleClickListener() {
-
-							public void doubleClick(DoubleClickEvent event) {
-								showStatus(event);
-							}
-						});
 			}
 		}
 
-	}
-
-	private void showStatus(DoubleClickEvent event) {
-		IStructuredSelection selection = (IStructuredSelection) event
-				.getSelection();
-		Object element = selection.getFirstElement();
-		if (element instanceof ResultUserTreeNode) {
-			ResultUserTreeNode userNode = (ResultUserTreeNode) element;
-			List<IStatus> updateResults = userNode.getUpdateResults();
-
-			// open a dialog for each status message
-			for (IStatus status : updateResults) {
-				if (status.isOK()) {
-					MessageBox okMessage = new MessageBox(this.main.getShell(),
-							SWT.ICON_INFORMATION);
-					okMessage.setMessage(status.getMessage());
-					okMessage.open();
-				} else if (status.getSeverity() == Status.ERROR
-						|| status.getSeverity() == Status.CANCEL) {
-					MessageBox errorBox = new MessageBox(this.main.getShell(),
-							SWT.ICON_ERROR);
-					errorBox.setMessage(status.getMessage());
-					errorBox.open();
-				} else {
-					MessageBox unknown = new MessageBox(this.main.getShell(),
-							SWT.ICON_INFORMATION);
-					unknown.setMessage(status.getMessage());
-					unknown.open();
-				}
-			}
-		}
 	}
 
 	protected Composite getMainControl() {
@@ -182,7 +141,6 @@ public class ProgressReportComposite {
 			OperationReportWizard wizard = new OperationReportWizard(
 					updateResults);
 			WizardDialog dialog = new WizardDialog(shell, wizard);
-			// dialog.create();
 			dialog.open();
 		}
 	}
