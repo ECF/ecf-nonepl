@@ -39,7 +39,7 @@ public class SessionServiceImpl implements ISessionService {
 
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
-	
+
 	private boolean servicesInitialized = false;
 
 	public ConnectionDetails getConnectionDetails() {
@@ -356,16 +356,18 @@ public class SessionServiceImpl implements ISessionService {
 			 * 
 			 * (non-Javadoc)
 			 * 
-			 * @see org.eclipse.ecf.presence.IPresenceListener#handlePresence(org.eclipse.ecf.core.identity.ID,
-			 *      org.eclipse.ecf.presence.IPresence)
+			 * @see
+			 * org.eclipse.ecf.presence.IPresenceListener#handlePresence(org
+			 * .eclipse.ecf.core.identity.ID,
+			 * org.eclipse.ecf.presence.IPresence)
 			 */
 			public void handlePresence(ID fromID, IPresence presence) {
 
 				if (presence.getType() == IPresence.Type.AVAILABLE) {
-					
-					if(!servicesInitialized){						
+
+					if (!servicesInitialized) {
 						/*
-						 * wait 3 sec so that all local services are registered
+						 * wait 3 sec so that all local services are initialized
 						 * before registering them to remote clients
 						 */
 						try {
