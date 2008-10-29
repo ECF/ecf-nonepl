@@ -18,7 +18,7 @@ import org.remotercp.common.authorization.IOperationAuthorization;
  * @date 27.10.2008
  * 
  */
-public class ExtensionRegistryHelper {
+public class AuthorizationUtil {
 
 	/**
 	 * This method checks whether a user is allowed to perform remote operations
@@ -35,7 +35,7 @@ public class ExtensionRegistryHelper {
 	public static boolean checkAuthorization(ID fromId, String methodId) {
 		boolean authorized = false;
 		try {
-			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
+			List<Object> executablesForExtensionPoint = AuthorizationUtil
 					.getExecutablesForExtensionPoint("org.remotercp.authorization");
 			if (executablesForExtensionPoint.isEmpty()) {
 				/*
