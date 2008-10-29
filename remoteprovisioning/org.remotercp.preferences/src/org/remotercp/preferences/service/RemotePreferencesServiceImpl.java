@@ -30,7 +30,7 @@ import org.remotercp.common.preferences.IRemotePreferenceService;
 import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
-import org.remotercp.util.authorization.ExtensionRegistryHelper;
+import org.remotercp.util.authorization.AuthorizationUtil;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.preferences.PreferencesUtil;
 
@@ -61,8 +61,6 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			OutputStream out = new FileOutputStream(preferencesFile);
 			this.preferenceService.exportPreferences(rootNode,
 					new IPreferenceFilter[] { getPreferenceFilter() }, out);
-			// preferenceService.exportPreferences(rootNode,
-			// new IPreferenceFilter[] { getPreferenceFilter() }, out);
 
 			preferencesMap = PreferencesUtil
 					.createPreferencesFromFile(preferencesFile);
@@ -151,7 +149,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			ID fromId) throws ECFException {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 
-		boolean userAuthorized = ExtensionRegistryHelper.checkAuthorization(
+		boolean userAuthorized = AuthorizationUtil.checkAuthorization(
 				fromId, "setPreferences");
 
 		if (userAuthorized) {

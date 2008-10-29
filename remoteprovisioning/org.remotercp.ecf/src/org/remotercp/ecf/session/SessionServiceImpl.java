@@ -29,7 +29,7 @@ import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.ecf.ECFConnector;
-import org.remotercp.util.authorization.ExtensionRegistryHelper;
+import org.remotercp.util.authorization.AuthorizationUtil;
 import org.remotercp.util.roster.RosterUtil;
 
 public class SessionServiceImpl implements ISessionService {
@@ -418,7 +418,7 @@ public class SessionServiceImpl implements ISessionService {
 	private boolean checkAuthorization(ID fromId) {
 		boolean authorized = false;
 		try {
-			List<Object> executablesForExtensionPoint = ExtensionRegistryHelper
+			List<Object> executablesForExtensionPoint = AuthorizationUtil
 					.getExecutablesForExtensionPoint("org.remotercp.authorization");
 			if (executablesForExtensionPoint.isEmpty()) {
 				// no extensions for extension point provided, ignore

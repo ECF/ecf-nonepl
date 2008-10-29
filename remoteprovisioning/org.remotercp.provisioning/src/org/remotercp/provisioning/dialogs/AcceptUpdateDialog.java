@@ -102,7 +102,7 @@ public class AcceptUpdateDialog {
 													+ timeToLive
 													+ " sec. "
 													+ "\n\n"
-													+ "After the update a restart is necessary. Please save your work an press OK");
+													+ "After the update a restart is necessary. Please save your work and press OK");
 								}
 							}
 						});

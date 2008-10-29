@@ -37,7 +37,7 @@ import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.provisioning.UpdateActivator;
 import org.remotercp.provisioning.dialogs.AcceptUpdateDialog;
-import org.remotercp.util.authorization.ExtensionRegistryHelper;
+import org.remotercp.util.authorization.AuthorizationUtil;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.status.StatusUtil;
 
@@ -288,7 +288,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 */
 	public List<IStatus> uninstallFeatures(String[] featuresIds, ID fromId) {
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
+		boolean canExecute = AuthorizationUtil.checkAuthorization(fromId,
 				"uninstallFeatures");
 
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
@@ -382,7 +382,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	public List<IStatus> restartApplication(ID fromId) {
 		final List<IStatus> statusCollector = new ArrayList<IStatus>();
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
+		boolean canExecute = AuthorizationUtil.checkAuthorization(fromId,
 				"restartApplication");
 
 		if (canExecute) {
@@ -454,7 +454,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 		List<IFeature> featuresToUpdate = new ArrayList<IFeature>();
 
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
+		boolean canExecute = AuthorizationUtil.checkAuthorization(fromId,
 				"installFeatures");
 		if (canExecute) {
 
@@ -554,7 +554,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 			ID fromId) {
 		List<IStatus> installResult = new ArrayList<IStatus>();
 		// is user fromId allowed to execute this operation?
-		boolean canExecute = ExtensionRegistryHelper.checkAuthorization(fromId,
+		boolean canExecute = AuthorizationUtil.checkAuthorization(fromId,
 				"updateFeatures");
 		if (canExecute) {
 			installResult = this.installFeatures(features, fromId);
