@@ -25,7 +25,6 @@ import org.eclipse.ecf.provider.internal.net4j.bundle.OM;
 import org.eclipse.ecf.provider.internal.net4j.server.ECFServer;
 import org.eclipse.ecf.provider.internal.net4j.server.ECFSession;
 
-import java.io.IOException;
 
 /**
  * @author Eike Stepper
@@ -46,7 +45,7 @@ public class ECFServerProtocol extends SignalProtocol<ECFSession> implements IEC
     new Request(this, SIGNAL_NOTIFY_MESSAGE)
     {
       @Override
-      protected void requesting(ExtendedDataOutputStream out) throws IOException
+      protected void requesting(ExtendedDataOutputStream out) throws Exception
       {
         out.writeInt(channelIndex);
         out.writeObject(sender);
@@ -64,7 +63,7 @@ public class ECFServerProtocol extends SignalProtocol<ECFSession> implements IEC
       return new IndicationWithResponse(this, SIGNAL_OPEN_SESSION)
       {
         @Override
-        protected void indicating(ExtendedDataInputStream in) throws IOException
+        protected void indicating(ExtendedDataInputStream in) throws Exception
         {
           ID containerID = (ID)in.readObject(OM.class.getClassLoader());
           ECFSession session = ECFServer.INSTANCE.openSession(containerID, ECFServerProtocol.this);
@@ -72,7 +71,7 @@ public class ECFServerProtocol extends SignalProtocol<ECFSession> implements IEC
         }
 
         @Override
-        protected void responding(ExtendedDataOutputStream out) throws IOException
+        protected void responding(ExtendedDataOutputStream out) throws Exception
         {
           out.writeBoolean(getInfraStructure() != null);
         }
@@ -84,14 +83,14 @@ public class ECFServerProtocol extends SignalProtocol<ECFSession> implements IEC
         int channelIndex;
 
         @Override
-        protected void indicating(ExtendedDataInputStream in) throws IOException
+        protected void indicating(ExtendedDataInputStream in) throws Exception
         {
           ID channelID = (ID)in.readObject(OM.class.getClassLoader());
           channelIndex = getInfraStructure().handleConnectChannel(channelID);
         }
 
         @Override
-        protected void responding(ExtendedDataOutputStream out) throws IOException
+        protected void responding(ExtendedDataOutputStream out) throws Exception
         {
           out.writeInt(channelIndex);
         }
@@ -101,7 +100,7 @@ public class ECFServerProtocol extends SignalProtocol<ECFSession> implements IEC
       return new Indication(this, SIGNAL_DISCONNECT_CHANNEL)
       {
         @Override
-        protected void indicating(ExtendedDataInputStream in) throws IOException
+        protected void indicating(ExtendedDataInputStream in) throws Exception
         {
           int channelIndex = in.readInt();
           getInfraStructure().handleDisconnectChannel(channelIndex);
@@ -112,7 +111,7 @@ public class ECFServerProtocol extends SignalProtocol<ECFSession> implements IEC
       return new Indication(this, SIGNAL_SEND_MESSAGE)
       {
         @Override
-        protected void indicating(ExtendedDataInputStream in) throws IOException
+        protected void indicating(ExtendedDataInputStream in) throws Exception
         {
           int channelIndex = in.readInt();
           byte[] message = in.readByteArray();
