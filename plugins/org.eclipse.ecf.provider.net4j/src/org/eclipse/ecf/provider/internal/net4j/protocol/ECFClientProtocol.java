@@ -25,7 +25,6 @@ import org.eclipse.ecf.provider.internal.net4j.Net4jContainer;
 import org.eclipse.ecf.provider.internal.net4j.bundle.OM;
 import org.eclipse.ecf.provider.internal.net4j.datashare.Net4jChannelContainerAdapter;
 
-import java.io.IOException;
 
 /**
  * @author Eike Stepper
@@ -49,13 +48,13 @@ public class ECFClientProtocol extends SignalProtocol<Net4jContainer> implements
       return new RequestWithConfirmation<Boolean>(this, SIGNAL_OPEN_SESSION)
       {
         @Override
-        protected void requesting(ExtendedDataOutputStream out) throws IOException
+        protected void requesting(ExtendedDataOutputStream out) throws Exception
         {
           out.writeObject(getInfraStructure().getID());
         }
 
         @Override
-        protected Boolean confirming(ExtendedDataInputStream in) throws IOException
+        protected Boolean confirming(ExtendedDataInputStream in) throws Exception
         {
           return in.readBoolean();
         }
@@ -74,13 +73,13 @@ public class ECFClientProtocol extends SignalProtocol<Net4jContainer> implements
       return new RequestWithConfirmation<Integer>(this, SIGNAL_CONNECT_CHANNEL)
       {
         @Override
-        protected void requesting(ExtendedDataOutputStream out) throws IOException
+        protected void requesting(ExtendedDataOutputStream out) throws Exception
         {
           out.writeObject(channelID);
         }
 
         @Override
-        protected Integer confirming(ExtendedDataInputStream in) throws IOException
+        protected Integer confirming(ExtendedDataInputStream in) throws Exception
         {
           return in.readInt();
         }
@@ -99,7 +98,7 @@ public class ECFClientProtocol extends SignalProtocol<Net4jContainer> implements
       new Request(this, SIGNAL_DISCONNECT_CHANNEL)
       {
         @Override
-        protected void requesting(ExtendedDataOutputStream out) throws IOException
+        protected void requesting(ExtendedDataOutputStream out) throws Exception
         {
           out.writeInt(channelIndex);
         }
@@ -118,7 +117,7 @@ public class ECFClientProtocol extends SignalProtocol<Net4jContainer> implements
       new Request(this, SIGNAL_SEND_MESSAGE)
       {
         @Override
-        protected void requesting(ExtendedDataOutputStream out) throws IOException
+        protected void requesting(ExtendedDataOutputStream out) throws Exception
         {
           out.writeInt(channelIndex);
           out.writeByteArray(message);
@@ -140,7 +139,7 @@ public class ECFClientProtocol extends SignalProtocol<Net4jContainer> implements
       return new Indication(this, SIGNAL_NOTIFY_MESSAGE)
       {
         @Override
-        protected void indicating(ExtendedDataInputStream in) throws IOException
+        protected void indicating(ExtendedDataInputStream in) throws Exception
         {
           int channelIndex = in.readInt();
           ID sender = (ID)in.readObject(OM.class.getClassLoader());
