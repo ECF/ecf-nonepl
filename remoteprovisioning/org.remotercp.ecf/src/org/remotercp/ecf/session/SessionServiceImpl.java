@@ -98,7 +98,7 @@ public class SessionServiceImpl implements ISessionService {
 	 *            be get for all users.
 	 * @param filter
 	 *            Additional filter which checks if the service properties do
-	 *            match the given filer. May be null if all services should be
+	 *            match the given filter. May be null if all services should be
 	 *            found
 	 * @return A list of remote service proxies
 	 * @throws ECFException
@@ -118,7 +118,7 @@ public class SessionServiceImpl implements ISessionService {
 		 * properly filtered. Solution needed for this problem! According to
 		 * Scott this might become API in the next release
 		 */
-		// IRemoteServiceReference[] refs = remoteServiceContainerAdapter
+		// IRemoteServiceReference[] refs2 = remoteServiceContainerAdapter
 		// .getRemoteServiceReferences(filterIDs, service.getName(),
 		// filter);
 		/*
@@ -154,6 +154,7 @@ public class SessionServiceImpl implements ISessionService {
 				 * XXX workaround for container and roster IDs. Split user names
 				 * and compare only names. This is dangerous as the same user
 				 * can be connected to different XMPP servers. Solution needed!
+				 * TODO: Compare user resources as well!
 				 */
 				int indexOfUser = userIDName.indexOf("@");
 				String userName = userIDName.substring(0, indexOfUser);
@@ -365,8 +366,10 @@ public class SessionServiceImpl implements ISessionService {
 			 * org.eclipse.ecf.presence.IPresence)
 			 */
 			public void handlePresence(ID fromID, IPresence presence) {
+				logger.info("User presence changed: " + fromID.getName()
+						+ " to: " + presence.toString());
 
-				if (presence.getType() == IPresence.Type.AVAILABLE) {
+				 if (presence.getType() == IPresence.Type.AVAILABLE) {
 
 					if (!servicesInitialized) {
 						/*
