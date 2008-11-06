@@ -20,8 +20,8 @@ public class ECFUserID extends BaseID {
 			throws URISyntaxException {
 		super(namespace);
 		this.username = username;
-		// this.connectionData = username + "@" + server + ":5222";
-		this.connectionData = username + "@" + server;
+		 this.connectionData = username + "@" + server + "/" + System.currentTimeMillis();
+		//this.connectionData = username + "@" + server;
 	}
 
 	@Override
