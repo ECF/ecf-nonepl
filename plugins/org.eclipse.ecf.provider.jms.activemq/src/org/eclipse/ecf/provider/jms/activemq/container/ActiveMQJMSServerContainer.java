@@ -8,17 +8,12 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jms.activemq.container;
 
-import java.io.IOException;
 
-import javax.jms.ConnectionFactory;
 
-import org.activemq.ActiveMQConnectionFactory;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.provider.jms.channel.AbstractJMSServerChannel;
 import org.eclipse.ecf.provider.jms.container.AbstractJMSServer;
 import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
-import org.eclipse.ecf.provider.jms.identity.JMSID;
 
 public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 
@@ -31,40 +26,16 @@ public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 		super(config);
 	}
 
-	class ActiveMQServerChannel extends AbstractJMSServerChannel {
-
-		private static final long serialVersionUID = -2348383004973299553L;
-
-		/**
-		 * @throws ECFException
-		 */
-		public ActiveMQServerChannel() throws ECFException {
-			super(getReceiver(), getJMSContainerConfig().getKeepAlive());
-		}
-
-		protected ConnectionFactory createJMSConnectionFactory(JMSID targetID) throws IOException {
-			return new ActiveMQConnectionFactory(getActiveMQUsername(targetID), getActiveMQPassword(targetID), targetID.getName());
-		}
-
-		private String getActiveMQPassword(JMSID targetID) {
-			final String pw = (String) getJMSContainerConfig().getProperties().get(PASSWORD_PROPERTY);
-			return (pw == null) ? "defaultPassword" : pw;
-		}
-
-		private String getActiveMQUsername(JMSID targetID) {
-			final String username = (String) getJMSContainerConfig().getProperties().get(USERNAME_PROPERTY);
-			return (username == null) ? "defaultUsername" : username;
-		}
-
-	}
-
 	/*
 	 * (non-Javadoc)
 	 * 
 	 * @see org.eclipse.ecf.provider.jms.container.AbstractJMSServer#start()
 	 */
 	public void start() throws ECFException {
-		final ISynchAsynchConnection connection = new ActiveMQServerChannel();
+		JMSContainerConfig config = (JMSContainerConfig) getConfig();
+		final String username = (String) config.getProperties().get(ActiveMQJMSServerContainer.USERNAME_PROPERTY);
+		final String password = (String) config.getProperties().get(ActiveMQJMSServerContainer.PASSWORD_PROPERTY);
+		final ISynchAsynchConnection connection = new ActiveMQServerChannel(this.getReceiver(),config.getKeepAlive(),username,password);
 		setConnection(connection);
 		connection.start();
 	}
