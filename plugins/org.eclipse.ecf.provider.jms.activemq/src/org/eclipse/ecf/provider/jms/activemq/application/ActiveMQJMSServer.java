@@ -14,6 +14,7 @@ package org.eclipse.ecf.provider.jms.activemq.application;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContainer;
 import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
@@ -50,6 +51,7 @@ public class ActiveMQJMSServer implements IApplication {
 			usage();
 			return IApplication.EXIT_OK;
 		} else {
+			// Create/run ActiveMQ server
 			// Create server ID
 			final JMSID serverID = (JMSID) IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(JMSNamespace.NAME), args[0]);
 			// Create config

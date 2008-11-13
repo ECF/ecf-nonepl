@@ -10,14 +10,6 @@
             name="ecf.jms.activemq.tcp.client">
       </containerFactory>
    </extension>
-   <extension
-         point="org.eclipse.ecf.containerFactory">
-      <containerFactory
-            class="org.eclipse.ecf.internal.provider.jms.activemq.ActiveMQJMSServerContainerInstantiator"
-            description="ECF Generic Server - JMS (ActiveMQ)"
-            name="ecf.jms.activemq.tcp.server" server="true">
-      </containerFactory>
-   </extension>
 
    <extension
          id="org.eclipse.ecf.provider.jms.ActiveMQServer"
