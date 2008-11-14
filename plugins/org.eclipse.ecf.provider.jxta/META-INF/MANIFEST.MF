@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jxta ecf provider Plug-in
+Bundle-SymbolicName: org.eclipse.ecf.provider.jxta;singleton:=true
+Bundle-Version: 1.0.0
+Bundle-Activator: org.eclipse.ecf.provider.jxta.Activator
+Require-Bundle: org.eclipse.core.runtime,
+ org.eclipse.ecf,
+ org.eclipse.ecf.presence;bundle-version="1.3.0",
+ jxta_ext_configuration;bundle-version="1.0.0",
+ jxta_ext_network;bundle-version="1.0.0",
+ jxta_ext_service;bundle-version="1.0.0"
+Eclipse-LazyStart: true
+Bundle-Vendor: Pierre-Henry Perret
