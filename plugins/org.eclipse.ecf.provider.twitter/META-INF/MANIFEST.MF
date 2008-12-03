@@ -29,7 +29,7 @@ Bundle-ClassPath: lib/jdom.jar,
  lib/logback-core-0.9.6.jar,
  lib/rome-0.9.jar,
  lib/slf4j-api-1.5.0.jar,
- lib/twitter4j-1.0.4.jar,
+ lib/twitter4j-1.1.2.jar,
  .
 Export-Package: org.eclipse.ecf.internal.provider.twitter;x-internal:=true,
  org.eclipse.ecf.provider.twitter.container,
