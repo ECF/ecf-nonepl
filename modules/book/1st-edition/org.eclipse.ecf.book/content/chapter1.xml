@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<chapter version="5.0" xmlns="http://docbook.org/ns/docbook">
+
+	<title>Chapter 1’s Title</title>
+
+	<section>
+		<title>A section</title>
+		<para>
+			Lorem ipsum dolor sit amet consectetuer adipiscing.
+
+			[More random
+			text]
+
+			Suspendisse potenti. Etiam hendrerit cursus eros.
+    </para>
+	</section>
+
+</chapter>
