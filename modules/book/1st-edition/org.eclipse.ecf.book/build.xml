@@ -9,6 +9,7 @@
     <property name="html.stylesheet" value="${docbook.xsl.dir}/html/docbook.xsl" />
     <property name="xalan.lib.dir" value="lib/xalan-j_2_7_1" />
     <property name="fop.home" value="lib/fop-0.94" />
+    <property name="fo.stylesheet" value="${docbook.xsl.dir}/fo/docbook.xsl" />
 
     <!--
       - Sets up the classpath for the Xalan and Xerces implementations
@@ -60,7 +61,7 @@
 	<target name="build-pdf" depends="depends" 
 	    description="Generates PDF files from DocBook XML">
 	    <xslt style="${fo.stylesheet}" extension=".fo" 
-	        basedir="${source.dir}" destdir="${fo.dir}">
+	        basedir="content" destdir="${doc.dir}">
 	        <classpath refid="xalan.classpath" />
 	        <include name="book.xml" />
 	    </xslt>
@@ -69,7 +70,7 @@
 	        <classpath>
 	            <fileset dir="${fop.home}/lib">
 	                <include name="*.jar" />
-	            </fileset>>
+	            </fileset>
 	            <fileset dir="${fop.home}/build">
 	                <include name="fop.jar" />
 	                <include name="fop-hyph.jar" />
@@ -77,8 +78,8 @@
 	        </classpath>
 	    </taskdef>
 
-	    <fop format="application/pdf" fofile="${fo.dir}/book.fo" 
-	        outfile="${dist.dir}/book.pdf" />
+	    <fop format="application/pdf" fofile="${doc.dir}/book.fo" 
+	        outfile="${doc.dir}/book.pdf" />
 	</target>
 	
 </project>
