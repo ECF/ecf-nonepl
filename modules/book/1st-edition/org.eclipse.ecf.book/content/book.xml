@@ -11,7 +11,7 @@
 
 	<toc />
 
-	<xi:include href="Chapter1.xml" />
-	<xi:include href="Chapter2.xml" />
+	<xi:include href="chapter1.xml" />
+	<xi:include href="chapter2.xml" />
 
 </book>
