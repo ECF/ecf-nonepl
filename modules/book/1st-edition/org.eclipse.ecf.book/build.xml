@@ -52,8 +52,9 @@
     <target name="build-html" depends="depends" 
         description="Generates HTML files from DocBook XML">
         <xslt style="${html.stylesheet}" extension=".html" 
-            basedir="content" in="content/combined.xml" destdir="${doc.dir}" >
+            basedir="content" destdir="${doc.dir}" >
         	<factory name="org.apache.xalan.processor.TransformerFactoryImpl" />
+	        <include name="combined.xml" />
         </xslt>
     </target>
     
