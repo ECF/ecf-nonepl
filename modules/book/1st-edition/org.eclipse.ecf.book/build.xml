@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<project name="docbook-src" default="usage">
+<project name="docbook-src" default="usage" basedir=".">
     
     <!--
       - Configure basic properties that will be used in the file.
@@ -40,7 +40,7 @@
     <!--
       - target:  depends
       -->
-    <target name="depends">
+    <target name="depends" depends="merge">
         <mkdir dir="${doc.dir}" />
     </target>
 
@@ -52,8 +52,7 @@
     <target name="build-html" depends="depends" 
         description="Generates HTML files from DocBook XML">
         <xslt style="${html.stylesheet}" extension=".html" 
-            basedir="content" in="content/book.xml" destdir="${doc.dir}" >
-            <classpath refid="xalan.classpath" />
+            basedir="content" in="content/combined.xml" destdir="${doc.dir}" >
         	<factory name="org.apache.xalan.processor.TransformerFactoryImpl" />
         </xslt>
     </target>
@@ -62,8 +61,7 @@
 	    description="Generates PDF files from DocBook XML">
 	    <xslt style="${fo.stylesheet}" extension=".fo" 
 	        basedir="content" destdir="${doc.dir}">
-	        <classpath refid="xalan.classpath" />
-	        <include name="book.xml" />
+	        <include name="combined.xml" />
 	    </xslt>
 
 	    <taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop">
@@ -78,8 +76,17 @@
 	        </classpath>
 	    </taskdef>
 
-	    <fop format="application/pdf" fofile="${doc.dir}/book.fo" 
+	    <fop format="application/pdf" fofile="${doc.dir}/combined.fo" 
 	        outfile="${doc.dir}/book.pdf" />
 	</target>
+	
+	<property name="base.dir" value="${htmldir}"/>
+	
+	<target name="merge">
+		<xsl.xinclude in="${basedir}/content/book.xml"
+		              out="${basedir}/content/combined.xml"
+		/>
+	</target>
+
 	
 </project>
