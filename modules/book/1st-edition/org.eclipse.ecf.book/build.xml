@@ -5,7 +5,7 @@
       - Configure basic properties that will be used in the file.
       -->
     <property name="docbook.xsl.dir" value="docbook-xsl-1.74.0" />
-    <property name="doc.dir" value="content" />
+    <property name="doc.dir" value="output" />
     <property name="html.stylesheet" value="${docbook.xsl.dir}/html/docbook.xsl" />
     <property name="xalan.lib.dir" value="lib/xalan-j_2_7_1" />
     <property name="fop.home" value="lib/fop-0.94" />
@@ -51,7 +51,7 @@
     <target name="build-html" depends="depends" 
         description="Generates HTML files from DocBook XML">
         <xslt style="${html.stylesheet}" extension=".html" 
-            basedir="src" destdir="${doc.dir}">
+            basedir="content" destdir="${doc.dir}">
             <classpath refid="xalan.classpath" />
         </xslt>
     </target>
