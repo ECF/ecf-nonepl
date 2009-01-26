@@ -58,6 +58,7 @@ import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
 import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterEntry;
 import org.eclipse.ecf.presence.roster.RosterGroup;
+import org.eclipse.ecf.presence.search.IUserSearchManager;
 import org.eclipse.ecf.provider.yahoo.identity.YahooID;
 
 import ymsg.network.Session;
@@ -494,6 +495,11 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 
 	private void sendTyping(ID fromID, IIMMessageListener l, boolean isTyping) {
 		l.handleMessageEvent(new TypingMessageEvent(fromID, new TypingMessage(fromID, isTyping, null)));
+	}
+
+	public IUserSearchManager getUserSearchManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }

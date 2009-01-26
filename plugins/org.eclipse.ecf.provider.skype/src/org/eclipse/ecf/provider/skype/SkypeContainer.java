@@ -32,6 +32,7 @@ import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.search.IUserSearchManager;
 import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
@@ -212,6 +213,11 @@ public class SkypeContainer extends ClientSOContainer implements IContainer, IPr
 		if (s instanceof IChannel)
 			return new SOWrapper(new SkypeChannelSOConfig(id, getID(), this, props), s, this);
 		return super.createSharedObjectWrapper(id, s, props);
+	}
+
+	public IUserSearchManager getUserSearchManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
