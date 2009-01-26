@@ -19,6 +19,7 @@ import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.search.IUserSearchManager;
 import org.eclipse.ecf.presence.service.IPresenceService;
 
 public class JaimContainer extends AbstractContainer implements IPresenceService {
@@ -98,6 +99,11 @@ public class JaimContainer extends AbstractContainer implements IPresenceService
 	 * @see org.eclipse.ecf.core.identity.IIdentifiable#getID()
 	 */
 	public ID getID() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IUserSearchManager getUserSearchManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}

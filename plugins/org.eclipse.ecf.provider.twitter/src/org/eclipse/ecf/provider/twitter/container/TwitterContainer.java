@@ -32,6 +32,7 @@ import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.search.IUserSearchManager;
 import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
@@ -333,6 +334,11 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 	 */
 	public void sendStatusUpdate(String status) throws ECFException {
 		chatManager.getChatMessageSender().sendChatMessage(targetID, status);
+	}
+
+	public IUserSearchManager getUserSearchManager() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
