@@ -32,7 +32,12 @@ import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.search.ICriteria;
+import org.eclipse.ecf.presence.search.IRestriction;
+import org.eclipse.ecf.presence.search.ISearch;
+import org.eclipse.ecf.presence.search.IUserSearchListener;
 import org.eclipse.ecf.presence.search.IUserSearchManager;
+import org.eclipse.ecf.presence.search.UserSearchException;
 import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
@@ -337,8 +342,41 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 	}
 
 	public IUserSearchManager getUserSearchManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return new IUserSearchManager(){
+
+			public ICriteria createCriteria() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public IRestriction createRestriction() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public String[] getUserPropertiesFields() throws ECFException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public boolean isEnabled() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public ISearch search(ICriteria criteria)
+					throws UserSearchException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public void search(ICriteria criteria, IUserSearchListener listener) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
 	}
+
 
 }
