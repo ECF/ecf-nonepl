@@ -58,7 +58,12 @@ import org.eclipse.ecf.presence.roster.IRosterSubscriptionSender;
 import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterEntry;
 import org.eclipse.ecf.presence.roster.RosterGroup;
+import org.eclipse.ecf.presence.search.ICriteria;
+import org.eclipse.ecf.presence.search.IRestriction;
+import org.eclipse.ecf.presence.search.ISearch;
+import org.eclipse.ecf.presence.search.IUserSearchListener;
 import org.eclipse.ecf.presence.search.IUserSearchManager;
+import org.eclipse.ecf.presence.search.UserSearchException;
 import org.eclipse.ecf.provider.yahoo.identity.YahooID;
 
 import ymsg.network.Session;
@@ -498,8 +503,41 @@ public class YahooPresenceContainer extends AbstractPresenceContainer {
 	}
 
 	public IUserSearchManager getUserSearchManager() {
-		// TODO Auto-generated method stub
-		return null;
+		return new IUserSearchManager(){
+
+			public ICriteria createCriteria() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public IRestriction createRestriction() {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public String[] getUserPropertiesFields() throws ECFException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public boolean isEnabled() {
+				// TODO Auto-generated method stub
+				return false;
+			}
+
+			public ISearch search(ICriteria criteria)
+					throws UserSearchException {
+				// TODO Auto-generated method stub
+				return null;
+			}
+
+			public void search(ICriteria criteria, IUserSearchListener listener) {
+				// TODO Auto-generated method stub
+				
+			}
+			
+		};
 	}
+
 
 }
