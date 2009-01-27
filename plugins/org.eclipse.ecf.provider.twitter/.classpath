@@ -1,8 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <classpath>
-	<classpathentry exported="true" kind="lib" path="lib/twitter4j-1.1.3.jar"/>
+	<classpathentry exported="true" kind="lib" path="lib/twitter4j-1.1.4.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/jdom.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/junit.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/logback-classic-0.9.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/logback-core-0.9.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/rome-0.9.jar"/>
