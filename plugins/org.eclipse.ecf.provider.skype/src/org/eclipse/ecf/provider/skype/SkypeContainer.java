@@ -44,7 +44,10 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.SOWrapper;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
-import org.eclipse.osgi.internal.profile.Profile;
+
+import com.skype.Profile;
+import com.skype.SkypeException;
+import com.skype.connector.ConnectorException;
 
 /**
  * 
