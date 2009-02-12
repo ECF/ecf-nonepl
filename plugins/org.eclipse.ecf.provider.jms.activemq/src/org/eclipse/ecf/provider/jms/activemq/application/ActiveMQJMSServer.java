@@ -14,7 +14,6 @@ package org.eclipse.ecf.provider.jms.activemq.application;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContainer;
 import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
