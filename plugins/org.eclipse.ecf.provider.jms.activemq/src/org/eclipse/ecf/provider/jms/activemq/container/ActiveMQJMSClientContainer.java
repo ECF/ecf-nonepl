@@ -12,7 +12,7 @@ import java.io.IOException;
 
 import javax.jms.ConnectionFactory;
 
-import org.activemq.ActiveMQConnectionFactory;
+import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
