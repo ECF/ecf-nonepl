@@ -117,7 +117,7 @@ public class WeblogicRemoteServiceTest extends AbstractRemoteServiceTestCase {
 		final IRemoteService service = registerAndGetRemoteService();
 
 		System.out.println("CLIENT.callSynch start");
-		final Object result = service.callSynch(createRemoteConcat("Weblogic ", "is cool"));
+		final Object result = service.callSync(createRemoteConcat("Weblogic ", "is cool"));
 		System.out.println("CLIENT.callSynch end. result=" + result);
 		assertNotNull(result);
 		assertTrue(result.equals("Weblogic ".concat("is cool")));
@@ -128,7 +128,7 @@ public class WeblogicRemoteServiceTest extends AbstractRemoteServiceTestCase {
 
 		// Following should throw exception because "concat1" method does not exist
 		try {
-			service.callSynch(createRemoteCall("concat1", new Object[] {"first", "second"}));
+			service.callSync(createRemoteCall("concat1", new Object[] {"first", "second"}));
 			fail();
 		} catch (final ECFException e) {
 			// Exception should occur
@@ -136,7 +136,7 @@ public class WeblogicRemoteServiceTest extends AbstractRemoteServiceTestCase {
 
 		// Following should throw exception because wrong number of params for concat	
 		try {
-			service.callSynch(createRemoteCall("concat", new Object[] {"first"}));
+			service.callSync(createRemoteCall("concat", new Object[] {"first"}));
 			fail();
 		} catch (final ECFException e) {
 			// Exception should occur
@@ -147,9 +147,9 @@ public class WeblogicRemoteServiceTest extends AbstractRemoteServiceTestCase {
 	public void testCallAsynch() throws Exception {
 		final IRemoteService service = registerAndGetRemoteService();
 
-		System.out.println("CLIENT.callAsynch start");
-		service.callAsynch(createRemoteConcat("JMS ", "is cool"), createRemoteCallListener());
-		System.out.println("CLIENT.callAsynch end");
+		System.out.println("CLIENT.callAsync start");
+		service.callAsync(createRemoteConcat("JMS ", "is cool"), createRemoteCallListener());
+		System.out.println("CLIENT.callAsync end");
 		sleep(1500);
 	}
 
@@ -157,7 +157,7 @@ public class WeblogicRemoteServiceTest extends AbstractRemoteServiceTestCase {
 		final IRemoteService service = registerAndGetRemoteService();
 
 		System.out.println("CLIENT.fireAsynch start");
-		service.fireAsynch(createRemoteConcat("Weblogic ", "sucks"));
+		service.fireAsync(createRemoteConcat("Weblogic ", "sucks"));
 		System.out.println("CLIENT.fireAsynch end");
 
 		sleep(1500);
