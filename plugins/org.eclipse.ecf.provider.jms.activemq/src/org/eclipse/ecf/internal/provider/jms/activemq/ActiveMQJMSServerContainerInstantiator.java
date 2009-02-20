@@ -8,6 +8,9 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jms.activemq;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
@@ -21,6 +24,8 @@ import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 public class ActiveMQJMSServerContainerInstantiator extends
 		GenericContainerInstantiator {
 
+	protected static final String [] jmsIntents = { "JMS" };
+	
 	public ActiveMQJMSServerContainerInstantiator() {
 
 	}
@@ -56,4 +61,14 @@ public class ActiveMQJMSServerContainerInstantiator extends
 					"Exception creating weblogic server container", e);
 		}
 	}
+	
+	public String[] getSupportedIntents(ContainerTypeDescription description) {
+		List results = new ArrayList();
+		for(int i=0; i < genericProviderIntents.length; i++) {
+			results.add(genericProviderIntents[i]);
+		}
+		results.add(jmsIntents);
+		return (String []) results.toArray(new String[] {});
+	}
+
 }
