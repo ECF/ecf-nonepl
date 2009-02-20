@@ -14,7 +14,7 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.provider.BaseContainerInstantiator;
+import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
@@ -23,7 +23,7 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 /**
  *
  */
-public class JGroupsClientContainerInstantiator extends BaseContainerInstantiator {
+public class JGroupsClientContainerInstantiator extends GenericContainerInstantiator {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
@@ -44,14 +44,6 @@ public class JGroupsClientContainerInstantiator extends BaseContainerInstantiato
 		} catch (final IDCreateException e) {
 			throw new ContainerCreateException("Exception creating trivial container", e);
 		}
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#getSupportedAdapterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
-	 */
-	public String[] getSupportedAdapterTypes(ContainerTypeDescription description) {
-		// TODO Return String [] with adapter types supported for the given description
-		return super.getSupportedAdapterTypes(description);
 	}
 
 	/* (non-Javadoc)

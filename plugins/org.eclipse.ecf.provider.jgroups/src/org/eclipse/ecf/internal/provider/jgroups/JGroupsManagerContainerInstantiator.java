@@ -13,7 +13,7 @@ import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.provider.BaseContainerInstantiator;
+import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
@@ -22,7 +22,7 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 /**
  *
  */
-public class JGroupsManagerContainerInstantiator extends BaseContainerInstantiator {
+public class JGroupsManagerContainerInstantiator extends GenericContainerInstantiator {
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
@@ -47,19 +47,4 @@ public class JGroupsManagerContainerInstantiator extends BaseContainerInstantiat
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#getSupportedAdapterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
-	 */
-	public String[] getSupportedAdapterTypes(ContainerTypeDescription description) {
-		// TODO Return String [] with adapter types supported for the given description
-		return super.getSupportedAdapterTypes(description);
-	}
-
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
-	 */
-	public Class[][] getSupportedParameterTypes(ContainerTypeDescription description) {
-		// TODO Auto-generated method stub
-		return super.getSupportedParameterTypes(description);
-	}
 }

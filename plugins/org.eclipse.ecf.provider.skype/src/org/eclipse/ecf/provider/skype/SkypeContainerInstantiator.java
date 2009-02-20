@@ -14,10 +14,8 @@ package org.eclipse.ecf.provider.skype;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.provider.IContainerInstantiator;
 import org.eclipse.ecf.internal.provider.skype.Messages;
-import org.eclipse.ecf.presence.IPresenceContainerAdapter;
-import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
+import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
 
 import com.skype.Profile;
 import com.skype.Skype;
@@ -25,7 +23,7 @@ import com.skype.Skype;
 /**
  * 
  */
-public class SkypeContainerInstantiator implements IContainerInstantiator {
+public class SkypeContainerInstantiator extends GenericContainerInstantiator {
 
 	/*
 	 * (non-Javadoc)
@@ -40,24 +38,6 @@ public class SkypeContainerInstantiator implements IContainerInstantiator {
 		} catch (final Exception e) {
 			throw new ContainerCreateException(Messages.SkypeContainerInstantiator_EXCEPTION_COULD_NOT_CREATE_CONTAINER, e);
 		}
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#getSupportedAdapterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
-	 */
-	public String[] getSupportedAdapterTypes(ContainerTypeDescription description) {
-		return new String[] {IPresenceContainerAdapter.class.getName(), ICallSessionContainerAdapter.class.getName()};
-	}
-
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
-	 */
-	public Class[][] getSupportedParameterTypes(ContainerTypeDescription description) {
-		return null;
 	}
 
 }

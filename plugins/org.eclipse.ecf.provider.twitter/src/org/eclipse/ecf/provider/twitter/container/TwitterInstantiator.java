@@ -17,6 +17,7 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.provider.BaseContainerInstantiator;
+import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 
 /**
  *
@@ -39,5 +40,10 @@ public class TwitterInstantiator extends BaseContainerInstantiator {
 		} catch (final Exception e) {
 			throw new ContainerCreateException("Could not create twitter container", e);
 		}
+	}
+	
+	 public String[] getSupportedAdapterTypes(
+			ContainerTypeDescription description) {
+		return new String[] { IPresenceContainerAdapter.class.getName() };
 	}
 }

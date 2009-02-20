@@ -15,28 +15,26 @@
 
 package org.eclipse.ecf.provider.yahoo.container;
 
-import org.eclipse.ecf.core.ContainerCreateException;
-import org.eclipse.ecf.core.ContainerTypeDescription;
-import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.IDCreateException;
+import org.eclipse.ecf.core.*;
+import org.eclipse.ecf.core.identity.*;
 import org.eclipse.ecf.core.provider.IContainerInstantiator;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 
 public class YahooContainerInstantiator implements IContainerInstantiator {
-	
-	public IContainer createInstance(ContainerTypeDescription description, Object[] args) throws ContainerCreateException {
+
+	public IContainer createInstance(ContainerTypeDescription description,
+			Object[] args) throws ContainerCreateException {
 		ID guid;
 		try {
 			guid = IDFactory.getDefault().createGUID();
 		} catch (IDCreateException e) {
-			throw new ContainerCreateException("Exception creating ID",e);
+			throw new ContainerCreateException("Exception creating ID", e);
 		}
 		return new YahooContainer(guid);
 	}
 
-	public String[] getSupportedAdapterTypes(ContainerTypeDescription description) {
+	public String[] getSupportedAdapterTypes(
+			ContainerTypeDescription description) {
 		return new String[] { IPresenceContainerAdapter.class.getName() };
 	}
 
@@ -44,5 +42,9 @@ public class YahooContainerInstantiator implements IContainerInstantiator {
 			ContainerTypeDescription description) {
 		return new Class[0][0];
 	}
-	
+
+	public String[] getSupportedIntents(ContainerTypeDescription description) {
+		return null;
+	}
+
 }
