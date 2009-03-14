@@ -20,24 +20,12 @@ import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 
-/**
- * The activator class controls the plug-in life cycle
- */
 public class Activator implements BundleActivator {
-
-	// The plug-in ID
-	public static final String PLUGIN_ID = "org.eclipse.ecf.tests.provider.discovery.staticinformation";
 
 	// The shared instance
 	private static Activator plugin;
 
 	private BundleContext bc = null;
-
-	/**
-	 * The constructor
-	 */
-	public Activator() {
-	}
 
 	/*
 	 * (non-Javadoc)
@@ -50,20 +38,24 @@ public class Activator implements BundleActivator {
 		bc = context;
 		// To startup the implementation bundle we try to start it.
 		// TODO remove this bad hack.
-		startBundle("org.eclipse.ecf.provider.discovery.staticinformation");
+		boolean startBundle = startBundle("org.eclipse.ecf.osgi.services.discovery.local");
+		if(!startBundle) {
+			System.err.println("Missing org.eclipse.ecf.osgi.services.discovery.local bundle?");
+		}
 	}
 
 	/**
 	 * @throws BundleException
 	 */
-	public void startBundle(final String symbolicName) throws BundleException {
+	public boolean startBundle(final String symbolicName) throws BundleException {
 		Bundle[] bundles = bc.getBundles();
 		for (int i = 0; i < bundles.length; i++) {
 			if (bundles[i].getSymbolicName().startsWith(symbolicName)) {
 				bundles[i].start();
-				break;
+				return true;
 			}
 		}
+		return false;
 	}
 
 	/*

@@ -15,8 +15,16 @@
  */
 package org.eclipse.ecf.tests.osgi.services.discovery.local;
 
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.FileOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
@@ -24,6 +32,8 @@ import java.util.Map;
 
 import junit.framework.TestCase;
 
+import org.eclipse.core.runtime.FileLocator;
+import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.discovery.DiscoveredServiceTracker;
@@ -92,7 +102,7 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 
 	/**
 	 * This service comes from the default location in bundle
-	 * org.eclipse.ecf.tests.provider.discovery.staticinformation.poststarted .
+	 * org.eclipse.ecf.tests.osgi.services.discovery.local.poststarted.
 	 */
 	public void testGetServicesFromDefaultLocation() {
 		String interfaceName1 = "com.siemens.helloworld.HelloWorldService";
@@ -102,12 +112,14 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 		registerDiscoveredServiceTracker(interfaceName1, null, null,
 				discoServiceTracker);
 		// start up post started
+		boolean startBundle = false;
 		try {
-			ac
-					.startBundle("org.eclipse.ecf.tests.provider.discovery.staticinformation.poststarted");
+			startBundle = ac
+					.startBundle("org.eclipse.ecf.tests.osgi.services.discovery.local.poststarted");
 		} catch (BundleException e) {
 			fail(e.getMessage());
 		}
+		assertTrue(startBundle);
 		assertEquals(1, discoServiceTracker.getAvailNotifications());
 		Iterator /* <ServiceEndpointDescription> */result = discoServiceTracker
 				.getAvailableDescriptions().iterator();
@@ -133,9 +145,11 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 	/**
 	 * This services are all referenced from the Manifest Header entry
 	 * remote-service in the bundle
-	 * org.eclipse.ecf.tests.provider.discovery.staticinformation.poststarted2 .
+	 * org.eclipse.ecf.tests.osgi.services.discovery.local.poststarted2 .
 	 */
 	public void testGetServicesFromManifestDefinedLocations() {
+		createDataFilesInTmp();
+		
 		String interfaceName1 = "com.siemens.hellomoon.HelloMoonService";
 		String interfaceName2 = "com.siemens.galileo.HelloGalileoService";
 		String interfaceName3 = "com.siemens.ganymede.HelloGanymedeService";
@@ -145,12 +159,14 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 		registerDiscoveredServiceTracker(interfaceName1, interfaceName2,
 				interfaceName3, discoServiceTracker);
 		// start up post started
+		boolean startBundle = false;
 		try {
-			ac
-					.startBundle("org.eclipse.ecf.tests.provider.discovery.staticinformation.poststarted2");
+			startBundle = ac
+					.startBundle("org.eclipse.ecf.tests.osgi.services.discovery.local.poststarted2");
 		} catch (BundleException e) {
 			fail(e.getMessage());
 		}
+		assertTrue(startBundle);
 		assertEquals(3, discoServiceTracker.getAvailNotifications());
 		Iterator /* <ServiceEndpointDescription> */result = discoServiceTracker
 				.getAvailableDescriptions().iterator();
@@ -191,6 +207,46 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 		assertTrue(foundInterface1);
 		assertTrue(foundInterface2);
 		assertTrue(foundInterface3);
+	}
+
+	// create the test data in java.io.tmpdir first for the test to read it later
+	private void createDataFilesInTmp() {
+		String property = System.getProperty("java.io.tmpdir");
+		Activator ac = Activator.getDefault();
+		Bundle bundle = ac.getBundleContext().getBundle();
+		Enumeration e1 = bundle.findEntries("data", "*.xml", false);
+		while (e1.hasMoreElements()) {
+			try {
+				URL url = (URL) e1.nextElement();
+				File file = new File(FileLocator.toFileURL(url).getFile());
+				File tempFile = null;
+				if(file.getName().equals("HelloGalileoService.xml")) {
+					tempFile = new File(property + File.separator + file.getName());
+				} else {
+					File dir = new File(property + File.separator + "poststart2" + File.separator);
+					dir.mkdir();
+					dir.deleteOnExit();
+					tempFile = new File(property + File.separator + "poststart2" + File.separator + file.getName());
+				}
+				copyTo(file, tempFile);
+				tempFile.deleteOnExit();
+			} catch (IOException e) {
+				fail(e.getMessage());
+			}
+		}
+	}
+	
+	private void copyTo(File from, File to) throws IOException {
+		InputStream in = new FileInputStream(from);
+		OutputStream out = new FileOutputStream(to);
+		
+		byte[] buf = new byte[1024];
+		int len;
+		while ((len = in.read(buf)) > 0){
+			out.write(buf, 0, len);
+		}
+		in.close();
+		out.close();
 	}
 
 	/**
