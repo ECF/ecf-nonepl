@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008, 2009 Siemens Enterprise Communications GmbH & Co. KG, 
+ * Copyright (c) 2009 Siemens Enterprise Communications GmbH & Co. KG, 
  * Germany. All rights reserved.
  *
  * Siemens Enterprise Communications GmbH & Co. KG is a Trademark Licensee 
@@ -105,7 +105,7 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 	 * org.eclipse.ecf.tests.osgi.services.discovery.local.poststarted.
 	 */
 	public void testGetServicesFromDefaultLocation() {
-		String interfaceName1 = "com.siemens.helloworld.HelloWorldService";
+		String interfaceName1 = "org.eclipse.ecf.helloworld.HelloWorldService"; //$NON-NLS-1$
 		DiscoveredServiceTrackerImpl discoServiceTracker = new DiscoveredServiceTrackerImpl();
 		Activator ac = Activator.getDefault();
 		assertNotNull(ac);
@@ -150,9 +150,9 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 	public void testGetServicesFromManifestDefinedLocations() {
 		createDataFilesInTmp();
 		
-		String interfaceName1 = "com.siemens.hellomoon.HelloMoonService";
-		String interfaceName2 = "com.siemens.galileo.HelloGalileoService";
-		String interfaceName3 = "com.siemens.ganymede.HelloGanymedeService";
+		String interfaceName1 = "org.eclipse.ecf.hellomoon.HelloMoonService";
+		String interfaceName2 = "org.eclipse.ecf.galileo.HelloGalileoService";
+		String interfaceName3 = "org.eclipse.ecf.ganymede.HelloGanymedeService";
 		DiscoveredServiceTrackerImpl discoServiceTracker = new DiscoveredServiceTrackerImpl();
 		Activator ac = Activator.getDefault();
 		assertNotNull(ac);

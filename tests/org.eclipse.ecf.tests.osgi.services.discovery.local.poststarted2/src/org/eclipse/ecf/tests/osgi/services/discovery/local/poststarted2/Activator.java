@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008, 2009 Siemens Enterprise Communications GmbH & Co. KG, 
+ * Copyright (c) 2009 Siemens Enterprise Communications GmbH & Co. KG, 
  * Germany. All rights reserved.
  *
  * Siemens Enterprise Communications GmbH & Co. KG is a Trademark Licensee 
