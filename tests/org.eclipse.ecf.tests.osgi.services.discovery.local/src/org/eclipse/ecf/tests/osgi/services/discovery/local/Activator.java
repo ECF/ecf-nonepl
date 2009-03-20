@@ -1,5 +1,5 @@
 /* 
- * Copyright (c) 2008, 2009 Siemens Enterprise Communications GmbH & Co. KG, 
+ * Copyright (c) 2009 Siemens Enterprise Communications GmbH & Co. KG, 
  * Germany. All rights reserved.
  *
  * Siemens Enterprise Communications GmbH & Co. KG is a Trademark Licensee 
@@ -27,8 +27,7 @@ public class Activator implements BundleActivator {
 
 	private BundleContext bc = null;
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * 
 	 * @see
 	 * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
@@ -58,8 +57,7 @@ public class Activator implements BundleActivator {
 		return false;
 	}
 
-	/*
-	 * (non-Javadoc)
+	/**
 	 * 
 	 * @see
 	 * org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
