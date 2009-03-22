@@ -114,7 +114,7 @@ public abstract class AbstractRemoteServiceTestCase extends ContainerAbstractTes
 
 	protected IRemoteServiceReference[] getRemoteServiceReferences(IRemoteServiceContainerAdapter adapter, String clazz) {
 		try {
-			return adapter.getRemoteServiceReferences(null, clazz, null);
+			return adapter.getRemoteServiceReferences((ID[]) null, clazz, null);
 		} catch (final InvalidSyntaxException e) {
 			fail("should not happen");
 		}
