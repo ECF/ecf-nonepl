@@ -41,7 +41,7 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel implem
 	 * @see org.eclipse.ecf.provider.jms.channel.AbstractJMSChannel#connect(org.eclipse.ecf.core.identity.ID,
 	 *      java.lang.Object, int)
 	 */
-	public synchronized Object connect(ID remote, Object data, int timeout) throws ECFException {
+	public Object connect(ID remote, Object data, int timeout) throws ECFException {
 		throw new ECFException(Messages.AbstractJMSServerChannel_CONNECT_EXCEPTION_CONTAINER_SERVER_CANNOT_CONNECT);
 	}
 
@@ -86,8 +86,10 @@ public abstract class AbstractJMSServerChannel extends AbstractJMSChannel implem
 			throw new ECFException(Messages.AbstractJMSServerChannel_CONNECT_EXCEPTION_CONTAINER_SERVER_CANNOT_CONNECT);
 		}
 
-		public synchronized void disconnect() {
-			stop();
+		public void disconnect() {
+			synchronized (synch) {
+				stop();
+			}
 		}
 
 		public ID getLocalID() {
