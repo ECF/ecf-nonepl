@@ -61,7 +61,7 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
 			jmsTopic = new JmsTopic(session, topicDestination);
 			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
-			synchronized (this) {
+			synchronized (synch) {
 				connected = true;
 				isStopping = false;
 				connection.start();

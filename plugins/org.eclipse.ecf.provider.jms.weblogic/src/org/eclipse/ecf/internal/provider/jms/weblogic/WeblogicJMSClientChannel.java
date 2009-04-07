@@ -87,7 +87,7 @@ public class WeblogicJMSClientChannel extends AbstractJMSClientChannel {
 	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
 	 */
 	public void disconnect() {
-		synchronized (this) {
+		synchronized (synch) {
 			stop();
 			connected = false;
 			notifyAll();

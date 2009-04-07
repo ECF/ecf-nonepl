@@ -8,23 +8,14 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jms.channel;
 
-import java.io.IOException;
-import java.io.NotSerializableException;
-import java.io.Serializable;
-
+import java.io.*;
 import javax.jms.ObjectMessage;
-
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
-import org.eclipse.ecf.internal.provider.jms.Activator;
-import org.eclipse.ecf.internal.provider.jms.JmsDebugOptions;
-import org.eclipse.ecf.internal.provider.jms.Messages;
-import org.eclipse.ecf.provider.comm.ConnectionEvent;
-import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
-import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
-import org.eclipse.ecf.provider.comm.SynchEvent;
+import org.eclipse.ecf.internal.provider.jms.*;
+import org.eclipse.ecf.provider.comm.*;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 import org.eclipse.osgi.util.NLS;
 
@@ -46,38 +37,40 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel implem
 	 * @see org.eclipse.ecf.core.comm.IConnection#connect(org.eclipse.ecf.core.identity.ID,
 	 *      java.lang.Object, int)
 	 */
-	public synchronized Object connect(ID target, Object data, int timeout) throws ECFException {
-		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING, this.getClass(), "connect", new Object[] {target, data, //$NON-NLS-1$
-				new Integer(timeout)});
-		if (isConnected())
-			throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_ALREADY_CONNECTED);
-		if (target == null)
-			throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_NOT_NULL);
-		if (!(target instanceof JMSID))
-			throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID);
-		if (!(data instanceof Serializable)) {
-			throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_CONNECT_ERROR, new NotSerializableException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_NOT_SERIALIZABLE));
+	public Object connect(ID target, Object data, int timeout) throws ECFException {
+		synchronized (synch) {
+			Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING, this.getClass(), "connect", new Object[] {target, data, //$NON-NLS-1$
+					new Integer(timeout)});
+			if (isConnected())
+				throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_ALREADY_CONNECTED);
+			if (target == null)
+				throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_NOT_NULL);
+			if (!(target instanceof JMSID))
+				throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID);
+			if (!(data instanceof Serializable)) {
+				throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_CONNECT_ERROR, new NotSerializableException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_NOT_SERIALIZABLE));
+			}
+			Serializable result = null;
+			try {
+				final Serializable connectData = setupJMS((JMSID) target, data);
+				Trace.trace(Activator.PLUGIN_ID, "connecting to " + target + "," //$NON-NLS-1$ //$NON-NLS-2$
+						+ data + "," + timeout + ")"); //$NON-NLS-1$ //$NON-NLS-2$
+				result = getConnectResult((JMSID) target, connectData);
+			} catch (final ECFException e) {
+				final ECFException except = e;
+				throw new ContainerConnectException(except.getStatus());
+			} catch (final Exception e) {
+				throw new ContainerConnectException(NLS.bind(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED, target.getName()), e);
+			}
+			if (result == null)
+				throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION);
+			if (!(result instanceof ConnectResponseMessage))
+				throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
+			final Object resultData = ((ConnectResponseMessage) result).getData();
+			fireListenersConnect(new ConnectionEvent(this, resultData));
+			Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING, this.getClass(), "connect", resultData); //$NON-NLS-1$
+			return resultData;
 		}
-		Serializable result = null;
-		try {
-			final Serializable connectData = setupJMS((JMSID) target, data);
-			Trace.trace(Activator.PLUGIN_ID, "connecting to " + target + "," //$NON-NLS-1$ //$NON-NLS-2$
-					+ data + "," + timeout + ")"); //$NON-NLS-1$ //$NON-NLS-2$
-			result = getConnectResult((JMSID) target, connectData);
-		} catch (final ECFException e) {
-			final ECFException except = e;
-			throw new ContainerConnectException(except.getStatus());
-		} catch (final Exception e) {
-			throw new ContainerConnectException(NLS.bind(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED, target.getName()), e);
-		}
-		if (result == null)
-			throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION);
-		if (!(result instanceof ConnectResponseMessage))
-			throw new ContainerConnectException(Messages.AbstractJMSClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
-		final Object resultData = ((ConnectResponseMessage) result).getData();
-		fireListenersConnect(new ConnectionEvent(this, resultData));
-		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING, this.getClass(), "connect", resultData); //$NON-NLS-1$
-		return resultData;
 	}
 
 	protected Serializable getConnectResult(JMSID managerID, Serializable data) throws IOException {
@@ -115,7 +108,7 @@ public abstract class AbstractJMSClientChannel extends AbstractJMSChannel implem
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING, this.getClass(), "sendSynch", new Object[] {target, data}); //$NON-NLS-1$
 		Object result = null;
 		boolean active = true;
-		synchronized (this) {
+		synchronized (synch) {
 			active = isActive();
 			if (active)
 				isStopping = true;

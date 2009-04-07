@@ -141,7 +141,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements ISynch
 		return correlationID++;
 	}
 
-	protected synchronized boolean isActive() {
+	protected boolean isActive() {
 		return isConnected() && isStarted() && !isStopping();
 	}
 
@@ -283,7 +283,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements ISynch
 	 */
 	public void disconnect() {
 		Trace.entering(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_ENTERING, this.getClass(), "disconnect"); //$NON-NLS-1$
-		synchronized (this) {
+		synchronized (synch) {
 			stop();
 			connected = false;
 			if (connection != null) {
@@ -333,7 +333,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements ISynch
 		Trace.exiting(Activator.PLUGIN_ID, JmsDebugOptions.METHODS_EXITING, this.getClass(), "handleTopicMessage"); //$NON-NLS-1$
 	}
 
-	private Object synch = new Object();
+	protected Object synch = new Object();
 
 	private String correlation = null;
 
