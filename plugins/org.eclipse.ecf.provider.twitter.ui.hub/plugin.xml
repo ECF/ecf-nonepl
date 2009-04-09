@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ui.perspectives">
+      <perspective
+            class="org.eclipse.ecf.provider.twitter.ui.hub.perspective.PerspectiveFactory"
+            icon="icons/Twitter_32(2).png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.perspective"
+            name="TweetHub">
+      </perspective>
+   </extension>
+   <extension
+         point="org.eclipse.ui.views">
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.TweetViewPart"
+            icon="icons/Twitter_32(2).png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.tweetView"
+            name="Tweet"
+            restorable="true">
+      </view>
+      <category
+            id="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            name="TweetHub">
+      </category>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart"
+            icon="icons/Buddy Group_32.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.friendsView"
+            name="Friends"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.MessagesViewPart"
+            icon="icons/Buddy Chat_32.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.messagesView"
+            name="Messages"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.ReplyViewPart"
+            icon="icons/Chat 2_32.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.replyView"
+            name="Replies"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.DirectMessagesViewPart"
+            icon="icons/Mail 1_32.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.directMessagesView"
+            name="Direct Messages"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.BrowserViewPart"
+            icon="icons/Refresh_32.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.browserView"
+            name="Browser"
+            restorable="true">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.menus">
+      <menuContribution
+            locationURI="menu:org.eclipse.ui.main.menu?after=additions">
+         <menu
+               id="org.eclipse.ecf.provider.twitter.ui.hub.mainMenu"
+               label="TweetHub">
+            <command
+                  commandId="org.eclipse.ecf.provider.twitter.ui.hub.login"
+                  label="Login"
+                  style="push">
+            </command>
+         </menu>
+      </menuContribution>
+   </extension>
+   <extension
+         point="org.eclipse.ui.commands">
+      <command
+            defaultHandler="org.eclipse.ecf.provider.twitter.ui.logic.TwitterLoginHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.login"
+            name="Login">
+      </command>
+   </extension>
+
+
+</plugin>
