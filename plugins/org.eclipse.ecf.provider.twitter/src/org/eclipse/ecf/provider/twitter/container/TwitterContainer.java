@@ -45,6 +45,7 @@ import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
+import twitter4j.UserWithStatus;
 
 /**
  *
@@ -99,7 +100,7 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		}
 	}
 
-	List getTwitterFriends() throws ECFException {
+	public List getTwitterFriends() throws ECFException {
 		try {
 			return this.getTwitter().getFriends();
 		} catch (final TwitterException e) {
@@ -110,7 +111,7 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 	Date lastFriendsTimelineDate;
 	List lastFriendsStatuses = new ArrayList();
 
-	List getTwitterFriendsTimeline() throws ECFException {
+	public List getTwitterFriendsTimeline() throws ECFException {
 		try {
 			// XXX this seems to *always* return the list of all statuses in the last 24 hours
 			// Even if a 'since' date is provided, it returns all statuses within last 24 hours...strange
@@ -150,7 +151,7 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		return false;
 	}
 
-	TwitterUser[] getTwitterUsersFromFriends() throws ECFException {
+	public TwitterUser[] getTwitterUsersFromFriends() throws ECFException {
 		final List friends = getTwitterFriends();
 		final List result = new ArrayList();
 		for (final Iterator i = friends.iterator(); i.hasNext();) {
@@ -160,8 +161,31 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		}
 		return (TwitterUser[]) result.toArray(new TwitterUser[] {});
 	}
+	
+	/**
+	 * I added this method so that I could get myself as a TwitterUser
+	 * @return
+	 * @throws ECFException
+	 */
+	public TwitterUser getConnectedUser() throws ECFException
+	{
+		try {
+			UserWithStatus user = getTwitter().getUserDetail(twitter.getUserId());
+			
+			TwitterUser twitterUser = new TwitterUser(user);
+			return twitterUser;
+			
+			
+		} catch (TwitterException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+			return null;
+		}
+		
+		
+	}
 
-	/* (non-Javadoc)
+ 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.presence.IPresenceContainerAdapter#getAccountManager()
 	 */
 	public IAccountManager getAccountManager() {
@@ -288,7 +312,7 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		rosterManager.addTwitterFriendsToRoster(twitterUsers);
 	}
 
-	void refreshTwitterStatuses() throws ECFException {
+	public void refreshTwitterStatuses() throws ECFException {
 		// Then get friend's status messages
 		final List statuses = getTwitterFriendsTimeline();
 		// Add notify message listeners
