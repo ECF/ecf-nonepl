@@ -42,6 +42,16 @@ public class TwitterUser implements IUser {
 		final String desc = twitterUser.getDescription();
 		if (desc != null && !desc.equals(""))
 			props.put("description", twitterUser.getDescription());
+		final URL image = twitterUser.getProfileImageURL();
+		if(image !=null)
+			props.put("image", image.toExternalForm());
+		final String location = twitterUser.getLocation();
+		if(location !=null)
+			props.put("location", location);
+		final String screenName = twitterUser.getScreenName();
+		if(screenName !=null)
+			props.put("screenName", screenName);
+		
 	}
 
 	/* (non-Javadoc)
