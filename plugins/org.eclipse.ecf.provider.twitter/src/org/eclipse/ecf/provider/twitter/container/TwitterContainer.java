@@ -28,6 +28,7 @@ import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.twitter.search.TweetSearch;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
@@ -41,6 +42,7 @@ import org.eclipse.ecf.presence.search.UserSearchException;
 import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
+import org.eclipse.ecf.provider.twitter.search.ITweetSearch;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -365,6 +367,15 @@ public class TwitterContainer extends AbstractContainer implements IPresenceServ
 		chatManager.getChatMessageSender().sendChatMessage(targetID, status);
 	}
 
+	/**
+	 * 
+	 * @return the object to match the tweets {@link ITweetSearch}
+	 * @throws ECFException
+	 */
+	public ITweetSearch getTweetSearch() throws ECFException{
+		return new TweetSearch(getTwitter());
+	}
+	
 	public IUserSearchManager getUserSearchManager() {
 		return new IUserSearchManager(){
 
