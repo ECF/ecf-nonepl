@@ -5,8 +5,9 @@ Bundle-SymbolicName: org.eclipse.ecf.provider.twitter;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.provider.twitter.Activator
 Bundle-Vendor: %plugin.provider
-Bundle-RequiredExecutionEnvironment: J2SE-1.4
-Import-Package: org.eclipse.ecf.core,
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.eclipse.core.runtime.jobs,
+ org.eclipse.ecf.core,
  org.eclipse.ecf.core.events,
  org.eclipse.ecf.core.identity,
  org.eclipse.ecf.core.provider,
@@ -29,11 +30,12 @@ Bundle-ClassPath: lib/jdom.jar,
  lib/logback-core-0.9.6.jar,
  lib/rome-0.9.jar,
  lib/slf4j-api-1.5.0.jar,
- lib/twitter4j-1.1.4.jar,
+ lib/twitter4j-1.1.7.jar,
  .
 Export-Package: org.eclipse.ecf.internal.provider.twitter;x-internal:=true,
  org.eclipse.ecf.provider.twitter.container,
  org.eclipse.ecf.provider.twitter.identity,
+ org.eclipse.ecf.provider.twitter.search,
  twitter4j
 Require-Bundle: org.eclipse.equinox.common;bundle-version="3.4.0"
  
