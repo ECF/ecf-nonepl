@@ -11,11 +11,18 @@
 
 package org.eclipse.ecf.tests.provider.twitter;
 
+import java.util.List;
+
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
+import org.eclipse.ecf.provider.twitter.search.ITweetSearch;
+import org.eclipse.ecf.provider.twitter.search.ITweetSearchCompleteEvent;
+import org.eclipse.ecf.provider.twitter.search.ITweetSearchListener;
 import org.eclipse.ecf.tests.ContainerAbstractTestCase;
 
 /**
@@ -56,4 +63,32 @@ public class TwitterContainerTests extends ContainerAbstractTestCase {
 		final IRoster roster = rosterManager.getRoster();
 		assertNotNull(roster);
 	}
+	
+	public void testTweetSearchSync() throws ECFException{
+		final IContainer client = getClient(0);
+		TwitterContainer container = (TwitterContainer)client.getAdapter(TwitterContainer.class);
+		ITweetSearch search = container.getTweetSearch();
+		assertNotNull(search);
+		List results = search.search("ecf");
+		assertTrue(results.size() > 0);		
+	}
+	
+	public void testTweetSearchAsync() throws ECFException{
+		ITweetSearchListener listener = new ITweetSearchListener(){
+		
+			public void handleTweetSearchEvent(ITweetSearchCompleteEvent event) {
+				List result = event.getSearchResult();
+				assertTrue(result.size() > 0);
+			}
+		};
+		
+		final IContainer client = getClient(0);
+		TwitterContainer container = (TwitterContainer)client.getAdapter(TwitterContainer.class);
+		ITweetSearch search = container.getTweetSearch();
+		assertNotNull(search);
+		search.search("ecf", listener);
+				
+	}
+
+	
 }
