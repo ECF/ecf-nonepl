@@ -33,10 +33,10 @@ Bundle-ClassPath: lib/jdom.jar,
  lib/twitter4j-1.1.7.jar,
  .
 Export-Package: org.eclipse.ecf.internal.provider.twitter;x-internal:=true,
+ org.eclipse.ecf.internal.provider.twitter.search;x-internal:=true,
  org.eclipse.ecf.provider.twitter.container,
  org.eclipse.ecf.provider.twitter.identity,
- org.eclipse.ecf.provider.twitter.search,
- twitter4j
+ org.eclipse.ecf.provider.twitter.search
 Require-Bundle: org.eclipse.equinox.common;bundle-version="3.4.0"
  
 
