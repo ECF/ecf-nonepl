@@ -17,19 +17,16 @@ import java.util.Vector;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.twitter.StatusTwitter;
+import org.eclipse.ecf.internal.provider.twitter.TwitterMessageChatEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.history.IHistory;
 import org.eclipse.ecf.presence.history.IHistoryManager;
-import org.eclipse.ecf.presence.im.ChatMessage;
-import org.eclipse.ecf.presence.im.ChatMessageEvent;
 import org.eclipse.ecf.presence.im.IChat;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
-
-import twitter4j.Status;
-import twitter4j.User;
 
 /**
  *
@@ -73,7 +70,7 @@ public class TwitterChatManager implements IChatManager {
 
 	};
 
-	void handleStatusMessages(Status[] statuses) {
+	void handleStatusMessages(IStatus[] statuses) {
 		for (int i = 0; i < statuses.length; i++) {
 			handleStatusMessage(statuses[i]);
 		}
@@ -82,25 +79,25 @@ public class TwitterChatManager implements IChatManager {
 	/**
 	 * @param status
 	 */
-	private void handleStatusMessage(Status status) {
+	private void handleStatusMessage(IStatus status) {
 		if (status == null)
 			return;
-		final User tUser = status.getUser();
-		if (tUser == null)
-			return;
-		final TwitterUser twitterUser = new TwitterUser(tUser);
-		final String chat = status.getText();
-		fireMessageListeners(twitterUser, chat);
+//		final User tUser = status.getUser();
+//		if (tUser == null)
+//			return;
+//		final TwitterUser twitterUser = new TwitterUser(tUser);
+//		final String chat = status.getText();
+		fireMessageListeners(status);
 	}
 
 	/**
 	 * @param twitterUser
 	 * @param chat
 	 */
-	private void fireMessageListeners(TwitterUser twitterUser, String chat) {
+	private void fireMessageListeners(IStatus status) {
 		for (final Iterator i = chatListeners.iterator(); i.hasNext();) {
 			final IIMMessageListener l = (IIMMessageListener) i.next();
-			l.handleMessageEvent(new ChatMessageEvent(twitterUser.getID(), new ChatMessage(twitterUser.getID(), chat)));
+			l.handleMessageEvent(new TwitterMessageChatEvent(status.getUser().getID(), status));
 		}
 	}
 

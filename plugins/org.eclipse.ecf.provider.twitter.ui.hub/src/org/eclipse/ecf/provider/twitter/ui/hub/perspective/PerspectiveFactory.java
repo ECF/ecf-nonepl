@@ -5,7 +5,6 @@ import org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.MessagesViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.ReplyViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.TweetViewPart;
-import org.eclipse.swt.SWT;
 import org.eclipse.ui.IFolderLayout;
 import org.eclipse.ui.IPageLayout;
 import org.eclipse.ui.IPerspectiveFactory;
@@ -14,7 +13,6 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 
 	public static final String PERSPECTIVE_ID = "org.eclipse.ecf.provider.twitter.ui.hub.perspective";
 	
-	@Override
 	public void createInitialLayout(IPageLayout layout) {
 		// TODO Auto-generated method stub
 		String editorArea = layout.getEditorArea();

@@ -1,18 +1,10 @@
 package org.eclipse.ecf.provider.twitter.ui.hub;
 
-import java.io.IOException;
-import java.net.URL;
-
-import org.eclipse.core.runtime.FileLocator;
-import org.eclipse.core.runtime.IPath;
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.jface.dialogs.ErrorDialog;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -25,15 +17,12 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.Form;
-import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
-import org.osgi.framework.Bundle;
 
 
 public class TweetViewPart extends ViewPart {
@@ -77,7 +66,7 @@ public class TweetViewPart extends ViewPart {
 		
 		tweetTxt.addKeyListener(new KeyListener(){
 			
-			@Override
+			
 			public void keyReleased(KeyEvent e) {
 				if(e.keyCode == SWT.CR)
 				{
@@ -97,7 +86,6 @@ public class TweetViewPart extends ViewPart {
 				
 			}
 		
-			@Override
 			public void keyPressed(KeyEvent e) {}
 		});
 
@@ -112,12 +100,12 @@ public class TweetViewPart extends ViewPart {
 		
 		tweeter.addSelectionListener(new SelectionListener(){
 		
-			@Override
+			
 			public void widgetSelected(SelectionEvent e) {
 				sendTweet(tweetTxt.getText());
 			}
 		
-			@Override
+			
 			public void widgetDefaultSelected(SelectionEvent e) {
 				// TODO Auto-generated method stub
 

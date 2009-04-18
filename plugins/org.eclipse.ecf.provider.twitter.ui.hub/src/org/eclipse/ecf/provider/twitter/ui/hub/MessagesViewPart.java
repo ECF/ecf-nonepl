@@ -3,10 +3,12 @@ package org.eclipse.ecf.provider.twitter.ui.hub;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
+import java.text.SimpleDateFormat;
 import java.util.Observable;
 import java.util.Observer;
 
-import org.eclipse.ecf.provider.twitter.ui.logic.TwitterMessage;
+import org.eclipse.ecf.core.util.StringUtils;
+import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -14,7 +16,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -80,16 +81,15 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		super.dispose();
 	}
 
-	@Override
 	public void update(Observable o, Object arg) {
-		TwitterMessage message = (TwitterMessage)arg;
+		IStatus message = (IStatus)arg;
 		displayMessage(message);
 		form.reflow(true);
 		form.redraw();
 		
 	}
 	
-	private void displayMessage(TwitterMessage message)
+	private void displayMessage(IStatus message)
 	{
 		Composite composite = toolkit.createComposite(formComposite, SWT.NONE );
 		TableWrapLayout layout = new TableWrapLayout();
@@ -160,12 +160,15 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		statusTxt.addHyperlinkListener(this);
 		statusTxt.setParagraphsSeparated(true);
 		statusTxt.setLayoutData(td);
-		statusTxt.setText(message.getMessage(), false, true);
+		//FIXME Put the timestamp in a better format
+		SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
+		String timestamp = format.format(message.getCreatedAt());
+		statusTxt.setText(message.getText() + " - "+ timestamp, false, true);
 		//statusTxt.setText(message.getMessage(), true, true);
 		
 	}
 
-	@Override
+
 	public void linkActivated(HyperlinkEvent e) {
 		//open up the link in a browser window.
 		
@@ -186,13 +189,13 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		
 	}
 
-	@Override
+
 	public void linkEntered(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+
 	public void linkExited(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		

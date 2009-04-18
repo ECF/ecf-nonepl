@@ -33,7 +33,7 @@ public class TwitterUser implements IUser {
 
 	Properties props = new Properties();
 
-	TwitterUser(twitter4j.User user) {
+	public TwitterUser(twitter4j.User user) {
 		this.twitterUser = user;
 		this.id = new TwitterID(twitterUser.getScreenName());
 		final URL url = twitterUser.getURL();
