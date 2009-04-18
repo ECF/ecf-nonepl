@@ -1,35 +1,27 @@
 package org.eclipse.ecf.provider.twitter.ui.logic;
 
-import java.util.ArrayList;
 import java.util.Observable;
-import java.util.Observer;
 
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.IContainerConnectedEvent;
 import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.twitter.TwitterMessageChatEvent;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.im.IChatMessageEvent;
-import org.eclipse.ecf.presence.im.ITypingMessageEvent;
-import org.eclipse.ecf.presence.ui.MultiRosterView;
+import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
-import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.MessagesViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.TweetViewPart;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseMoveListener;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.Workbench;
 
 public class TwitterController extends Observable implements IIMMessageListener, IContainerListener{
 	
@@ -102,7 +94,6 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	
 	boolean stopTrying = false;
 
-	@Override
 	public void handleMessageEvent(IIMMessageEvent messageEvent) 
 	{
 		//System.err.println("Message Received");
@@ -127,16 +118,15 @@ public class TwitterController extends Observable implements IIMMessageListener,
 				}
 			}
 			
-			final IChatMessageEvent msg = (IChatMessageEvent)messageEvent;
+			final TwitterMessageChatEvent msg = (TwitterMessageChatEvent)messageEvent;
 			//System.err.println("Getting User");
-			final TwitterUser user = findUserWithID(msg.getFromID());
+			//final TwitterUser user = findUserWithID(msg.getFromID());
 		//	System.err.println("Got User");
 			super.setChanged();
 			//msg.getChatMessage().getBody();
-			Display.getDefault().asyncExec(new Runnable() {
+			Display.getDefault().syncExec(new Runnable() {
 				public void run() {
-					
-					notifyObservers(new TwitterMessage(user, msg.getChatMessage().getBody()));	
+					notifyObservers((IStatus) msg.getChatMessage());	
 				}
 			});
 			
@@ -193,7 +183,6 @@ public class TwitterController extends Observable implements IIMMessageListener,
 
 
 
-	@Override
 	public void handleEvent(IContainerEvent event) {
 		if (event instanceof IContainerConnectedEvent) 
 		{

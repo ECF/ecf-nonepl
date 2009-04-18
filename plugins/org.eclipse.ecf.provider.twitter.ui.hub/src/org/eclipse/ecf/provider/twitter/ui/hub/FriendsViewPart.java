@@ -3,21 +3,9 @@ package org.eclipse.ecf.provider.twitter.ui.hub;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Iterator;
 import java.util.Observable;
 import java.util.Observer;
 
-import twitter4j.Status;
-
-import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.presence.IPresenceContainerAdapter;
-import org.eclipse.ecf.presence.roster.RosterEntry;
-import org.eclipse.ecf.presence.ui.IMultiRosterViewPart;
-import org.eclipse.ecf.presence.ui.MultiRosterAccount;
-import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.swt.SWT;
@@ -29,9 +17,6 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -42,7 +27,6 @@ import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.Section;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
@@ -184,7 +168,6 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 
 	
 
-	@Override
 	public void mouseEnter(MouseEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource() instanceof Label)
@@ -274,14 +257,13 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 		
 	}
 
-	@Override
+
 	public void mouseExit(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
 
-	@Override
 	public void mouseHover(MouseEvent e) {
 		// TODO Auto-generated method stub
 		

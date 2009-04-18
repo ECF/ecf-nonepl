@@ -9,17 +9,48 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.twitter.search;
 
+import java.util.List;
 
 /**
  * 
- *@since 3.0
+ * @since 3.0
+ *
  */
-public interface ITweetSearchCompleteEvent {
+public interface IResultTweetList {
 
 	/**
 	 * 
-	 * @return List of {@link ITweetItem} Contain the search results
+	 * @return the number of results per page. Default 15
 	 */
-	public IResultTweetList getSearchResult();
-
+	public int getResultsPerPage();
+	
+	/**
+	 * 
+	 * @return Total of {@link ITweetItem} found
+	 */
+	public int getTotal();
+	
+	/**
+	 * 
+	 * @return Completed in
+	 */
+	public double getCompletedIn();
+	
+	/**
+	 * 
+	 * @return The max id
+	 */
+	public long getMaxId(); 
+	
+	/**
+	 * 
+	 * @return from the authenticating user
+	 */
+	public long getSinceId();
+	
+	/**
+	 * 
+	 * @return a list of {@link ITweetItem}
+	 */
+	public List getResults();
 }

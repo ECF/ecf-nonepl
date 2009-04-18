@@ -9,8 +9,6 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.twitter.search;
 
-import java.util.List;
-
 import org.eclipse.ecf.core.util.ECFException;
 
 /**
@@ -27,7 +25,7 @@ public interface ITweetSearch {
 	 * @return List of {@link ITweetItem} Contain the search results 
 	 * @throws ECFException 
 	 */
-	public List search(String criteria) throws ECFException;
+	public IResultTweetList search(String criteria) throws ECFException;
 
 	/**
 	 * Execute the search for a specific criteria, not blocking until the search returns.
