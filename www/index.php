@@ -2,7 +2,7 @@
 <html>
 <head>
 <meta http-equiv="Content-Type" content="text/html; charset=iso-8859-1">
-<title>eclipse communication framework project</title>
+<title>ECF @ OSUOSL</title>
 <link rel="stylesheet" href="default_style.css" type="text/css">
 </head>
 <body text="#000000" bgcolor="#ffffff" link="#0000ee" vlink="#551a8b" alink="#ff0000"><table width=100% BORDER=0 CELLPADDING=2 CELLSPACING=5 STYLE="page-break-before: always">
@@ -10,7 +10,7 @@
   <tbody>
     <tr>
       <td width="69%" class="bannertext">
-        <font class="indextop style2">eclipse communication framework<br>project server @ Oregon State University Open Source Lab </font>
+        <font class="indextop style2">Eclipse Communication Framework<br>Oregon State University Open Source Lab </font>
         <br><br>
       </td>
       <td width="31%">
@@ -24,8 +24,8 @@
 <table width=1207 BORDER=0 CELLPADDING=2 CELLSPACING=0>
 	<COL width=10>
 	<COL width=35>
-	<COL width=381>
-	<COL width=722>
+	<COL width=181>
+	<COL width=200>
 	<COL width=0>
 	<COL width=36>
 	<tr>
@@ -40,137 +40,100 @@
 		See the <a href="http://www.eclipse.org/ecf">ECF Home Page</a>
 		</td>
 	</tr>
+	<tr><td><br/></td></tr>
+
 	<tr>
-		<td colspan=6 width=1203 valign=top bgcolor="#0080c0">
+		<td colspan=4 width=500 valign=top bgcolor="#0080c0">
 			<p align=left><font COLOR="#ffffff">&nbsp;<b><font FACE="Arial, Helvetica">
-			ECF Extras via Eclipse Update Manager</font></b></font></p>
+			IMPORTANT NOTE</font></b></font></p>
 		</td>
 	</tr>
+
+  <tr>
+		<td colspan=4 width=500>
+      <p>
+          There are different Skype features for 1) Win32 (XP or Vista) and 2) Linux. Please do not
+          install the Windows Skype feature on a Linux system or vice versa. Please do not install both.
+          The inappropriate Skype feature may interfere with the appropriate Skype feature. See
+          <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=238022"> bug 238022</a> for
+          a discussion of these Skype features.
+      </p>
+      <p>
+          There is no Mac version of the Skype feature. See
+          <a href="https://bugs.eclipse.org/bugs/show_bug.cgi?id=213942"> bug 213942</a>
+          for information about the Mac feature.
+      </p>
+		</td>
+  </tr>
+	<tr><td><br/></td></tr>
+                 
+
+<!-- Released -->
 	<tr>
-		<td colspan=6 width=1203>
-			<p><b>Directions to configure Eclipse for ECF JAR file updates</b></p>
-		</td>
-	</tr>
-	<tr>
-		<td colspan=6 width=1203>
-			<p>&nbsp;&nbsp;In Eclipse, go to <b>Help</b> menu <b>&gt; Help
-			Contents &gt; Workbook User Guide</b></p>
-		</td>
-	</tr>
-	<tr>
-		<td colspan=6 width=1203>
-			<UL>
-				<LI><P STYLE="margin-bottom: 0in">In Eclipse, choose Help -&gt;
-				Software Updates -&gt; Find and Install -&gt; Search for new
-				features to install -&gt; Next -&gt; New Remote Site
-				</p>
-				<UL>
-					<LI><P STYLE="margin-bottom: 0in">In the <b>New Update Site</b>
-					dialog:</p>
-					<UL>
-						<LI><P STYLE="margin-bottom: 0in">&quot;Name:&quot; enter: ECF
-						updates
-						</p>
-						<LI><P STYLE="margin-bottom: 0in">&quot;URL&quot; enter:
-						http://ecf1.osuosl.org/update
-						</p>
-					</UL>
-					<p>As shown here:<BR><img src="images/new-update-site.jpg" name="Graphic24" align=bottom width=367 height=167 BORDER=0>
-										</p>
-				</UL>
-			</UL>
-		</td>
-	</tr>
-		<tr>
-		<td colspan=6 width=1203 valign=top bgcolor="#0080c0">
-			<P align=left><font COLOR="#ffffff">&nbsp;<font FACE="Arial, Helvetica"><b>ECF Extra Application Downloads</b> </font></font>
+		<td colspan=4 width=500 valign=top bgcolor="#0080c0">
+			<P align=left><font COLOR="#ffffff">&nbsp;<font FACE="Arial, Helvetica">
+      <b>ECF 3.0 Released Extras -- Eclipse 3.5M6</b> </font></font>
 			</p>
 		</td>
 	</tr>
+
+  <tr>
+    <td colspan=4>
+    <b>Install via Released Zip</b>   For zips of released extras go to <a href="../extras.php">ECF Released Extras</a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=4>
+    <b>Install via Released Update Site</b>   For instructions, go to
+    <a href="../updateReleasedSiteInstructions.html">Installation from Released Update Site</a>
+    </td>
+  </tr>
+	<tr><td><br/></td></tr>
+
+<!-- Daily -->
 	<tr>
-		<td colspan=6 width=1203></td>
-	</tr>
-	<tr>
-        <td>
-			<p><a href="../extras/org.eclipse.ecf.provider.jms-1.1.0.v20070911-1136.zip"><b>org.eclipse.ecf.provider.jms-1.1.0.v20070911-1136.zip</b></a>
-						</p>
-		</td>
-	</tr>
-	<tr>
-		<td >
-			<p><a href="../extras/org.eclipse.ecf.provider.yahoo-1.1.0.v20070911-1136.zip"><b>org.eclipse.ecf.provider.yahoo-1.1.0.v20070911-1136.zip</b></a>
-						</p>
-		</td>
-	</tr>
-    <tr>
-         <td>
-			 <p><a href="../extras/org.eclipse.ecf.provider.skype-1.1.0.v20070911-1136.zip"><b>org.eclipse.ecf.provider.skype-1.1.0.v20070911-1136.zip</b></a>
-								                                                </p>
-	     </td>
-	</tr>
-    <tr>
-         <td>
-			 <p>
-				<a href="../extras/org.eclipse.ecf.provider.jgroups-1.1.0.v20070911-1136.zip"><b>org.eclipse.ecf.provider.jgroups-1.1.0.v20070911-1136.zip</b></a>
-    </p>
-	     </td>
-	</tr>
-	<tr>
-		<td colspan=6 width=1203></td>
-	</tr>
-    <tr>
-		<td colspan=6 width=1203 valign=top bgcolor="#0080c0">
-			<P align=left><font COLOR="#ffffff">&nbsp;<font FACE="Arial, Helvetica"><b>ECF Extra Daily Application Downloads</b> </font></font>
+		<td colspan=4 width=500 valign=top bgcolor="#0080c0">
+			<P align=left><font COLOR="#ffffff">&nbsp;<font FACE="Arial, Helvetica">
+      <b>ECF 3.0 Daily Extras -- Eclipse 3.5M6</b> </font></font>
 			</p>
 		</td>
 	</tr>
+
+  <tr>
+    <td colspan=4>
+    <b>Install via Daily Zip</b>   For zips of released extras go to <a href="../dailies.php">ECF Daily Extras</a>
+    </td>
+  </tr>
+  <tr>
+    <td colspan=4>
+    <b>Install via Daily Update Site</b>   For instructions, go to
+    <a href="../updateDailySiteInstructions.html">Installation from Daily Update Site</a>
+    </td>
+  </tr>
+	<tr><td><br/></td></tr>
+
 	<tr>
 		<td colspan=6 width=1203></td>
 	</tr>
-		<tr>
-			 <td>
-			 <?php
-			 function directoryToArray($directory, $recursive) {
-			    $array_items = array();
-			       if ($handle = opendir($directory)) {
-			             while (false !== ($file = readdir($handle))) {
-				              if ($file != "." && $file != "..") {
-					                       $array_items[] = preg_replace("/\/\//si", "/", $file);
-							                }
-									      }
-									         }
-										    closedir($handle);
-										       rsort($array_items,SORT_STRING);
-										          return $array_items;
-											  }
 
-											  $files=directoryToArray("/var/www/localhost/htdocs/dailies",false);
-
-											  foreach ($files as $file) {
-											          echo '<tr> <td> <p><a href="http://ecf1.osuosl.org/dailies/' . $file . '">' . $file .'</a></p></td></tr>';
-												  }
-												  ?>
-
-	     </td>
 	<tr>
-		<td colspan=6 width=1203></td>
-	</tr>
-	<tr>
-		<td colspan=6 width=1203 valign=top bgcolor="#0080c0">
+		<td colspan=4 width=500 valign=top bgcolor="#0080c0">
 			<P align=left><font COLOR="#ffffff">&nbsp;<font FACE="Arial, Helvetica"><b>Anonymous
-			CVS access to ECF Extras Source</b> </font></font>
+			CVS access to ECF 3.0 Extras Source</b> </font></font>
 			</p>
 		</td>
 	</tr>
 	<tr>
 		<td colspan=6 width=1203>
-			<H4>To load ECF source code into your workspace download and use
-			the project set file</H4>
+			<p>To load ECF source code into your workspace download and use
+			the project set file</p>
 			<p>Save one of the below project set files to local disk by
 			choosing File -&gt; Save Link As... in your browser</p>
 			<UL>
-				<LI><P STYLE="margin-bottom: 0in"><a href="ecf1-anonymous.psf">ecf1-anonymous.psf</a>
+				<LI><P STYLE="margin-bottom: 0in"><a href="osuosl.anonymous.psf">osuosl.anonymous.psf</a>
+
 								</p>
+				<LI><P style="margin-bottom: 0in"><a href="osuosl.committer.psf">osuosl.committer.psf</a></p>
 				<P STYLE="margin-bottom: 0in"></p>
 			</UL>
 			<OL>
@@ -182,7 +145,7 @@
 				Project Set</b> and open the .psf file downloaded in step 1
 				</p>
 			</OL>
-			<H5>Anonymous CVS server info</H5>
+			<p>Anonymous CVS server info</p>
 			<UL>
 				<LI><P STYLE="margin-bottom: 0in">Host: <b>ecf1.osuosl.org</b></p>
 				<LI><P STYLE="margin-bottom: 0in">Repository Path: <b>/ecf</b></p>
@@ -201,3 +164,4 @@
 </p>
 </body>
 </html>
+
