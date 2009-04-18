@@ -1,4 +1,4 @@
-<!doctype html public "-//w3c//dtd html 4.0 transitional//en">
+!doctype html public "-//w3c//dtd html 4.0 transitional//en">
 <html>
 <head>
 <title>eclipse communication framework dailies</title>
@@ -17,19 +17,19 @@
         while (false !== ($file = readdir($handle))) {
           if ($file != "." && $file != "..") {
             $array_items[] = preg_replace("/\/\//si", "/", $file);
-          }
-        }
-      }
+          }  
+        }  
+      }  
       closedir($handle);
       rsort($array_items,SORT_STRING);
       return $array_items;
-    }
+    }  
 
     $files=directoryToArray("/var/www/localhost/htdocs/dailies",false);
 
     foreach ($files as $file) {
        echo '<tr> <td> <p><a href="http://ecf1.osuosl.org/dailies/' . $file . '">' . $file .'</a></p></td></tr>';
-    }
+    }  
 ?>
 </div>
 </body>
