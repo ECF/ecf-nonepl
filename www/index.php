@@ -147,16 +147,25 @@
 			</OL>
 			<p>Anonymous CVS server info</p>
 			<UL>
-				<LI><P STYLE="margin-bottom: 0in">Host: <b>ecf1.osuosl.org</b></p>
-				<LI><P STYLE="margin-bottom: 0in">Repository Path: <b>/ecf</b></p>
-				<LI><P STYLE="margin-bottom: 0in">User: <b>anonymous</b>
-				</p>
-				<LI><P STYLE="margin-bottom: 0in">Password: &lt;empty&gt;
-				</p>
-				<LI><P STYLE="margin-bottom: 0in">Connection method: <b>pserver</b>
-								</p>
+				<LI><P STYLE="margin-bottom: 0in">Host: <b>ecf1.osuosl.org</b></p> </LI>
+				<LI><P STYLE="margin-bottom: 0in">Repository Path: <b>/ecf</b></p> </lI>
+				<LI><P STYLE="margin-bottom: 0in">User: <b>anonymous</b> </P> </LI>
+				<LI><P STYLE="margin-bottom: 0in">Password: &lt;empty&gt; </P> </LI>
+				<LI><P STYLE="margin-bottom: 0in">Connection method: <b>pserver</b> </p> </LI>
 				<p></p>
 			</UL>
+
+			<p>Committer CVS server info</p>
+			<UL>
+				<LI><P STYLE="margin-bottom: 0in">Host: <b>ecf1.osuosl.org</b></p> </LI>
+				<LI><P STYLE="margin-bottom: 0in">Repository Path: <b>/home/cvs/ecf</b></p> </lI>
+				<LI><P STYLE="margin-bottom: 0in">User: &lt;your username&gt;  </P> </LI>
+				<LI><P STYLE="margin-bottom: 0in">Password: &lt;your password&gt; </P> </LI>
+				<LI><P STYLE="margin-bottom: 0in">Connection method: <b>extssh</b> </p> </LI>
+				<p></p>
+			</UL>
+
+
 		</td>
 	</tr>
 </table>
