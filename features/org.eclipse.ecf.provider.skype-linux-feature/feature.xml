@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <feature
-      id="org.eclipse.ecf.provider.skype-linux_feature"
+      id="org.eclipse.ecf.provider.skype_linux_feature"
       label="ECF Skype Provider (linux)"
       version="2.1.0.qualifier"
       provider-name="Eclipse.org">
@@ -67,6 +67,9 @@ at http://www.eclipse.org.
 
    <plugin
          id="com.skype"
+         os="linux"
+         ws="gtk,motif"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
