@@ -66,6 +66,9 @@ at http://www.eclipse.org.
 
    <plugin
          id="com.skype"
+         os="win32"
+         ws="win32"
+         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
