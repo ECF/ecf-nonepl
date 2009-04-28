@@ -9,14 +9,14 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.twitter.search;
 
-import java.util.List;
+import org.eclipse.ecf.presence.search.IResultList;
 
 /**
  * 
- * @since 3.0
+ * @since 2.0
  *
  */
-public interface IResultTweetList {
+public interface IResultTweetList extends IResultList{
 
 	/**
 	 * 
@@ -48,9 +48,4 @@ public interface IResultTweetList {
 	 */
 	public long getSinceId();
 	
-	/**
-	 * 
-	 * @return a list of {@link ITweetItem}
-	 */
-	public List getResults();
 }

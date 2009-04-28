@@ -29,7 +29,6 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.twitter.StatusTwitter;
-import org.eclipse.ecf.internal.provider.twitter.search.TweetSearch;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
@@ -43,7 +42,6 @@ import org.eclipse.ecf.presence.search.UserSearchException;
 import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
-import org.eclipse.ecf.provider.twitter.search.ITweetSearch;
 
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -350,7 +348,8 @@ public class TwitterContainer extends AbstractContainer implements
 
 	class AutoRefreshThread extends Thread {
 
-		int refreshDelay = 60000;
+		//FIXME make the auto refresh parametrized 
+		int refreshDelay = 5000;
 		boolean done = false;
 		Object lock = new Object();
 
@@ -468,14 +467,6 @@ public class TwitterContainer extends AbstractContainer implements
 		chatManager.getChatMessageSender().sendChatMessage(targetID, status);
 	}
 
-	/**
-	 * 
-	 * @return the mechanism to search tweets {@link ITweetSearch}
-	 * @throws ECFException
-	 */
-	public ITweetSearch getTweetSearch() throws ECFException {
-		return new TweetSearch(getTwitter());
-	}
 
 	public IUserSearchManager getUserSearchManager() {
 		return new IUserSearchManager() {

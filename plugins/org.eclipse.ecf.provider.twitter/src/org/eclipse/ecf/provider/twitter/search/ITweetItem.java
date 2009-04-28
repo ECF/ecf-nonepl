@@ -11,11 +11,13 @@ package org.eclipse.ecf.provider.twitter.search;
 
 import java.util.Date;
 
+import org.eclipse.ecf.presence.search.IResult;
+
 /**
  * 
- *@since 3.0
+ *@since 2.0
  */
-public interface ITweetItem {
+public interface ITweetItem extends IResult{
 
 	/**
 	 * @return

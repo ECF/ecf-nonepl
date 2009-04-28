@@ -7,21 +7,23 @@
  * Contributors: 	Marcelo Mayworm - initial API and implementation
  *
  ******************************************************************************/
-package org.eclipse.ecf.provider.twitter.search;
+package org.eclipse.ecf.internal.provider.twitter.search;
 
+import org.eclipse.ecf.presence.search.SimpleCriterion;
 
-/**
- * 
- *@since 3.0
- */
-public interface ITweetSearchListener {
+public class TwitterSimpleCriterion extends SimpleCriterion {
+
+	public TwitterSimpleCriterion(String value) {
+		super("", value, "");
+	}
 	
-	/**
-	 * Catch the event fired and proceed to complete the search.
-	 * Handle the search asynchronously. Notify that the search was completed 
-	 * for the specific criteria.
-	 * @param event the object that deal with the results in a non-blocking way
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ecf.presence.search.ICriterion#toExpression()
 	 */
-	public void handleTweetSearchEvent(ITweetSearchCompleteEvent event);
+	public String toExpression() {
+		return value;
+	}
+
 
 }
