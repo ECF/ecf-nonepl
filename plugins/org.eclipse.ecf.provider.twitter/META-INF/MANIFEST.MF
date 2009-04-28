@@ -38,6 +38,8 @@ Export-Package: org.eclipse.ecf.internal.provider.twitter;x-internal:=true,
  org.eclipse.ecf.provider.twitter.identity,
  org.eclipse.ecf.provider.twitter.search,
  twitter4j
-Require-Bundle: org.eclipse.equinox.common;bundle-version="3.4.0"
- 
+Require-Bundle: org.eclipse.equinox.common;bundle-version="3.4.0",
+ org.eclipse.ecf.presence,
+ org.eclipse.osgi,
+ org.eclipse.osgi.services;bundle-version="3.2.0"
 

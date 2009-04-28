@@ -17,8 +17,9 @@ import java.util.Vector;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.internal.provider.twitter.StatusTwitter;
+import org.eclipse.ecf.internal.provider.twitter.Activator;
 import org.eclipse.ecf.internal.provider.twitter.TwitterMessageChatEvent;
+import org.eclipse.ecf.internal.provider.twitter.search.TwitterMessageSearchManager;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.history.IHistory;
 import org.eclipse.ecf.presence.history.IHistoryManager;
@@ -27,6 +28,7 @@ import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
+import org.eclipse.ecf.presence.search.message.IMessageSearchManager;
 
 /**
  *
@@ -145,6 +147,20 @@ public class TwitterChatManager implements IChatManager {
 	 */
 	public void removeMessageListener(IIMMessageListener listener) {
 		chatListeners.remove(listener);
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ecf.presence.im.IChatManager#getMessageSearchManager()
+	 */
+	public IMessageSearchManager getMessageSearchManager() {
+		
+		try {
+			return new TwitterMessageSearchManager(this.container.getTwitter());
+		} catch (ECFException e) {
+			Activator.log("Error creating TwitterMessageSearchManager", e);
+		}
+		return null;
 	}
 
 }

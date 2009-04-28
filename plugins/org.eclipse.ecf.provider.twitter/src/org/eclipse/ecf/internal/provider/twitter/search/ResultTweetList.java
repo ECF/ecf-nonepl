@@ -5,6 +5,7 @@ import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
+import org.eclipse.ecf.presence.search.IResult;
 import org.eclipse.ecf.provider.twitter.search.IResultTweetList;
 
 import twitter4j.QueryResult;
@@ -53,6 +54,14 @@ public class ResultTweetList implements IResultTweetList {
 
 	public int getTotal() {
 		return tweets.size();
+	}
+
+	public IResult getResult(String field, String value) {
+		return null;
+	}
+
+	public Object getAdapter(Class adapter) {
+		return null;
 	}
 
 	

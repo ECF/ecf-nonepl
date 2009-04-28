@@ -11,13 +11,14 @@ package org.eclipse.ecf.internal.provider.twitter.search;
 
 import java.util.Date;
 
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.provider.twitter.search.ITweetItem;
 
 import twitter4j.Tweet;
 
 /**
  * 
- *@since 3.0
+ *@since 2.0
  */
 public class TweetItem implements ITweetItem{
 
@@ -105,6 +106,16 @@ public class TweetItem implements ITweetItem{
 	 */
 	public int getToUserId() {
 		return tweet.getToUserId();
+	}
+
+	public IUser getUser() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Object getAdapter(Class adapter) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 	
 }
