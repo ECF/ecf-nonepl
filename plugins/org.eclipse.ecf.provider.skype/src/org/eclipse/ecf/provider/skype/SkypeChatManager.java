@@ -32,6 +32,7 @@ import org.eclipse.ecf.presence.im.IChatMessage;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.im.ITypingMessageSender;
 import org.eclipse.ecf.presence.im.IChatMessage.Type;
+import org.eclipse.ecf.presence.search.message.IMessageSearchManager;
 import org.eclipse.ecf.provider.skype.identity.SkypeUserID;
 
 import com.skype.Chat;
@@ -222,6 +223,11 @@ public class SkypeChatManager implements IChatManager {
 		}
 		chatListeners.clear();
 		chats.clear();
+	}
+
+	public IMessageSearchManager getMessageSearchManager() {
+		// Return null until this provider supports message search
+		return null;
 	}
 
 }
