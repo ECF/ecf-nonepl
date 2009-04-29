@@ -17,13 +17,19 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.ecf.core.ContainerCreateException;
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.internal.example.collab.actions.URIClientConnectAction;
 import org.eclipse.ecf.internal.provider.jgroups.ui.Activator;
+import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class JoinGroupWizard extends Wizard {
+public class JoinGroupWizard extends Wizard implements IConnectWizard, INewWizard {
 
 	protected static final String PAGE_TITLE = "Collaboration Connect";
 
@@ -31,6 +37,8 @@ public class JoinGroupWizard extends Wizard {
 
 	JoinGroupWizardPage mainPage;
 	private final IResource resource;
+	
+	protected IContainer container;
 
 	public JoinGroupWizard(IResource resource, IWorkbench workbench) {
 		super();
@@ -80,4 +88,21 @@ public class JoinGroupWizard extends Wizard {
 			throw new CoreException(new Status(Status.ERROR, id, IStatus.ERROR, "Could not connect to " + groupName, e));
 		}
 	}
+
+        public void init(IWorkbench workbench, IContainer container) {
+            this.container= container;
+            
+        }
+
+        public void init(IWorkbench workbench, IStructuredSelection selection) {
+            this.container = null;
+            try {
+                    this.container = ContainerFactory.getDefault().createContainer( JGroups.CLIENT_CONTAINER_NAME );
+            } catch (final ContainerCreateException e) {
+                    // None
+            }
+
+            setWindowTitle( JoinGroupWizard.DIALOG_SETTINGS );
+            
+        }
 }
