@@ -273,7 +273,7 @@ public class DistributedOSGiBasedStaticInformationTest extends TestCase {
 			}
 			properties
 					.put(
-							DiscoveredServiceTracker.PROP_KEY_MATCH_CRITERIA_INTERFACES,
+							DiscoveredServiceTracker.INTERFACE_MATCH_CRITERIA,
 							interfaces);
 		}
 		bc.registerService(DiscoveredServiceTracker.class.getName(),
