@@ -8,7 +8,6 @@ import org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase;
 
 public class ActiveMQJMSContainerTest extends JMSContainerAbstractTestCase {
 
-	@Override
 	protected String getClientContainerName() {
 		return ActiveMQ.CLIENT_CONTAINER_NAME;
 	}
@@ -16,7 +15,6 @@ public class ActiveMQJMSContainerTest extends JMSContainerAbstractTestCase {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerContainerName()
 	 */
-	@Override
 	protected String getServerContainerName() {
 		return ActiveMQ.SERVER_CONTAINER_NAME;
 	}
@@ -24,7 +22,6 @@ public class ActiveMQJMSContainerTest extends JMSContainerAbstractTestCase {
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.tests.provider.jms.JMSContainerAbstractTestCase#getServerIdentity()
 	 */
-	@Override
 	protected String getServerIdentity() {
 		return ActiveMQ.TARGET_NAME;
 	}
