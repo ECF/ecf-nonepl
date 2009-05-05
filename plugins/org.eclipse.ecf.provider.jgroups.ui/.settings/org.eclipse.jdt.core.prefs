@@ -1,5 +1,6 @@
-#Thu Feb 12 13:17:52 PST 2009
+#Mon May 04 17:44:38 PDT 2009
 eclipse.preferences.version=1
+org.eclipse.jdt.core.compiler.codegen.inlineJsrBytecode=enabled
 org.eclipse.jdt.core.compiler.codegen.targetPlatform=1.5
 org.eclipse.jdt.core.compiler.compliance=1.5
 org.eclipse.jdt.core.compiler.problem.annotationSuperInterface=warning
