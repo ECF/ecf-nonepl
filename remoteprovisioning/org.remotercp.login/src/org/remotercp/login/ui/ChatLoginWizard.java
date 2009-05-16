@@ -8,10 +8,7 @@ import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.ContainerCreateException;
-import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
-import org.eclipse.ecf.core.security.ConnectContextFactory;
-import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.wizard.Wizard;
@@ -26,14 +23,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.remotercp.ecf.ECFConnector;
 import org.remotercp.ecf.ECFConstants;
-import org.remotercp.ecf.ECFNamespace;
-import org.remotercp.ecf.session.ConnectionDetails;
-import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.login.ImageKeys;
 import org.remotercp.login.LoginActivator;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
+import org.remotercp.login.connection.HeadlessConnection;
 
 public class ChatLoginWizard extends Wizard {
 
@@ -51,8 +44,6 @@ public class ChatLoginWizard extends Wizard {
 	private static final String SERVER = "server";
 
 	private static final String LAST_SELECTED_SERVER = "lastElement";
-
-	private ECFConnector connector;
 
 	public ChatLoginWizard() {
 		loginPage = new ChatLoginPage();
@@ -87,28 +78,12 @@ public class ChatLoginWizard extends Wizard {
 			ex.printStackTrace();
 		}
 
-		/*
-		 * Establish the server connection
-		 */
-		connector = new ECFConnector();
-		String[] parameter = new String[] { userName, server };
-		ECFNamespace namespace = new ECFNamespace();
-
 		try {
-			ID targetID = namespace.createInstance(parameter);
-			IConnectContext connectContext = ConnectContextFactory
-					.createUsernamePasswordConnectContext(userName, password);
-
-			connector.connect(targetID, connectContext, ECFConstants.XMPP);
-			ConnectionDetails connectionDetails = new ConnectionDetails(
-					userName, server);
-
-			ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
-					LoginActivator.getBundleContext(), ISessionService.class);
-			session.setConnectionDetails(connectionDetails);
-			session.setContainer(connector);
-
-			// loginPage.setErrorMessage(null);
+			/*
+			 * Establish the server connection
+			 */
+			HeadlessConnection.connect(userName, password, server,
+					ECFConstants.XMPP);
 		} catch (IDCreateException e) {
 			logger.log(Level.SEVERE, "Uable to initiate the target ID", e);
 			e.printStackTrace();

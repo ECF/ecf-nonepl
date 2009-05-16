@@ -469,7 +469,7 @@ public class AvailableFeaturesComposite {
 
 						/* perform remote call */
 						List<IStatus> results = (List<IStatus>) remoteInstallService
-								.callSynch(installFeaturesCall);
+								.callSync(installFeaturesCall);
 
 						// create result nodes
 						ResultUserTreeNode userNode = new ResultUserTreeNode(

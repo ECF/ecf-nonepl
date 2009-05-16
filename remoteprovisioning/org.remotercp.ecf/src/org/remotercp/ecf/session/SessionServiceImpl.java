@@ -13,9 +13,7 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
-import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
@@ -28,15 +26,13 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.authorization.IOperationAuthorization;
-import org.remotercp.ecf.ECFConnector;
 import org.remotercp.util.authorization.AuthorizationUtil;
-import org.remotercp.util.roster.RosterUtil;
 
 public class SessionServiceImpl implements ISessionService {
 
 	private ConnectionDetails connectionDetails;
 
-	private ECFConnector containter;
+	private IContainer containter;
 
 	private Map<String, Object> remoteServices = new HashMap<String, Object>();
 
@@ -53,11 +49,9 @@ public class SessionServiceImpl implements ISessionService {
 		this.connectionDetails = connectionDetails;
 	}
 
-	public void setContainer(ECFConnector container) {
+	public void setContainer(IContainer container) {
 		this.containter = container;
 
-		// register local presence listener
-		this.getRosterManager().addPresenceListener(this.getPresenceListener());
 	}
 
 	private IPresenceContainerAdapter getPresenceContainerAdapter() {
@@ -110,30 +104,10 @@ public class SessionServiceImpl implements ISessionService {
 
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
 
-		logger.info("Container status: " + this.containter.toString());
-
-		/*
-		 * XXX: according to Scott Lewis the filterIDs have to be containerIDs
-		 * and not rosterIDs, therefore the IRemoteServiceReferences are not
-		 * properly filtered. Solution needed for this problem! According to
-		 * Scott this might become API in the next release
-		 */
-		// IRemoteServiceReference[] refs2 = remoteServiceContainerAdapter
-		// .getRemoteServiceReferences(filterIDs, service.getName(),
-		// filter);
-		/*
-		 * XXX this is a workaround for the above mentioned problem. The idea is
-		 * to get all remote services and ask each serviceReference for the
-		 * containerID. Afterwards the containerIDName will be matched with the
-		 * given rosterIDName in order to filter only those services which are
-		 * requested (filterIDs).
-		 */
-
 		/* 1. get all available services */
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
-				.getRemoteServiceReferences(null, service.getName(), filter);
-
-		Map<String, T> filteredServices = new HashMap<String, T>();
+				.getRemoteServiceReferences(filterIDs, service.getName(),
+						filter);
 
 		/* 2. filter services for the given rosterIDs */
 		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
@@ -142,46 +116,11 @@ public class SessionServiceImpl implements ISessionService {
 					.getRemoteService(refs[serviceNumber]);
 			Assert.isNotNull(remoteService);
 
-			String containerIDName = refs[serviceNumber].getContainerID()
-					.getName();
-			int indexOfContainer = containerIDName.indexOf("@");
-			String containerUserName = containerIDName.substring(0,
-					indexOfContainer);
-
-			for (ID userID : filterIDs) {
-				String userIDName = userID.getName();
-				/*
-				 * XXX workaround for container and roster IDs. Split user names
-				 * and compare only names. This is dangerous as the same user
-				 * can be connected to different XMPP servers. Solution needed!
-				 * TODO: Compare user resources as well!
-				 */
-				int indexOfUser = userIDName.indexOf("@");
-				String userName = userIDName.substring(0, indexOfUser);
-
-				if (containerUserName.equals(userName)) {
-
-					// get proxy for remote service and add service to the
-					// service list
-					T castedService = service.cast(remoteService.getProxy());
-					Assert.isNotNull(castedService);
-
-					/*
-					 * XXX: next workaround. If a user connects and disconnects
-					 * several times user services will also be registered
-					 * several times. Asking for a specific service for a user
-					 * in this method may result in multiple services. A map
-					 * will avoid multiple services and return only one service
-					 * per user.
-					 */
-					filteredServices.put(userIDName, castedService);
-					break;
-				}
-			}
-
+			T castedService = service.cast(remoteService.getProxy());
+			Assert.isNotNull(castedService);
+			remoteServices.add(castedService);
 		}
 
-		remoteServices.addAll(filteredServices.values());
 		return remoteServices;
 	}
 
@@ -210,13 +149,13 @@ public class SessionServiceImpl implements ISessionService {
 	 */
 	public IRemoteService[] getRemoteServiceReference(Class service,
 			ID[] filterIDs, String filter) throws InvalidSyntaxException {
-		IRemoteService serviceReferences[] = null;
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
 
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
-				.getRemoteServiceReferences(null, service.getName(), filter);
+				.getRemoteServiceReferences(filterIDs, service.getName(),
+						filter);
 
-		Map<String, IRemoteService> filteredServices = new HashMap<String, IRemoteService>();
+		IRemoteService serviceReferences[] = new IRemoteService[refs.length];
 
 		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
 
@@ -224,28 +163,10 @@ public class SessionServiceImpl implements ISessionService {
 					.getRemoteService(refs[serviceNumber]);
 			Assert.isNotNull(remoteService);
 
-			String containerIDName = refs[serviceNumber].getContainerID()
-					.getName();
-			int indexOfContainer = containerIDName.indexOf("@");
-			String containerUserName = containerIDName.substring(0,
-					indexOfContainer);
-
-			for (ID userID : filterIDs) {
-				String userIDName = userID.getName();
-
-				int indexOfUser = userIDName.indexOf("@");
-				String userName = userIDName.substring(0, indexOfUser);
-
-				if (containerUserName.equals(userName)) {
-
-					filteredServices.put(userIDName, remoteService);
-					break;
-				}
-			}
+			serviceReferences[serviceNumber] = remoteService;
 
 		}
-		serviceReferences = filteredServices.values().toArray(
-				new IRemoteService[filteredServices.size()]);
+
 		return serviceReferences;
 	}
 
@@ -288,18 +209,6 @@ public class SessionServiceImpl implements ISessionService {
 	public void registerRemoteService(String serviceName, Object impl,
 			ID[] targetIDs) {
 
-		// store the service locally in order to provide this service to new
-		// connected user
-		if (!this.remoteServices.containsKey(serviceName)) {
-			this.remoteServices.put(serviceName, impl);
-		}
-
-		if (targetIDs == null) {
-			// register service to all user
-			targetIDs = RosterUtil.getUserIDs(getRoster());
-			Assert.isNotNull(targetIDs);
-		}
-
 		Dictionary<String, ID[]> props = new Hashtable<String, ID[]>();
 		props.put(Constants.SERVICE_REGISTRATION_TARGETS, targetIDs);
 
@@ -340,72 +249,6 @@ public class SessionServiceImpl implements ISessionService {
 				logger.info("Unget service: " + serviceName);
 			}
 		}
-	}
-
-	/*
-	 * Register services to clients that just logged in.
-	 * 
-	 * TODO: this is a workaround!!! As the admin will usually login when other
-	 * users are already connected he won't be able to use the remote services
-	 * as the registration of these services happens at the login time.
-	 * Therefore we push here services to just logged in users.
-	 * 
-	 * Try to figure out if the ECF DiscoveryService will do here better work.
-	 */
-	protected IPresenceListener getPresenceListener() {
-		return new IPresenceListener() {
-
-			/*
-			 * Register local services to new connected user
-			 * 
-			 * (non-Javadoc)
-			 * 
-			 * @see
-			 * org.eclipse.ecf.presence.IPresenceListener#handlePresence(org
-			 * .eclipse.ecf.core.identity.ID,
-			 * org.eclipse.ecf.presence.IPresence)
-			 */
-			public void handlePresence(ID fromID, IPresence presence) {
-				logger.info("User presence changed: " + fromID.getName()
-						+ " to: " + presence.toString());
-
-				 if (presence.getType() == IPresence.Type.AVAILABLE) {
-
-					if (!servicesInitialized) {
-						/*
-						 * wait 3 sec so that all local services are initialized
-						 * before registering them to remote clients
-						 */
-						try {
-							Thread.sleep(3000);
-						} catch (InterruptedException e) {
-							e.printStackTrace();
-						}
-						servicesInitialized = true;
-					}
-
-					boolean authorized = checkAuthorization(fromID);
-					if (authorized) {
-						// perform remote method registration
-						for (String service : SessionServiceImpl.this.remoteServices
-								.keySet()) {
-
-							Object serviceImpl = SessionServiceImpl.this.remoteServices
-									.get(service);
-
-							SessionServiceImpl.this.registerRemoteService(
-									service, serviceImpl, new ID[] { fromID });
-
-							logger.info("Service " + service
-									+ " registered to user: "
-									+ fromID.getName());
-						}
-					}
-
-				}
-			}
-
-		};
 	}
 
 	/*

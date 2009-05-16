@@ -4,13 +4,13 @@ import java.net.URISyntaxException;
 
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.ContainerCreateException;
-import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.remotercp.ecf.ECFConnector;
+import org.eclipse.ecf.provider.xmpp.identity.XMPPID;
 import org.remotercp.ecf.ECFConstants;
-import org.remotercp.ecf.ECFNamespace;
 import org.remotercp.ecf.session.ConnectionDetails;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.login.LoginActivator;
@@ -49,23 +49,40 @@ public class HeadlessConnection {
 		/*
 		 * Establish the server connection
 		 */
-		ECFConnector connector = new ECFConnector();
-		String[] parameter = new String[] { userName, server };
-		ECFNamespace namespace = new ECFNamespace();
+		IContainer container = ContainerFactory.getDefault().createContainer(
+				protocol);
 
-		ID targetID = namespace.createInstance(parameter);
+		XMPPID xmppid = new XMPPID(container.getConnectNamespace(), userName
+				+ "@" + server);
+		xmppid.setResourceName("" + System.currentTimeMillis());
+
 		IConnectContext connectContext = ConnectContextFactory
 				.createUsernamePasswordConnectContext(userName, password);
 
-		connector.connect(targetID, connectContext, protocol);
 		ConnectionDetails connectionDetails = new ConnectionDetails(userName,
 				server);
+
+		container.connect(xmppid, connectContext);
+		
+		System.out.println("Container connected");
+
+		// ECFConnector connector = new ECFConnector();
+		// String[] parameter = new String[] { userName, server };
+		// ECFNamespace namespace = new ECFNamespace();
+		//
+		// ID targetID = namespace.createInstance(parameter);
+		// IConnectContext connectContext = ConnectContextFactory
+		// .createUsernamePasswordConnectContext(userName, password);
+		//
+		// connector.connect(targetID, connectContext, protocol);
+		// ConnectionDetails connectionDetails = new ConnectionDetails(userName,
+		// server);
 
 		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
 				LoginActivator.getBundleContext(), ISessionService.class);
 		session.setConnectionDetails(connectionDetails);
-		session.setContainer(connector);
-		
+		session.setContainer(container);
+
 	}
 
 }

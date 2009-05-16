@@ -1,6 +1,8 @@
 package org.remotercp.util.roster;
 
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -46,9 +48,11 @@ public class RosterUtil {
 	 *            The {@link IRosterItem} that containes {@link IRosterEntry}
 	 * @return A list with {@link IRosterEntry} objects
 	 */
-	public synchronized static List<IRosterEntry> getRosterEntries(IRosterItem item) {
+	public synchronized static List<IRosterEntry> getRosterEntries(
+			IRosterItem item) {
 
-		List<IRosterEntry> entries = new ArrayList<IRosterEntry>();
+		List<IRosterEntry> entries = Collections
+				.synchronizedList(new ArrayList<IRosterEntry>());
 
 		entries = searchRecursiveForRosterEntries(entries, item);
 
@@ -61,19 +65,26 @@ public class RosterUtil {
 		if (item instanceof IRoster) {
 			IRoster roster = (IRoster) item;
 			// iterate over child elements
-			for (Object rosterItem : roster.getItems()) {
-				searchRecursiveForRosterEntries(entries,
-						(IRosterItem) rosterItem);
+			Collection rosterItems = roster.getItems();
+			synchronized (rosterItems) {
+				for (Object rosterItem : rosterItems) {
+					searchRecursiveForRosterEntries(entries,
+							(IRosterItem) rosterItem);
+				}
 			}
 		}
 
 		if (item instanceof IRosterGroup) {
 			IRosterGroup group = (IRosterGroup) item;
 			// iterate over child elements
-			for (Object rosterItem : group.getEntries()) {
-				searchRecursiveForRosterEntries(entries,
-						(IRosterItem) rosterItem);
+			Collection<Object> groupEntries = group.getEntries();
+			synchronized (groupEntries) {
+				for (Object rosterItem : groupEntries) {
+					searchRecursiveForRosterEntries(entries,
+							(IRosterItem) rosterItem);
+				}
 			}
+
 		}
 
 		if (item instanceof IRosterEntry) {
@@ -159,7 +170,8 @@ public class RosterUtil {
 	 * @param item
 	 * @return
 	 */
-	public synchronized static boolean hasRosterItem(IRoster roster, IRosterItem item) {
+	public synchronized static boolean hasRosterItem(IRoster roster,
+			IRosterItem item) {
 		boolean rosterContainsItem = false;
 
 		// items may be IRosterGroup and/or IRosterEntry

@@ -6,26 +6,20 @@ import java.net.URISyntaxException;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.remoteservice.Constants;
-import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
-import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.junit.After;
-import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.ecf.ECFConnector;
 import org.remotercp.ecf.ECFConstants;
 import org.remotercp.ecf.ECFNamespace;
-import org.remotercp.util.serialize.SerializeUtil;
 
 public class TestRemoteMethodInvocation {
 	private IRemoteServiceContainerAdapter remoteAdapter1;
@@ -93,46 +87,6 @@ public class TestRemoteMethodInvocation {
 				new String[] { IRemoteServiceTest.class.getName() },
 				new RemoteServiceTestImpl(), props);
 
-	}
-
-	// @Test
-	public void testRemoteXMLConverter() {
-
-		try {
-			IRemoteServiceReference[] remoteServiceReferences = remoteAdapter1
-					.getRemoteServiceReferences(null, IRemoteServiceTest.class
-							.getName(), null);
-
-			for (int serviceNumber = 0; serviceNumber < remoteServiceReferences.length; serviceNumber++) {
-				IRemoteService remoteService = remoteAdapter1
-						.getRemoteService(remoteServiceReferences[serviceNumber]);
-
-				try {
-					if (remoteService.getProxy() instanceof IRemoteServiceTest) {
-						IRemoteServiceTest service = (IRemoteServiceTest) remoteService
-								.getProxy();
-
-						String object = (String) service.getObject();
-						Assert.isNotNull(object);
-						Object convertXMLToObject = SerializeUtil
-								.convertXMLToObject(object);
-						Assert.isNotNull(convertXMLToObject);
-						if (convertXMLToObject instanceof Exception) {
-							Exception ex = (Exception) convertXMLToObject;
-							Assert.isNotNull(ex);
-
-						} else {
-							fail();
-						}
-
-					}
-				} catch (ECFException e) {
-					e.printStackTrace();
-				}
-			}
-		} catch (InvalidSyntaxException e1) {
-			e1.printStackTrace();
-		}
 	}
 
 	@After

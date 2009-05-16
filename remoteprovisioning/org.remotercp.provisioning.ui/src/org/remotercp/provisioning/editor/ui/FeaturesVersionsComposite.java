@@ -315,8 +315,9 @@ public class FeaturesVersionsComposite {
 					final SerializedFeatureWrapper[] featuresToUpdate = new SerializedFeatureWrapper[1];
 					featuresToUpdate[0] = SerializedFeatureWrapper
 							.createFeatureWrapper(feature);
-					
-					final ID fromId = sessionService.getContainer().getConnectedID();
+
+					final ID fromId = sessionService.getContainer()
+							.getConnectedID();
 
 					IRemoteCall updateFeaturesCall = new IRemoteCall() {
 
@@ -348,7 +349,7 @@ public class FeaturesVersionsComposite {
 
 					/* perform remote call */
 					List<IStatus> updateResults = (List<IStatus>) remoteUpdateService
-							.callSynch(updateFeaturesCall);
+							.callSync(updateFeaturesCall);
 
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
