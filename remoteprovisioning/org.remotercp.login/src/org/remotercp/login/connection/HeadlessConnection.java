@@ -63,20 +63,6 @@ public class HeadlessConnection {
 				server);
 
 		container.connect(xmppid, connectContext);
-		
-		System.out.println("Container connected");
-
-		// ECFConnector connector = new ECFConnector();
-		// String[] parameter = new String[] { userName, server };
-		// ECFNamespace namespace = new ECFNamespace();
-		//
-		// ID targetID = namespace.createInstance(parameter);
-		// IConnectContext connectContext = ConnectContextFactory
-		// .createUsernamePasswordConnectContext(userName, password);
-		//
-		// connector.connect(targetID, connectContext, protocol);
-		// ConnectionDetails connectionDetails = new ConnectionDetails(userName,
-		// server);
 
 		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
 				LoginActivator.getBundleContext(), ISessionService.class);
