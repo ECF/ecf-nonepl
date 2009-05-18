@@ -63,7 +63,7 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
 		
-		form.setText("Your Friends");
+		form.setText("Following");
 		
 		formComposite = form.getBody();
 		TableWrapLayout layout = new TableWrapLayout();

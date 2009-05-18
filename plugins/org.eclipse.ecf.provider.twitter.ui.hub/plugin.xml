@@ -29,7 +29,7 @@
             class="org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart"
             icon="icons/Buddy Group_32.png"
             id="org.eclipse.ecf.provider.twitter.ui.hub.friendsView"
-            name="Friends"
+            name="Following"
             restorable="true">
       </view>
       <view

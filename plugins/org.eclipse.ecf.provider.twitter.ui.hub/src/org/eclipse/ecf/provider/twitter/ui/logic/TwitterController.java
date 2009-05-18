@@ -33,6 +33,7 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	
 	private FriendsViewPart friendsView;
 	private TweetViewPart tweetView;
+	private Display display;
 	
 	/**
 	 * Add a list of observers.
@@ -40,6 +41,7 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	public TwitterController()
 	{
 		super();
+		display = PlatformUI.getWorkbench().getDisplay();
 		addObservers();
 	}
 	
@@ -96,21 +98,16 @@ public class TwitterController extends Observable implements IIMMessageListener,
 
 	public void handleMessageEvent(IIMMessageEvent messageEvent) 
 	{
-		//System.err.println("Message Received");
+
 		if(messageEvent instanceof IChatMessageEvent)
 		{
 			
 			if(friendsList == null && !stopTrying)
 			{
-				
 				try {
-					//System.err.println("Getting Friends");
 					friendsList = this.container.getTwitterUsersFromFriends();
-					//System.err.println("Got Friends");
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-					friendsView.addFriends(friendsList);
-						}});
+					updateFriendsList();
+	
 				} catch (ECFException e) {
 					stopTrying = true;
 					// TODO Auto-generated catch block
@@ -124,11 +121,14 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		//	System.err.println("Got User");
 			super.setChanged();
 			//msg.getChatMessage().getBody();
-			Display.getDefault().syncExec(new Runnable() {
-				public void run() {
-					notifyObservers((IStatus) msg.getChatMessage());	
-				}
-			});
+			if(!display.isDisposed())
+			{
+				display.syncExec(new Runnable() {
+					public void run() {
+						notifyObservers((IStatus) msg.getChatMessage());	
+					}
+				});
+			}
 			
 			
 		}
@@ -148,20 +148,15 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		/**
 		 * First, check if that user is you!
 		 */
-		//container.get
-		
-		
 		try 
 		{
 			if(connectedUser == null)
 			{
 				connectedUser = container.getConnectedUser();
 			}
-			
 			if(connectedUser!=null && connectedUser.getID().getName().equals(id.getName()))
 			{
 				return connectedUser;
-				
 			}
 		} catch (ECFException e) {
 			// TODO Auto-generated catch block
@@ -186,18 +181,19 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	public void handleEvent(IContainerEvent event) {
 		if (event instanceof IContainerConnectedEvent) 
 		{
-	//		System.err.println("******CONNECTION MADE******");
+			/**
+			 * If we haven't got the friendsList yet, now is the time to 
+			 * update it.
+			 */
 			if(friendsList == null)
 			{	
 				try 
 				{
-			//		System.err.println("Getting Friends in handleEvent");
 					friendsList = this.container.getTwitterUsersFromFriends();
-				//	System.err.println("Got Friends in handleEvent");
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-					friendsView.addFriends(friendsList);
-						}});
+					updateFriendsList();
+	
+					
+					
 				} catch (ECFException e) {
 					e.printStackTrace();
 				}
@@ -208,6 +204,38 @@ public class TwitterController extends Observable implements IIMMessageListener,
 
 	
 	
+	/**
+	 * Update the friends list view. 
+	 * This has to be threaded off as it can take a signifigant amount of time.
+	 */
+	private void updateFriendsList()
+	{
+		Thread thread = new Thread(new FriendsViewRunnable());
+
+		/**
+		 * ToDo: add this back in
+		 */
+		
+		//	thread.start();
+	}
+	
+	
+	/**
+	 * Thread to add the list of Friends to the Twitter view.
+	 * @author jsugrue
+	 */
+	class FriendsViewRunnable implements Runnable
+	{
+		public void run()
+		{
+			display.asyncExec(new Runnable() 
+			{
+				public void run() 
+				{	System.err.println("Number of friends: " + friendsList);
+						friendsView.addFriends(friendsList);
+				}});
+		}
+	}
 	
 	
 	
