@@ -12,10 +12,25 @@ import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
+import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.events.PaintEvent;
+import org.eclipse.swt.events.PaintListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.graphics.Region;
+import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.GridData;
+import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Listener;
+import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
@@ -29,7 +44,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
 
-public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkListener {
+public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkListener, MouseTrackListener {
 
 	
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.messagesView";
@@ -40,6 +55,8 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	
 	
 	private BrowserViewPart browser;
+	
+	private Shell tip;
 	
 	public MessagesViewPart() {
 		
@@ -58,16 +75,8 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		
 		formComposite = form.getBody();
 		
-//		StringBuffer textBuffer = new StringBuffer();
-//		textBuffer.append("<form><p><b>Name:</b>");
-//		textBuffer.append("James");
-//		textBuffer.append("</p><p><b>Bio:</b></p>");
-//		textBuffer.append("<p><b>Location:</b></p>");
-//		textBuffer.append("<p><b>Web:</b></p></form>");
-//		
-//		TwitterMessage message = new TwitterMessage(null, textBuffer.toString());
-//		displayMessage(message);
 		
+		//displayMessage(new TwitterMessage(null, "Hello - testingdsaaaaaaaaaaaaaaaaaaaaaaaaadfsdf sdfs dasf"));
 	}
 
 	@Override
@@ -91,83 +100,9 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	
 	private void displayMessage(IStatus message)
 	{
-		Composite composite = toolkit.createComposite(formComposite, SWT.NONE );
-		TableWrapLayout layout = new TableWrapLayout();
-		layout.numColumns = 2;
-		composite.setLayout(layout);
-		String username;
-		if(message.getUser()!=null)
-		{
-			username =  message.getUser().getName();
-		}
-		else
-		{
-			username = "Unknown";
-		}
-		
-		StyledText nameLabel = new StyledText(composite, SWT.WRAP | SWT.MULTI);
-		nameLabel.setText(username);
-		StyleRange styleRange = new StyleRange();
-		styleRange.start = 0;
-		styleRange.length = username.length();
-		styleRange.fontStyle = SWT.BOLD;
-		styleRange.foreground = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_BLACK);
-		nameLabel.setStyleRange(styleRange);
-	
-		nameLabel.setLayoutData(new TableWrapData(TableWrapData.LEFT, TableWrapData.TOP, 1, 2));
-		
-		
-//		statusTxt.setWordWrap(true);
-//		
-//		GridData gd = new GridData();
-//		gd.horizontalSpan = 2;
-//		nameLabel.setLayoutData(gd);
-		
-		Label imageLabel = toolkit.createLabel(composite,"");
-		if(message.getUser() != null && message.getUser().getProperties().get("image") != null)
-		{
-		InputStream is = null;
-		try {
-			
-			URL url = new URL((String)message.getUser().getProperties().get("image"));
-			is = url.openStream();
-			Image image = new Image(Display.getCurrent(), is);
-			imageLabel.setImage(image);
-			}
-			catch (Exception e)
-			{
-			   e.printStackTrace();
-			}
-			finally
-			{
-			   try {
-				if(is != null) is.close();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			}
-		}
-		
-		
-		TableWrapData td = new TableWrapData(TableWrapData.FILL_GRAB);
-		
-		/**
-		 * Display the status of this twitter message
-		 */
-		FormText statusTxt = toolkit.createFormText(composite,false);
-		statusTxt.addHyperlinkListener(this);
-		statusTxt.setParagraphsSeparated(true);
-		statusTxt.setLayoutData(td);
-		//FIXME Put the timestamp in a better format
-		SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
-		String timestamp = format.format(message.getCreatedAt());
-		statusTxt.setText(message.getText() + " - "+ timestamp, false, true);
-		//statusTxt.setText(message.getMessage(), true, true);
-		
+		//NEW way
+		MessageComposite messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit);
 	}
-
 
 	public void linkActivated(HyperlinkEvent e) {
 		//open up the link in a browser window.
@@ -184,21 +119,137 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 			// TODO Auto-generated catch block
 			e1.printStackTrace();
 		}
-		
-		
-		
 	}
-
 
 	public void linkEntered(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-
+	
+	
+	private void showTwitterOptions(Composite twitterComp)
+	{
+		
+	}
+	
+	
 	public void linkExited(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void mouseEnter(MouseEvent e) {
+		if(e.getSource() instanceof Composite)
+		{
+			showTwitterOptions((Composite)e.getSource());
+			
+//			final Composite composite = (Composite)e.getSource();
+//			TwitterMessage message = (TwitterMessage)composite.getData();
+//			
+//			Display display = Display.getCurrent();
+//			
+//				if (tip != null  && !tip.isDisposed ()) 
+//					tip.dispose ();
+//				
+//				
+//				tip = new Shell (composite.getShell(), SWT.NO_TRIM | SWT.ON_TOP | SWT.NO_BACKGROUND);
+//				
+//				GridLayout layout = new GridLayout(2, false);
+//				layout.horizontalSpacing = 1;
+//				layout.verticalSpacing = 1;
+//				layout.marginHeight = 0;
+//				layout.marginWidth = 0;
+//				
+//				tip.setLayout (layout);
+//				
+//				//move one composite all the way over to the left. 
+//				
+//				
+//				GridData data = new GridData();
+//				data.horizontalAlignment = SWT.END;
+//				data.grabExcessHorizontalSpace= true;
+//				
+//				
+//				//data.verticalAlignment = SWT.BEGINNING;
+//				
+//				
+//				
+////				text.addListener (SWT.MouseExit, this);
+////				text.addListener (SWT.MouseDown, this);
+//				Button reply = new Button(tip, SWT.FLAT);
+//				reply.setText("R");
+//				reply.setToolTipText("Reply");
+//				reply.setLayoutData(data);
+//				
+//				Button retweet = new Button(tip, SWT.FLAT);
+//				retweet.setText("RT");
+//				retweet.setToolTipText("Retweet");
+//				retweet.setLayoutData(data);
+//				
+//				Button favourite = new Button(tip, SWT.FLAT);
+//				favourite.setText("F");
+//				favourite.setToolTipText("Mark As Favourite");
+//				favourite.setLayoutData(data);
+//				
+//				Button dMessage = new Button(tip, SWT.FLAT);
+//				dMessage.setText("DM");
+//				dMessage.setToolTipText("Send Direct Message");
+//				dMessage.setLayoutData(data);
+//				
+//				
+//				
+//				
+//				//Label l = new Label(tip, SWT.NONE);
+//				//l.setText("Hello hello hello");
+//				//Point size = tip.computeSize (SWT.DEFAULT, SWT.DEFAULT);
+//				Point size = composite.computeSize(SWT.DEFAULT,SWT.DEFAULT);
+//				Rectangle rect = composite.getBounds ();
+//				Point pt = composite.toDisplay (rect.x, rect.y);
+//				tip.setBounds (pt.x, pt.y, size.x, size.y);
+//								
+//				tip.addListener (SWT.MouseExit, new Listener(){
+//				
+//					@Override
+//					public void handleEvent(Event event) {
+//						// TODO Auto-generated method stub
+//						if(tip != null && !tip.isDisposed())
+//							tip.dispose();
+//					}
+//				});
+//				
+//				tip.setVisible (true);
+			
+		}
+		
+		
+		
+	}
+
+	@Override
+	public void mouseExit(MouseEvent e) {
+		
+//		if(e.getSource() instanceof Composite)
+//		{
+//			if(tip != null && !tip.isDisposed())
+//			{
+//				System.err.println("Dispose");
+//				tip.dispose();
+//			}
+//		}
+		
+//		// TODO Auto-generated method stub
+//		if(!tip.isDisposed() && tip !=null)
+//		{
+//			tip.dispose();
+//		}
+	}
+
+	@Override
+	public void mouseHover(MouseEvent e) {
+		// TODO Auto-generated method stub
+		System.err.println("HOVER");
 	}
 	
 	

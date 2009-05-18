@@ -162,5 +162,13 @@ public class TweetViewPart extends ViewPart {
 
 	}
 
+	/**
+	 * Set the text in the tweet text box.
+	 * @param tweetText
+	 */
+	public void setTweetText(String tweetText)
+	{
+		tweetTxt.setText(tweetText);
+	}
 }
 
