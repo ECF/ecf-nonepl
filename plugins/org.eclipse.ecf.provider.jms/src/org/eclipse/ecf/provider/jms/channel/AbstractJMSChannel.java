@@ -294,7 +294,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements ISynch
 				}
 				connection = null;
 			}
-			notifyAll();
+			synch.notifyAll();
 		}
 		fireListenersDisconnect(new ConnectionEvent(this, null));
 		connectionListeners.clear();
