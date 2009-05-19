@@ -11,10 +11,7 @@
 package org.eclipse.ecf.provider.jms.identity;
 
 import java.net.URI;
-
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDCreateException;
-import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.core.identity.*;
 import org.eclipse.ecf.internal.provider.jms.Messages;
 
 public class JMSNamespace extends Namespace {
@@ -30,6 +27,9 @@ public class JMSNamespace extends Namespace {
 
 	public ID createInstance(Object[] args) throws IDCreateException {
 		try {
+			String init = getInitFromExternalForm(args);
+			if (init != null)
+				return new JMSID(this, init);
 			if (args.length == 1) {
 				if (args[0] instanceof String) {
 					return new JMSID(this, (String) args[0]);
@@ -37,16 +37,29 @@ public class JMSNamespace extends Namespace {
 					return new JMSID(this, ((URI) args[0]).toString());
 				}
 			}
-			throw new IllegalArgumentException(
-					Messages.JMSNamespace_EXCEPTION_XMPP_ARGS_INVALID);
+			throw new IllegalArgumentException(Messages.JMSNamespace_EXCEPTION_XMPP_ARGS_INVALID);
 		} catch (Exception e) {
-			throw new IDCreateException(
-					Messages.JMSNamespace_EXCEPTION_IDCREATION, e);
+			throw new IDCreateException(Messages.JMSNamespace_EXCEPTION_IDCREATION, e);
 		}
 	}
 
 	public String getScheme() {
 		return SCHEME;
+	}
+
+	private String getInitFromExternalForm(Object[] args) {
+		if (args == null || args.length < 1 || args[0] == null)
+			return null;
+		if (args[0] instanceof String) {
+			String arg = (String) args[0];
+			if (arg.startsWith(getScheme() + Namespace.SCHEME_SEPARATOR)) {
+				int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
+				if (index >= arg.length())
+					return null;
+				return arg.substring(index + 1);
+			}
+		}
+		return null;
 	}
 
 	/*
@@ -55,6 +68,6 @@ public class JMSNamespace extends Namespace {
 	 * @see org.eclipse.ecf.core.identity.Namespace#getSupportedParameterTypesForCreateInstance()
 	 */
 	public Class[][] getSupportedParameterTypes() {
-		return new Class[][] { { String.class }, { URI.class } };
+		return new Class[][] { {String.class}, {URI.class}};
 	}
 }
