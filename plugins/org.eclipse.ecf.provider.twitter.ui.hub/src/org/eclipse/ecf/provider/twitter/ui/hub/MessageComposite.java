@@ -6,10 +6,12 @@ import java.net.MalformedURLException;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IPath;
+import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.core.runtime.Platform;
+import org.eclipse.core.runtime.Status;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -18,7 +20,6 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FillLayout;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -34,7 +35,6 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.eclipse.ui.internal.registry.ViewDescriptor;
 import org.eclipse.ui.views.IViewDescriptor;
 import org.osgi.framework.Bundle;
 
@@ -79,9 +79,12 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		 * JS - my preference is to show the user's nickname rather than their real 
 		 * name
 		 */
-		if(message.getUser().getNickname() != null)
+		
+		
+		if(message.getUser().getProperties().get("screenName") != null)
 		{
-			username = message.getUser().getNickname();
+			username = (String)message.getUser().getProperties().get("screenName");
+			
 		}
 		else
 		{
@@ -130,43 +133,44 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		retweet = toolkit.createButton(buttons, "", SWT.FLAT);
 		retweet.setToolTipText("Retweet");
 		retweet.setImage(retweetImg);
-		reply.addListener(SWT.Selection, this);
+		retweet.addListener(SWT.Selection, this);
 		
 		/**
 		 * Show the image for this user.
 		 */
-		Label imageLabel = toolkit.createLabel(composite,"");
+		final Label imageLabel = toolkit.createLabel(composite,"");
 		imageLabel.addMouseTrackListener(this);
 		
 		if(message.getUser() != null && message.getUser().getProperties().get("image") != null)
 		{
-		InputStream is = null;
-		try {
-			
-			URL url = new URL((String)message.getUser().getProperties().get("image"));
-			is = url.openStream();
-			Image image = new Image(Display.getCurrent(), is);
-			image = new Image(Display.getCurrent(),image.getImageData().scaledTo(50, 50));
-			imageLabel.setImage(image);
-			}
-			catch (Exception e)
-			{
-			   e.printStackTrace();
-			}
-			finally
-			{
-			   try {
-				if(is != null) is.close();
-				
-			} catch (IOException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			}
+			new Job("Images"){
+				protected org.eclipse.core.runtime.IStatus run(
+						IProgressMonitor monitor) {
+					InputStream is=null ;
+					try{
+						URL url = new URL((String)message.getUser().getProperties().get("image"));
+						is = url.openStream();
+						Image aux = new Image(Display.getCurrent(), is);
+						final Image image = new Image(Display.getCurrent(),aux.getImageData().scaledTo(50, 50));
+						PlatformUI.getWorkbench().getDisplay().asyncExec(new Runnable(){
+							public void run() {
+								imageLabel.setImage(image);
+							}
+						});
+					}catch (Exception e){
+						   e.printStackTrace();
+					} finally{
+						if(is != null)
+							try {
+								is.close();
+							} catch (IOException e) {
+								e.printStackTrace();
+							}
+					}
+					return Status.OK_STATUS;
+				}
+			}.schedule();
 		}
-		
-		
-		
 		
 		td = new TableWrapData(TableWrapData.FILL_GRAB);
 		/**
@@ -242,24 +246,30 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 
 	@Override
 	public void handleEvent(Event event) {
-		
 		/**
 		 * Find the tweet view part 
 		 */
-
-		IViewDescriptor view = PlatformUI.getWorkbench().getViewRegistry().find(TweetViewPart.VIEW_ID);
-		//TweetViewPart tweetView = 
-		
+		TweetViewPart tweetView = 
+			(TweetViewPart)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(TweetViewPart.VIEW_ID).getView(false);
 			
+		String screenName = (String)message.getUser().getProperties().get("screenName");
 		
-		if(event.item == reply)
+		if(event.widget.equals(reply))
 		{
 			//send a reply to this user 
-			
+			tweetView.setTweetText("@"+screenName);
 		}
 		
-		if(event.item == retweet)
-		{}
+		if(event.widget.equals(retweet))
+		{
+			StringBuffer rtBuffer = new StringBuffer();
+			rtBuffer.append("RT @");
+			rtBuffer.append(screenName);
+			rtBuffer.append(" ");
+			rtBuffer.append(message.getBody());
+			
+			tweetView.setTweetText(rtBuffer.toString());
+		}
 		
 	}
 
