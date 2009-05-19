@@ -10,11 +10,15 @@
 package org.eclipse.ecf.tests.provider.jms.activemq.remoteservice;
 
 
-import org.eclipse.ecf.tests.osgi.services.distribution.AbstractServiceRegisterTest;
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.tests.osgi.services.distribution.AbstractServiceRegisterListenerTest;
 import org.eclipse.ecf.tests.provider.jms.activemq.ActiveMQ;
 
 
-public class ActiveMQServiceRegisterTest extends AbstractServiceRegisterTest {
+public class ActiveMQServiceRegisterTest extends AbstractServiceRegisterListenerTest {
 
 	/*
 	 * (non-Javadoc)
@@ -29,7 +33,6 @@ public class ActiveMQServiceRegisterTest extends AbstractServiceRegisterTest {
 		setupRemoteServiceAdapters();
 	}
 
-	
 	protected String getClientContainerName() {
 		return ActiveMQ.CLIENT_CONTAINER_NAME;
 	}
@@ -41,13 +44,13 @@ public class ActiveMQServiceRegisterTest extends AbstractServiceRegisterTest {
 		return ActiveMQ.SERVER_CONTAINER_NAME;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.tests.provider.jms.remoteservice.AbstractRemoteServiceTestCase#getServerIdentity()
-	 */
-	protected String getServerIdentity() {
-		return ActiveMQ.TARGET_NAME;
+	protected ID getServerConnectID(int client) {
+		return IDFactory.getDefault().createID("ecf.namespace.jmsid", ActiveMQ.TARGET_NAME);
 	}
-
+	
+	protected IContainer createServer() throws Exception {
+		return ContainerFactory.getDefault().createContainer(getServerContainerName(), new Object[] {ActiveMQ.TARGET_NAME});
+	}
 
 	protected void tearDown() throws Exception {
 		cleanUpServerAndClients();
