@@ -67,7 +67,9 @@ public class ActiveMQJMSServerContainerInstantiator extends
 		for(int i=0; i < genericProviderIntents.length; i++) {
 			results.add(genericProviderIntents[i]);
 		}
-		results.add(jmsIntents);
+		for(int i=0; i < jmsIntents.length; i++) {
+			results.add(jmsIntents[i]);
+		}
 		return (String []) results.toArray(new String[] {});
 	}
 
