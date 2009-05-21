@@ -21,7 +21,7 @@ import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContaine
 public class ActiveMQJMSClientContainerInstantiator extends
 		GenericContainerInstantiator {
 
-	protected static final String jmsIntent = "JMS";
+	protected static final String [] jmsIntents = { "JMS" };
 	
 	public ActiveMQJMSClientContainerInstantiator() {
 
@@ -70,7 +70,9 @@ public class ActiveMQJMSClientContainerInstantiator extends
 		for(int i=0; i < genericProviderIntents.length; i++) {
 			results.add(genericProviderIntents[i]);
 		}
-		results.add(jmsIntent);
+		for(int i=0; i < jmsIntents.length; i++) {
+			results.add(jmsIntents[i]);
+		}
 		return (String []) results.toArray(new String[] {});
 	}
 }
