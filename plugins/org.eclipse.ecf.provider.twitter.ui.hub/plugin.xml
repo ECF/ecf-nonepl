@@ -64,6 +64,14 @@
             name="Browser"
             restorable="true">
       </view>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.SearchViewPart"
+            icon="icons/search2.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.searchView"
+            name="Search"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">

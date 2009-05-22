@@ -9,14 +9,22 @@ import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.twitter.TwitterMessageChatEvent;
+import org.eclipse.ecf.internal.provider.twitter.search.TwitterMessageSearchManager;
+import org.eclipse.ecf.internal.provider.twitter.search.TwitterSimpleCriterion;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.im.IChatMessageEvent;
+import org.eclipse.ecf.presence.search.ICriteria;
+import org.eclipse.ecf.presence.search.IResultList;
+import org.eclipse.ecf.presence.search.ISearch;
+import org.eclipse.ecf.presence.search.message.MessageSearchException;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
+import org.eclipse.ecf.provider.twitter.container.TwitterChatManager;
 import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
 import org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.MessagesViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.SearchViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.TweetViewPart;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
@@ -27,12 +35,14 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	
 	private TwitterContainer container;
 	TwitterUser connectedUser;
+	private TwitterMessageSearchManager searchMgr;
 	
 	
 	private TwitterUser[] friendsList;
 	
 	private FriendsViewPart friendsView;
 	private TweetViewPart tweetView;
+	private SearchViewPart searchView;
 	private Display display;
 	
 	/**
@@ -71,6 +81,11 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			{
 				tweetView = (TweetViewPart)views[i].getPart(true);
 				tweetView.setController(this);
+			}
+			if(views[i].getId().equals(SearchViewPart.VIEW_ID))
+			{
+				searchView = (SearchViewPart)views[i].getPart(true);
+				searchView.setController(this);
 			}
 			
 		}
@@ -132,6 +147,27 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			
 			
 		}
+		
+	}
+	
+	/**
+	 * TODO: We should make this constantly poll...
+	 * @param query
+	 * @throws MessageSearchException 
+	 */
+	public IResultList runSearch(String query) throws MessageSearchException
+	{
+		if(searchMgr == null)
+		{
+			searchMgr = (TwitterMessageSearchManager)((TwitterChatManager)container.getChatManager()).getMessageSearchManager();
+		}
+		TwitterSimpleCriterion term = new TwitterSimpleCriterion(query);
+		ICriteria criteria = searchMgr.createCriteria();
+		criteria.add(term);
+		
+		ISearch searchResults = searchMgr.search(criteria);
+		
+		return searchResults.getResultList();
 		
 	}
 	
