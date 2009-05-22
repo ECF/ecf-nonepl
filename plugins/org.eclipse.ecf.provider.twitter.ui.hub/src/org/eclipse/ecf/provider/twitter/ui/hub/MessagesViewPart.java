@@ -74,9 +74,7 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		form.getBody().setLayout(layout);
 		
 		formComposite = form.getBody();
-		
-		
-		//displayMessage(new TwitterMessage(null, "Hello - testingdsaaaaaaaaaaaaaaaaaaaaaaaaadfsdf sdfs dasf"));
+	
 	}
 
 	@Override
@@ -92,18 +90,13 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 
 	public void update(Observable o, Object arg) {
 		IStatus message = (IStatus)arg;
-		displayMessage(message);
+		MessageComposite messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit);
 		form.reflow(true);
 		form.redraw();
 		
 	}
 	
-	private void displayMessage(IStatus message)
-	{
-		//NEW way
-		MessageComposite messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit);
-	}
-
+	
 	public void linkActivated(HyperlinkEvent e) {
 		//open up the link in a browser window.
 		
