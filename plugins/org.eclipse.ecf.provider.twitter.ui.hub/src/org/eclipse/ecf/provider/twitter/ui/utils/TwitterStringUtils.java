@@ -32,6 +32,12 @@ public class TwitterStringUtils
              message = message.replace(matcher.group(), url.toString());
             found = true;
         }
+		
+		/**
+		 * Replace any instances of & with &amp;
+		 */
+		message = message.replaceAll("&", "&amp;");
+		
 		return message;
 	}
 

@@ -135,7 +135,10 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			//final TwitterUser user = findUserWithID(msg.getFromID());
 		//	System.err.println("Got User");
 			super.setChanged();
-			//msg.getChatMessage().getBody();
+			
+			/**
+			 * Commented out message updates temporarily.
+			 */
 			if(!display.isDisposed())
 			{
 				display.syncExec(new Runnable() {
@@ -179,38 +182,7 @@ public class TwitterController extends Observable implements IIMMessageListener,
 
 	
 	
-	private TwitterUser findUserWithID(ID id)
-	{
-		/**
-		 * First, check if that user is you!
-		 */
-		try 
-		{
-			if(connectedUser == null)
-			{
-				connectedUser = container.getConnectedUser();
-			}
-			if(connectedUser!=null && connectedUser.getID().getName().equals(id.getName()))
-			{
-				return connectedUser;
-			}
-		} catch (ECFException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}
-		
-		if(friendsList != null)
-		{
-			for(int i = 0; i < friendsList.length; i++)
-			{
-				if(friendsList[i].getID().getName().equals(id.getName()))
-				{
-					return friendsList[i];
-				}
-			}
-		}
-		return null;
-	}
+	
 
 
 
