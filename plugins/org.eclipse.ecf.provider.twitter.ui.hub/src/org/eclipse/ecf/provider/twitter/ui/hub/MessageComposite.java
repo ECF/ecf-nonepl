@@ -13,6 +13,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
+import org.eclipse.ecf.provider.twitter.ui.utils.TwitterStringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -41,6 +42,7 @@ import org.osgi.framework.Bundle;
 public class MessageComposite implements MouseTrackListener, IHyperlinkListener, Listener
 {
 
+	private static final String TWITTER_URL = "http://www.twitter.com/";
 	private IStatus message; 
 	private FormToolkit toolkit; 
 	private Composite composite; 
@@ -176,14 +178,16 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		/**
 		 * Display the status of this twitter message
 		 */
+		String msgTxt = TwitterStringUtils.decorateUserTags(message.getText());
+		//TODO: do this better.?? 
+		msgTxt = "<form><p>"+msgTxt+"</p></form>";
 		FormText statusTxt = toolkit.createFormText(composite,false);
 		statusTxt.addMouseTrackListener(this);
 		statusTxt.addHyperlinkListener(this);
 		statusTxt.setParagraphsSeparated(true);
 		statusTxt.setLayoutData(td);
-		statusTxt.setText(message.getText(), false, true);
+		statusTxt.setText(msgTxt, true, true);
 	}
-	
 	
 	private static Image loadImage(String img)
 	{

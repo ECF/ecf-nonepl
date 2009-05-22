@@ -44,7 +44,7 @@ import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
 
-public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkListener, MouseTrackListener {
+public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkListener {
 
 	
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.messagesView";
@@ -126,131 +126,13 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		
 	}
 
-	
-	
-	private void showTwitterOptions(Composite twitterComp)
-	{
-		
-	}
-	
-	
+	@Override
 	public void linkExited(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
-	public void mouseEnter(MouseEvent e) {
-		if(e.getSource() instanceof Composite)
-		{
-			showTwitterOptions((Composite)e.getSource());
-			
-//			final Composite composite = (Composite)e.getSource();
-//			TwitterMessage message = (TwitterMessage)composite.getData();
-//			
-//			Display display = Display.getCurrent();
-//			
-//				if (tip != null  && !tip.isDisposed ()) 
-//					tip.dispose ();
-//				
-//				
-//				tip = new Shell (composite.getShell(), SWT.NO_TRIM | SWT.ON_TOP | SWT.NO_BACKGROUND);
-//				
-//				GridLayout layout = new GridLayout(2, false);
-//				layout.horizontalSpacing = 1;
-//				layout.verticalSpacing = 1;
-//				layout.marginHeight = 0;
-//				layout.marginWidth = 0;
-//				
-//				tip.setLayout (layout);
-//				
-//				//move one composite all the way over to the left. 
-//				
-//				
-//				GridData data = new GridData();
-//				data.horizontalAlignment = SWT.END;
-//				data.grabExcessHorizontalSpace= true;
-//				
-//				
-//				//data.verticalAlignment = SWT.BEGINNING;
-//				
-//				
-//				
-////				text.addListener (SWT.MouseExit, this);
-////				text.addListener (SWT.MouseDown, this);
-//				Button reply = new Button(tip, SWT.FLAT);
-//				reply.setText("R");
-//				reply.setToolTipText("Reply");
-//				reply.setLayoutData(data);
-//				
-//				Button retweet = new Button(tip, SWT.FLAT);
-//				retweet.setText("RT");
-//				retweet.setToolTipText("Retweet");
-//				retweet.setLayoutData(data);
-//				
-//				Button favourite = new Button(tip, SWT.FLAT);
-//				favourite.setText("F");
-//				favourite.setToolTipText("Mark As Favourite");
-//				favourite.setLayoutData(data);
-//				
-//				Button dMessage = new Button(tip, SWT.FLAT);
-//				dMessage.setText("DM");
-//				dMessage.setToolTipText("Send Direct Message");
-//				dMessage.setLayoutData(data);
-//				
-//				
-//				
-//				
-//				//Label l = new Label(tip, SWT.NONE);
-//				//l.setText("Hello hello hello");
-//				//Point size = tip.computeSize (SWT.DEFAULT, SWT.DEFAULT);
-//				Point size = composite.computeSize(SWT.DEFAULT,SWT.DEFAULT);
-//				Rectangle rect = composite.getBounds ();
-//				Point pt = composite.toDisplay (rect.x, rect.y);
-//				tip.setBounds (pt.x, pt.y, size.x, size.y);
-//								
-//				tip.addListener (SWT.MouseExit, new Listener(){
-//				
-//					@Override
-//					public void handleEvent(Event event) {
-//						// TODO Auto-generated method stub
-//						if(tip != null && !tip.isDisposed())
-//							tip.dispose();
-//					}
-//				});
-//				
-//				tip.setVisible (true);
-			
-		}
-		
-		
-		
-	}
-
-	@Override
-	public void mouseExit(MouseEvent e) {
-		
-//		if(e.getSource() instanceof Composite)
-//		{
-//			if(tip != null && !tip.isDisposed())
-//			{
-//				System.err.println("Dispose");
-//				tip.dispose();
-//			}
-//		}
-		
-//		// TODO Auto-generated method stub
-//		if(!tip.isDisposed() && tip !=null)
-//		{
-//			tip.dispose();
-//		}
-	}
-
-	@Override
-	public void mouseHover(MouseEvent e) {
-		// TODO Auto-generated method stub
-		System.err.println("HOVER");
-	}
+	
 	
 	
 	
