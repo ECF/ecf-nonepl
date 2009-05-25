@@ -46,7 +46,6 @@ import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
-import twitter4j.UserWithStatus;
 
 /**
  *
@@ -124,8 +123,9 @@ public class TwitterContainer extends AbstractContainer implements
 			for (Iterator iterator = timeLine.iterator(); iterator.hasNext();) {
 				Status status = (Status) iterator.next();
 				TwitterUser user = new TwitterUser(status.getUser());
-				//FIXME
-				result.add(new StatusTwitter(user.getID(), status.getText(), status));
+				// FIXME
+				result.add(new StatusTwitter(user.getID(), status.getText(),
+						status));
 			}
 			return result;
 		} catch (TwitterException e) {
@@ -139,14 +139,14 @@ public class TwitterContainer extends AbstractContainer implements
 	 *         user. List of {@link IStatus}
 	 * @throws ECFException
 	 */
-	public List getUserTimeline() throws ECFException{
+	public List getUserTimeline() throws ECFException {
 		List timeLine;
 		List result = new ArrayList();
 		try {
 			timeLine = getTwitter().getUserTimeline(5, new Date());
 			for (Iterator iterator = timeLine.iterator(); iterator.hasNext();) {
 				Status status = (Status) iterator.next();
-				//result.add(new StatusTwitter(status));
+				// result.add(new StatusTwitter(status));
 			}
 			return result;
 		} catch (TwitterException e) {
@@ -154,7 +154,7 @@ public class TwitterContainer extends AbstractContainer implements
 		}
 
 	}
-	
+
 	/**
 	 * 
 	 * @return Returns the 20 tweets on the specific page. List of
@@ -168,7 +168,7 @@ public class TwitterContainer extends AbstractContainer implements
 			timeLine = getTwitter().getFriendsTimelineByPage(page);
 			for (Iterator iterator = timeLine.iterator(); iterator.hasNext();) {
 				Status status = (Status) iterator.next();
-				//result.add(new StatusTwitter(status));
+				// result.add(new StatusTwitter(status));
 			}
 			return result;
 		} catch (TwitterException e) {
@@ -208,9 +208,9 @@ public class TwitterContainer extends AbstractContainer implements
 	List diffFriendsTimeline(List twitterList) {
 		for (final Iterator i = twitterList.iterator(); i.hasNext();) {
 			final Status s = (Status) i.next();
-			//if (lastFriendsContains(new StatusTwitter(s))) {
-			//	i.remove();
-			//}
+			// if (lastFriendsContains(new StatusTwitter(s))) {
+			// i.remove();
+			// }
 		}
 		lastFriendsStatuses.addAll(twitterList);
 		return twitterList;
@@ -244,7 +244,7 @@ public class TwitterContainer extends AbstractContainer implements
 	 */
 	public TwitterUser getConnectedUser() throws ECFException {
 		try {
-			UserWithStatus user = getTwitter().getUserDetail(
+			twitter4j.User user = getTwitter().getUserDetail(
 					twitter.getUserId());
 
 			TwitterUser twitterUser = new TwitterUser(user);
@@ -317,14 +317,11 @@ public class TwitterContainer extends AbstractContainer implements
 				throw new ContainerConnectException("targetID of wrong type");
 			try {
 				this.twitter = new Twitter(targetID.getName(), password);
-				if (!this.twitter.verifyCredentials())
-					throw new ContainerConnectException(
-							"Cound not authenticate");
+				this.twitter.verifyCredentials();
 				this.targetID = (TwitterID) targetID;
 				// Create user
 				final User localUser = new User(targetID, this.twitter
-						.getUserId()
-						+ " [Twitter]");
+						.getUserId() + " [Twitter]");
 				// Set local user in chat manager...this creates roster
 				rosterManager.setUser(localUser);
 				// Then get twitter friends from server
@@ -336,7 +333,10 @@ public class TwitterContainer extends AbstractContainer implements
 			} catch (final ContainerConnectException e) {
 				this.targetID = null;
 				throw e;
-			} catch (final Exception e) {
+			} catch (TwitterException e) {
+				this.targetID = null;
+				throw new ContainerConnectException("Cound not authenticate");
+			} catch (final ECFException e) {
 				this.targetID = null;
 				throw new ContainerConnectException(e);
 			}
@@ -348,7 +348,7 @@ public class TwitterContainer extends AbstractContainer implements
 
 	class AutoRefreshThread extends Thread {
 
-		//FIXME make the auto refresh parametrized 
+		// FIXME make the auto refresh parametrized
 		int refreshDelay = 5000;
 		boolean done = false;
 		Object lock = new Object();
@@ -410,7 +410,8 @@ public class TwitterContainer extends AbstractContainer implements
 		// Then get friend's status messages
 		final List statuses = getFriendsTimeline();
 		// Add notify message listeners
-		chatManager.handleStatusMessages((IStatus[]) statuses.toArray(new IStatus[] {}));
+		chatManager.handleStatusMessages((IStatus[]) statuses
+				.toArray(new IStatus[] {}));
 	}
 
 	/*
@@ -466,7 +467,6 @@ public class TwitterContainer extends AbstractContainer implements
 	public void sendStatusUpdate(String status) throws ECFException {
 		chatManager.getChatMessageSender().sendChatMessage(targetID, status);
 	}
-
 
 	public IUserSearchManager getUserSearchManager() {
 		return new IUserSearchManager() {
