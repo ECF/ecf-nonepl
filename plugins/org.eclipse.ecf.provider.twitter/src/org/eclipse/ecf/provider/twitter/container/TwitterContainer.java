@@ -26,6 +26,7 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.twitter.StatusTwitter;
@@ -102,14 +103,57 @@ public class TwitterContainer extends AbstractContainer implements
 		}
 	}
 
-	public List getTwitterFriends() throws ECFException {
+	/**
+	 * Return a list of Following
+	 * @return List<IUser>
+	 * @throws ECFException
+	 */
+	public List<IUser> getFollowing() throws ECFException {
 		try {
-			return this.getTwitter().getFriends();
+			
+			List<twitter4j.User> friends = getTwitter().getFriends();
+			List<IUser> twitterFriends = new ArrayList<IUser>(friends.size());
+			
+			Iterator<twitter4j.User> iterator = friends.iterator();
+			while (iterator.hasNext()) {
+				twitter4j.User user = iterator.next();
+				twitterFriends.add(new TwitterUser(user));
+				
+			}
+			
+			return twitterFriends;
+			
 		} catch (final TwitterException e) {
 			throw new ECFException("Exception getting twitter friends", e);
 		}
 	}
 
+	/**
+	 * Returns the authenticating user's followers, each with current status inline.
+	 * @return List<IUser>
+	 * @throws ECFException
+	 */
+	public List<IUser> getFollowers() throws ECFException {
+		try {
+			
+			List<twitter4j.User> followers = getTwitter().getFollowers();
+			List<IUser> twitterFollowers = new ArrayList<IUser>(followers.size());
+			
+			Iterator<twitter4j.User> iterator = followers.iterator();
+			while (iterator.hasNext()) {
+				twitter4j.User user = iterator.next();
+				twitterFollowers.add(new TwitterUser(user));
+				
+			}
+			
+			return twitterFollowers;
+			
+		} catch (final TwitterException e) {
+			throw new ECFException("Exception getting twitter followers", e);
+		}
+	}
+	
+    
 	/**
 	 * 
 	 * @return Returns the 20 most recent statuses posted by the authenticating
@@ -227,14 +271,15 @@ public class TwitterContainer extends AbstractContainer implements
 	}
 
 	public TwitterUser[] getTwitterUsersFromFriends() throws ECFException {
-		final List friends = getTwitterFriends();
-		final List result = new ArrayList();
-		for (final Iterator i = friends.iterator(); i.hasNext();) {
-			final twitter4j.User twitterUser = (twitter4j.User) i.next();
-			final TwitterUser tu = new TwitterUser(twitterUser);
-			result.add(tu);
-		}
-		return (TwitterUser[]) result.toArray(new TwitterUser[] {});
+		final List<IUser> friends = getFollowing();
+//		final List result = new ArrayList();
+//		
+//		for (final Iterator<IUser> i = friends.iterator(); i.hasNext();) {
+//			//final twitter4j.User twitterUser = (twitter4j.User) i.next();
+//			final TwitterUser tu = (TwitterUser)i.next();
+//			result.add(tu);
+//		}
+		return (TwitterUser[]) friends.toArray(new TwitterUser[] {});
 	}
 
 	/**
