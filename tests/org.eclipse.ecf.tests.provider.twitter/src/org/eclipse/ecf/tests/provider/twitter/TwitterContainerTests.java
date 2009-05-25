@@ -18,6 +18,7 @@ import java.util.List;
 
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.IDFactory;
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.roster.IRoster;
@@ -147,6 +148,28 @@ public class TwitterContainerTests extends ContainerAbstractTestCase {
 		final IContainer client = getClient(0);
 		TwitterContainer container = (TwitterContainer)client.getAdapter(TwitterContainer.class);
 		List l = container.getFriendsTimeline();
+	}
+	
+	
+	public void testFollowings() throws ECFException{
+		final IContainer client = getClient(0);
+		TwitterContainer container = (TwitterContainer)client.getAdapter(TwitterContainer.class);
+		List<IUser> l = container.getFollowing();
+		assertTrue(l.size() > 0);
+		
+	}
+	
+	public void testFollowers() throws ECFException{
+		final IContainer client = getClient(0);
+		TwitterContainer container = (TwitterContainer)client.getAdapter(TwitterContainer.class);
+		List<IUser> l = container.getFollowers();
+		Iterator<IUser> it = l.iterator();
+		while (it.hasNext()) {
+			IUser type = it.next();
+			System.out.println(type.getName());
+			
+		}
+		
 	}
 	
 	public void testTimeLineSince() throws ECFException, ParseException{
