@@ -17,6 +17,6 @@ package org.eclipse.ecf.tests.provider.jms.activemq;
 public interface ActiveMQ {
 
 	public static final String CLIENT_CONTAINER_NAME = "ecf.jms.activemq.tcp.client";
-	public static final String SERVER_CONTAINER_NAME = "ecf.jms.activemq.tcp.server";
+	public static final String SERVER_CONTAINER_NAME = "ecf.jms.activemq.tcp.manager";
 	public static final String TARGET_NAME = "tcp://localhost:61616/exampleTopic";
 }
