@@ -43,6 +43,7 @@ import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
 
+import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
 import twitter4j.TwitterException;
@@ -87,7 +88,7 @@ public class TwitterContainer extends AbstractContainer implements
 
 	void sendTwitterUpdate(String body) throws ECFException {
 		try {
-			this.getTwitter().update(body);
+			this.getTwitter().updateStatus(body);
 		} catch (final TwitterException e) {
 			throw new ECFException(e);
 		}
@@ -135,15 +136,15 @@ public class TwitterContainer extends AbstractContainer implements
 
 	/**
 	 * 
-	 * @return Returns the 20 most recent statuses posted by the authenticating
-	 *         user. List of {@link IStatus}
+	 * @return Returns the most recent statuses posted in the last 24 hours from the authenticating user.
+	 *  List of {@link IStatus}
 	 * @throws ECFException
 	 */
 	public List getUserTimeline() throws ECFException {
 		List timeLine;
 		List result = new ArrayList();
 		try {
-			timeLine = getTwitter().getUserTimeline(5, new Date());
+			timeLine = getTwitter().getUserTimeline();
 			for (Iterator iterator = timeLine.iterator(); iterator.hasNext();) {
 				Status status = (Status) iterator.next();
 				// result.add(new StatusTwitter(status));
@@ -165,7 +166,7 @@ public class TwitterContainer extends AbstractContainer implements
 		List timeLine;
 		List result = new ArrayList();
 		try {
-			timeLine = getTwitter().getFriendsTimelineByPage(page);
+			timeLine = getTwitter().getFriendsTimeline(new Paging(page));
 			for (Iterator iterator = timeLine.iterator(); iterator.hasNext();) {
 				Status status = (Status) iterator.next();
 				// result.add(new StatusTwitter(status));
@@ -251,8 +252,6 @@ public class TwitterContainer extends AbstractContainer implements
 			return twitterUser;
 
 		} catch (TwitterException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 			return null;
 		}
 
