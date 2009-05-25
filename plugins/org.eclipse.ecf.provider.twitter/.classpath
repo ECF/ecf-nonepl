@@ -8,6 +8,6 @@
 	<classpathentry exported="true" kind="lib" path="lib/logback-core-0.9.6.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/rome-0.9.jar"/>
 	<classpathentry exported="true" kind="lib" path="lib/slf4j-api-1.5.0.jar"/>
-	<classpathentry exported="true" kind="lib" path="lib/twitter4j-1.1.7.jar"/>
+	<classpathentry kind="lib" path="lib/twitter4j-2.0.5.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
