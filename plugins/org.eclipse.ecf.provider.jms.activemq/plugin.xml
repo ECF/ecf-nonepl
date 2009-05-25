@@ -16,7 +16,7 @@
       <containerFactory
             class="org.eclipse.ecf.internal.provider.jms.activemq.ActiveMQJMSServerContainerInstantiator"
             description="ECF Generic Manager - JMS (ActiveMQ)"
-            name="ecf.jms.activemq.tcp.server">
+            name="ecf.jms.activemq.tcp.manager">
       </containerFactory>
    </extension>
 
