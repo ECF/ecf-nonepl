@@ -20,14 +20,12 @@ import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
 public class WeblogicJMSClientContainer extends AbstractJMSClient {
 
 	public WeblogicJMSClientContainer(int keepAlive) throws Exception {
-		super(new JMSContainerConfig(IDFactory.getDefault().createGUID(),
-				keepAlive));
+		super(keepAlive);
 	}
 
 	public WeblogicJMSClientContainer(String name, int keepAlive)
 			throws Exception {
-		super(new JMSContainerConfig(IDFactory.getDefault()
-				.createStringID(name), keepAlive));
+		super(new JMSContainerConfig(name, keepAlive));
 	}
 
 	/*

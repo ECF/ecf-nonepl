@@ -14,7 +14,6 @@ import javax.jms.ConnectionFactory;
 
 import org.apache.activemq.ActiveMQConnectionFactory;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.jms.channel.AbstractJMSClientChannel;
@@ -71,8 +70,7 @@ public class ActiveMQJMSClientContainer extends AbstractJMSClient {
 
 	public ActiveMQJMSClientContainer(String name, int keepAlive)
 			throws Exception {
-		super(new JMSContainerConfig(IDFactory.getDefault()
-				.createStringID(name)));
+		super(new JMSContainerConfig(name, keepAlive));
 		this.keepAlive = keepAlive;
 	}
 

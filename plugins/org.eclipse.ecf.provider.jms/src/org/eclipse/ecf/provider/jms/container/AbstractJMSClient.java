@@ -33,7 +33,11 @@ public abstract class AbstractJMSClient extends ClientSOContainer {
 	}
 
 	public AbstractJMSClient() throws Exception {
-		this(new JMSContainerConfig(IDFactory.getDefault().createGUID()));
+		this(new JMSContainerConfig());
+	}
+
+	public AbstractJMSClient(int keepAlive) {
+		this(new JMSContainerConfig(keepAlive));
 	}
 
 	public AbstractJMSClient(JMSContainerConfig config) {
