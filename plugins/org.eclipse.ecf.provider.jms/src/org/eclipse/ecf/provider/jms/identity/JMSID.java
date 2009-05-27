@@ -10,8 +10,7 @@
  *****************************************************************************/
 package org.eclipse.ecf.provider.jms.identity;
 
-import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.identity.StringID;
+import org.eclipse.ecf.core.identity.*;
 
 public class JMSID extends StringID {
 
@@ -25,6 +24,15 @@ public class JMSID extends StringID {
 	 */
 	protected JMSID(Namespace n, String s) {
 		super(n, s);
+	}
+
+	protected boolean namespaceEquals(BaseID obj) {
+		if (obj == this)
+			return true;
+		if (!(obj instanceof JMSID))
+			return false;
+		JMSID o = (JMSID) obj;
+		return value.equals(o.getName());
 	}
 
 	public String toString() {
