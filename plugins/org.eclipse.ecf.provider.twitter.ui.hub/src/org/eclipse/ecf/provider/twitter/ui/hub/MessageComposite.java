@@ -46,6 +46,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	//statically load the images for now.
 	private static Image replyImg = loadImage("reply.png");
 	private static Image retweetImg = loadImage("retweet.png");
+	private static Image blankUserImg = loadImage("blankUserImage.png");
 	private Button reply; 
 	private Button retweet;
 	private IStatus message; 
@@ -249,6 +250,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 				imageLabel.setImage(userImage);
 			} else {
 				//if not cached => queue label for image
+				imageLabel.setImage(blankUserImg);
 				TwitterCache.queueMessageForUserImageLoading(userID, imagePath, imageLabel);
 			}
 //		}
