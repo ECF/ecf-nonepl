@@ -53,6 +53,7 @@ public class JGroupsNamespace extends Namespace {
 			}
 			return new JGroupsID(this, IDFactory.getDefault().createGUID().getName());
 		} catch (final Exception e) {
+			if (e instanceof IDCreateException) throw (IDCreateException) e;
 			throw new IDCreateException(NLS.bind("{0} createInstance()", getName()), e); //$NON-NLS-1$
 		}
 	}
