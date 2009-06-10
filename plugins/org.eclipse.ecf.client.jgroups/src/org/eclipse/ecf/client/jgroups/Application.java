@@ -21,6 +21,7 @@ public class Application implements IApplication {
 	protected static String CONTAINER_CLIENT = "ecf.jgroups.client";
 	protected static String CONTAINER_MANAGER = "ecf.jgroups.manager";
 	protected static String CONTAINER_DESCRIPTION="Trivial JGroups client";
+	protected static String CONTAINER_FACTORY="ecf.jgroups.client.containerFactory";
 	
 	private IApplicationContext context;
 
@@ -32,12 +33,10 @@ public class Application implements IApplication {
 	private static String jgURL;
 
 	protected IContainer createClient() throws Exception {
-		final Namespace jgNS = new JGroupsNamespace();
-		final ID targetID = jgNS.createInstance( new Object[]{ jgURL } );
-		return ContainerFactory.getDefault().createContainer(
+		return ContainerFactory.getDefault().createContainer( 
 				new ContainerTypeDescription(CONTAINER_CLIENT,
 						JGroupsClientContainerInstantiator.class.getName(),
-						CONTAINER_DESCRIPTION), targetID);
+						CONTAINER_DESCRIPTION), getServerIdentity() );
 	}
 
     private ID getServerIdentity() throws IDCreateException, URISyntaxException {
