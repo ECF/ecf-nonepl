@@ -1,93 +1,186 @@
-<?xml version="1.0"?>
-<project name="docbook-src" default="usage" basedir=".">
-    
-    <!--
-      - Configure basic properties that will be used in the file.
-      -->
-    <property name="docbook.xsl.dir" value="docbook-xsl-1.74.0" />
-    <property name="doc.dir" value="output" />
-    <property name="html.stylesheet" value="${docbook.xsl.dir}/html/docbook.xsl" />
-    <property name="xalan.lib.dir" value="lib/xalan-j_2_7_1" />
-    <property name="fop.home" value="lib/fop-0.94" />
-    <property name="fo.stylesheet" value="${docbook.xsl.dir}/fo/docbook.xsl" />
+<!--
+	Some of the code below is
+	(c) Chris Aniszczyk <caniszczyk@gmail.com>
+    (c) Lawrence Mandel <lmandel@ca.ibm.com>
+    (c) Peter Friese <peter@peterfriese.de>
+-->
+<project name="how-to-use-wikitext" default="build-doc" basedir=".">
 
-    <!--
-      - Sets up the classpath for the Xalan and Xerces implementations
-      - that are to be used in this script, since the versions that ship
-      - with Ant may be out of date.
-      -->
-    <path id="xalan.classpath">
-        <fileset dir="${xalan.lib.dir}" id="xalan.fileset">
-            <include name="xalan.jar" />
-            <include name="xercesImpl.jar" />
-        </fileset>
-    </path>
+	<!--
+		Global vars
+	-->
+	<property name="document.name" value="book"/>
+	<property name="document.stylesheet" value="styles/article.xsl"/>
+	<property name="document.pdf.stylesheet" value="styles/fopdf.xsl"/>
+	
+	<property name="dest.dir" value="."/>
+	<property name="download.dir" value="${java.io.tmpdir}${file.separator}downloads"/>
+	
+	<!--  
+		WikiText Toolchain 
+	-->
+	<property name="wikitext.standalone" value="lib"/><!-- path to wikitext standalone package -->
 
-    <!--
-      - target:  usage
-      -->
-    <target name="usage" description="Prints the Ant build.xml usage">
-        <echo message="Use -projecthelp to get a list of the available targets." />
-    </target>
+	<path id="wikitext.classpath">
+		<fileset dir="${wikitext.standalone}">
+			<include name="org.eclipse.mylyn.wikitext.*core*.jar"/>
+			<include name="net.java.dev.textilej.wikitext.*core*.jar"/>
+			<include name="net.java.dev.textilej.wikitext.*lib*.jar"/>
+		</fileset>
+	</path>
 
-    <!--
-      - target:  clean
-      -->
-    <target name="clean" description="Cleans up generated files.">
-        <delete dir="${doc.dir}" />
-    </target>
-
-    <!--
-      - target:  depends
-      -->
-    <target name="depends" depends="merge">
-        <mkdir dir="${doc.dir}" />
-    </target>
-
-    <!--
-      - target:  build-html
-      - description:  Iterates through a directory and transforms
-      -     .xml files into .html files using the DocBook XSL.
-      -->
-    <target name="build-html" depends="depends" 
-        description="Generates HTML files from DocBook XML">
-        <xslt style="${html.stylesheet}" extension=".html" 
-            basedir="content" destdir="${doc.dir}" >
-        	<factory name="org.apache.xalan.processor.TransformerFactoryImpl" />
-	        <include name="combined.xml" />
-        </xslt>
-    </target>
-    
-	<target name="build-pdf" depends="depends" 
-	    description="Generates PDF files from DocBook XML">
-	    <xslt style="${fo.stylesheet}" extension=".fo" 
-	        basedir="content" destdir="${doc.dir}">
-	        <include name="combined.xml" />
-	    </xslt>
-
-	    <taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop">
-	        <classpath>
-	            <fileset dir="${fop.home}/lib">
-	                <include name="*.jar" />
-	            </fileset>
-	            <fileset dir="${fop.home}/build">
-	                <include name="fop.jar" />
-	                <include name="fop-hyph.jar" />
-	            </fileset>
-	        </classpath>
-	    </taskdef>
-
-	    <fop format="application/pdf" fofile="${doc.dir}/combined.fo" 
-	        outfile="${doc.dir}/book.pdf" />
+	<taskdef classpathref="wikitext.classpath" resource="org/eclipse/mylyn/wikitext/core/util/anttask/tasks.properties" />
+	<taskdef classpathref="wikitext.classpath" resource="net/java/dev/textilej/wikitext/pdf/core/util/anttask/tasks.properties" />
+	
+	<target name="assemble">
+		<loadfile srcfile="doc/index.txt" property="inputfiles">
+		  <filterchain>
+			<tokenfilter>
+			    <replacestring from="\n" to=","/>
+			</tokenfilter>
+		  </filterchain>
+		</loadfile>
+		<concat destfile="book.mediawiki" append="false" fixlastline="yes">
+			<filelist dir="doc" files="${inputfiles}"/>
+		</concat>
 	</target>
 	
-	<property name="base.dir" value="${htmldir}"/>
-	
-	<target name="merge">
-		<xsl.xinclude in="${basedir}/content/book.xml"
-		              out="${basedir}/content/combined.xml"
-		/>
+	<target name="wikitext2pdf" depends="assemble" description="Generate PDF from textile">
+		<wikitext-to-pdf markupLanguage="MediaWiki">
+			<fileset dir="${basedir}">
+	 			<include name="book.mediawiki"/>
+			</fileset>
+		</wikitext-to-pdf>
 	</target>
+	
+	<target name="wikitext2docbook" depends="assemble" description="Generate DocBook from textile">
+		<wikitext-to-docbook markupLanguage="MediaWiki">
+			<fileset dir="${basedir}">
+	 			<include name="book.mediawiki"/>
+			</fileset>
+		</wikitext-to-docbook>
+	 </target>
+	
+	<!--
+		DocBook Toolchain
+	-->
+	<property name="docbook.version" value="1.73.2" />
+	<property name="docbook.dir" value="${download.dir}${file.separator}docbook-xsl-${docbook.version}"/>
+	<property name="docbookxsl.url" value="http://internap.dl.sourceforge.net/sourceforge/docbook/docbook-xsl-${docbook.version}.zip"/>
+	<property name="fop.dir" value="${download.dir}${file.separator}fop-0.95"/>
+	<property name="fop.url" value="http://mirrorspace.org/apache/xmlgraphics/fop/binaries/fop-0.95-bin.zip"/>
+	<property name="jai.dir" value="ENTER_JAI_DIRECTORY"/>
+	<property name="build.home" value="build"/>
+	
+    <macrodef name="docbook2pdf">
+        <attribute name="source"/>
+    	<attribute name="target"/>
+        <sequential>
+        	<taskdef name="fop" classname="org.apache.fop.tools.anttasks.Fop">
+        		<classpath>
+        			<pathelement location="${fop.dir}${file.separator}build${file.separator}fop.jar" />
+        			<pathelement location="${fop.dir}${file.separator}lib${file.separator}avalon-framework-4.2.0.jar" />
+        			<pathelement location="${fop.dir}${file.separator}lib${file.separator}commons-logging-1.0.4.jar" />
+        			<pathelement location="${fop.dir}${file.separator}lib${file.separator}commons-io-1.3.1.jar" />
+        			<pathelement location="${fop.dir}${file.separator}lib${file.separator}batik-all-1.7.jar" />
+        			<pathelement location="${fop.dir}${file.separator}lib${file.separator}xmlgraphics-commons-1.3.1.jar" />
+        			<pathelement location="${jai.dir}${file.separator}lib${file.separator}jai_core.jar" />
+        			<pathelement location="${jai.dir}${file.separator}lib${file.separator}jai_codec.jar" />
+        		</classpath>
+        	</taskdef>
+        	<fop 
+        		format="application/pdf" 
+        		fofile="@{source}" 
+        		outfile="@{target}"
+        		messagelevel="info"/>
+        </sequential>
+    </macrodef>
 
+	<target name="init">
+		<mkdir dir="${download.dir}"/>
+	</target>
+	
+	<target name="build-doc" depends="init, get-docbook-xsl, get-fop">
+		<echo>Building Output...</echo>
+		<antcall target="wikitext2docbook"/>
+		<antcall target="docbook2html"/>
+		<antcall target="docbook2pdf"/>
+		<!--
+		<antcall target="dist"/>
+		-->
+	</target>
+		
+	<target name="check-docbook">
+		<available file="${download.dir}${file.separator}docbook.zip" property="hasDocbook"/>
+	</target>
+	
+	<target name="check-fop">
+		<available file="${download.dir}${file.separator}fop.zip" property="hasFOP"/>
+	</target>
+		
+	<target name="get-docbook-xsl" description="Downloads docbook xsl" depends="check-docbook" unless="hasDocbook">
+		<echo>Downloading DocBook XSL...</echo>
+		<get dest="${download.dir}${file.separator}docbook.zip" src="${docbookxsl.url}"/>
+		<unzip src="${download.dir}${file.separator}docbook.zip" dest="${download.dir}"/>
+	</target>
+	
+	<target name="get-fop" description="Downloads FOP" depends="check-fop" unless="hasFOP">
+		<echo>Downloading FOP...</echo>
+		<get dest="${download.dir}${file.separator}fop.zip" src="${fop.url}"/>
+		<unzip src="${download.dir}${file.separator}fop.zip" dest="${download.dir}"/>
+	</target>
+	
+	<target name="docbook2html">
+		<echo>Converting to HTML...</echo>
+		<delete file="${dest.dir}${file.separator}${document.name}.html"/>
+		<xslt in="${document.name}.xml" extension="xml" out="${dest.dir}${file.separator}${document.name}.html" style="${document.stylesheet}">
+			<factory name="org.apache.xalan.processor.TransformerFactoryImpl">
+				<attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
+			</factory>
+			<xmlcatalog>
+				<entity 
+					publicId="docbook.xsl"
+					location="${docbook.dir}${file.separator}html${file.separator}docbook.xsl"/>
+			</xmlcatalog>
+			<param name="header.rule" expression="1" />
+			<param name="admon.graphics.extension" expression=".gif"/>
+			<param name="admon.textlabel" expression="0"/>
+			<param name="ulink.target" expression="_new"/>
+		</xslt>
+	</target>
+	
+	<target name="docbook2pdf">
+		<echo>Converting to PDF...</echo>
+
+		<delete file="${dest.dir}${file.separator}${document.name}.pdf"/>
+		<delete file="${dest.dir}${file.separator}${document.name}.fo"/>
+<!--		<xslt in="${document.name}.xml" extension="xml" out="${dest.dir}${file.separator}${document.name}.fo" style="${docbook.dir}${file.separator}fo${file.separator}docbook.xsl">
+-->
+		<xslt in="${document.name}.xml" extension="xml" out="${dest.dir}${file.separator}${document.name}.fo" style="${document.pdf.stylesheet}">
+			<factory name="org.apache.xalan.processor.TransformerFactoryImpl">
+				<attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
+			</factory>
+			<xmlcatalog>
+				<entity 
+					publicId="docbook.xsl"
+					location="${docbook.dir}${file.separator}fo${file.separator}docbook.xsl"/>
+			</xmlcatalog>
+			<param name="generate.toc" expression="book toc" />
+			<param name="show.comments" expression="0" />
+			<param name="header.rule" expression="1" />
+			<param name="admon.graphics.extension" expression=".gif"/>
+			<param name="admon.textlabel" expression="0"/>
+			<param name="admon.graphics" expression="1"/>
+		</xslt>
+
+		<docbook2pdf 
+			source="${dest.dir}${file.separator}${document.name}.fo"
+			target="${dest.dir}${file.separator}${document.name}.pdf"/>
+		
+		<!-- Remove the resulting formatting object. This object isn't necessary in the
+		     result of this build. -->
+		<delete file="${dest.dir}${file.separator}${document.name}.fo" />
+	</target>
+	
 	
 </project>
