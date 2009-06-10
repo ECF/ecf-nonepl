@@ -54,7 +54,7 @@
 	</target>
 	
 	<target name="wikitext2docbook" depends="assemble" description="Generate DocBook from textile">
-		<wikitext-to-docbook markupLanguage="MediaWiki">
+		<wikitext-to-docbook markupLanguage="MediaWiki" booktitle="The Eclipse Communications Framework">
 			<fileset dir="${basedir}">
 	 			<include name="book.mediawiki"/>
 			</fileset>
