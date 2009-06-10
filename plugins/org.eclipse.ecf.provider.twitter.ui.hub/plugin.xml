@@ -2,15 +2,6 @@
 <?eclipse version="3.4"?>
 <plugin>
    <extension
-         point="org.eclipse.ui.perspectives">
-      <perspective
-            class="org.eclipse.ecf.provider.twitter.ui.hub.perspective.PerspectiveFactory"
-            icon="icons/Twitter_32(2).png"
-            id="org.eclipse.ecf.provider.twitter.ui.hub.perspective"
-            name="TweetHub">
-      </perspective>
-   </extension>
-   <extension
          point="org.eclipse.ui.views">
       <view
             category="org.eclipse.ecf.provider.twitter.ui.hub.category"
