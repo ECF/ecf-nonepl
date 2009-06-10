@@ -1,4 +1,4 @@
-chapter1.mediawiki
-chapter2.mediawiki
-chapter3.mediawiki
-chapter4.mediawiki
+part1/chapter1.mediawiki
+part1/chapter2.mediawiki
+part2/chapter3.mediawiki
+part2/chapter4.mediawiki
