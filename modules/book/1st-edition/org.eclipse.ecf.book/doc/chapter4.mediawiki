@@ -1,0 +1,19 @@
+=Hello, Toast=
+
+The temptation with any project is to start big. We could architect an entire complex of bundles, fully proving out how our application will function before we write a single line  of code. But that's not how agile projects evolve. And evolve they do. So much so that often the initial code might be totally unrecognizable by the time the project is finished. 
+
+So rather than start with architecture, we'll start with a humble understanding of one simple scenario in the telematics domain. In fact, the first pass at the Toast application will not even concern itself with OSGi at all.
+But by the time this chapter concludes however,  Toast will be built of bundles. In subsequent chapters, we'll add functionality to Toast both in terms of telematics and OSGi. 
+
+The goals of this chapter are: 
+
+* Create a simple application
+* Run the simple application
+
+==A Simple Scenario==
+
+TODO
+
+==Summary==
+
+TODO

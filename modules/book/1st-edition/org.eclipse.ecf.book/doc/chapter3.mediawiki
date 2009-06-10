@@ -1,0 +1,39 @@
+=Tutorial Introduction=
+
+This chapter guides you on the journey of developing a fully functional OSGi-based application, Toast. Using the same application throughout the book adds to the coherence of the examples and more closely matches the situations encountered in real-world software development. The principles and practices discussed throughout are applicable in a wide range of application domains and execution scenarios. Before getting down to the nuts and bolts of Toast development, this chapter sets the stage for the application by outlining its nature and evolution. We also ensure that you are set up with a working development environment. 
+
+This chapter focuses on three major issues: 
+
+* Outlining the sample application and sketching its evolution. 
+* Setting up your Eclipse IDE so you can develop the code yourself. 
+* Getting and using the Samples Manager to compare and manage the sample code. 
+
+==What is Toast?==
+
+Toast is a sample application for telematics. If you're unfamiliar with the term, you're almost certainly familiar with the concept. Wikipedia has the following to say about telematics (at the time of writing): 
+
+"[Telematics is] the integrated use of telecommunications and informatics. More specifically it is the science of sending, receiving and storing information via 
+telecommunication devices." 
+
+You will have seen this in car navigation and infotainment devices. A typical telematics system interfaces to the devices in the vehicle and provides some sort of user interface for interacting with or managing the devices. More sophisticated systems connect to a control center over a wireless network and allow remote control of the devices. In its finished form, Toast covers all of these bases—it interfaces to a simulated GPS and airbag, provides a user interface for a touch screen, and communicates with an OSGi-based control center using a variety of protocols. 
+
+At a high level, Toast consists of a Client and a Back End. The Toast Client provides a variety of function including an emergency application that notifies the control center of the vehicle's GPS location when the airbag deploys, an application that tracks the vehicle's GPS location and periodically notifies the control center, a touch screen interface to control the vehicle's audio and climate systems, and a turn-by-turn navigation system. The Toast Back End develops over the course of the book from a simple emergency monitoring station to an extensible platform for managing and controlling clients. This includes vehicle discovery, tracking and software management or provisioning. 
+
+==The Evolution of Toast==
+
+We develop Toast over a number of tutorial chapters in Part II of this book. Each chapter presents a new concept and makes incremental progress over the preceding chapter. As development progresses we supply the code for each. Where it helps to clarify the discussion, the chapter text includes code snippets. The Samples Manager available from xxx contains the complete code for each chapter and allows you to code as go by performing each step on your own, browse the code, or simply to read the text. 
+
+Hello Toast (Chapter 4)— The tutorial starts with an empty workspace and walks through creating a simple telematics application—the xxx application. In this application, whenever the airbag deploys, the GPS location is read and displayed along  with an emergency message. This simple application is then split into three bundles and the reasoning and tooling explained. By the end of this section, you have a running application based on a collection of OSGi bundles. 
+
+TODO
+
+==Development Environnment Installation==
+
+==Target Platform Setup==
+
+==Summary==
+
+Once set up, Eclipse and PDE make it easy to create and run OSGi systems. The setup detailed here is robust in that you can use the IDE to work on many different workspaces, the target platform can be updated independently of the IDE or the workspaces, and the IDE itself can be updated without affecting the workspaces or the target platform. 
+
+By adding Samples Manager support, you can jump to any chapter and set up your workspace in seconds. You can also validate the tutorial steps as you go and get quick summaries of all the changes done so far and those left to do.
+
