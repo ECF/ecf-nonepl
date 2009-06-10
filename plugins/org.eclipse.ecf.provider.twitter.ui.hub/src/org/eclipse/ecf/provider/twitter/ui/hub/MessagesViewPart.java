@@ -119,7 +119,6 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		
 	}
 
-	@Override
 	public void linkExited(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		

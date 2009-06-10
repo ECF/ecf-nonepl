@@ -75,7 +75,6 @@ public class SearchViewPart extends ViewPart implements Listener {
 		// TODO Auto-generated method stub
 	}
 
-	@Override
 	public void handleEvent(Event event) 
 	{	
 		//Display display = PlatformUI.getWorkbench().getDisplay();
