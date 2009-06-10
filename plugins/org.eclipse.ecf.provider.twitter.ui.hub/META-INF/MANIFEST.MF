@@ -31,3 +31,9 @@ Import-Package: org.eclipse.ecf.core,
  org.eclipse.ecf.presence.service,
  org.eclipse.ecf.ui,
  org.osgi.framework;version="1.3.0"
+Export-Package: org.eclipse.ecf.internal.provider.twitter.ui.wizards,
+ org.eclipse.ecf.provider.twitter.ui,
+ org.eclipse.ecf.provider.twitter.ui.dialogs,
+ org.eclipse.ecf.provider.twitter.ui.hub,
+ org.eclipse.ecf.provider.twitter.ui.logic,
+ org.eclipse.ecf.provider.twitter.ui.utils

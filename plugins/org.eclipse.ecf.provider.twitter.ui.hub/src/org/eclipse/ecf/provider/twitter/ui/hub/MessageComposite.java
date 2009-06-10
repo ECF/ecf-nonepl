@@ -282,26 +282,21 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	
 	
 	
-
-	@Override
 	public void mouseEnter(MouseEvent e) {
-		// TODO Auto-generated method stub
+		// TODO do nothing
 		
 	}
 
-	@Override
 	public void mouseExit(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void mouseHover(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void linkActivated(HyperlinkEvent e) {
 		//open the browser...
 		try {
@@ -317,19 +312,17 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		
 	}
 
-	@Override
 	public void linkEntered(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
 	public void linkExited(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 
-	@Override
+
 	public void handleEvent(Event event) {
 		/**
 		 * Find the tweet view part 
