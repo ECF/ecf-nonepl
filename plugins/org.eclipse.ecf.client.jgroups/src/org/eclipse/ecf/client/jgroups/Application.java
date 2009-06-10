@@ -9,6 +9,7 @@ import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
+import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.internal.provider.jgroups.JGroupsClientContainerInstantiator;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
@@ -39,9 +40,8 @@ public class Application implements IApplication {
 						CONTAINER_DESCRIPTION), targetID);
 	}
 
-    private static ID getServerIdentity() throws IDCreateException, URISyntaxException {
-    	final Namespace jgNS= new JGroupsNamespace();
-    	return  jgNS.createInstance( new String[]{ jgURL } ) ;
+    private ID getServerIdentity() throws IDCreateException, URISyntaxException {
+    	return IDFactory.getDefault().createID("ecf.namespace.jgroupsid",jgURL);
     }
 
 	@Override
@@ -55,13 +55,7 @@ public class Application implements IApplication {
 			this.appContext = context;
 			jgURL = args[0];
 			
-			final Namespace jgNS = new JGroupsNamespace();
-			jgNS.initialize( getServerIdentity().getName(), CONTAINER_DESCRIPTION);
-			ID managerID = jgNS.createInstance(new String[] { jgURL });
-
-			// final JGroupsID managerID = (JGroupsID)
-			// IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(JGroupsNamespace.NAME),
-			// jgURL);
+			ID managerID= getServerIdentity();
 			System.out.println(managerID.toExternalForm());
 			synchronized (this) {
 				client = createClient();
