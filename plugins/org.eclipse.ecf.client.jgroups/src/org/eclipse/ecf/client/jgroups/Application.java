@@ -54,7 +54,7 @@ public class Application implements IApplication {
 		} else {
 			this.appContext = context;
 			jgURL = args[0];
-			
+			System.out.println(jgURL);
 			ID managerID= getServerIdentity();
 			System.out.println(managerID.toExternalForm());
 			synchronized (this) {
