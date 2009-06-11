@@ -63,7 +63,7 @@ public class SaveRemotePreferencesAction implements IEditorActionDelegate {
 					.get(0);
 
 			List<IStatus> results = remotePreferenceService.setPreferences(
-					changedPreferences, sessionService.getContainer().getID());
+					changedPreferences, sessionService.getContainerID());
 			ErrorView.addError(results);
 
 		} catch (ECFException e) {

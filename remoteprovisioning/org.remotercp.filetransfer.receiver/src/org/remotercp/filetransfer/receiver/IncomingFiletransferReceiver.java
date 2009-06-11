@@ -5,7 +5,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -355,12 +354,11 @@ public class IncomingFiletransferReceiver implements
 		ISessionService service = OsgiServiceLocatorUtil.getOSGiService(
 				FiletransferReceiverActivator.getBundleContext(),
 				ISessionService.class);
-		Assert.isNotNull(service);
+		assert service != null : "service != null";
 
-		ISendFileTransferContainerAdapter adapter = (ISendFileTransferContainerAdapter) service
-				.getContainer().getAdapter(
-						ISendFileTransferContainerAdapter.class);
-		Assert.isNotNull(adapter);
+		ISendFileTransferContainerAdapter adapter = service
+				.getAdapter(ISendFileTransferContainerAdapter.class);
+		assert adapter != null : "adapter != null";
 
 		adapter.addListener(new IncomingFiletransferReceiver());
 

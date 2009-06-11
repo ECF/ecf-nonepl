@@ -65,7 +65,7 @@ public class RestartApplicationAction implements IViewActionDelegate {
 		ISessionService sessionService = OsgiServiceLocatorUtil
 				.getOSGiService(ProvisioningActivator.getBundleContext(),
 						ISessionService.class);
-		final ID fromId = sessionService.getContainer().getConnectedID();
+		final ID fromId = sessionService.getConnectedID();
 		Assert.isNotNull(sessionService);
 
 		ID[] userIDs = RosterUtil.getUserIDs(this.roster);

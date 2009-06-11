@@ -2,10 +2,8 @@ package org.remotercp.ecf.session;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
-import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.Assert;
@@ -34,12 +32,8 @@ public class SessionServiceImpl implements ISessionService {
 
 	private IContainer containter;
 
-	private Map<String, Object> remoteServices = new HashMap<String, Object>();
-
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
-
-	private boolean servicesInitialized = false;
 
 	public ConnectionDetails getConnectionDetails() {
 		return connectionDetails;
@@ -147,7 +141,7 @@ public class SessionServiceImpl implements ISessionService {
 	 * @return An array of remote services for given user and filter
 	 * @throws InvalidSyntaxException
 	 */
-	public IRemoteService[] getRemoteServiceReference(Class service,
+	public IRemoteService[] getRemoteServiceReference(Class<?> service,
 			ID[] filterIDs, String filter) throws InvalidSyntaxException {
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
 
@@ -186,12 +180,12 @@ public class SessionServiceImpl implements ISessionService {
 	public IChatManager getChatManager() {
 		IChatManager chatManager = this.getPresenceContainerAdapter()
 				.getChatManager();
-		Assert.isNotNull(chatManager);
+		assert chatManager != null : "chatManager != null";
 		return chatManager;
 	}
 
 	public IContainer getContainer() {
-		Assert.isNotNull(containter);
+		assert containter != null : "container != null";
 		return this.containter;
 	}
 
@@ -287,4 +281,23 @@ public class SessionServiceImpl implements ISessionService {
 
 		return authorized;
 	}
+
+	@Override
+	public <T> T getAdapter(Class<T> adapter) {
+		assert adapter != null : "adapter != null";
+
+		return (T) getContainer().getAdapter(adapter);
+
+	}
+
+	@Override
+	public ID getContainerID() {
+		return containter.getID();
+	}
+
+	@Override
+	public ID getConnectedID() {
+		return containter.getConnectedID();
+	}
+
 }

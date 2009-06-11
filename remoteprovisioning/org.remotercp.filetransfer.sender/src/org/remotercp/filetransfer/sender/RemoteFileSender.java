@@ -97,11 +97,9 @@ public class RemoteFileSender {
 
 		Assert.isNotNull(sessionService);
 
-		adapter = (ISendFileTransferContainerAdapter) sessionService
-				.getContainer().getAdapter(
-						ISendFileTransferContainerAdapter.class);
-
-		Assert.isNotNull(adapter);
+		adapter = sessionService
+				.getAdapter(ISendFileTransferContainerAdapter.class);
+		assert adapter != null : "adapter != null";
 
 		// perform sending
 		for (ID userID : userIDs) {

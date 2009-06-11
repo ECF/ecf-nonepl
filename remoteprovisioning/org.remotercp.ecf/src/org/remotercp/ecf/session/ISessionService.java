@@ -26,7 +26,11 @@ public interface ISessionService {
 
 	public IChatManager getChatManager();
 
-	public IContainer getContainer();
+	public ID getContainerID();
+	
+	public ID getConnectedID();
+
+	public <T> T getAdapter(Class<T> adapter);
 
 	/**
 	 * Registers a service as remote service for OSGi over ECF
@@ -98,6 +102,6 @@ public interface ISessionService {
 	 * @return An array of remote services for given user and filter
 	 * @throws InvalidSyntaxException
 	 */
-	public IRemoteService[] getRemoteServiceReference(Class service,
+	public IRemoteService[] getRemoteServiceReference(Class<?> service,
 			ID[] filterIDs, String filter) throws InvalidSyntaxException;
 }

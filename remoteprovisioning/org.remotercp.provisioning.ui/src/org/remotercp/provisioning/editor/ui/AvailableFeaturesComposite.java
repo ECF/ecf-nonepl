@@ -438,7 +438,7 @@ public class AvailableFeaturesComposite {
 						final SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
 						featuresToInstall[0] = SerializedFeatureWrapper
 								.createFeatureWrapper(feature);
-						final ID fromId = sessionService.getContainer().getConnectedID();
+						final ID fromId = sessionService.getConnectedID();
 
 						IRemoteCall installFeaturesCall = new IRemoteCall() {
 

@@ -378,7 +378,8 @@ public class InstalledFeaturesComposite {
 
 					// perform uninstall operation
 					List<IStatus> uninstallResult = remoteUninstallService
-							.uninstallFeatures(uninstallIds, sessionService.getContainer().getConnectedID());
+							.uninstallFeatures(uninstallIds, sessionService
+									.getConnectedID());
 
 					/* create child nodes for diplaying results */
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(

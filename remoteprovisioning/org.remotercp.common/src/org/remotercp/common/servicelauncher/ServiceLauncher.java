@@ -22,8 +22,7 @@ public class ServiceLauncher {
 	public static void startRemoteServices() {
 		IExtensionPoint extensionPoint = Platform.getExtensionRegistry()
 				.getExtensionPoint("org.remotercp.remoteService");
-		Assert.isNotNull(extensionPoint);
-
+		
 		IConfigurationElement[] configurationElements = extensionPoint
 				.getConfigurationElements();
 
