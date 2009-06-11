@@ -17,6 +17,6 @@ public class TestExceptionWizard {
 
 	@Test
 	public void testExceptionWizard() {
-		RemoteExceptionHandler.handleException(ex, errorText);
+//		RemoteExceptionHandler.handleException(ex, errorText);
 	}
 }

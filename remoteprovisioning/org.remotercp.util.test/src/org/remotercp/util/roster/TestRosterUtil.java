@@ -3,6 +3,8 @@ package org.remotercp.util.roster;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNotNull;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -13,12 +15,10 @@ import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
 import org.eclipse.ecf.presence.roster.IRosterGroup;
-import org.eclipse.ecf.presence.roster.IRosterItem;
 import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.roster.RosterGroup;
 import org.junit.Before;
 import org.junit.Test;
-import static org.mockito.Mockito.*;
 
 public class TestRosterUtil extends AbstractRosterGenerator {
 
@@ -177,7 +177,7 @@ public class TestRosterUtil extends AbstractRosterGenerator {
 
 		IRoster onlineUserForRosterItem = (IRoster) RosterUtil
 				.filterOnlineUserForRosterItem(roster);
-		Collection groups = onlineUserForRosterItem.getItems();
+		Collection<?> groups = onlineUserForRosterItem.getItems();
 		assertEquals(2, groups.size());
 
 		for (Object obj : groups) {
