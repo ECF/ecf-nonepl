@@ -101,17 +101,17 @@ public class SessionServiceImpl implements ISessionService {
 
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
 
-		/* 1. get all available services */
+		/* 1. get available services */
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
 				.getRemoteServiceReferences(filterIDs, service.getName(),
 						filter);
+		assert refs != null : "Remote service references != null";
 
-		/* 2. filter services for the given rosterIDs */
+		/* 2. get the proxies for found service references */
 		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
 
 			IRemoteService remoteService = remoteServiceContainerAdapter
 					.getRemoteService(refs[serviceNumber]);
-			Assert.isNotNull(remoteService);
 
 			T castedService = service.cast(remoteService.getProxy());
 			Assert.isNotNull(castedService);
