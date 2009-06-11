@@ -43,7 +43,6 @@ public class Application implements IApplication {
     	return IDFactory.getDefault().createID("ecf.namespace.jgroupsid",jgURL);
     }
 
-	@Override
 	public Object start(IApplicationContext context) throws Exception {
 		final String[] args = mungeArguments((String[]) context.getArguments()
 				.get("application.args")); //$NON-NLS-1$
@@ -68,7 +67,6 @@ public class Application implements IApplication {
 		return IApplication.EXIT_OK;
 	}
 
-	@Override
 	public void stop() {
 
 		synchronized (this) {
