@@ -1,19 +1,7 @@
 package org.remotercp.contacts;
 
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.presence.IIMMessageEvent;
-import org.eclipse.ecf.presence.IIMMessageListener;
-import org.eclipse.ecf.presence.IPresence;
-import org.eclipse.ecf.presence.IPresenceListener;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.remotercp.chat.actions.ChatUserStatusChangedAction;
-import org.remotercp.chat.actions.OpenChatEditorAction;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 /**
  * The activator class controls the plug-in life cycle
@@ -56,32 +44,32 @@ public class ContactsActivator extends AbstractUIPlugin {
 	 * registered on start up, otherwise the chat editor will never be opened.
 	 */
 	private void registerListener() {
-		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
-				bundlecontext, ISessionService.class);
-
-		if (session != null) {
-
-			// nachrichten
-			session.addMessageListener(new IIMMessageListener() {
-
-				public void handleMessageEvent(IIMMessageEvent messageEvent) {
-					Logger.getAnonymousLogger().log(Level.INFO,
-							"Message received: " + messageEvent.getFromID());
-
-					new OpenChatEditorAction(messageEvent).run();
-				}
-			});
-
-			// inform chat user about arriving and leaving of other chat user
-			session.getRosterManager().addPresenceListener(
-					new IPresenceListener() {
-						public void handlePresence(ID fromID, IPresence presence) {
-							new ChatUserStatusChangedAction(fromID, presence)
-									.run();
-
-						}
-					});
-		}
+//		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
+//				bundlecontext, ISessionService.class);
+//
+//		if (session != null) {
+//
+//			// nachrichten
+//			session.addMessageListener(new IIMMessageListener() {
+//
+//				public void handleMessageEvent(IIMMessageEvent messageEvent) {
+//					Logger.getAnonymousLogger().log(Level.INFO,
+//							"Message received: " + messageEvent.getFromID());
+//
+//					new OpenChatEditorAction(messageEvent).run();
+//				}
+//			});
+//
+//			// inform chat user about arriving and leaving of other chat user
+//			session.getRosterManager().addPresenceListener(
+//					new IPresenceListener() {
+//						public void handlePresence(ID fromID, IPresence presence) {
+//							new ChatUserStatusChangedAction(fromID, presence)
+//									.run();
+//
+//						}
+//					});
+//		}
 	}
 
 	/*

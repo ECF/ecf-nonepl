@@ -8,7 +8,6 @@ Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.databinding,
  org.remotercp.ecf,
- org.remotercp.chat,
  org.remotercp.util,
  org.remotercp.errorhandling
 Bundle-ActivationPolicy: lazy
