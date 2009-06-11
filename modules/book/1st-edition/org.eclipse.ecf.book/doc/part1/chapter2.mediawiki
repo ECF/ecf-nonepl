@@ -1,3 +1,12 @@
-=Introducing ECF=
+=ECF Concepts=
 
-Simply put, ECF is...
+==Modularity for Communications==
+
+==Java, OSGi, and SOA==
+
+==Separating Application Development from Protocol Development==
+
+==Humans, Machines, and Ways of Communicating==
+
+==Extensibility for Communications==
+
