@@ -2,3 +2,10 @@ part1/chapter1.mediawiki
 part1/chapter2.mediawiki
 part2/chapter3.mediawiki
 part2/chapter4.mediawiki
+part3/chapter10.mediawiki
+part3/chapter11.mediawiki
+part3/chapter12.mediawiki
+part3/chapter13.mediawiki
+part3/chapter14.mediawiki
+part3/chapter15.mediawiki
+part3/chapter16.mediawiki

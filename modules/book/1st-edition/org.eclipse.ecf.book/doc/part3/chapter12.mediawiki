@@ -1,0 +1,7 @@
+=Discovery API=
+
+The discovery API provides a protocol independent API for asynchronously discovering remote services. Registering services to be discovered and listeners to be asynchronously notified when service types and services are published is accomplished via the IDiscoveryContainerAdapter.
+
+==Summary==
+
+TODO
