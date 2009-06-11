@@ -58,7 +58,7 @@ public class ActiveMQJMSServerContainerInstantiator extends
 			return server;
 		} catch (Exception e) {
 			throw new ContainerCreateException(
-					"Exception creating weblogic server container", e);
+					"Exception creating activemq server container", e);
 		}
 	}
 	

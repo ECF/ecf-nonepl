@@ -61,7 +61,7 @@ public class ActiveMQJMSClientContainerInstantiator extends
 			}
 		} catch (Exception e) {
 			throw new ContainerCreateException(
-					"Exception creating generic container", e);
+					"Exception creating activemq client container", e);
 		}
 	}
 	
