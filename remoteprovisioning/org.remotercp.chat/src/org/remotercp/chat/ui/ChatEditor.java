@@ -86,7 +86,7 @@ public class ChatEditor extends EditorPart {
 				ISessionService.class);
 		assert (session != null);
 
-		this.session.getChatManager().addMessageListener(this.messageListener);
+		this.session.addMessageListener(this.messageListener);
 	}
 
 	@Override
@@ -155,7 +155,7 @@ public class ChatEditor extends EditorPart {
 		try {
 			ID toID = this.getChatParticipant();
 			IChatMessageSender chatMessageSender = this.session
-					.getChatManager().getChatMessageSender();
+					.getChatMessageSender();
 
 			// IChat chat = Session.getInstance().getChatManager().createChat(
 			// toID, this.messageListener);
@@ -182,7 +182,7 @@ public class ChatEditor extends EditorPart {
 			// }
 			// // TODO: send a system message with bundle info
 			// chatMessageSender.sendChatMessage(toID, null,
-			//					IChatMessage.Type.SYSTEM, null, null, props);
+			// IChatMessage.Type.SYSTEM, null, null, props);
 
 			// chat.sendChatMessage(text);
 
@@ -254,7 +254,7 @@ public class ChatEditor extends EditorPart {
 		// if (message.getType() == IChatMessage.Type.SYSTEM) {
 		// Map properties = message.getProperties();
 		// // Object object = properties.get("bundlecontext");
-		//		}
+		// }
 
 		// XStream xstream = new XStream();
 		if (message.getProperties() != null) {

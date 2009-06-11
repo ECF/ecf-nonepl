@@ -5,7 +5,8 @@ import java.util.List;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.presence.im.IChatManager;
+import org.eclipse.ecf.presence.IIMMessageListener;
+import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.remoteservice.IRemoteCall;
@@ -24,10 +25,12 @@ public interface ISessionService {
 
 	public IRoster getRoster();
 
-	public IChatManager getChatManager();
+	public IChatMessageSender getChatMessageSender();
+
+	public void addMessageListener(IIMMessageListener listener);
 
 	public ID getContainerID();
-	
+
 	public ID getConnectedID();
 
 	public <T> T getAdapter(Class<T> adapter);

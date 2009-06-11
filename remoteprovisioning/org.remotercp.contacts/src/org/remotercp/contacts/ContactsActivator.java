@@ -37,7 +37,9 @@ public class ContactsActivator extends AbstractUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#start(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void start(BundleContext context) throws Exception {
 		super.start(context);
@@ -52,7 +54,6 @@ public class ContactsActivator extends AbstractUIPlugin {
 	 * Register listener for incoming chat events. Check if this is the
 	 * appropriate place to register a listener. The listener has to be
 	 * registered on start up, otherwise the chat editor will never be opened.
-	 * 
 	 */
 	private void registerListener() {
 		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
@@ -61,19 +62,15 @@ public class ContactsActivator extends AbstractUIPlugin {
 		if (session != null) {
 
 			// nachrichten
-			session.getChatManager().addMessageListener(
-					new IIMMessageListener() {
+			session.addMessageListener(new IIMMessageListener() {
 
-						public void handleMessageEvent(
-								IIMMessageEvent messageEvent) {
-							Logger.getAnonymousLogger().log(
-									Level.INFO,
-									"Message received: "
-											+ messageEvent.getFromID());
+				public void handleMessageEvent(IIMMessageEvent messageEvent) {
+					Logger.getAnonymousLogger().log(Level.INFO,
+							"Message received: " + messageEvent.getFromID());
 
-							new OpenChatEditorAction(messageEvent).run();
-						}
-					});
+					new OpenChatEditorAction(messageEvent).run();
+				}
+			});
 
 			// inform chat user about arriving and leaving of other chat user
 			session.getRosterManager().addPresenceListener(
@@ -90,7 +87,9 @@ public class ContactsActivator extends AbstractUIPlugin {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
+	 * @see
+	 * org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;

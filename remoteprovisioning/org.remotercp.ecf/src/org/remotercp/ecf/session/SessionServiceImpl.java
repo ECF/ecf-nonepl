@@ -11,8 +11,10 @@ import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.im.IChatManager;
+import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.remoteservice.Constants;
@@ -298,6 +300,17 @@ public class SessionServiceImpl implements ISessionService {
 	@Override
 	public ID getConnectedID() {
 		return containter.getConnectedID();
+	}
+
+	@Override
+	public void addMessageListener(IIMMessageListener listener) {
+		assert listener != null : "listener != null";
+		getChatManager().addMessageListener(listener);
+	}
+
+	@Override
+	public IChatMessageSender getChatMessageSender() {
+		return getChatManager().getChatMessageSender();
 	}
 
 }
