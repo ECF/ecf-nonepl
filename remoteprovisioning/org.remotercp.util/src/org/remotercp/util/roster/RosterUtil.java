@@ -3,7 +3,6 @@ package org.remotercp.util.roster;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -129,6 +128,7 @@ public class RosterUtil {
 	 * @param item
 	 * @return IRosterItem where only online user are listed
 	 */
+	@SuppressWarnings("unchecked")
 	public static IRosterItem filterOnlineUserForRosterItem(IRosterItem item) {
 
 		if (item instanceof IRoster) {
@@ -144,10 +144,11 @@ public class RosterUtil {
 				return item;
 			}
 		}
-		
+
 		return item;
 	}
 
+	@SuppressWarnings("unchecked")
 	private static IRosterItem removeOfflineUser(IRosterGroup group) {
 		Collection entries = new ArrayList<IRosterEntry>();
 		entries.addAll(group.getEntries());
@@ -156,9 +157,6 @@ public class RosterUtil {
 				IRosterEntry entry = (IRosterEntry) obj;
 				if (!isRosterItemOnline(entry)) {
 					group.getEntries().remove(entry);
-					System.out.println("Group size: "
-							+ group.getEntries().size());
-					System.out.println("Entries size: " + entries.size()); // removeOfflineUser(group);
 				}
 			}
 		}
