@@ -7,9 +7,10 @@ Bundle-Activator: org.remotercp.provisioning.UpdateActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.update.core,
  org.remotercp.ecf,
- org.remotercp.libs,
  org.eclipse.ui,
  org.remotercp.util,
  org.remotercp.common,
  org.remotercp.login;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
+Import-Package: org.eclipse.ecf.core.identity;version="3.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

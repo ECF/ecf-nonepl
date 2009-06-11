@@ -7,15 +7,18 @@ Bundle-Activator: org.remotercp.provisioning.ProvisioningActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.update.core,
- org.remotercp.libs,
  org.remotercp.ecf,
  org.remotercp.util,
  org.remotercp.errorhandling,
  org.remotercp.common,
  org.eclipse.update.ui,
  org.remotercp.progress
-Eclipse-LazyStart: true
-Export-Package: org.remotercp.provisioning.editor,
- org.remotercp.provisioning.editor.ui,
- org.remotercp.provisioning.editor.ui.tree
-Import-Package: org.junit
+Bundle-ActivationPolicy: lazy
+Export-Package: org.remotercp.provisioning.editor
+Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
+ org.eclipse.ecf.core.util,
+ org.eclipse.ecf.presence.roster,
+ org.eclipse.ecf.remoteservice,
+ org.eclipse.ecf.remoteservice.events,
+ org.junit
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

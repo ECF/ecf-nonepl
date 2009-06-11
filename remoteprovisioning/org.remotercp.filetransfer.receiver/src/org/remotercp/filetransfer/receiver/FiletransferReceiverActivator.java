@@ -1,12 +1,8 @@
 package org.remotercp.filetransfer.receiver;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.ecf.filetransfer.ISendFileTransferContainerAdapter;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 /**
  * The activator class controls the plug-in life cycle
