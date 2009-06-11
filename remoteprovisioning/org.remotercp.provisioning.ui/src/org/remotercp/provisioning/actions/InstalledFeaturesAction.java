@@ -57,7 +57,7 @@ public class InstalledFeaturesAction implements IViewActionDelegate {
 	public void run(IAction action) {
 
 		ID[] userIDs = RosterUtil.getUserIDs(this.roster);
-		Assert.isNotNull(userIDs);
+		assert userIDs != null : "userIDs != null";
 
 		ProvisioningEditorInput editorInput = new ProvisioningEditorInput(
 				userIDs);

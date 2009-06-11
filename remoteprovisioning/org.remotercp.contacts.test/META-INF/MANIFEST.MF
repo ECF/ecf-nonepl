@@ -5,4 +5,5 @@ Bundle-SymbolicName: org.remotercp.contacts.test
 Bundle-Version: 1.0.0.qualifier
 Fragment-Host: org.remotercp.contacts;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
-Import-Package: org.junit
+Import-Package: org.junit,
+ org.mockito

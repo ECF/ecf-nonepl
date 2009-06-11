@@ -59,8 +59,8 @@ public class SelectedContactsView extends ViewPart {
 				.setContentProvider(new ContactsContentProvider());
 		this.selectedContactsViewer
 				.setLabelProvider(new ContactsLabelProvider());
-		this.selectedContactsViewer
-				.setFilters(new ViewerFilter[] { new SelectedContactsFilter() });
+//		this.selectedContactsViewer
+//				.setFilters(new ViewerFilter[] { new SelectedContactsFilter() });
 
 		this.hookKeyListener();
 
@@ -189,18 +189,18 @@ public class SelectedContactsView extends ViewPart {
 
 	/**
 	 * As a user can drag and drop items in the selected contacts view the old
-	 * input must me kept in the content provider. But at the same time one has
+	 * input must be kept in the content provider. But at the same time one has
 	 * to check whether same items will be droped in and filter them out
 	 * 
 	 * @param input
 	 */
 	@SuppressWarnings("unchecked")
 	protected void setInput(Object input) {
-		IRoster oldInput = (IRoster) this.selectedContactsViewer.getInput();
+		IRoster existingInput = (IRoster) this.selectedContactsViewer.getInput();
 
 		IRoster roster = new Roster(null);
-		if (oldInput != null) {
-			roster.getItems().addAll(oldInput.getItems());
+		if (existingInput != null) {
+			roster.getItems().addAll(existingInput.getItems());
 		}
 
 		// check if roster contains already the given input
@@ -217,7 +217,7 @@ public class SelectedContactsView extends ViewPart {
 		this.selectedContactsViewer.expandAll();
 
 		// inform listener about input changes
-		pcs.firePropertyChange("Input changed", oldInput, roster);
+		pcs.firePropertyChange("Input changed", existingInput, roster);
 	}
 
 	@Override
@@ -236,7 +236,8 @@ public class SelectedContactsView extends ViewPart {
 			return this.pcs;
 		}
 		if (adapter.getName().equals(IRoster.class.getName())) {
-			return this.selectedContactsViewer.getInput();
+			Object input = this.selectedContactsViewer.getInput();
+			return input;
 		}
 		return null;
 	}

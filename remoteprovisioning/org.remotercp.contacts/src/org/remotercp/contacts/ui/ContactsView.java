@@ -178,9 +178,12 @@ public class ContactsView extends ViewPart {
 						if (TreeObjectTransfer.getInstance().isSupportedType(
 								event.dataType)) {
 
-							// event.data = selection;
+							// filter only online user in case a group has been
+							// draged
+							IRosterItem filteredSelection = getOnlineDragItems(selection);
+
 							DragAndDropSupport.getInstance().setDragItem(
-									selection);
+									filteredSelection);
 							logger.info("drag set data");
 						}
 
@@ -196,7 +199,7 @@ public class ContactsView extends ViewPart {
 
 						if (RosterUtil.isRosterItemOnline(selection)) {
 							event.doit = true;
-						}else{
+						} else {
 							event.doit = false;
 						}
 
@@ -204,6 +207,13 @@ public class ContactsView extends ViewPart {
 					}
 
 				});
+	}
+
+	private final IRosterItem getOnlineDragItems(final IRosterItem selection) {
+		IRosterItem onlineDragItems = RosterUtil
+				.filterOnlineUserForRosterItem(selection);
+
+		return onlineDragItems;
 	}
 
 	private IRosterItem getTreeViewerSelection() {

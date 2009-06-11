@@ -7,3 +7,4 @@ Fragment-Host: org.remotercp.provisioning.ui;bundle-version="1.0.0"
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Export-Package: org.remotercp.provisioning.editor.ui,
  org.remotercp.provisioning.editor.ui.tree
+Import-Package: org.mockito

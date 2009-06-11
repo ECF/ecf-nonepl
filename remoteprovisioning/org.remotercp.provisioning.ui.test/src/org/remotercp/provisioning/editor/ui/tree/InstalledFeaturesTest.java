@@ -14,14 +14,18 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.identity.Namespace;
 import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
-import org.remotercp.util.roster.AbstractRosterGenerator;
+import static org.mockito.Mockito.*;
 
-public class InstalledFeaturesTest extends AbstractRosterGenerator {
+public class InstalledFeaturesTest {
 
 	private Map<ID, Collection<SerializedFeatureWrapper>> userFeatures;
 
@@ -61,9 +65,9 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 		userFeatures = new HashMap<ID, Collection<SerializedFeatureWrapper>>();
 		allFeatures = new ArrayList<SerializedFeatureWrapper>();
 
-		sandra = super.createUserID("Sandra");
-		john = super.createUserID("John");
-		klaus = super.createUserID("Klaus");
+		sandra = createMockUserID("Sandra");
+		john = createMockUserID("John");
+		klaus = createMockUserID("Klaus");
 
 		feature10 = getFeaturesWrapper(10, "Featre 10",
 				"org.eclipse.feature10", "1.0");
@@ -632,6 +636,15 @@ public class InstalledFeaturesTest extends AbstractRosterGenerator {
 
 		}
 
+	}
+
+	private ID createMockUserID(String name) {
+		ID id = mock(ID.class);
+		Namespace namespace = mock(Namespace.class);
+
+		when(id.getNamespace()).thenReturn(namespace);
+		when(id.getName()).thenReturn(name);
+		return id;
 	}
 
 	private class MyProgressMonitor implements IProgressMonitor {

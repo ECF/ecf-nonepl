@@ -1,5 +1,8 @@
 package org.remotercp.provisioning.editor.ui;
 
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.when;
+
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
@@ -10,13 +13,14 @@ import java.util.Map;
 
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.identity.Namespace;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
-import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTreeCreator;
 import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTest;
+import org.remotercp.provisioning.editor.ui.tree.InstalledFeaturesTreeCreator;
 
 public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 
@@ -57,9 +61,9 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 		userFeatures = new HashMap<ID, Collection<SerializedFeatureWrapper>>();
 		allFeatures = new ArrayList<SerializedFeatureWrapper>();
 
-		sandra = super.createUserID("Sandra");
-		john = super.createUserID("John");
-		klaus = super.createUserID("Klaus");
+		sandra = createMockUserID("Sandra");
+		john = createMockUserID("John");
+		klaus = createMockUserID("Klaus");
 
 		feature10 = getFeaturesWrapper(10, "Feature 10",
 				"org.eclipse.feature10", "1.0");
@@ -319,6 +323,15 @@ public class InstalledFeaturesCompositeTest extends InstalledFeaturesTest {
 
 		}
 
+	}
+
+	private ID createMockUserID(String name) {
+		ID id = mock(ID.class);
+		Namespace namespace = mock(Namespace.class);
+
+		when(id.getNamespace()).thenReturn(namespace);
+		when(id.getName()).thenReturn(name);
+		return id;
 	}
 
 }

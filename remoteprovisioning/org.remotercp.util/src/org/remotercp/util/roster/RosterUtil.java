@@ -3,6 +3,7 @@ package org.remotercp.util.roster;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -120,6 +121,48 @@ public class RosterUtil {
 		}
 
 		return filteredEntries;
+	}
+
+	/**
+	 * Returns the given IRosterItem but filtered with online user.
+	 * 
+	 * @param item
+	 * @return IRosterItem where only online user are listed
+	 */
+	public static IRosterItem filterOnlineUserForRosterItem(IRosterItem item) {
+
+		if (item instanceof IRoster) {
+			IRoster roster = (IRoster) item;
+			Collection<IRosterGroup> groups = roster.getItems();
+			for (IRosterGroup group : groups) {
+				filterOnlineUserForRosterItem(group);
+			}
+		} else if (item instanceof IRosterGroup) {
+			removeOfflineUser((IRosterGroup) item);
+		} else if (item instanceof IRosterEntry) {
+			if (isRosterItemOnline(item)) {
+				return item;
+			}
+		}
+		
+		return item;
+	}
+
+	private static IRosterItem removeOfflineUser(IRosterGroup group) {
+		Collection entries = new ArrayList<IRosterEntry>();
+		entries.addAll(group.getEntries());
+		for (Object obj : entries) {
+			if (obj instanceof IRosterEntry) {
+				IRosterEntry entry = (IRosterEntry) obj;
+				if (!isRosterItemOnline(entry)) {
+					group.getEntries().remove(entry);
+					System.out.println("Group size: "
+							+ group.getEntries().size());
+					System.out.println("Entries size: " + entries.size()); // removeOfflineUser(group);
+				}
+			}
+		}
+		return group;
 	}
 
 	/**
