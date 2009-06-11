@@ -11,10 +11,6 @@ import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.provider.xmpp.identity.XMPPID;
 import org.remotercp.ecf.ECFConstants;
-import org.remotercp.ecf.session.ConnectionDetails;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.login.LoginActivator;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 /**
  * This class can be used in headless application to log-in to a server.
@@ -42,8 +38,8 @@ public class HeadlessConnection {
 	 * @throws ContainerConnectException
 	 * @throws URISyntaxException
 	 */
-	public static void connect(String userName, String password, String server,
-			String protocol) throws IDCreateException,
+	public static IContainer connect(String userName, String password,
+			String server, String protocol) throws IDCreateException,
 			ContainerCreateException, ContainerConnectException,
 			URISyntaxException {
 		/*
@@ -59,15 +55,9 @@ public class HeadlessConnection {
 		IConnectContext connectContext = ConnectContextFactory
 				.createUsernamePasswordConnectContext(userName, password);
 
-		ConnectionDetails connectionDetails = new ConnectionDetails(userName,
-				server);
-
 		container.connect(xmppid, connectContext);
 
-		ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
-				LoginActivator.getBundleContext(), ISessionService.class);
-		session.setConnectionDetails(connectionDetails);
-		session.setContainer(container);
+		return container;
 
 	}
 
