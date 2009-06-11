@@ -1,0 +1,8 @@
+=File Transfer API=
+
+The filetransfer API provides support for both retrieving remote files, and initiating the sending of peer-to peer file transfer. Initiating the asynchronous retrieval of remote files is done via the IRetrieveFileTransferContainerAdapter, and requesting peer-to-peer file transfer is done via the
+IOutgoingFileTransferContainerAdapter.
+
+==Summary==
+
+TODO

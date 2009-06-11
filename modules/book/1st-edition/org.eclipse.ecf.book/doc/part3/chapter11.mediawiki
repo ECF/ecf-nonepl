@@ -1,0 +1,7 @@
+=Datashare API=
+
+The datashare API provides support for asynchronous messaging channels. Arbitrary data may be reliably sent to IChannels. These channels can represent both point-to-point messaging and publish-and-subscribe (group) messaging. IChannel instances are created via the IChannelContainerAdapter, which is an adapter interface accessed via IContainer.getAdapter(IChannelContainerAdapter.class).
+
+==Summary==
+
+TODO

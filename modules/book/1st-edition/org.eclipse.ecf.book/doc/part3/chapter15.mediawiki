@@ -1,0 +1,7 @@
+=Remote Services API=
+
+The remote services API provides a protocol independent API for accessing remote services on peer OSGi containers. The remote services may be accessed via proxy, synchronous (call/return) invocation, or asynchronous (call and listen) invocation.
+
+==Summary==
+
+TODO
