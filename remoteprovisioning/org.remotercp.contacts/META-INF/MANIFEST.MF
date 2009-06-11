@@ -14,5 +14,7 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.chat,
  org.remotercp.util,
  org.remotercp.errorhandling
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.remotercp.contacts.ui
+Import-Package: org.junit
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

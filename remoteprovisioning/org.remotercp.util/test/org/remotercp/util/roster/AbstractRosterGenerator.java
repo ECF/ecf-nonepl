@@ -1,8 +1,6 @@
 package org.remotercp.util.roster;
 
-import static junit.framework.Assert.assertNotNull;
-import static junit.framework.Assert.fail;
-
+import static junit.framework.Assert.*;
 import org.eclipse.ecf.core.identity.BaseID;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;

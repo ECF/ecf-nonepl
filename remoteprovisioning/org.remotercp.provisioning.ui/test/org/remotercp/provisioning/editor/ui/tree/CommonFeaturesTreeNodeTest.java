@@ -1,8 +1,10 @@
 package org.remotercp.provisioning.editor.ui.tree;
 
+import static org.junit.Assert.*;
+
 import java.util.ArrayList;
 
-import static junit.framework.Assert.*;
+
 
 import org.eclipse.jface.viewers.TreeNode;
 import org.junit.Test;

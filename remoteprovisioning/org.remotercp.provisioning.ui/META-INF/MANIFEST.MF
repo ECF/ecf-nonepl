@@ -18,3 +18,4 @@ Eclipse-LazyStart: true
 Export-Package: org.remotercp.provisioning.editor,
  org.remotercp.provisioning.editor.ui,
  org.remotercp.provisioning.editor.ui.tree
+Import-Package: org.junit

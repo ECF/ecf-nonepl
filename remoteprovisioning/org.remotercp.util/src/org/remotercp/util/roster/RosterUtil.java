@@ -65,7 +65,7 @@ public class RosterUtil {
 		if (item instanceof IRoster) {
 			IRoster roster = (IRoster) item;
 			// iterate over child elements
-			Collection rosterItems = roster.getItems();
+			Collection<?> rosterItems = roster.getItems();
 			synchronized (rosterItems) {
 				for (Object rosterItem : rosterItems) {
 					searchRecursiveForRosterEntries(entries,
@@ -77,7 +77,7 @@ public class RosterUtil {
 		if (item instanceof IRosterGroup) {
 			IRosterGroup group = (IRosterGroup) item;
 			// iterate over child elements
-			Collection<Object> groupEntries = group.getEntries();
+			Collection<?> groupEntries = group.getEntries();
 			synchronized (groupEntries) {
 				for (Object rosterItem : groupEntries) {
 					searchRecursiveForRosterEntries(entries,

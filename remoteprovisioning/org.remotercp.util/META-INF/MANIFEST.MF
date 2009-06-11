@@ -8,7 +8,7 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ui,
  org.eclipse.pde.runtime,
  org.remotercp.common;bundle-version="1.0.0"
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.remotercp.util.authorization,
  org.remotercp.util.dialogs,
  org.remotercp.util.filesize,
@@ -16,5 +16,5 @@ Export-Package: org.remotercp.util.authorization,
  org.remotercp.util.osgi,
  org.remotercp.util.preferences,
  org.remotercp.util.roster,
- org.remotercp.util.serialize,
  org.remotercp.util.status
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

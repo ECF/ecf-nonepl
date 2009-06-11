@@ -3,8 +3,6 @@ package org.remotercp.contacts.actions;
 import java.util.Collection;
 import java.util.List;
 
-import junit.framework.Assert;
-
 import org.eclipse.ecf.presence.IPresence;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterEntry;
@@ -14,6 +12,7 @@ import org.eclipse.ecf.presence.roster.RosterGroup;
 import org.junit.Test;
 import org.remotercp.util.roster.AbstractRosterGenerator;
 import org.remotercp.util.roster.RosterUtil;
+import static org.junit.Assert.*;
 
 public class TestUserPresenceContextMenu extends AbstractRosterGenerator {
 
@@ -25,16 +24,14 @@ public class TestUserPresenceContextMenu extends AbstractRosterGenerator {
 		List<IRosterEntry> rosterEntries = RosterUtil
 				.getRosterEntries(rosterItem);
 
-		Assert.assertEquals(6, rosterEntries.size());
-		Assert.assertEquals(true, RosterUtil.isRosterItemOnline(rosterItem));
+		assertEquals(6, rosterEntries.size());
+		assertEquals(true, RosterUtil.isRosterItemOnline(rosterItem));
 
 		IRoster offlineRoster = this.getOfflineRoster();
 		rosterEntries = RosterUtil.getRosterEntries(offlineRoster);
-		Assert.assertEquals(6, rosterEntries.size());
+		assertEquals(6, rosterEntries.size());
 
-		Assert
-				.assertEquals(false, RosterUtil
-						.isRosterItemOnline(offlineRoster));
+		assertEquals(false, RosterUtil.isRosterItemOnline(offlineRoster));
 	}
 
 	@SuppressWarnings("unchecked")
@@ -56,15 +53,15 @@ public class TestUserPresenceContextMenu extends AbstractRosterGenerator {
 		super.createRosterEntry("Sandra", group2, IPresence.Type.UNAVAILABLE);
 		super.createRosterEntry("Jason", group2, IPresence.Type.AVAILABLE);
 
-		Assert.assertNotNull(roster.getItems());
+		assertNotNull(roster.getItems());
 		// roster must contain 2 groups
-		Assert.assertEquals(2, roster.getItems().size());
+		assertEquals(2, roster.getItems().size());
 
 		Collection items = roster.getItems();
 		for (Object rosterItem : items) {
 			IRosterGroup group = (IRosterGroup) rosterItem;
-			Assert.assertNotNull(group.getEntries());
-			Assert.assertFalse(group.getEntries().isEmpty());
+			assertNotNull(group.getEntries());
+			assertFalse(group.getEntries().isEmpty());
 		}
 		return roster;
 	}
@@ -88,15 +85,15 @@ public class TestUserPresenceContextMenu extends AbstractRosterGenerator {
 		super.createRosterEntry("Sandra", group2, IPresence.Type.UNAVAILABLE);
 		super.createRosterEntry("Jason", group2, IPresence.Type.UNAVAILABLE);
 
-		Assert.assertNotNull(roster.getItems());
+		assertNotNull(roster.getItems());
 		// roster must contain 2 groups
-		Assert.assertEquals(2, roster.getItems().size());
+		assertEquals(2, roster.getItems().size());
 
 		Collection items = roster.getItems();
 		for (Object rosterItem : items) {
 			IRosterGroup group = (IRosterGroup) rosterItem;
-			Assert.assertNotNull(group.getEntries());
-			Assert.assertFalse(group.getEntries().isEmpty());
+			assertNotNull(group.getEntries());
+			assertFalse(group.getEntries().isEmpty());
 		}
 		return roster;
 	}

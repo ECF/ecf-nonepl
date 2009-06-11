@@ -7,10 +7,11 @@ Bundle-Activator: org.remotercp.common.CommonActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.update.core,
  org.remotercp.libs;visibility:=reexport
-Eclipse-LazyStart: true
+Bundle-ActivationPolicy: lazy
 Export-Package: org.remotercp.common.authorization,
  org.remotercp.common.constants,
  org.remotercp.common.preferences,
  org.remotercp.common.provisioning,
  org.remotercp.common.servicelauncher,
  org.remotercp.common.status
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6

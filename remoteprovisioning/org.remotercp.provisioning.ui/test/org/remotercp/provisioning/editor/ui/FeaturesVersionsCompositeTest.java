@@ -1,14 +1,11 @@
 package org.remotercp.provisioning.editor.ui;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
+
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
-import java.util.SortedSet;
 
-import static junit.framework.Assert.*;
-
-import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.viewers.TreeNode;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
