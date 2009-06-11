@@ -157,12 +157,7 @@
 		<delete file="${dest.dir}${file.separator}${document.name}.fo"/>
 <!--		<xslt in="${document.name}.xml" extension="xml" out="${dest.dir}${file.separator}${document.name}.fo" style="${docbook.dir}${file.separator}fo${file.separator}docbook.xsl">
 -->
-		<xslt in="${document.name}.xml" extension="xml" out="${dest.dir}${file.separator}${document.name}.fo" style="${document.pdf.stylesheet}">
-			<classpath>
-				<fileset dir="${basedir}/lib">
-					<include name="xalan.jar" />
-				</fileset>
-			</classpath>
+		<xslt in="${document.name}.xml" extension="xml" out="${dest.dir}${file.separator}${document.name}.fo" style="${document.pdf.stylesheet}" classpath="${basedir}{file.separator}lib{file.separator}xalan.jar">
 			<factory name="org.apache.xalan.processor.TransformerFactoryImpl">
 				<attribute name="http://xml.apache.org/xalan/features/optimize" value="true"/>
 			</factory>
