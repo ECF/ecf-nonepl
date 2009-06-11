@@ -40,7 +40,7 @@ public class InstalledFeaturesServiceImpl implements IInstalledFeaturesService {
 	private void init() {
 		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
 				UpdateActivator.getBundleContext(), ISessionService.class);
-		userID = sessionService.getRoster().getUser().getID();
+		userID = sessionService.getConnectedID();
 	}
 
 	/**

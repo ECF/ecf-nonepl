@@ -27,6 +27,7 @@ import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.util.authorization.AuthorizationUtil;
+import org.remotercp.util.roster.RosterUtil;
 
 public class SessionServiceImpl implements ISessionService {
 
@@ -157,7 +158,7 @@ public class SessionServiceImpl implements ISessionService {
 
 			IRemoteService remoteService = remoteServiceContainerAdapter
 					.getRemoteService(refs[serviceNumber]);
-			Assert.isNotNull(remoteService);
+			assert remoteService != null : "remoteService != null";
 
 			serviceReferences[serviceNumber] = remoteService;
 
@@ -175,7 +176,7 @@ public class SessionServiceImpl implements ISessionService {
 
 	public IRoster getRoster() {
 		IRoster roster = getRosterManager().getRoster();
-		Assert.isNotNull(roster);
+		assert roster != null : "roster != null";
 		return roster;
 	}
 
@@ -206,6 +207,9 @@ public class SessionServiceImpl implements ISessionService {
 			ID[] targetIDs) {
 
 		Dictionary<String, ID[]> props = new Hashtable<String, ID[]>();
+		if (targetIDs == null) {
+			targetIDs = RosterUtil.getUserIDs(getRoster());
+		}
 		props.put(Constants.SERVICE_REGISTRATION_TARGETS, targetIDs);
 
 		// register ECF remote service

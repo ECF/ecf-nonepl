@@ -204,7 +204,7 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
 				PreferencesActivator.getBundleContext(), ISessionService.class);
-		Assert.isNotNull(sessionService);
+		assert sessionService != null : "sessionService != null";
 
 		sessionService.registerRemoteService(IRemotePreferenceService.class
 				.getName(), new RemotePreferencesServiceImpl(), null);
