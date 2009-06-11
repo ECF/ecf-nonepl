@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Provisioning UI Test
+Bundle-SymbolicName: org.remotercp.provisioning.ui.test
+Bundle-Version: 1.0.0.qualifier
+Fragment-Host: org.remotercp.provisioning.ui;bundle-version="1.0.0"
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Export-Package: org.remotercp.provisioning.editor.ui,
+ org.remotercp.provisioning.editor.ui.tree
