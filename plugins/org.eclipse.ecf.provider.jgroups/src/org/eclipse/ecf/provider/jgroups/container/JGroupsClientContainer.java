@@ -51,7 +51,7 @@ public class JGroupsClientContainer extends ClientSOContainer {
 	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org.eclipse.ecf.core.identity.ID, java.lang.Object)
 	 */
 	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data) throws ConnectionCreateException {
-		IChannelConfigurator chConfig= new MChannelConfigurator( ((JGroupsID) getID()).getStackName());
+		IChannelConfigurator chConfig= new MChannelConfigurator( ((SOJGContainerConfig) getConfig()).getStackName());
 		ISynchAsynchConnection clientConnection=  new JGroupsClientConnection(getReceiver(), chConfig);
 		return clientConnection;
 	}
