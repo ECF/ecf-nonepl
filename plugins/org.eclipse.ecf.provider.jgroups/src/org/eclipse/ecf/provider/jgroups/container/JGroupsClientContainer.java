@@ -33,6 +33,7 @@ import urv.machannel.MChannel;
  */
 public class JGroupsClientContainer extends ClientSOContainer {
 
+	private IChannelConfigurator channelConfigurator;
 
 	public JGroupsClientContainer(SOJGContainerConfig config) throws IDCreateException {
 		super(config);
@@ -51,8 +52,8 @@ public class JGroupsClientContainer extends ClientSOContainer {
 	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org.eclipse.ecf.core.identity.ID, java.lang.Object)
 	 */
 	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data) throws ConnectionCreateException {
-		IChannelConfigurator chConfig= new MChannelConfigurator( ((SOJGContainerConfig) getConfig()).getStackName());
-		ISynchAsynchConnection clientConnection=  new JGroupsClientConnection(getReceiver(), chConfig);
+		channelConfigurator= new MChannelConfigurator( ((SOJGContainerConfig) getConfig()).getStackName());
+		ISynchAsynchConnection clientConnection=  new JGroupsClientConnection(getReceiver(), channelConfigurator);
 		return clientConnection;
 	}
 

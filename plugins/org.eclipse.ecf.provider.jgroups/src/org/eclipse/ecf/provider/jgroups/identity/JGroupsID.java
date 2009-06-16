@@ -51,7 +51,7 @@ public class JGroupsID extends BaseID {
 	}
 
 	private void setStackInfo() {
-		final String query = uri.getRawQuery();
+		final String query = uri.getPath();
 		if (query != null) {
 			final StringTokenizer st = new StringTokenizer(query, "&");
 			while (st.hasMoreTokens()) {
@@ -92,6 +92,7 @@ public class JGroupsID extends BaseID {
 		} catch (final URISyntaxException e) {
 			throw new IDCreateException("invalid channel name", e);
 		}
+		setStackInfo();
 	}
 
 	public String getUserInfo() {
