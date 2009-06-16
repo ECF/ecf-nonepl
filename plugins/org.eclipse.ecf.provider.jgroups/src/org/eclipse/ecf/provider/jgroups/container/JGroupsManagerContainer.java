@@ -55,7 +55,6 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 
 	private ISynchAsynchConnection serverConnection;
 
-	@SuppressWarnings("unused")
 	private IChannelConfigurator channelConfigurator;
 
 	/**
@@ -78,8 +77,8 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 	 *             taken)
 	 */
 	public void start() throws ECFException {
-		IChannelConfigurator chConfig= new MChannelConfigurator( ((JGroupsID) getID()).getStackName());
-		serverConnection = new JGroupsManagerConnection(getReceiver(), chConfig );
+		channelConfigurator = new MChannelConfigurator( ((SOJGContainerConfig) getConfig()).getStackName());
+		serverConnection = new JGroupsManagerConnection(getReceiver(), channelConfigurator );
 		serverConnection.start();
 	}
 
