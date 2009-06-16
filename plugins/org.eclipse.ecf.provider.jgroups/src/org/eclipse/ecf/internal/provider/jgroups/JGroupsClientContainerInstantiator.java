@@ -15,8 +15,8 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
-import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jgroups.container.JGroupsClientContainer;
+import org.eclipse.ecf.provider.jgroups.container.SOJGContainerConfig;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 
@@ -40,7 +40,7 @@ public class JGroupsClientContainerInstantiator extends GenericContainerInstanti
 				newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, new Object[] {});
 			if (newID == null)
 				throw new ContainerCreateException("invalid parameters for creating client instance");
-			return new JGroupsClientContainer(new SOContainerConfig(newID));
+			return new JGroupsClientContainer(new SOJGContainerConfig( (JGroupsID) newID));
 		} catch (final IDCreateException e) {
 			throw new ContainerCreateException("Exception creating trivial container", e);
 		}

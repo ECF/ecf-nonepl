@@ -88,7 +88,7 @@ public class JGroupsID extends BaseID {
 		super(ns);
 		Assert.isNotNull(channelName);
 		try {
-			this.uri = new URI(ns.getScheme() + ":///" + channelName);
+			this.uri = new URI(ns.getScheme() + ":" + channelName);
 		} catch (final URISyntaxException e) {
 			throw new IDCreateException("invalid channel name", e);
 		}

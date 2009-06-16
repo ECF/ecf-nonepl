@@ -47,9 +47,9 @@ public class JGroupsNamespace extends Namespace {
 		try {
 			final String init = getInitFromExternalForm(parameters);
 			if (init != null)
-				return new JGroupsID(this, new URI(init));
+				return new JGroupsID(this, init);
 			if (parameters != null && parameters.length > 0) {
-				return new JGroupsID(this, new URI((String) parameters[0]));
+				return new JGroupsID(this, (URI) parameters[0]);
 			}
 			return new JGroupsID(this, IDFactory.getDefault().createGUID().getName());
 		} catch (final Exception e) {
