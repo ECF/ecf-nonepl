@@ -11,13 +11,17 @@
 
 package org.eclipse.ecf.internal.server.jgroups;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.provider.generic.SOContainerConfig;
+import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer;
-import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
@@ -25,10 +29,13 @@ import org.eclipse.equinox.app.IApplicationContext;
 /**
  * JGroups Manager Application.
  */
-public class JGroupsManager implements IApplication {
+public class JGroupsManager implements IApplication, IJGroupsManager {
 
-	private JGroupsManagerContainer managerContainer = null;
-
+	private IContainer managerContainer = null;
+	private IApplicationContext appContext=null;
+	private static String jgURL;
+	private static Object lock=new Object();
+	
 	private String[] mungeArguments(String originalArgs[]) {
 		if (originalArgs == null)
 			return new String[0];
@@ -39,40 +46,37 @@ public class JGroupsManager implements IApplication {
 		return l.toArray(new String[] {});
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
-	 */
 	public Object start(IApplicationContext context) throws Exception {
 		final String[] args = mungeArguments((String[]) context.getArguments().get("application.args")); //$NON-NLS-1$
 		if (args.length < 1) {
 			usage();
 			return IApplication.EXIT_OK;
 		} else {
-			// Create manager ID
-			final JGroupsID managerID = (JGroupsID) IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(JGroupsNamespace.NAME), args[0]);
-			// Create config
-			final SOContainerConfig config = new SOContainerConfig(managerID);
-
-			synchronized (this) {
-				managerContainer = new JGroupsManagerContainer(config);
-				managerContainer.start();
-				System.out.println("JGroups Manager started with id=" + managerID);
-				// Wait until stopped
-				this.wait();
+			this.appContext=context;
+			jgURL=args[0];
+			
+			synchronized (this ) {
+				managerContainer = createServer();
+				System.out.println("JGroups Manager started with id=" + ((JGroupsManagerContainer)managerContainer).getID());
+				this.wait( );
 			}
 			return IApplication.EXIT_OK;
-
 		}
-
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.equinox.app.IApplication#stop()
-	 */
+    private static ID getServerIdentity() throws IDCreateException, URISyntaxException {
+    	return IDFactory.getDefault().createID("ecf.namespace.jgroupsid",jgURL);
+    }
+
+    protected static IContainer createServer() throws Exception {
+    	final ID myID=getServerIdentity();
+        return ContainerFactory.getDefault().createContainer(getServerContainerName(), new Object[] { myID });
+    }
+    private static String getServerContainerName() {
+        return "ecf.jgroups.manager";
+    }
+
+
 	public void stop() {
 		synchronized (this) {
 			if (managerContainer != null) {
@@ -81,12 +85,17 @@ public class JGroupsManager implements IApplication {
 				this.notifyAll();
 			}
 		}
+		appContext=null;
 	}
 
 	private void usage() {
 		System.out.println("Usage: eclipse.exe -application " //$NON-NLS-1$
-				+ this.getClass().getName() + " jgroups:///<jgroupsChannelName>"); //$NON-NLS-1$
+				+ this.getClass().getName() + " jgroups://host/<jgroupsChannelName>&stackName=<stackName>"); //$NON-NLS-1$
 		System.out.println("   Examples: eclipse -application org.eclipse.ecf.provider.jgroups.JGroupsManager jgroups:///jgroupsChannel"); //$NON-NLS-1$
+	}
+
+	public ID getManagerID() {
+		return this.managerContainer.getID();
 	}
 
 }
