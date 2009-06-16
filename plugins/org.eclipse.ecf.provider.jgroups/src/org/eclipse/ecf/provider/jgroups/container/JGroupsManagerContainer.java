@@ -55,6 +55,9 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 
 	private ISynchAsynchConnection serverConnection;
 
+	@SuppressWarnings("unused")
+	private IChannelConfigurator channelConfigurator;
+
 	/**
 	 * @param config
 	 */
