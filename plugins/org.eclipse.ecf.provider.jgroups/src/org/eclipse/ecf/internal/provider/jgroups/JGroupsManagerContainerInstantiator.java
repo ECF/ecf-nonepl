@@ -14,8 +14,8 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
-import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer;
+import org.eclipse.ecf.provider.jgroups.container.SOJGContainerConfig;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 
@@ -39,7 +39,7 @@ public class JGroupsManagerContainerInstantiator extends GenericContainerInstant
 				newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, new Object[] {});
 			if (newID == null)
 				throw new ContainerCreateException("invalid parameters for creating manager instance");
-			final JGroupsManagerContainer manager = new JGroupsManagerContainer(new SOContainerConfig(newID));
+			final JGroupsManagerContainer manager = new JGroupsManagerContainer(new SOJGContainerConfig((JGroupsID) newID));
 			manager.start();
 			return manager;
 		} catch (final Exception e) {
