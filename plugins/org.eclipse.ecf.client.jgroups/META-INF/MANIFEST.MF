@@ -15,5 +15,5 @@ Require-Bundle: org.eclipse.equinox.app,
  org.eclipse.ecf.sharedobject;bundle-version="2.0.0",
  org.eclipse.jface;bundle-version="3.5.0",
  org.eclipse.ui;bundle-version="3.5.0"
-Export-Package: org.eclipse.ecf.client.jgroups,
- org.eclipse.ecf.client.jgroups.splashHandlers
+Export-Package: org.eclipse.ecf.client.jgroups
+
