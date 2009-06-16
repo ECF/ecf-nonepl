@@ -1,7 +1,0 @@
-=Presence API=
-
-The presence API provides a protocol independent API for instant messaging, basic presence/buddy lists/rosters display and management, and multi-user chat rooms.
-
-==Summary==
-
-TODO

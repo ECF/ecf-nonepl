@@ -1,7 +1,0 @@
-=Shared Object API=
-
-The shared object API provides a protocol independent API for replicating Java objects in a distributed group.
-
-==Summary==
-
-TODO
