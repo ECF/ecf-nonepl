@@ -53,12 +53,11 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 	 */
 	public JGroupsManagerConnection(ISynchAsynchEventHandler eventHandler, IChannelConfigurator chConf) throws ECFException {
 		super(eventHandler);
-		this.channelConfigurator=new MChannelConfigurator( ((JGroupsID) getLocalID()).getStackName() );
+		this.channelConfigurator=chConf;
 		try {
-			this.channel= channelConfigurator.createMChannel( "225.222.222.222", ((JGroupsID) getLocalID()).getName(), getOldView() );
+			this.channel= channelConfigurator.createMChannel( "225.222.222.222", ((JGroupsID) getLocalID()).getName()  );
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			throw new ECFException(e);
 		}
 	}
 
