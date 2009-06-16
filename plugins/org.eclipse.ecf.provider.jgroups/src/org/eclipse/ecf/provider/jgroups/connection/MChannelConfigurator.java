@@ -37,7 +37,7 @@ public class MChannelConfigurator implements IChannelConfigurator {
 
 	private Log log = LogFactory.getLog(getClass());
 
-	private String stackName = "ecfJGroups";
+	private String stackName = "manet";
 	// CONSTANTS --
 
 	public static final String OMOLSR_PROTOCOL = "OMOLSR";
