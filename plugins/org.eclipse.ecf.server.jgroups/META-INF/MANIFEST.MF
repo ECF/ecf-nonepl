@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: %plugin.name
 Bundle-SymbolicName: org.eclipse.ecf.server.jgroups;singleton:=true
-Bundle-Version: 1.2.0.qualifier
+Bundle-Version: 2.0.0.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.server.jgroups.Activator
 Bundle-Vendor: %plugin.provider
 Bundle-Localization: plugin
@@ -13,6 +13,7 @@ Require-Bundle: org.eclipse.ecf,
  org.eclipse.equinox.app,
  org.eclipse.equinox.common
 Eclipse-LazyStart: true
-Import-Package: org.osgi.framework;version="1.4.0"
+Import-Package: org.osgi.framework;version="1.4.0",
+ org.osgi.util.tracker
 Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
