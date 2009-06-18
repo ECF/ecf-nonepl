@@ -12,7 +12,6 @@ import java.net.URI;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
-import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.osgi.util.NLS;
 
@@ -25,33 +24,19 @@ public class JGroupsNamespace extends Namespace {
 	public JGroupsNamespace() {
 	}
 
-	private String getInitFromExternalForm(Object[] args) {
-		if (args == null || args.length < 1 || args[0] == null)
-			return null;
-		if (args[0] instanceof String) {
-			final String arg = (String) args[0];
-			if (arg.startsWith(getScheme() + Namespace.SCHEME_SEPARATOR)) {
-				final int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
-				if (index >= arg.length())
-					return null;
-				return arg.substring(index + 1);
-			}
-		}
-		return null;
-	}
-
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object[])
 	 */
 	public ID createInstance(Object[] parameters) throws IDCreateException {
 		try {
-			final String init = getInitFromExternalForm(parameters);
-			if (init != null)
-				return new JGroupsID(this, new URI(init));
 			if (parameters != null && parameters.length > 0) {
-				return new JGroupsID(this, new URI((String) parameters[0]));
+				if (parameters[0] instanceof URI) {
+					return new JGroupsID(this, (URI) parameters[0]);
+				} else if (parameters[0] instanceof String) {
+					return new JGroupsID(this, new URI((String) parameters[0]));
+				}
 			}
-			return new JGroupsID(this, IDFactory.getDefault().createGUID().getName());
+			throw new IDCreateException("JGroupsID cannot be created with given parameters");
 		} catch (final Exception e) {
 			if (e instanceof IDCreateException) throw (IDCreateException) e;
 			throw new IDCreateException(NLS.bind("{0} createInstance()", getName()), e); //$NON-NLS-1$
