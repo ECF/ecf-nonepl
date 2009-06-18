@@ -78,4 +78,7 @@ public class Activator implements BundleActivator {
 		return plugin;
 	}
 
+	public BundleContext getContext() {
+		return context;
+	}
 }

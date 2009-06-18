@@ -14,58 +14,70 @@ package org.eclipse.ecf.provider.jms.activemq.application;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContainer;
-import org.eclipse.ecf.provider.jms.container.JMSContainerConfig;
-import org.eclipse.ecf.provider.jms.identity.JMSID;
-import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
+import org.eclipse.ecf.core.ContainerCreateException;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerFactory;
+import org.eclipse.ecf.core.IContainerManager;
+import org.eclipse.ecf.internal.provider.jms.activemq.Activator;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * ActiveMQ JMS Server Application.
  */
 public class ActiveMQJMSServer implements IApplication {
 
-	private ActiveMQJMSServerContainer serverContainer = null;
+	private IContainer managerContainer = null;
+	private ServiceTracker containerManagerTracker;
+	private boolean done = false;
+	private Object appLock = new Object();
 
 	private String[] mungeArguments(String originalArgs[]) {
 		if (originalArgs == null)
 			return new String[0];
-		final List l = new ArrayList();
+		final List<String> l = new ArrayList<String>();
 		for (int i = 0; i < originalArgs.length; i++)
 			if (!originalArgs[i].equals("-pdelaunch")) //$NON-NLS-1$
 				l.add(originalArgs[i]);
-		return (String[]) l.toArray(new String[] {});
+		return l.toArray(new String[] {});
 	}
 
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
+	 * @seeorg.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
+	 * IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
-		final String[] args = mungeArguments((String[]) context.getArguments().get("application.args")); //$NON-NLS-1$
+		final String[] args = mungeArguments((String[]) context.getArguments()
+				.get("application.args")); //$NON-NLS-1$
 		if (args.length < 1) {
 			usage();
 			return IApplication.EXIT_OK;
 		} else {
-			// Create/run ActiveMQ server
-			// Create server ID
-			final JMSID serverID = (JMSID) IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(JMSNamespace.NAME), args[0]);
-			// Create config
-			final JMSContainerConfig config = new JMSContainerConfig(serverID, ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
-
-			synchronized (this) {
-				serverContainer = new ActiveMQJMSServerContainer(config);
-				serverContainer.start();
-				// Wait until stopped
-				this.wait();
-			}
+			managerContainer = createContainer("ecf.jms.activemq.tcp.manager",
+					args[0]);
+			System.out.println("ActiveMQ Manager started with id="
+						+ managerContainer.getID());
+			waitForDone();
 			return IApplication.EXIT_OK;
 
 		}
 
+	}
+
+	protected void waitForDone() {
+		// then just wait here
+		synchronized (appLock) {
+			while (!done) {
+				try {
+					appLock.wait();
+				} catch (InterruptedException e) {
+					// do nothing
+				}
+			}
+		}
 	}
 
 	/*
@@ -74,14 +86,40 @@ public class ActiveMQJMSServer implements IApplication {
 	 * @see org.eclipse.equinox.app.IApplication#stop()
 	 */
 	public void stop() {
-		synchronized (this) {
-			if (serverContainer != null) {
-				serverContainer.dispose();
-				serverContainer = null;
-				this.notifyAll();
-			}
+		if (managerContainer != null) {
+			managerContainer.dispose();
+			getContainerManager().removeAllContainers();
+			managerContainer = null;
+		}
+		if (containerManagerTracker != null) {
+			containerManagerTracker.close();
+			containerManagerTracker = null;
+		}
+		synchronized (appLock) {
+			done = true;
+			appLock.notifyAll();
 		}
 	}
+
+	protected IContainerManager getContainerManager() {
+		if (containerManagerTracker == null) {
+			containerManagerTracker = new ServiceTracker(
+					Activator.getDefault().getContext(), IContainerManager.class.getName(),
+					null);
+			containerManagerTracker.open();
+		}
+		return (IContainerManager) containerManagerTracker.getService();
+	}
+
+	protected IContainer createContainer(String containerType,
+			String containerId) throws ContainerCreateException {
+		IContainerFactory containerFactory = getContainerManager()
+				.getContainerFactory();
+		return (containerId == null) ? containerFactory
+				.createContainer(containerType) : containerFactory
+				.createContainer(containerType, new Object[] { containerId });
+	}
+
 
 	private void usage() {
 		System.out.println("Usage: eclipse.exe -application " //$NON-NLS-1$
