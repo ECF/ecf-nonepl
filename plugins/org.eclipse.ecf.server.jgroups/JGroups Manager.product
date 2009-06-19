@@ -8,7 +8,7 @@
 
    <launcherArgs>
       <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} jgroups:///exampleTopic</programArgs>
-      <vmArgs>-Xms40m -Xmx256m</vmArgs>
+      <vmArgs>-Xms40m -Xmx256m -Djava.net.preferIPv4Stack=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
