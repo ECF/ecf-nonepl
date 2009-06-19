@@ -12,10 +12,10 @@
                class="org.eclipse.ecf.internal.provider.jms.activemq.ui.wizard.JoinGroupWizardAction"
                icon="icons/collaboration.gif"
                id="org.eclipse.ecf.provider.jms.activemq.action2"
-               label="Connect Workspace to JMS (ActiveMQ) Group..."
+               label="Connect to ActiveMQ Group..."
                style="push"
                toolbarPath="org.eclipse.ecf.ui.collaboration"
-               tooltip="Connect Workspace to JMS (ActiveMQ) Group">
+               tooltip="Connect to ActiveMQ Group">
          </action>
       </actionSet>
    </extension>

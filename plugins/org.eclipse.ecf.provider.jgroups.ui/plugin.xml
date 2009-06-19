@@ -3,29 +3,21 @@
 
 <plugin>
    <extension
-         point="org.eclipse.ecf.ui.connectWizards">
-      <wizard
-            class="org.eclipse.ecf.internal.provider.jgroups.ui.wizard.JoinGroupWizard"
-            containerFactoryName="ecf.jgroups.client"
-            id="org.eclipse.ecf.provider.jgroups.ui.connectWizard"
-            name="%connectWizards.name.JGroups">
-      </wizard>
+         point="org.eclipse.ui.actionSets">
+      <actionSet
+            id="org.eclipse.ecf.provider.jms.jgroups.ui.actionSet"
+            label="Communications - JavaGroups"
+            visible="false">
+         <action
+               class="org.eclipse.ecf.internal.provider.jgroups.ui.wizard.JoinGroupWizardAction"
+               icon="icons/collaboration.gif"
+               id="org.eclipse.ecf.provider.jms.jgroups.action2"
+               label="Connect to JavaGroup..."
+               style="push"
+               toolbarPath="org.eclipse.ecf.ui.collaboration"
+               tooltip="Connect to JavaGroup">
+         </action>
+      </actionSet>
    </extension>
-   <extension
-         point="org.eclipse.ui.newWizards">
-      <wizard
-            category="org.eclipse.ecf.ui.newConnection.category"
-            class="org.eclipse.ecf.internal.provider.jgroups.ui.wizard.JoinGroupWizard"
-            finalPerspective="org.eclipse.ecf.ui.perspective.communications"
-            icon="icons/collaboration.gif"
-            id="org.eclipse.ecf.provider.jgroups.ui.connectWizard"
-            name="%newWizards.name.JGroups">
-         <description>
-            %JGroupsConnectWizardPage.description
-         </description>
-      </wizard>
-   </extension>
-
-
 </plugin>
 
