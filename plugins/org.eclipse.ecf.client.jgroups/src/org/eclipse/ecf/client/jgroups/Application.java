@@ -10,9 +10,7 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.internal.provider.jgroups.JGroupsClientContainerInstantiator;
-import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
 
@@ -23,13 +21,13 @@ public class Application implements IApplication {
 	protected static String CONTAINER_DESCRIPTION="Trivial JGroups client";
 	protected static String CONTAINER_FACTORY="ecf.jgroups.client.containerFactory";
 	
+	@SuppressWarnings("unused")
 	private IApplicationContext context;
 
 	protected IContainer client;
 
 	protected ID managerID;
 
-	private IApplicationContext appContext = null;
 	private static String jgURL;
 
 	protected IContainer createClient() throws Exception {
@@ -50,7 +48,7 @@ public class Application implements IApplication {
 			usage();
 			return IApplication.EXIT_OK;
 		} else {
-			this.appContext = context;
+			this.context = context;
 			jgURL = args[0];
 			System.out.println(jgURL);
 			ID managerID= getServerIdentity();
