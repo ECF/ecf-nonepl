@@ -20,4 +20,28 @@
       </actionSet>
    </extension>
 
+      <extension
+         point="org.eclipse.ecf.ui.connectWizards">
+      <wizard
+            class="org.eclipse.ecf.internal.provider.jms.activemq.ui.wizard.JoinGroupWizard"
+            containerFactoryName="ecf.jms.activemq.tcp.client"
+            icon="icons/collaboration.gif"
+            id="org.eclipse.ecf.provider.activemq.ui.connectWizard"
+            name="ActiveMQ">
+      </wizard>
+   </extension>
+   
+      <extension
+         point="org.eclipse.ui.newWizards">
+      <wizard
+            class="org.eclipse.ecf.internal.provider.jms.activemq.ui.wizard.JoinGroupWizard"
+            id="org.eclipse.ecf.provider.ui.activemq.connect"
+            name="ActiveMQ"
+            icon="icons/collaboration.gif"
+            category="org.eclipse.ecf.ui.newConnection.category"
+            finalPerspective="org.eclipse.ecf.ui.perspective.communications">
+          <description>%ActiveMQConnectWizardPage.description</description>
+      </wizard>
+   </extension>
+
 </plugin>

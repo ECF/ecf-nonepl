@@ -10,11 +10,6 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jms.activemq.ui.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.ecf.core.ContainerFactory;
-import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.ui.SharedImages;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
@@ -23,7 +18,6 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
@@ -36,13 +30,9 @@ public class JoinGroupWizardPage extends WizardPage {
 	protected static final String USER_NAME_SYSTEM_PROPERTY = "user.name";
 
 	protected static final String PAGE_DESCRIPTION = "Complete account info and choose 'Finish' to login.";
-	protected static final String JOINGROUP_FIELDNAME = "JMS (ActiveMQ) URL:";
+	protected static final String JOINGROUP_FIELDNAME = "ActiveMQ URL:";
 	protected static final String NICKNAME_FIELDNAME = "Nickname:";
-	protected static final String ECF_DEFAULT_URL = "tcp://localhost:61616/exampleTopic";
-	protected static final String ECF_TEMPLATE_URL = "tcp://<server>:<port>/<jms topic>";
-	protected static final String PAGE_TITLE = "Connect JMS (ActiveMQ) Client";
-
-	protected static final String DEFAULT_CLIENT = "ecf.jms.activemq.tcp.client";
+	protected static final String PAGE_TITLE = "Connect ActiveMQ Client";
 
 	private static final String DIALOG_SETTINGS = CLASSNAME;
 
@@ -54,32 +44,18 @@ public class JoinGroupWizardPage extends WizardPage {
 				.getImageDescriptor(SharedImages.IMG_COLLABORATION_WIZARD));
 	}
 
-	protected String template_url = ECF_TEMPLATE_URL;
-	protected String default_url = ECF_DEFAULT_URL;
+	protected String template_url = ActiveMQ.DEFAULT_TARGET_URL_TEMPLATE;
+	protected String default_url = ActiveMQ.DEFAULT_TARGET_URL;
 
 	protected Text nicknameText;
 	protected Text joinGroupText;
-	protected Combo combo;
-	protected List containerDescriptions = new ArrayList();
 	protected String urlPrefix = "";
 
-// private Button autoLogin = null;
+	// private Button autoLogin = null;
 	private boolean autoLoginFlag = false;
 
 	public boolean getAutoLoginFlag() {
 		return autoLoginFlag;
-	}
-
-	protected void fillCombo() {
-		ContainerTypeDescription desc = ContainerFactory.getDefault()
-				.getDescriptionByName(DEFAULT_CLIENT);
-		if (desc != null) {
-			String name = desc.getName();
-			String description = desc.getDescription();
-			combo.add(description + " - " + name);
-			containerDescriptions.add(desc);
-			combo.select(0);
-		}
 	}
 
 	public void createControl(Composite parent) {
@@ -88,12 +64,7 @@ public class JoinGroupWizardPage extends WizardPage {
 		container.setLayout(gridLayout);
 		setControl(container);
 
-		final Label label_4 = new Label(container, SWT.NONE);
-		label_4.setText("Protocol:");
-
-		combo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
 		GridData data = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-		combo.setLayoutData(data);
 
 		Label groupIDLabel = new Label(container, SWT.NONE);
 		groupIDLabel.setText(JOINGROUP_FIELDNAME);
@@ -127,7 +98,6 @@ public class JoinGroupWizardPage extends WizardPage {
 			}
 		});
 
-		fillCombo();
 		restoreDialogSettings();
 	}
 
@@ -137,16 +107,7 @@ public class JoinGroupWizardPage extends WizardPage {
 			IDialogSettings pageSettings = dialogSettings
 					.getSection(DIALOG_SETTINGS);
 			if (pageSettings != null) {
-				String strVal = pageSettings.get("provider");
-				if (strVal != null) {
-					String[] items = combo.getItems();
-					for (int i = 0; i < items.length; ++i)
-						if (strVal.equals(items[i])) {
-							break;
-						}
-				}
-
-				strVal = pageSettings.get("url");
+				String strVal = pageSettings.get("url");
 				if (strVal != null)
 					joinGroupText.setText(strVal);
 
@@ -167,9 +128,6 @@ public class JoinGroupWizardPage extends WizardPage {
 
 			pageSettings.put("url", joinGroupText.getText());
 			pageSettings.put("nickname", nicknameText.getText());
-			int i = combo.getSelectionIndex();
-			if (i >= 0)
-				pageSettings.put("provider", combo.getItem(i));
 		}
 	}
 
@@ -187,14 +145,4 @@ public class JoinGroupWizardPage extends WizardPage {
 		return nicknameText.getText().trim();
 	}
 
-	public String getContainerType() {
-		int index = combo.getSelectionIndex();
-		if (index == -1)
-			return null;
-		else {
-			ContainerTypeDescription desc = (ContainerTypeDescription) containerDescriptions
-					.get(index);
-			return desc.getName();
-		}
-	}
 }

@@ -17,15 +17,20 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.NullProgressMonitor;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.ISchedulingRule;
+import org.eclipse.ecf.core.ContainerCreateException;
+import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.internal.example.collab.actions.URIClientConnectAction;
 import org.eclipse.ecf.internal.provider.jms.activemq.ui.Activator;
+import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.jface.dialogs.IDialogSettings;
+import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class JoinGroupWizard extends Wizard {
-
-	protected static final String PAGE_TITLE = "Collaboration Connect";
+public class JoinGroupWizard extends Wizard implements IConnectWizard,
+		INewWizard {
 
 	private static final String DIALOG_SETTINGS = JoinGroupWizard.class
 			.getName();
@@ -33,11 +38,16 @@ public class JoinGroupWizard extends Wizard {
 	JoinGroupWizardPage mainPage;
 	private IResource resource;
 
+	protected IContainer container;
+
+	public JoinGroupWizard() {
+	}
+
 	public JoinGroupWizard(IResource resource, IWorkbench workbench) {
 		super();
 		this.resource = resource;
-		setWindowTitle(PAGE_TITLE);
-		IDialogSettings dialogSettings = Activator.getDefault()
+		setWindowTitle("ActiveMQ Connect");
+		final IDialogSettings dialogSettings = Activator.getDefault()
 				.getDialogSettings();
 		IDialogSettings wizardSettings = dialogSettings
 				.getSection(DIALOG_SETTINGS);
@@ -60,7 +70,7 @@ public class JoinGroupWizard extends Wizard {
 	public boolean performFinish() {
 		try {
 			finishPage(new NullProgressMonitor());
-		} catch (Exception e) {
+		} catch (final Exception e) {
 			e.printStackTrace();
 			return false;
 		}
@@ -72,18 +82,37 @@ public class JoinGroupWizard extends Wizard {
 
 		mainPage.saveDialogSettings();
 		URIClientConnectAction client = null;
-		String groupName = mainPage.getJoinGroupText();
-		String nickName = mainPage.getNicknameText();
-		String containerType = mainPage.getContainerType();
-		boolean autoLogin = mainPage.getAutoLoginFlag();
+		final String groupName = mainPage.getJoinGroupText();
+		final String nickName = mainPage.getNicknameText();
+		final String containerType = ActiveMQ.CLIENT_CONTAINER_NAME;
+		final boolean autoLogin = mainPage.getAutoLoginFlag();
 		try {
 			client = new URIClientConnectAction(containerType, groupName,
 					nickName, "", resource, autoLogin);
 			client.run(null);
-		} catch (Exception e) {
-			String id = Activator.getDefault().getBundle().getSymbolicName();
+		} catch (final Exception e) {
+			final String id = Activator.getDefault().getBundle()
+					.getSymbolicName();
 			throw new CoreException(new Status(Status.ERROR, id, IStatus.ERROR,
 					"Could not connect to " + groupName, e));
 		}
+	}
+
+	public void init(IWorkbench workbench, IContainer container) {
+		this.container = container;
+
+	}
+
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.container = null;
+		try {
+			this.container = ContainerFactory.getDefault().createContainer(
+					ActiveMQ.CLIENT_CONTAINER_NAME);
+		} catch (final ContainerCreateException e) {
+			// None
+		}
+
+		setWindowTitle(JoinGroupWizard.DIALOG_SETTINGS);
+
 	}
 }

@@ -6,7 +6,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.internal.provider.jms.activemq.ActiveMQJMSClientContainerInstantiator"
-            description="ActiveMQ/JMS Client"
+            description="ActiveMQ Client"
             name="ecf.jms.activemq.tcp.client">
       </containerFactory>
    </extension>
@@ -15,7 +15,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.internal.provider.jms.activemq.ActiveMQJMSServerContainerInstantiator"
-            description="ActiveMQ/JMS Manager"
+            description="ActiveMQ Manager"
             name="ecf.jms.activemq.tcp.manager">
       </containerFactory>
    </extension>

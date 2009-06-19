@@ -31,8 +31,8 @@ import org.eclipse.ui.PlatformUI;
 public class JoinGroupWizardAction implements IObjectActionDelegate,
 		IWorkbenchWindowActionDelegate {
 
-	private static final String CONNECT_PROJECT_MENU_TEXT = "Connect Project to JMS Group...";
-	private static final String DISCONNECT_PROJECT_MENU_TEXT = "Disconnect JMS Project";
+	private static final String CONNECT_PROJECT_MENU_TEXT = "Connect Project to ActiveMQ Group...";
+	private static final String DISCONNECT_PROJECT_MENU_TEXT = "Disconnect ActiveMQ Project";
 
 	private IResource resource;
 	private boolean connected = false;
@@ -69,7 +69,7 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 					.getWorkbench());
 			Shell shell = null;
 			if (targetPart == null) {
-				shell = (window == null)?null:window.getShell();
+				shell = (window == null) ? null : window.getShell();
 			} else {
 				shell = targetPart.getSite().getShell();
 			}

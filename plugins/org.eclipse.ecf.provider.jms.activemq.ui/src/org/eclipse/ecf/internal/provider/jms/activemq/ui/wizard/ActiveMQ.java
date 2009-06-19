@@ -9,15 +9,14 @@
  *    Composent, Inc. - initial API and implementation
  *****************************************************************************/
 
-package org.eclipse.ecf.internal.provider.jgroups.ui.wizard;
+package org.eclipse.ecf.internal.provider.jms.activemq.ui.wizard;
 
 /**
  *
  */
-public interface JGroups {
+public interface ActiveMQ {
 
-	public static final String CLIENT_CONTAINER_NAME = "ecf.jgroups.client";
-	public static final String DEFAULT_TARGET_URL = "jgroups:///exampleChannel";
-	public static final String DEFAULT_TARGET_URL_TEMPLATE = "jgroups:///<channelName>";
-
+	public static final String CLIENT_CONTAINER_NAME = "ecf.jms.activemq.tcp.client";
+	public static final String DEFAULT_TARGET_URL = "tcp://localhost:61616/exampleTopic";
+	public static final String DEFAULT_TARGET_URL_TEMPLATE = "tcp://<server>:<port>/<jms topic>";
 }
