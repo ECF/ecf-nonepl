@@ -3,12 +3,11 @@
 
 <product name="org.eclipse.ecf.client.jgroups.product" id="org.eclipse.ecf.client.jgroups.jgClientProduct" application="org.eclipse.ecf.client.jgroups.id1" useFeatures="false" includeLaunchers="true">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}  jgroups://192.168.0.10/jgroupsECF&amp;stackName=tcp</programArgs>
+      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl}  jgroups:///simpleTopic</programArgs>
       <vmArgs>-Djava.net.preferIPv4Stack=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
@@ -24,14 +23,11 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
-
    <plugins>
       <plugin id="com.ibm.icu"/>
-      <plugin id="mchannel"/>
       <plugin id="org.apache.commons.logging"/>
       <plugin id="org.eclipse.core.commands"/>
       <plugin id="org.eclipse.core.contenttype"/>
