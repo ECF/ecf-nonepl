@@ -7,7 +7,7 @@
          point="org.eclipse.ecf.identity.namespace">
       <namespace
             class="org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace"
-            description="JGroups Namespace"
+            description="JavaGroups Namespace"
             name="ecf.namespace.jgroupsid">
       </namespace>
    </extension>
@@ -16,7 +16,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.internal.provider.jgroups.JGroupsClientContainerInstantiator"
-            description="ECF Generic Client - JGroups"
+            description="JavaGroups Client"
             name="ecf.jgroups.client">
       </containerFactory>
    </extension>
@@ -24,7 +24,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.internal.provider.jgroups.JGroupsManagerContainerInstantiator"
-            description="ECF Generic Manager - JGroups"
+            description="JavaGroups Manager"
             name="ecf.jgroups.manager" server="true">
       </containerFactory>
    </extension>
