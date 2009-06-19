@@ -74,9 +74,6 @@ at http://www.eclipse.org.
 
    <plugin
          id="com.skype.linux.x86"
-         os="linux"
-         ws="gtk,motif"
-         arch="x86"
          download-size="0"
          install-size="0"
          version="0.0.0"
