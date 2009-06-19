@@ -23,33 +23,53 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 /**
  *
  */
-public class JGroupsClientContainerInstantiator extends GenericContainerInstantiator {
+public class JGroupsClientContainerInstantiator extends
+		GenericContainerInstantiator {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.core.provider.BaseContainerInstantiator#createInstance
+	 * (org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
 	 */
-	public IContainer createInstance(ContainerTypeDescription description, Object[] parameters) throws ContainerCreateException {
+	public IContainer createInstance(ContainerTypeDescription description,
+			Object[] parameters) throws ContainerCreateException {
 		try {
 			ID newID = null;
 			if (parameters != null && parameters.length > 0) {
 				if (parameters[0] instanceof JGroupsID)
 					newID = (ID) parameters[0];
 				else if (parameters[0] instanceof String)
-					newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, (String) parameters[0]);
+					newID = IDFactory.getDefault().createID(
+							JGroupsNamespace.NAME, (String) parameters[0]);
 			} else
-				newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, new Object[] {});
+				newID = IDFactory.getDefault()
+						.createID(
+								JGroupsNamespace.NAME,
+								JGroupsNamespace.SCHEME
+										+ JGroupsNamespace.SCHEME_SEPARATOR
+										+ "///"
+										+ IDFactory.getDefault().createGUID()
+												.getName());
 			if (newID == null)
-				throw new ContainerCreateException("invalid parameters for creating client instance");
+				throw new ContainerCreateException(
+						"invalid parameters for creating client instance");
 			return new JGroupsClientContainer(new SOContainerConfig(newID));
 		} catch (final IDCreateException e) {
-			throw new ContainerCreateException("Exception creating trivial container", e);
+			throw new ContainerCreateException(
+					"Exception creating jgroups client container", e);
 		}
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.eclipse.ecf.core.provider.BaseContainerInstantiator#
+	 * getSupportedParameterTypes(org.eclipse.ecf.core.ContainerTypeDescription)
 	 */
-	public Class[][] getSupportedParameterTypes(ContainerTypeDescription description) {
-		return new Class[][] { {JGroupsID.class}, {String.class}, {}};
+	public Class[][] getSupportedParameterTypes(
+			ContainerTypeDescription description) {
+		return new Class[][] { { JGroupsID.class }, { String.class }, {} };
 	}
 }

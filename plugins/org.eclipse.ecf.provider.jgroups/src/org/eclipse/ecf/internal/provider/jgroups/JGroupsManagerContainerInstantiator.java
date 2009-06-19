@@ -35,15 +35,14 @@ public class JGroupsManagerContainerInstantiator extends GenericContainerInstant
 					newID = (ID) parameters[0];
 				else if (parameters[0] instanceof String)
 					newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, (String) parameters[0]);
-			} else
-				newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, new Object[] {});
+			}
 			if (newID == null)
-				throw new ContainerCreateException("invalid parameters for creating manager instance");
+				throw new ContainerCreateException("invalid parameters for creating jgroups manager instance");
 			final JGroupsManagerContainer manager = new JGroupsManagerContainer(new SOContainerConfig(newID));
 			manager.start();
 			return manager;
 		} catch (final Exception e) {
-			throw new ContainerCreateException("Exception creating trivial container", e);
+			throw new ContainerCreateException("Exception creating jgroups manager container", e);
 		}
 	}
 
