@@ -3,7 +3,7 @@
       id="org.eclipse.ecf.provider.yahoo_feature"
       label="ECF Yahoo Provider"
       version="3.0.0.qualifier"
-      provider-name="Eclipse.org">
+      provider-name="Eclipse.org - ECF">
 
    <description url="http://www.eclipse.org/ecf">
       This feature gives an implementation of the Yahoo IM protocol implemented as an ECF provider plugin.
