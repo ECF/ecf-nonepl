@@ -117,18 +117,18 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		if(messageEvent instanceof IChatMessageEvent)
 		{
 			
-			if(friendsList == null && !stopTrying)
-			{
-				try {
-					friendsList = this.container.getTwitterUsersFromFriends();
-					updateFriendsList();
-	
-				} catch (ECFException e) {
-					stopTrying = true;
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-			}
+//			if(friendsList == null && !stopTrying)
+//			{
+//				try {
+//					friendsList = this.container.getTwitterUsersFromFriends();
+//					updateFriendsList();
+//	
+//				} catch (ECFException e) {
+//					stopTrying = true;
+//					// TODO Auto-generated catch block
+//					e.printStackTrace();
+//				}
+//			}
 			
 			final TwitterMessageChatEvent msg = (TwitterMessageChatEvent)messageEvent;
 			//System.err.println("Getting User");
@@ -136,9 +136,6 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		//	System.err.println("Got User");
 			super.setChanged();
 			
-			/**
-			 * Commented out message updates temporarily.
-			 */
 			if(!display.isDisposed())
 			{
 				display.syncExec(new Runnable() {

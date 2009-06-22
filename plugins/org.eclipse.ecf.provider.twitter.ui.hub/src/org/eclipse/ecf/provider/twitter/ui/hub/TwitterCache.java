@@ -68,6 +68,7 @@ public class TwitterCache {
 			URL url;
 			try {
 				url = new URL(imagePath);
+				
 				goGetImage(userId, url);
 			} catch (MalformedURLException e) {
 				// TODO Auto-generated catch block

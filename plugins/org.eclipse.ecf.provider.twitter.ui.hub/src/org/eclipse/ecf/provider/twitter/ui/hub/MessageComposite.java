@@ -35,10 +35,14 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.osgi.framework.Bundle;
 
+import com.ocpsoft.pretty.time.PrettyTime;
+
 public class MessageComposite implements MouseTrackListener, IHyperlinkListener, Listener
 {
 
 	private static final String TWITTER_URL = "http://www.twitter.com/";
+	
+	private static PrettyTime timeFormatter = new PrettyTime();
 	
 	private FormToolkit toolkit; 
 	private Composite composite; 
@@ -193,8 +197,8 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		 */
 		StyledText nameLabel = new StyledText(composite, SWT.WRAP | SWT.MULTI);
 		
-		SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
-		String timestamp = format.format(messageCreation);
+		//SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
+		String timestamp = timeFormatter.format(messageCreation);
 		
 		if(realName == null || (realName.equals(username)))
 		{

@@ -37,3 +37,5 @@ Export-Package: org.eclipse.ecf.internal.provider.twitter.ui.wizards,
  org.eclipse.ecf.provider.twitter.ui.hub,
  org.eclipse.ecf.provider.twitter.ui.logic,
  org.eclipse.ecf.provider.twitter.ui.utils
+Bundle-ClassPath: lib/ocpsoft-pretty-time-1.0.1.jar,
+ .
