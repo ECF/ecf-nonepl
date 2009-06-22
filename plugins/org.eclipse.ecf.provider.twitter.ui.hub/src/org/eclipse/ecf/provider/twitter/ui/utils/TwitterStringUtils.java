@@ -15,6 +15,7 @@ public class TwitterStringUtils
 	 */
 	public static String decorateUserTags(String message)
 	{
+		
 		Pattern pattern = Pattern.compile("[@]+[A-Za-z0-9-_]*");
 		Matcher matcher = pattern.matcher(message);
 		StringBuffer url = null;

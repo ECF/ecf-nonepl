@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -45,7 +46,10 @@ import org.eclipse.ui.part.ViewPart;
 
 
 public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkListener {
-
+	
+	
+	private ArrayList<Long> previousMessages;
+	
 	
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.messagesView";
 	
@@ -60,7 +64,7 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	
 	public MessagesViewPart() {
 		
-	
+		previousMessages = new ArrayList<Long>();
 	}
 
 	@Override
@@ -72,7 +76,6 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		TableWrapLayout layout = new TableWrapLayout();
 	
 		form.getBody().setLayout(layout);
-		
 		formComposite = form.getBody();
 	
 	}
@@ -87,13 +90,30 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		toolkit.dispose();
 		super.dispose();
 	}
+	
+	private boolean checkRepeat(long id)
+	{
+		if(previousMessages.contains(id))
+		{
+			return true;
+		}
+		previousMessages.add(id);
+		return false;
+		
+	}
 
 	public void update(Observable o, Object arg) {
 		IStatus message = (IStatus)arg;
-		MessageComposite messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit);
-		form.reflow(true);
-		form.redraw();
+		boolean seenAlready  = checkRepeat(message.getId());
 		
+		//check if we've seen this message already (by id?) 
+		//if so drop it.
+		if(!seenAlready)
+		{
+			MessageComposite messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit);
+			form.reflow(true);
+			form.redraw();
+		}
 	}
 	
 	
