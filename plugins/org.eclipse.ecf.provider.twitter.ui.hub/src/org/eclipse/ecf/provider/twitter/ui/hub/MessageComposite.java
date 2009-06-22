@@ -271,7 +271,15 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		statusTxt.addHyperlinkListener(this);
 		statusTxt.setParagraphsSeparated(true);
 		statusTxt.setLayoutData(td);
-		statusTxt.setText(msgTxt, true, true);
+		try
+		{
+			statusTxt.setText(msgTxt, true, true);
+		} 
+		catch(IllegalArgumentException iae)
+		{
+			//form text was invalid - so just use plain
+			statusTxt.setText(messageText, false, true);
+		}
 	}
 	
 	private static Image loadImage(String img)
