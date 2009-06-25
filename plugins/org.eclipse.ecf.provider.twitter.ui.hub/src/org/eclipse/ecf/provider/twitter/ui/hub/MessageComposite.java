@@ -11,6 +11,7 @@ import org.eclipse.core.runtime.Platform;
 import org.eclipse.ecf.internal.provider.twitter.search.TweetItem;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.search.ITweetItem;
+import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
 import org.eclipse.ecf.provider.twitter.ui.utils.TwitterStringUtils;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -49,9 +50,9 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	private Composite composite; 
 	
 	//statically load the images for now.
-	private static Image replyImg = loadImage("reply.png");
-	private static Image retweetImg = loadImage("retweet.png");
-	private static Image blankUserImg = loadImage("blankUserImage.png");
+	private static Image replyImg = ImageUtils.loadImage("reply.png");
+	private static Image retweetImg = ImageUtils.loadImage("retweet.png");
+	private static Image blankUserImg = ImageUtils.loadImage("blankUserImage.png");
 	private Button reply; 
 	private Button retweet;
 	private IStatus message; 
@@ -94,13 +95,13 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 			
 			if(addToTop)
 			{
-				System.err.println("<move above>Trying to move " + message + " above " + referenceComposite.getText());
+			//	System.err.println("<move above>Trying to move " + message + " above " + referenceComposite.getText());
 				composite.moveAbove(referenceComposite.getComposite());
 			}
 			else
 			{	
 				//otherwise default behaviour should be enough?
-				System.err.println("Oldest: " + message.getBody());
+				//System.err.println("Oldest: " + message.getBody());
 				//add it to the end.
 				//composite.moveBelow(referenceComposite.getComposite());
 			}
@@ -108,7 +109,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 //		else
 //		{
 //	//		System.err.println("reference composite is null");
-//		s}
+//		}
 //		
 		this.message = message;
 		this.toolkit = toolkit;
@@ -144,6 +145,10 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		composite.addMouseTrackListener(this);
 	}
 
+	public IStatus getMessage()
+	{
+		return message;
+	}
 	public String getText()
 	{
 		return messageText;
@@ -322,15 +327,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		}
 	}
 	
-	private static Image loadImage(String img)
-	{
-		Bundle bundle = Platform.getBundle("org.eclipse.ecf.provider.twitter.ui.hub"); // aka your plugin's id
-		IPath imagePath = new Path("icons/" + img);
-		URL imageUrl = Platform.find(bundle, imagePath);
-		ImageDescriptor desc = ImageDescriptor.createFromURL(imageUrl);
-		Image image = desc.createImage();
-		return image;
-	}
+	
 	
 	
 	

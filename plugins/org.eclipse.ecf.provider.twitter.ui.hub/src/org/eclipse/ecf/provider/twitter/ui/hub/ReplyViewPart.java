@@ -34,7 +34,7 @@ public class ReplyViewPart extends ViewPart {
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		ScrolledForm tweetForm = toolkit.createScrolledForm(parent);
 		
-		tweetForm.setText("Replies");
+		tweetForm.setText("Mentions");
 		
 		Composite tweet = tweetForm.getBody();
 		tweet.setLayout(new GridLayout(1, false));

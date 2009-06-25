@@ -36,7 +36,7 @@
             class="org.eclipse.ecf.provider.twitter.ui.hub.ReplyViewPart"
             icon="icons/Chat 2_32.png"
             id="org.eclipse.ecf.provider.twitter.ui.hub.replyView"
-            name="Replies"
+            name="Mentions"
             restorable="true">
       </view>
       <view
@@ -61,6 +61,14 @@
             icon="icons/search2.png"
             id="org.eclipse.ecf.provider.twitter.ui.hub.searchView"
             name="Search"
+            restorable="true">
+      </view>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.FollowersViewPart"
+            icon="icons/Buddy Group_32.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.followersView"
+            name="Followers"
             restorable="true">
       </view>
    </extension>

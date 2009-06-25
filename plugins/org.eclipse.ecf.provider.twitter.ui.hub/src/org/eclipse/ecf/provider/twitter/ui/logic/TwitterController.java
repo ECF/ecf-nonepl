@@ -6,7 +6,6 @@ import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.IContainerConnectedEvent;
 import org.eclipse.ecf.core.events.IContainerEvent;
-import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.twitter.TwitterMessageChatEvent;
 import org.eclipse.ecf.internal.provider.twitter.search.TwitterMessageSearchManager;
@@ -218,10 +217,9 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		Thread thread = new Thread(new FriendsViewRunnable());
 
 		/**
-		 * ToDo: add this back in
+		 * ToDo: add this back in - slows down the app A LOT!
 		 */
-		
-		//	thread.start();
+		thread.start();
 	}
 	
 	
@@ -233,10 +231,10 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	{
 		public void run()
 		{
-			display.asyncExec(new Runnable() 
+			display.syncExec(new Runnable() 
 			{
 				public void run() 
-				{	System.err.println("Number of friends: " + friendsList);
+				{	System.err.println("Number of friends: " + friendsList.length);
 						friendsView.addFriends(friendsList);
 				}});
 		}
