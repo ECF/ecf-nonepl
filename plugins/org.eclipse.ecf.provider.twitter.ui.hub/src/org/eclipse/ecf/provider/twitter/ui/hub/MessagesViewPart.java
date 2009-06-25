@@ -58,10 +58,6 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	//for sorting 
 	private Date newestMessageDate;
 	private Date oldestMessageDate;
-	private int  newestMessageIndex = 0;
-	private int  oldestMessageIndex = 0;
-	private int  messageCount = 0;
-	private ArrayList<MessageComposite> receivedMessages;
 	
 	private MessageComposite oldestMessage = null;
 	private MessageComposite newestMessage = null;
@@ -79,7 +75,6 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	public MessagesViewPart() {
 		
 		previousMessages = new ArrayList<Long>();
-		receivedMessages = new ArrayList<MessageComposite>();
 	}
 
 	@Override
@@ -90,6 +85,8 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		form.setText("Your Messages");
 		GridLayout layout = new GridLayout();
 		layout.numColumns = 1;
+		
+		
 		//RowLayout layout = new RowLayout(SWT.VERTICAL);
 		//TableWrapLayout layout = new TableWrapLayout();
 //		FormLayout layout = new FormLayout();
@@ -164,15 +161,21 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 			if(addToTop)
 			{
 				//System.err.println("<TOP>Should appear at top: " + message.getBody());
-				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop, newestMessage);
+				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop, newestMessage, formComposite.getBounds().width);
 				
 				System.err.println("New top composite is " + message.getBody());
 				newestMessage = messageComposite;
+				
+				//this message can be the newest and oldest if it's the first.
+				if(oldestMessage == null)
+				{
+					oldestMessage = messageComposite;
+				}
 			}
 			else
 			{
 				//System.err.println("<END>Should move to bottom: " + message.getBody());
-				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop,oldestMessage);
+				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop,oldestMessage, formComposite.getBounds().width);
 				System.err.println("At the bottom : " + message.getBody());
 				oldestMessage = messageComposite;
 				
