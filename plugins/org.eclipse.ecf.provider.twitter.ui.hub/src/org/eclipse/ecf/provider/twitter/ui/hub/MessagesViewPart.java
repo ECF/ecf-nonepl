@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -22,8 +23,10 @@ import org.eclipse.swt.graphics.Point;
 import org.eclipse.swt.graphics.Rectangle;
 import org.eclipse.swt.graphics.Region;
 import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.layout.FormLayout;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.layout.RowLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
@@ -52,6 +55,17 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	
 	
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.messagesView";
+	//for sorting 
+	private Date newestMessageDate;
+	private Date oldestMessageDate;
+	private int  newestMessageIndex = 0;
+	private int  oldestMessageIndex = 0;
+	private int  messageCount = 0;
+	private ArrayList<MessageComposite> receivedMessages;
+	
+	private MessageComposite oldestMessage = null;
+	private MessageComposite newestMessage = null;
+	
 	
 	private Composite formComposite;
 	private ScrolledForm form; 
@@ -65,6 +79,7 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	public MessagesViewPart() {
 		
 		previousMessages = new ArrayList<Long>();
+		receivedMessages = new ArrayList<MessageComposite>();
 	}
 
 	@Override
@@ -73,9 +88,14 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
 		form.setText("Your Messages");
-		TableWrapLayout layout = new TableWrapLayout();
-	
+		GridLayout layout = new GridLayout();
+		layout.numColumns = 1;
+		//RowLayout layout = new RowLayout(SWT.VERTICAL);
+		//TableWrapLayout layout = new TableWrapLayout();
+//		FormLayout layout = new FormLayout();
+		//GridLayout layout = new GridLayout();
 		form.getBody().setLayout(layout);
+		
 		formComposite = form.getBody();
 	
 	}
@@ -102,15 +122,63 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		
 	}
 
+	/**
+	 * Updates the view with the latest message
+	 * Determines if it's a repeat, and where it should appear in the timeline.
+	 */
 	public void update(Observable o, Object arg) {
 		IStatus message = (IStatus)arg;
 		boolean seenAlready  = checkRepeat(message.getId());
 		
+		//either add to the top of the latest, or at the bottom. 
+		//bottom is default.
+		boolean addToTop = true;
 		//check if we've seen this message already (by id?) 
 		//if so drop it.
+		
 		if(!seenAlready)
 		{
-			MessageComposite messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit);
+			if(newestMessageDate == null && oldestMessageDate == null)
+			{
+				newestMessageDate = message.getCreatedAt();
+				oldestMessageDate = message.getCreatedAt();
+			}
+			else
+			{
+				//if this is a newer message.
+				if(message.getCreatedAt().after(newestMessageDate))
+				{
+					newestMessageDate = message.getCreatedAt();
+					addToTop = true;
+				}
+				
+				if(message.getCreatedAt().before(oldestMessageDate))
+				{
+					oldestMessageDate = message.getCreatedAt();
+					addToTop = false;
+				}
+			}
+			
+			
+			MessageComposite messageComposite;
+			if(addToTop)
+			{
+				//System.err.println("<TOP>Should appear at top: " + message.getBody());
+				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop, newestMessage);
+				
+				System.err.println("New top composite is " + message.getBody());
+				newestMessage = messageComposite;
+			}
+			else
+			{
+				//System.err.println("<END>Should move to bottom: " + message.getBody());
+				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop,oldestMessage);
+				System.err.println("At the bottom : " + message.getBody());
+				oldestMessage = messageComposite;
+				
+			}
+			
+			
 			form.reflow(true);
 			form.redraw();
 		}

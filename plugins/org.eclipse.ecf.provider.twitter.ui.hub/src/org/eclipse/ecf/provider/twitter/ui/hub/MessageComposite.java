@@ -19,6 +19,9 @@ import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.FormAttachment;
+import org.eclipse.swt.layout.FormData;
+import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
@@ -40,8 +43,6 @@ import com.ocpsoft.pretty.time.PrettyTime;
 public class MessageComposite implements MouseTrackListener, IHyperlinkListener, Listener
 {
 
-	private static final String TWITTER_URL = "http://www.twitter.com/";
-	
 	private static PrettyTime timeFormatter = new PrettyTime();
 	
 	private FormToolkit toolkit; 
@@ -57,6 +58,8 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	private ITweetItem searchResult;
 	
 	
+	
+	
 	/**
 	 * The set of details we display
 	 */
@@ -66,6 +69,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	private Date messageCreation;
 	private String userID;
 	private String imagePath;
+	private boolean addToTop;
 	
 	
 	/**
@@ -76,10 +80,32 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	 * @param message
 	 * @param toolkit
 	 */
-	public MessageComposite(Composite parent, int style, IStatus message, FormToolkit toolkit)
+	public MessageComposite(Composite parent, int style, IStatus message,
+					FormToolkit toolkit, boolean addToTop, MessageComposite referenceComposite)
 	{
 		composite = toolkit.createComposite(parent, style);
+		this.addToTop = addToTop;
 		
+		if(referenceComposite != null)
+		{
+			
+			if(addToTop)
+			{
+				System.err.println("<move above>Trying to move " + message + " above " + referenceComposite.getText());
+				composite.moveAbove(referenceComposite.getComposite());
+			}
+			else
+			{	
+				System.err.println("Oldest: " + message.getBody());
+				//add it to the end.
+				composite.moveBelow(referenceComposite.getComposite());
+			}
+		}
+//		else
+//		{
+//	//		System.err.println("reference composite is null");
+//		s}
+//		
 		this.message = message;
 		this.toolkit = toolkit;
 		
@@ -99,6 +125,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	{
 		composite = toolkit.createComposite(parent, style);
 		
+		
 		//this.message = message;
 		this.searchResult = searchResult;
 		this.toolkit = toolkit;
@@ -107,7 +134,10 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		composite.addMouseTrackListener(this);
 	}
 
-	
+	public String getText()
+	{
+		return messageText;
+	}
 	
 	public Composite getComposite()
 	{
@@ -365,6 +395,9 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 
 
 	
-	
+	private static void main(String[] args)
+	{
+		
+	}
 	
 }
