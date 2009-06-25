@@ -81,9 +81,12 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	 * @param toolkit
 	 */
 	public MessageComposite(Composite parent, int style, IStatus message,
-					FormToolkit toolkit, boolean addToTop, MessageComposite referenceComposite)
+					FormToolkit toolkit, boolean addToTop, MessageComposite referenceComposite, 
+					int widthHint)
 	{
 		composite = toolkit.createComposite(parent, style);
+		
+		
 		this.addToTop = addToTop;
 		
 		if(referenceComposite != null)
@@ -96,9 +99,10 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 			}
 			else
 			{	
+				//otherwise default behaviour should be enough?
 				System.err.println("Oldest: " + message.getBody());
 				//add it to the end.
-				composite.moveBelow(referenceComposite.getComposite());
+				//composite.moveBelow(referenceComposite.getComposite());
 			}
 		}
 //		else
@@ -112,6 +116,12 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		extractMessageDetails(message);
 		
 		createContents();
+		
+		GridData gd = new GridData(GridData.FILL_HORIZONTAL);
+		gd.widthHint = widthHint;
+		gd.grabExcessHorizontalSpace = true;
+		composite.setLayoutData(gd);
+		
 		composite.addMouseTrackListener(this);
 	}
 	/**
