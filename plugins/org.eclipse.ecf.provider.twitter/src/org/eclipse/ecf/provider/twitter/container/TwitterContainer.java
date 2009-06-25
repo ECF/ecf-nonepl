@@ -395,7 +395,7 @@ public class TwitterContainer extends AbstractContainer implements
 	class AutoRefreshThread extends Thread {
 
 		// FIXME make the auto refresh parametrized
-		int refreshDelay = 5000;
+		int refreshDelay = 10000;
 		boolean done = false;
 		Object lock = new Object();
 

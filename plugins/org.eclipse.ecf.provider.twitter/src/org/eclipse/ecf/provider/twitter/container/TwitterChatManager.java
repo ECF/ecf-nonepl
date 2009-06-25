@@ -73,7 +73,12 @@ public class TwitterChatManager implements IChatManager {
 	};
 
 	void handleStatusMessages(IStatus[] statuses) {
-		for (int i = 0; i < statuses.length; i++) {
+		
+		//JS - I'd like to sort these from starting with the oldest message first
+		//so I'm going to try running through this array from the end.
+			
+		//for (int i = 0; i < statuses.length; i++) {
+		for (int i = statuses.length -1; i >=0; i--) {
 			handleStatusMessage(statuses[i]);
 		}
 	}
