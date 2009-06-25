@@ -361,6 +361,8 @@ public class TwitterContainer extends AbstractContainer implements
 				throw new ContainerConnectException("targetID of wrong type");
 			try {
 				this.twitter = new Twitter(targetID.getName(), password);
+				this.twitter.setSource("TweetHub");
+				this.twitter.setClientURL("http://wiki.eclipse.org/TweetHub");
 				this.twitter.verifyCredentials();
 				this.targetID = (TwitterID) targetID;
 				// Create user
