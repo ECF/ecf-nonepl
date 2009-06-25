@@ -32,12 +32,12 @@ import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
-public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackListener, Listener {
+public class FollowersViewPart extends ViewPart implements  Observer, MouseTrackListener, Listener {
 
-	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.friendsView";
+	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.followersView";
 	private Composite formComposite;
 	
-	private TwitterUser[] friends;
+	private TwitterUser[] followers;
 	
 	
 	private ScrolledForm form;
@@ -50,7 +50,7 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 	private Shell tip = null;
 	
 	
-	public FriendsViewPart() {
+	public FollowersViewPart() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -66,7 +66,7 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
 		
-		form.setText("Following");
+		form.setText("Followers");
 		
 		formComposite = form.getBody();
 		TableWrapLayout layout = new TableWrapLayout();
@@ -86,7 +86,7 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 	
 	public void addFriends(TwitterUser[] friends)
 	{
-		this.friends = friends;
+		this.followers = friends;
 		for(int i =0; i < friends.length; i++)
 		{
 			addUserToView(friends[i]);

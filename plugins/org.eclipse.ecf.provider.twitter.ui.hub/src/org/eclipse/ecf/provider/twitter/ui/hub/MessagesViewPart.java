@@ -1,50 +1,30 @@
 package org.eclipse.ecf.provider.twitter.ui.hub;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
+import java.util.GregorianCalendar;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.Vector;
+import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.ConcurrentSkipListSet;
 
-import org.eclipse.ecf.core.util.StringUtils;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.StyleRange;
-import org.eclipse.swt.custom.StyledText;
-import org.eclipse.swt.events.MouseEvent;
-import org.eclipse.swt.events.MouseTrackListener;
-import org.eclipse.swt.events.PaintEvent;
-import org.eclipse.swt.events.PaintListener;
-import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.graphics.Point;
-import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.graphics.Region;
-import org.eclipse.swt.layout.FillLayout;
-import org.eclipse.swt.layout.FormLayout;
-import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.layout.RowLayout;
-import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Event;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
-import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.forms.widgets.TableWrapData;
-import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -52,8 +32,7 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	
 	
 	private ArrayList<Long> previousMessages;
-	
-	
+
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.messagesView";
 	//for sorting 
 	private Date newestMessageDate;
@@ -71,10 +50,13 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	private BrowserViewPart browser;
 	
 	private Shell tip;
+
+	private SortedMap<Long,MessageComposite> sortedMessages;
 	
 	public MessagesViewPart() {
 		
 		previousMessages = new ArrayList<Long>();
+		sortedMessages = new TreeMap<Long, MessageComposite>();
 	}
 
 	@Override
@@ -132,6 +114,7 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 		boolean addToTop = true;
 		//check if we've seen this message already (by id?) 
 		//if so drop it.
+		SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
 		
 		if(!seenAlready)
 		{
@@ -139,17 +122,31 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 			{
 				newestMessageDate = message.getCreatedAt();
 				oldestMessageDate = message.getCreatedAt();
+				
 			}
 			else
 			{
 				//if this is a newer message.
-				if(message.getCreatedAt().after(newestMessageDate))
+				//if(message.getCreatedAt().after(newestMessageDate))
+//				System.err.println("-------");
+//				System.err.println("Before Date Compare....");
+//				System.err.println("Incoming message date from " + message.getUser().getName() + " is " + format.format(message.getCreatedAt()) + " or "  + message.getCreatedAt());
+//				System.err.println("Previous new message date from " + newestMessage.getMessage().getUser().getName() + " is " + format.format(newestMessage.getMessage().getCreatedAt()) + " or "  + newestMessage.getMessage().getCreatedAt());
+//				System.err.println("-------");
+				Calendar incoming = GregorianCalendar.getInstance();
+				incoming.setTime(message.getCreatedAt());
+				
+				Calendar newest = GregorianCalendar.getInstance();
+				newest.setTime(newestMessageDate);
+				if(incoming.after(newest))
 				{
 					newestMessageDate = message.getCreatedAt();
 					addToTop = true;
 				}
+				Calendar oldest = GregorianCalendar.getInstance();
+				oldest.setTime(oldestMessageDate);
 				
-				if(message.getCreatedAt().before(oldestMessageDate))
+				if(incoming.before(oldest))	
 				{
 					oldestMessageDate = message.getCreatedAt();
 					addToTop = false;
@@ -163,22 +160,27 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 				//System.err.println("<TOP>Should appear at top: " + message.getBody());
 				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop, newestMessage, formComposite.getBounds().width);
 				
-				System.err.println("New top composite is " + message.getBody());
+				//SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
+				//System.err.println("TOP Message date is now : "  + format.format(message.getCreatedAt()));
+//				if(newestMessage != null)
+//				{
+//					System.err.println("TOP Message date WAS : "  + format.format(newestMessage.getMessage().getCreatedAt()));
+//				}
+//				System.err.println("New top composite is " + message.getBody());
 				newestMessage = messageComposite;
-				
 				//this message can be the newest and oldest if it's the first.
 				if(oldestMessage == null)
 				{
 					oldestMessage = messageComposite;
+					
 				}
 			}
 			else
 			{
 				//System.err.println("<END>Should move to bottom: " + message.getBody());
 				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop,oldestMessage, formComposite.getBounds().width);
-				System.err.println("At the bottom : " + message.getBody());
+//				System.err.println("At the bottom : " + message.getBody());
 				oldestMessage = messageComposite;
-				
 			}
 			
 			
