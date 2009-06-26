@@ -9,9 +9,6 @@ import java.util.Observable;
 import java.util.Observer;
 import java.util.SortedMap;
 import java.util.TreeMap;
-import java.util.Vector;
-import java.util.concurrent.ConcurrentHashMap;
-import java.util.concurrent.ConcurrentSkipListSet;
 
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.swt.SWT;
