@@ -37,9 +37,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.MessageBox;
 import org.eclipse.swt.widgets.Tree;
 import org.eclipse.swt.widgets.TreeColumn;
-import org.eclipse.ui.IWorkbenchActionConstants;
 import org.eclipse.ui.PlatformUI;
-import org.eclipse.ui.internal.IWorkbenchConstants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
@@ -283,7 +281,7 @@ public class InstalledFeaturesComposite {
 		final List<CommonFeaturesTreeNode> featuresToUninstall = new ArrayList<CommonFeaturesTreeNode>();
 		for (Iterator iter = selection.iterator(); iter.hasNext();) {
 			Object next = iter.next();
-			if (next instanceof CommonFeaturesTreeNode) {
+			if (next != null && next instanceof CommonFeaturesTreeNode) {
 				CommonFeaturesTreeNode node = (CommonFeaturesTreeNode) next;
 				featuresToUninstall.add(node);
 			}
