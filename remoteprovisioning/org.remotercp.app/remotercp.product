@@ -75,21 +75,16 @@
       <plugin id="org.jivesoftware.smack"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.app"/>
-      <plugin id="org.remotercp.chat"/>
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.contacts"/>
-      <plugin id="org.remotercp.contacts.test" fragment="true"/>
       <plugin id="org.remotercp.ecf"/>
       <plugin id="org.remotercp.errorhandling"/>
-      <plugin id="org.remotercp.errorhandling.test" fragment="true"/>
-      <plugin id="org.remotercp.filetransfer.receiver"/>
-      <plugin id="org.remotercp.filetransfer.receiver.test" fragment="true"/>
-      <plugin id="org.remotercp.libs.junit"/>
+      <plugin id="org.remotercp.filetransfer.sender"/>
       <plugin id="org.remotercp.login"/>
+      <plugin id="org.remotercp.preferences"/>
       <plugin id="org.remotercp.preferences.ui"/>
       <plugin id="org.remotercp.progress"/>
       <plugin id="org.remotercp.provisioning.ui"/>
-      <plugin id="org.remotercp.provisioning.ui.test" fragment="true"/>
       <plugin id="org.remotercp.util"/>
    </plugins>
 

@@ -7,8 +7,6 @@ Bundle-Activator: org.remotercp.contacts.ContactsActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.jface.databinding,
- org.remotercp.ecf,
- org.remotercp.util,
  org.remotercp.errorhandling
 Bundle-ActivationPolicy: lazy
 Export-Package: org.remotercp.contacts.ui
@@ -19,5 +17,7 @@ Import-Package: org.eclipse.core.databinding,
  org.eclipse.ecf.core.user,
  org.eclipse.ecf.presence,
  org.eclipse.ecf.presence.roster,
- org.junit
+ org.remotercp.ecf.session,
+ org.remotercp.util.osgi,
+ org.remotercp.util.roster
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
