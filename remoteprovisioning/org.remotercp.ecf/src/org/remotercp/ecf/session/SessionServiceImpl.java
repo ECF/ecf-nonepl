@@ -291,7 +291,6 @@ public class SessionServiceImpl implements ISessionService {
 	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		assert adapter != null : "adapter != null";
-
 		return (T) getContainer().getAdapter(adapter);
 
 	}
