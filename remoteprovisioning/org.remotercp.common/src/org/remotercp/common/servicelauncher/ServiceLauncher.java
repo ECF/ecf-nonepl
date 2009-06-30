@@ -2,7 +2,6 @@ package org.remotercp.common.servicelauncher;
 
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IConfigurationElement;
 import org.eclipse.core.runtime.IExtensionPoint;

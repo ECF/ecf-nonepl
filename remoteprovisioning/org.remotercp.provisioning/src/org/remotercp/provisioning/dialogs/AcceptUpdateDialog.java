@@ -1,7 +1,5 @@
 package org.remotercp.provisioning.dialogs;
 
-import java.net.MalformedURLException;
-
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
