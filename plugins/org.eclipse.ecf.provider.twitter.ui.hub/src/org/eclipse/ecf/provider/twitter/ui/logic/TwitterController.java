@@ -8,14 +8,15 @@ import org.eclipse.ecf.core.events.IContainerConnectedEvent;
 import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.twitter.TwitterMessageChatEvent;
-import org.eclipse.ecf.internal.provider.twitter.search.TwitterMessageSearchManager;
-import org.eclipse.ecf.internal.provider.twitter.search.TwitterSimpleCriterion;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.im.IChatMessageEvent;
 import org.eclipse.ecf.presence.search.ICriteria;
+import org.eclipse.ecf.presence.search.ICriterion;
+import org.eclipse.ecf.presence.search.IRestriction;
 import org.eclipse.ecf.presence.search.IResultList;
 import org.eclipse.ecf.presence.search.ISearch;
+import org.eclipse.ecf.presence.search.message.IMessageSearchManager;
 import org.eclipse.ecf.presence.search.message.MessageSearchException;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.container.TwitterChatManager;
@@ -34,7 +35,7 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	
 	private TwitterContainer container;
 	TwitterUser connectedUser;
-	private TwitterMessageSearchManager searchMgr;
+	private IMessageSearchManager searchMgr;
 	
 	
 	private TwitterUser[] friendsList;
@@ -43,7 +44,7 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	private TweetViewPart tweetView;
 	private SearchViewPart searchView;
 	private Display display;
-	
+
 	/**
 	 * Add a list of observers.
 	 */
@@ -158,11 +159,12 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	{
 		if(searchMgr == null)
 		{
-			searchMgr = (TwitterMessageSearchManager)((TwitterChatManager)container.getChatManager()).getMessageSearchManager();
+			searchMgr = container.getChatManager().getMessageSearchManager();
 		}
-		TwitterSimpleCriterion term = new TwitterSimpleCriterion(query);
+		IRestriction term = searchMgr.createRestriction();
+		ICriterion criterion = term.eq("", query);
 		ICriteria criteria = searchMgr.createCriteria();
-		criteria.add(term);
+		criteria.add(criterion);
 		
 		ISearch searchResults = searchMgr.search(criteria);
 		
