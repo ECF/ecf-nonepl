@@ -11,11 +11,15 @@
 
 package org.eclipse.ecf.provider.twitter.container;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpException;
+import org.apache.commons.httpclient.methods.PostMethod;
 import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
@@ -95,6 +99,51 @@ public class TwitterContainer extends AbstractContainer implements
 		}
 	}
 
+	/**
+	 * Return a shorten URL for save characters on tweet
+	 * @param url
+	 *            This url needs to be a valid resource
+	 * @return String URL shorten
+	 * @throws ECFException
+	 *             In case of container fails, url not valid, fails in connect
+	 *             to http
+	 */
+	public String getUrlShorten(String url) throws ECFException {
+		// if the url string doenst have the pattern http or https
+		// the dzone service complain
+		if (!url.startsWith("http://") && !url.startsWith("https://"))
+			throw new ECFException(
+					"Please note: Our URL check failed. The URL you have entered seems not to be a valid resource.");
+
+		HttpClient client = new HttpClient();
+		// Service for shorten URL
+		PostMethod post = new PostMethod("http://dzone.it");
+		// URL form parameter
+		post.addParameter("u", url);
+
+		try {
+			client.executeMethod(post);
+
+			String dzoneResponse = post.getResponseBodyAsString();
+
+			String patternStart = "name=\"newurl\" value=\"";
+			int ini = dzoneResponse.indexOf(patternStart);
+
+			String patternEnd = "\" onfocus=\"if";
+			int end = dzoneResponse.indexOf(patternEnd);
+
+			return dzoneResponse.substring(ini + patternStart.length(), end);
+
+		} catch (HttpException e) {
+			throw new ECFException(e);
+		} catch (IOException e) {
+			throw new ECFException(e);
+		} finally {
+			post.releaseConnection();
+		}
+
+	}
+
 	void sendTwitterMessage(String to, String body) throws ECFException {
 		try {
 			this.getTwitter().sendDirectMessage(to, body);
@@ -105,55 +154,58 @@ public class TwitterContainer extends AbstractContainer implements
 
 	/**
 	 * Return a list of Following
+	 * 
 	 * @return List<IUser>
 	 * @throws ECFException
 	 */
 	public List<IUser> getFollowing() throws ECFException {
 		try {
-			
+
 			List<twitter4j.User> friends = getTwitter().getFriends();
 			List<IUser> twitterFriends = new ArrayList<IUser>(friends.size());
-			
+
 			Iterator<twitter4j.User> iterator = friends.iterator();
 			while (iterator.hasNext()) {
 				twitter4j.User user = iterator.next();
 				twitterFriends.add(new TwitterUser(user));
-				
+
 			}
-			
+
 			return twitterFriends;
-			
+
 		} catch (final TwitterException e) {
 			throw new ECFException("Exception getting twitter friends", e);
 		}
 	}
 
 	/**
-	 * Returns the authenticating user's followers, each with current status inline.
+	 * Returns the authenticating user's followers, each with current status
+	 * inline.
+	 * 
 	 * @return List<IUser>
 	 * @throws ECFException
 	 */
 	public List<IUser> getFollowers() throws ECFException {
 		try {
-			
+
 			List<twitter4j.User> followers = getTwitter().getFollowers();
-			List<IUser> twitterFollowers = new ArrayList<IUser>(followers.size());
-			
+			List<IUser> twitterFollowers = new ArrayList<IUser>(followers
+					.size());
+
 			Iterator<twitter4j.User> iterator = followers.iterator();
 			while (iterator.hasNext()) {
 				twitter4j.User user = iterator.next();
 				twitterFollowers.add(new TwitterUser(user));
-				
+
 			}
-			
+
 			return twitterFollowers;
-			
+
 		} catch (final TwitterException e) {
 			throw new ECFException("Exception getting twitter followers", e);
 		}
 	}
-	
-    
+
 	/**
 	 * 
 	 * @return Returns the 20 most recent statuses posted by the authenticating
@@ -180,8 +232,8 @@ public class TwitterContainer extends AbstractContainer implements
 
 	/**
 	 * 
-	 * @return Returns the most recent statuses posted in the last 24 hours from the authenticating user.
-	 *  List of {@link IStatus}
+	 * @return Returns the most recent statuses posted in the last 24 hours from
+	 *         the authenticating user. List of {@link IStatus}
 	 * @throws ECFException
 	 */
 	public List getUserTimeline() throws ECFException {
@@ -272,13 +324,13 @@ public class TwitterContainer extends AbstractContainer implements
 
 	public TwitterUser[] getTwitterUsersFromFriends() throws ECFException {
 		final List<IUser> friends = getFollowing();
-//		final List result = new ArrayList();
-//		
-//		for (final Iterator<IUser> i = friends.iterator(); i.hasNext();) {
-//			//final twitter4j.User twitterUser = (twitter4j.User) i.next();
-//			final TwitterUser tu = (TwitterUser)i.next();
-//			result.add(tu);
-//		}
+		// final List result = new ArrayList();
+		//		
+		// for (final Iterator<IUser> i = friends.iterator(); i.hasNext();) {
+		// //final twitter4j.User twitterUser = (twitter4j.User) i.next();
+		// final TwitterUser tu = (TwitterUser)i.next();
+		// result.add(tu);
+		// }
 		return (TwitterUser[]) friends.toArray(new TwitterUser[] {});
 	}
 
@@ -367,7 +419,8 @@ public class TwitterContainer extends AbstractContainer implements
 				this.targetID = (TwitterID) targetID;
 				// Create user
 				final User localUser = new User(targetID, this.twitter
-						.getUserId() + " [Twitter]");
+						.getUserId()
+						+ " [Twitter]");
 				// Set local user in chat manager...this creates roster
 				rosterManager.setUser(localUser);
 				// Then get twitter friends from server
