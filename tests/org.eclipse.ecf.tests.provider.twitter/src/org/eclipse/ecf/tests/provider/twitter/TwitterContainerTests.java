@@ -195,6 +195,15 @@ public class TwitterContainerTests extends ContainerAbstractTestCase {
 		}
 	}
 	
+	public void testUrlShorten() throws ECFException{
+
+			final IContainer client = getClient(0);
+			TwitterContainer container = (TwitterContainer)client.getAdapter(TwitterContainer.class);
+			String url = "http://wiki.eclipse.org/index.php/Eclipse_Communication_Framework_Project";
+			String shortenUrl = container.getUrlShorten(url);
+			assertNotSame("Shorten URL are the same", shortenUrl, url);
+			
+	}
 
 	
 
