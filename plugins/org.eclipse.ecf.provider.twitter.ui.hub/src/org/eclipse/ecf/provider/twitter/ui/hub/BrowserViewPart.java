@@ -1,7 +1,5 @@
 package org.eclipse.ecf.provider.twitter.ui.hub;
 
-import java.net.URL;
-
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.browser.Browser;
 import org.eclipse.swt.layout.FillLayout;
