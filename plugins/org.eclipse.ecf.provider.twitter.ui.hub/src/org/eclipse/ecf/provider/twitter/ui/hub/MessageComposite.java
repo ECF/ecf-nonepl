@@ -2,26 +2,18 @@ package org.eclipse.ecf.provider.twitter.ui.hub;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.text.SimpleDateFormat;
 import java.util.Date;
 
-import org.eclipse.core.runtime.IPath;
-import org.eclipse.core.runtime.Path;
-import org.eclipse.core.runtime.Platform;
-import org.eclipse.ecf.internal.provider.twitter.search.TweetItem;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.search.ITweetItem;
 import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
 import org.eclipse.ecf.provider.twitter.ui.utils.TwitterStringUtils;
-import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
 import org.eclipse.swt.graphics.Image;
-import org.eclipse.swt.layout.FormAttachment;
-import org.eclipse.swt.layout.FormData;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -37,7 +29,6 @@ import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.osgi.framework.Bundle;
 
 import com.ocpsoft.pretty.time.PrettyTime;
 

@@ -178,11 +178,6 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		container.sendStatusUpdate(message);
 	}
 
-	
-	
-	
-
-
 
 	public void handleEvent(IContainerEvent event) {
 		if (event instanceof IContainerConnectedEvent) 
@@ -208,6 +203,9 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	
 	}
 
+	public String getUrlShorten(String url) throws ECFException {
+		return container.getUrlShorten(url);
+	}
 	
 	
 	/**
@@ -241,8 +239,5 @@ public class TwitterController extends Observable implements IIMMessageListener,
 				}});
 		}
 	}
-	
-	
-	
 
 }
