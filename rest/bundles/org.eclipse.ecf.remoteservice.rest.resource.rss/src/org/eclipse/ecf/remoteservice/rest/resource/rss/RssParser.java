@@ -10,7 +10,7 @@
 *******************************************************************************/ 
 package org.eclipse.ecf.remoteservice.rest.resource.rss;
 import java.io.IOException;
-import java.io.InputStream;
+import java.io.StringReader;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -21,19 +21,20 @@ import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 
 import org.xml.sax.Attributes;
+import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 public class RssParser extends DefaultHandler {
 	
-    private InputStream rssStream;
+    private String rssText;
     private RssFeed rssFeed;
     private StringBuffer text;
     private Item item;
     private boolean imgStatus;
    
-    public RssParser(InputStream rssStream) {
-        this.rssStream = rssStream;
+    public RssParser(String rssText) {
+        this.rssText = rssText;
         text = new StringBuffer();
     }
    
@@ -44,7 +45,7 @@ public class RssParser extends DefaultHandler {
 		if (spf != null) {
 		    try {
 				sp = spf.newSAXParser();
-				sp.parse(rssStream, this);
+				sp.parse(new InputSource(new StringReader(rssText)), this);
 			} catch (ParserConfigurationException e) {
 				e.printStackTrace();
 			} catch (SAXException e) {

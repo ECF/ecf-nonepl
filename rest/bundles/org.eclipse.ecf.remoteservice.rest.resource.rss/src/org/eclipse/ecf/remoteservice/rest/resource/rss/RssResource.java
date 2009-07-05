@@ -9,7 +9,6 @@
 *******************************************************************************/ 
 package org.eclipse.ecf.remoteservice.rest.resource.rss;
 
-import java.io.InputStream;
 import java.text.ParseException;
 
 import org.eclipse.ecf.remoteservice.rest.resource.IRestResource;
@@ -19,8 +18,8 @@ public class RssResource implements IRestResource {
 	/**
 	 * Returns a RssFeed Object.
 	 */
-	public Object createRepresentation(InputStream inputStream) throws ParseException {
-		RssParser parser = new RssParser(inputStream);
+	public Object createRepresentation(String responseBody) throws ParseException {
+		RssParser parser = new RssParser(responseBody);
 		parser.parse();
 		return parser.getFeed();
 	}
