@@ -11,17 +11,20 @@ import java.util.SortedMap;
 import java.util.TreeMap;
 
 import org.eclipse.ecf.provider.twitter.container.IStatus;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
 import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
+import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
 
 
@@ -60,10 +63,20 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 	public void createPartControl(Composite parent) {
 		// TODO Auto-generated method stub
 		toolkit = new FormToolkit(parent.getDisplay());
-		form = toolkit.createScrolledForm(parent);
+		//FraGuid
+		//form = toolkit.createScrolledForm(parent);
+		form = new ScrolledForm(parent, SWT.V_SCROLL |  Window.getDefaultOrientation());
+		form.setExpandVertical(true);
+		form.setBackground(toolkit.getColors().getBackground());
+		form.setForeground(toolkit.getColors().getColor(IFormColors.TITLE));
+		form.setFont(JFaceResources.getHeaderFont());
+
 		form.setText("Your Messages");
-		GridLayout layout = new GridLayout();
+		//FraGuid
+		//GridLayout layout = new GridLayout();
+		TableWrapLayout layout = new TableWrapLayout();
 		layout.numColumns = 1;
+		
 		
 		
 		//RowLayout layout = new RowLayout(SWT.VERTICAL);
@@ -155,7 +168,7 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 			if(addToTop)
 			{
 				//System.err.println("<TOP>Should appear at top: " + message.getBody());
-				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop, newestMessage, formComposite.getBounds().width);
+				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop, newestMessage);
 				
 				//SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
 				//System.err.println("TOP Message date is now : "  + format.format(message.getCreatedAt()));
@@ -175,7 +188,7 @@ public class MessagesViewPart extends ViewPart implements Observer, IHyperlinkLi
 			else
 			{
 				//System.err.println("<END>Should move to bottom: " + message.getBody());
-				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop,oldestMessage, formComposite.getBounds().width);
+				messageComposite = new MessageComposite(formComposite,SWT.NONE, message, toolkit, addToTop,oldestMessage);
 //				System.err.println("At the bottom : " + message.getBody());
 				oldestMessage = messageComposite;
 			}

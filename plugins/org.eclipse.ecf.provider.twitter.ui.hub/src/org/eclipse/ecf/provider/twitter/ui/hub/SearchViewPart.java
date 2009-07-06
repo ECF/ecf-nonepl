@@ -118,7 +118,7 @@ public class SearchViewPart extends ViewPart implements Listener {
 	{
 		for(MessageComposite msg: lastResults)
 		{
-			msg.getComposite().dispose();
+			msg.getContainer().dispose();
 			msg = null;
 		}
 		lastResults.clear();
