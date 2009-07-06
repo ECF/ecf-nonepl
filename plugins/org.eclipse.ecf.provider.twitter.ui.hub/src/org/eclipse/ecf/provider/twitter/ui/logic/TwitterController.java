@@ -19,7 +19,6 @@ import org.eclipse.ecf.presence.search.ISearch;
 import org.eclipse.ecf.presence.search.message.IMessageSearchManager;
 import org.eclipse.ecf.presence.search.message.MessageSearchException;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
-import org.eclipse.ecf.provider.twitter.container.TwitterChatManager;
 import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
 import org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart;
