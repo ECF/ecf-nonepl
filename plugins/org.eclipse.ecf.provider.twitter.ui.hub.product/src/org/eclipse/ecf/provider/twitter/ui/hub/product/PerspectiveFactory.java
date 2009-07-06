@@ -20,7 +20,7 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 		String editorArea = layout.getEditorArea();
 		layout.addView(TweetViewPart.VIEW_ID, IPageLayout.TOP, 0.2f,editorArea);
 		
-		IFolderLayout friends = layout.createFolder("friendsFolder", IPageLayout.BOTTOM, 0.2f,TweetViewPart.VIEW_ID);
+		IFolderLayout friends = layout.createFolder("friendsFolder", IPageLayout.BOTTOM, 0.26f,TweetViewPart.VIEW_ID);
 		friends.addView(FriendsViewPart.VIEW_ID);
 		friends.addView(FollowersViewPart.VIEW_ID);
 		//layout.addView(FriendsViewPart.VIEW_ID, IPageLayout.BOTTOM, 0.2f,TweetViewPart.VIEW_ID);
