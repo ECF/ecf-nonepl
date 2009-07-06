@@ -13,24 +13,13 @@ package org.eclipse.ecf.internal.provider.twitter.ui.wizards;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.IContainerListener;
-import org.eclipse.ecf.core.events.IContainerConnectedEvent;
-import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.presence.IIMMessageEvent;
-import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.im.IChatManager;
-import org.eclipse.ecf.presence.im.IChatMessage;
-import org.eclipse.ecf.presence.im.IChatMessageEvent;
-import org.eclipse.ecf.presence.im.IChatMessageSender;
-import org.eclipse.ecf.presence.im.ITypingMessageEvent;
-import org.eclipse.ecf.presence.im.ITypingMessageSender;
-import org.eclipse.ecf.presence.ui.MessagesView;
 import org.eclipse.ecf.presence.ui.MultiRosterView;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.ecf.ui.IConnectWizard;
@@ -39,12 +28,9 @@ import org.eclipse.ecf.ui.dialogs.IDCreateErrorDialog;
 import org.eclipse.ecf.ui.util.PasswordCacheHelper;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
-import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
-import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 
 public final class TwitterConnectWizard extends Wizard implements IConnectWizard, INewWizard {
