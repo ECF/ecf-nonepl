@@ -109,6 +109,10 @@ public class TwitterContainer extends AbstractContainer implements
 	 *             to http
 	 */
 	public String getUrlShorten(String url) throws ECFException {
+		
+		if (twitter == null)
+			throw new ECFException("Not connected");
+		
 		// if the url string doenst have the pattern http or https
 		// the dzone service complain
 		if (!url.startsWith("http://") && !url.startsWith("https://"))
