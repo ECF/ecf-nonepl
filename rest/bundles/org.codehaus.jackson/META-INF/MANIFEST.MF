@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Jackson
+Bundle-SymbolicName: org.codehaus.jackson
+Bundle-Version: 1.0.0.qualifier
+Bundle-Vendor: codehaus.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Export-Package: org.codehaus.jackson,
+ org.codehaus.jackson.impl,
+ org.codehaus.jackson.io,
+ org.codehaus.jackson.map,
+ org.codehaus.jackson.map.impl,
+ org.codehaus.jackson.sym,
+ org.codehaus.jackson.util
