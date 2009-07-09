@@ -10,4 +10,4 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.util
 Bundle-ActivationPolicy: lazy
 Export-Package: org.remotercp.errorhandling.ui
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5

@@ -288,30 +288,25 @@ public class SessionServiceImpl implements ISessionService {
 		return authorized;
 	}
 
-	@Override
 	public <T> T getAdapter(Class<T> adapter) {
 		assert adapter != null : "adapter != null";
 		return (T) getContainer().getAdapter(adapter);
 
 	}
 
-	@Override
 	public ID getContainerID() {
 		return containter.getID();
 	}
 
-	@Override
 	public ID getConnectedID() {
 		return containter.getConnectedID();
 	}
 
-	@Override
 	public void addMessageListener(IIMMessageListener listener) {
 		assert listener != null : "listener != null";
 		getChatManager().addMessageListener(listener);
 	}
 
-	@Override
 	public IChatMessageSender getChatMessageSender() {
 		return getChatManager().getChatMessageSender();
 	}

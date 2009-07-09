@@ -13,6 +13,6 @@ Export-Package: org.remotercp.common.authorization,
  org.remotercp.common.provisioning,
  org.remotercp.common.servicelauncher,
  org.remotercp.common.status
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
  org.eclipse.ecf.core.util

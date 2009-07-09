@@ -20,4 +20,4 @@ Import-Package: org.eclipse.core.databinding,
  org.remotercp.ecf.session,
  org.remotercp.util.osgi,
  org.remotercp.util.roster
-Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
