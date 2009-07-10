@@ -1,12 +1,10 @@
 =ECF Concepts=
 
-==Modularity for Communications==
+==Communications for Humans and Machines==
 
-==Java, OSGi, and SOA==
+==Modular Communications==
 
-==Separating Application Development from Protocol Development==
+==Protocols vs. APIs==
 
-==Humans, Machines, and Ways of Communicating==
-
-==Extensibility for Communications==
+==Interoperability and Extensibility==
 
