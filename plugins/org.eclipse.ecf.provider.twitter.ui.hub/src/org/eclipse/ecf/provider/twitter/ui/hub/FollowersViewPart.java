@@ -1,11 +1,10 @@
 package org.eclipse.ecf.provider.twitter.ui.hub;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
@@ -37,7 +36,7 @@ public class FollowersViewPart extends ViewPart implements  Observer, MouseTrack
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.followersView";
 	private Composite formComposite;
 	
-	private TwitterUser[] followers;
+	private List<IUser> followers;
 	
 	
 	private ScrolledForm form;
@@ -84,12 +83,12 @@ public class FollowersViewPart extends ViewPart implements  Observer, MouseTrack
 
 	}
 	
-	public void addFriends(TwitterUser[] friends)
+	public void addFriends(List<IUser> friends)
 	{
 		this.followers = friends;
-		for(int i =0; i < friends.length; i++)
+		for(int i =0; i < friends.size(); i++)
 		{
-			addUserToView(friends[i]);
+			addUserToView((TwitterUser)followers.get(i));
 		}
 		form.reflow(true);
 		form.redraw();
