@@ -1,11 +1,13 @@
 package org.eclipse.ecf.provider.twitter.ui.logic;
 
+import java.util.List;
 import java.util.Observable;
 
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.IContainerConnectedEvent;
 import org.eclipse.ecf.core.events.IContainerEvent;
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.twitter.TwitterMessageChatEvent;
 import org.eclipse.ecf.presence.IIMMessageEvent;
@@ -21,6 +23,7 @@ import org.eclipse.ecf.presence.search.message.MessageSearchException;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
+import org.eclipse.ecf.provider.twitter.ui.hub.FollowersViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.MessagesViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.SearchViewPart;
@@ -39,7 +42,14 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	
 	private TwitterUser[] friendsList;
 	
-	private FriendsViewPart friendsView;
+	private List<IUser> followers;
+	private List<IUser> following;
+	
+	
+	private FriendsViewPart followingView;
+	private FollowersViewPart followersView;
+	
+	
 	private TweetViewPart tweetView;
 	private SearchViewPart searchView;
 	private Display display;
@@ -73,8 +83,8 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			}
 			if( views[i].getId().equals(FriendsViewPart.VIEW_ID))
 			{
-				friendsView = (FriendsViewPart)views[i].getPart(true);
-				friendsView.addController(this);
+				followingView = (FriendsViewPart)views[i].getPart(true);
+				followingView.addController(this);
 			}
 			if( views[i].getId().equals(TweetViewPart.VIEW_ID))
 			{
@@ -85,6 +95,11 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			{
 				searchView = (SearchViewPart)views[i].getPart(true);
 				searchView.setController(this);
+			}
+			
+			if(views[i].getId().equals(FollowersViewPart.VIEW_ID))
+			{
+				followersView = (FollowersViewPart)views[i].getPart(true);
 			}
 			
 		}
@@ -167,6 +182,9 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		
 		ISearch searchResults = searchMgr.search(criteria);
 		
+		
+		
+		
 		return searchResults.getResultList();
 		
 	}
@@ -189,8 +207,12 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			{	
 				try 
 				{
-					friendsList = this.container.getTwitterUsersFromFriends();
-					updateFriendsList();
+					//friendsList = this.container.getTwitterUsersFromFriends();
+					
+					followers = this.container.getFollowers();
+					following = this.container.getFollowing();
+					
+					updateFollowLists();
 	
 					
 					
@@ -211,14 +233,15 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	 * Update the friends list view. 
 	 * This has to be threaded off as it can take a signifigant amount of time.
 	 */
-	private void updateFriendsList()
+	private void updateFollowLists()
 	{
-		Thread thread = new Thread(new FriendsViewRunnable());
-
-		/**
-		 * ToDo: add this back in - slows down the app A LOT!
-		 */
-		thread.start();
+		Thread followingThread = new Thread(new FriendsViewRunnable());
+	
+		Thread followersThread = new Thread(new FollowersViewRunnable());
+		
+		followingThread.start();
+		followersThread.start();
+		
 	}
 	
 	
@@ -233,8 +256,21 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			display.syncExec(new Runnable() 
 			{
 				public void run() 
-				{	System.err.println("Number of friends: " + friendsList.length);
-						friendsView.addFriends(friendsList);
+				{	//System.err.println("Number of friends: " + friendsList.length);
+						followingView.addFriends(following);
+				}});
+		}
+	}
+	
+	class FollowersViewRunnable implements Runnable
+	{
+		public void run()
+		{
+			display.syncExec(new Runnable() 
+			{
+				public void run() 
+				{	//System.err.println("Number of friends: " + friendsList.length);
+						followersView.addFriends(followers);
 				}});
 		}
 	}

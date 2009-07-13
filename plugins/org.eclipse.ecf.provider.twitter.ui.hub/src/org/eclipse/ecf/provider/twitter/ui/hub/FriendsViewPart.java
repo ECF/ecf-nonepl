@@ -1,11 +1,10 @@
 package org.eclipse.ecf.provider.twitter.ui.hub;
 
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URL;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
@@ -37,7 +36,7 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.friendsView";
 	private Composite formComposite;
 	
-	private TwitterUser[] friends;
+	private List<IUser> friends;
 	
 	
 	private ScrolledForm form;
@@ -84,12 +83,12 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 
 	}
 	
-	public void addFriends(TwitterUser[] friends)
+	public void addFriends(List<IUser> friends)
 	{
 		this.friends = friends;
-		for(int i =0; i < friends.length; i++)
+		for(int i =0; i < friends.size(); i++)
 		{
-			addUserToView(friends[i]);
+			addUserToView((TwitterUser)friends.get(i));
 		}
 		form.reflow(true);
 		form.redraw();
@@ -124,37 +123,6 @@ public class FriendsViewPart extends ViewPart implements  Observer, MouseTrackLi
 				TwitterCache.queueMessageForUserImageLoading(userID, imagePath, imageLabel);
 			}
 		}
-		
-//		if(user.getProperties().get("image") != null)
-//		{
-//			
-//			
-//		InputStream is = null;
-//		try {
-//			
-//			URL url = new URL((String)user.getProperties().get("image"));
-//			is = url.openStream();
-//			//TODO: get a resized version of the image, and make this a lot more efficient
-//			Image image = new Image(Display.getCurrent(), is);
-//			image = new Image(Display.getCurrent(),image.getImageData().scaledTo(50, 50));
-//			imageLabel.setImage(image);
-//			}
-//			catch (Exception e)
-//			{
-//			   e.printStackTrace();
-//			}
-//			finally
-//			{
-//			   try {
-//				if(is != null) is.close();
-//				
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			}
-//		}
-
 		
 		String username =  user.getName();
 		StyledText nameLabel = new StyledText(composite, SWT.WRAP | SWT.MULTI);
