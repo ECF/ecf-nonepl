@@ -1,4 +1,4 @@
-package org.eclipse.ecf.provider.twitter.ui.hub;
+package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;

@@ -23,11 +23,13 @@ import org.eclipse.ecf.presence.search.message.MessageSearchException;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
-import org.eclipse.ecf.provider.twitter.ui.hub.FollowersViewPart;
-import org.eclipse.ecf.provider.twitter.ui.hub.FriendsViewPart;
-import org.eclipse.ecf.provider.twitter.ui.hub.MessagesViewPart;
-import org.eclipse.ecf.provider.twitter.ui.hub.SearchViewPart;
-import org.eclipse.ecf.provider.twitter.ui.hub.TweetViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.DirectMessagesViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.FollowersViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.FriendsViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.MessagesViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.ReplyViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.SearchViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.TweetViewPart;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
@@ -48,8 +50,9 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	
 	private FriendsViewPart followingView;
 	private FollowersViewPart followersView;
+	private DirectMessagesViewPart directMessages;
 	
-	
+	private ReplyViewPart replyView;
 	private TweetViewPart tweetView;
 	private SearchViewPart searchView;
 	private Display display;
@@ -81,10 +84,14 @@ public class TwitterController extends Observable implements IIMMessageListener,
 				MessagesViewPart messagesView = (MessagesViewPart)views[i].getPart(true);
 				this.addObserver(messagesView);
 			}
+			if( views[i].getId().equals(DirectMessagesViewPart.VIEW_ID))
+			{
+				DirectMessagesViewPart directMessages = (DirectMessagesViewPart)views[i].getPart(true);
+				this.addObserver(directMessages);
+			}
 			if( views[i].getId().equals(FriendsViewPart.VIEW_ID))
 			{
 				followingView = (FriendsViewPart)views[i].getPart(true);
-				followingView.addController(this);
 			}
 			if( views[i].getId().equals(TweetViewPart.VIEW_ID))
 			{
@@ -100,6 +107,12 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			if(views[i].getId().equals(FollowersViewPart.VIEW_ID))
 			{
 				followersView = (FollowersViewPart)views[i].getPart(true);
+			}
+			if(views[i].getId().equals(ReplyViewPart.VIEW_ID))
+			{
+				replyView = (ReplyViewPart)views[i].getPart(true);
+				//replyView.setController(this);
+				this.addObserver(replyView);
 			}
 			
 		}

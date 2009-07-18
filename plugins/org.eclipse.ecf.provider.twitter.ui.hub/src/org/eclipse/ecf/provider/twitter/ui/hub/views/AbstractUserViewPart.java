@@ -1,4 +1,4 @@
-package org.eclipse.ecf.provider.twitter.ui.hub;
+package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
 import java.util.List;
 import java.util.Observable;
@@ -8,6 +8,7 @@ import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
+import org.eclipse.ecf.provider.twitter.ui.utils.TwitterCache;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
@@ -30,33 +31,31 @@ import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
 import org.eclipse.ui.part.ViewPart;
+/**
+ * This class is intended to be the superclass for all view
+ * parts that display user information (Following/Followers) 
+ * on the hub.
+ * 
+ * @author jsugrue
+ *
+ */
+public class AbstractUserViewPart extends ViewPart implements  MouseTrackListener, Listener {
 
-public class FollowersViewPart extends ViewPart implements  Observer, MouseTrackListener, Listener {
-
-	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.followersView";
 	private Composite formComposite;
-	
-	private List<IUser> followers;
-	
-	
+	private List<IUser> people;
 	private ScrolledForm form;
 	private FormToolkit toolkit;
-	private TwitterController controller;
+	
+	
 	private static Image blankUserImg = ImageUtils.loadImage("blankUserImage.png");
-	
-	
 	
 	private Shell tip = null;
 	
+	private String formText; 
 	
-	public FollowersViewPart() {
+	public AbstractUserViewPart(String formText) {
 		// TODO Auto-generated constructor stub
-	}
-
-	
-	public void addController(TwitterController controller)
-	{
-		this.controller = controller;
+		this.formText = formText;
 	}
 	
 	@Override
@@ -65,14 +64,12 @@ public class FollowersViewPart extends ViewPart implements  Observer, MouseTrack
 		toolkit = new FormToolkit(parent.getDisplay());
 		form = toolkit.createScrolledForm(parent);
 		
-		form.setText("Followers");
+		form.setText(formText);
 		
 		formComposite = form.getBody();
 		TableWrapLayout layout = new TableWrapLayout();
 		layout.numColumns = 1;
 		formComposite.setLayout(layout);
-
-
 	}
 
 	
@@ -85,10 +82,10 @@ public class FollowersViewPart extends ViewPart implements  Observer, MouseTrack
 	
 	public void addFriends(List<IUser> friends)
 	{
-		this.followers = friends;
+		this.people = friends;
 		for(int i =0; i < friends.size(); i++)
 		{
-			addUserToView((TwitterUser)followers.get(i));
+			addUserToView((TwitterUser)people.get(i));
 		}
 		form.reflow(true);
 		form.redraw();
@@ -124,35 +121,6 @@ public class FollowersViewPart extends ViewPart implements  Observer, MouseTrack
 			}
 		}
 		
-//		if(user.getProperties().get("image") != null)
-//		{
-//			
-//			
-//		InputStream is = null;
-//		try {
-//			
-//			URL url = new URL((String)user.getProperties().get("image"));
-//			is = url.openStream();
-//			//TODO: get a resized version of the image, and make this a lot more efficient
-//			Image image = new Image(Display.getCurrent(), is);
-//			image = new Image(Display.getCurrent(),image.getImageData().scaledTo(50, 50));
-//			imageLabel.setImage(image);
-//			}
-//			catch (Exception e)
-//			{
-//			   e.printStackTrace();
-//			}
-//			finally
-//			{
-//			   try {
-//				if(is != null) is.close();
-//				
-//			} catch (IOException e) {
-//				// TODO Auto-generated catch block
-//				e.printStackTrace();
-//			}
-//			}
-//		}
 
 		
 		String username =  user.getName();
@@ -165,22 +133,6 @@ public class FollowersViewPart extends ViewPart implements  Observer, MouseTrack
 		styleRange.foreground = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_BLACK);
 		nameLabel.setStyleRange(styleRange);
 		nameLabel.setLayoutData(new TableWrapData(TableWrapData.LEFT, TableWrapData.TOP, 1, 1));
-		
-		
-	
-		
-		
-	}
-
-	
-	/**
-	 * Process an update from the Observable (TwitterController)
-	 * @Override
-	 */
-	public void update(Observable o, Object arg) 
-	{
-		// TODO Auto-generated method stub
-		
 	}
 
 	
@@ -206,19 +158,14 @@ public class FollowersViewPart extends ViewPart implements  Observer, MouseTrack
 				tip.setLayout (layout);
 				
 				
-				
 				FormText text = new FormText(tip,SWT.WRAP);
 				
-//				label = new Label (tip, SWT.NONE);
 				text.setForeground (display.getSystemColor (SWT.COLOR_INFO_FOREGROUND));
 				text.setBackground (display.getSystemColor (SWT.COLOR_INFO_BACKGROUND));
-				//label.setData ("_TABLEITEM", item);
-				
 				
 				/**
 				 * Add all profile data to this
 				 */
-				
 				String bio = (String)user.getProperties().get("description");
 				String location = (String)user.getProperties().get("location");
 				String url = (String)user.getProperties().get("url");

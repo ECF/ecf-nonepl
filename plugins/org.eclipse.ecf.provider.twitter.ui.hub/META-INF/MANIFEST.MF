@@ -3,7 +3,7 @@ Bundle-ManifestVersion: 2
 Bundle-Name: %Bundle-Name.0
 Bundle-SymbolicName: org.eclipse.ecf.provider.twitter.ui.hub;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.eclipse.ecf.provider.twitter.ui.hub.Activator
+Bundle-Activator: org.eclipse.ecf.provider.twitter.ui.hub.views.Activator
 Bundle-Vendor: %Bundle-Vendor.0
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
@@ -34,7 +34,7 @@ Import-Package: org.eclipse.ecf.core,
 Export-Package: org.eclipse.ecf.internal.provider.twitter.ui.wizards,
  org.eclipse.ecf.provider.twitter.ui,
  org.eclipse.ecf.provider.twitter.ui.dialogs,
- org.eclipse.ecf.provider.twitter.ui.hub,
+ org.eclipse.ecf.provider.twitter.ui.hub.views,
  org.eclipse.ecf.provider.twitter.ui.logic,
  org.eclipse.ecf.provider.twitter.ui.utils
 Bundle-ClassPath: lib/ocpsoft-pretty-time-1.0.1.jar,

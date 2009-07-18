@@ -1,4 +1,4 @@
-package org.eclipse.ecf.provider.twitter.ui.hub;
+package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -6,7 +6,9 @@ import java.util.Date;
 
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.search.ITweetItem;
+import org.eclipse.ecf.provider.twitter.ui.model.Message;
 import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
+import org.eclipse.ecf.provider.twitter.ui.utils.TwitterCache;
 import org.eclipse.ecf.provider.twitter.ui.utils.TwitterStringUtils;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyleRange;
@@ -49,18 +51,13 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	private static Image blankUserImg = ImageUtils.loadImage("blankUserImage.png");
 	private Button reply; 
 	private Button retweet;
-	private IStatus message; 
-	private ITweetItem searchResult;
 	
+	
+	private Message tweet;
 	/**
 	 * The set of details we display
 	 */
-	private String username;
-	private String realName; 
-	private String messageText;
-	private Date messageCreation;
-	private String userID;
-	private String imagePath;
+	
 	private FormText statusTxt;
 	private StyledText nameLabel;
 	private Composite buttons;
@@ -75,7 +72,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	 * @param message
 	 * @param toolkit
 	 */
-	public MessageComposite(Composite parent, int style, IStatus message,
+	public MessageComposite(Composite parent, int style, Message message,
 					FormToolkit toolkit, boolean addToTop, MessageComposite referenceComposite)
 	{
 		//FraGuid
@@ -111,10 +108,10 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 //	//		System.err.println("reference composite is null");
 //		}
 //		
-		this.message = message;
+		this.tweet = message;
 		this.toolkit = toolkit;
 		
-		extractMessageDetails(message);
+		
 		
 		createContents();
 		//FraGuid
@@ -133,103 +130,35 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	 * @param searchResult
 	 * @param toolkit
 	 */
-	public MessageComposite(Composite parent, int style, ITweetItem searchResult, FormToolkit toolkit)
-	{
-		composite = toolkit.createComposite(parent, style);
-		
-		
-		//this.message = message;
-		this.searchResult = searchResult;
-		this.toolkit = toolkit;
-		extractMessageDetails(searchResult);
-		createContents();
-		composite.addMouseTrackListener(this);
-	}
+//	public MessageComposite(Composite parent, int style, ITweetItem searchResult, FormToolkit toolkit)
+//	{
+//		composite = toolkit.createComposite(parent, style);
+//		
+//		
+//		//this.message = message;
+//		this.searchResult = searchResult;
+//		this.toolkit = toolkit;
+//		extractMessageDetails(searchResult);
+//		createContents();
+//		composite.addMouseTrackListener(this);
+//	}
 
-	public IStatus getMessage()
-	{
-		return message;
-	}
+//	public IStatus getMessage()
+//	{
+//		return message;
+//	}
+	
 	public String getText()
 	{
-		return messageText;
+		return tweet.getText();
 	}
 	
 	public Composite getContainer()
 	{
 		return border;
 	}
-	
-	/**
-	 * Extract the details for display from this message.
-	 * 
-	 * @param message
-	 */
-	private void extractMessageDetails(ITweetItem message)
-	{
-		/**
-		 * Is there a way to seperate the user's real name 
-		 * and screenname in the search api.
-		 * 
-		 */
-		if(message.getFromUser() != null)
-		{
-			realName = message.getFromUser();
-			username = message.getFromUser();
-		}
 		
 
-		//get the message timestamp
-		messageCreation = message.getCreatedAt();
-		//user id 
-		//userID = message.getUser().getID().getName();
-		userID = message.getFromUser();
-		//message text
-		messageText = message.getText();
-		//the path to the user's image.
-		imagePath = message.getProfileImageUrl();
-	}
-	
-
-	/**
-	 * Extract the details for display from this message.
-	 * 
-	 * @param message
-	 */
-	private void extractMessageDetails(IStatus message)
-	{
-		/**
-		 * Get the user's screenname, and real name
-		 * (if possible)
-		 */
-		if(message.getUser() != null)
-		{
-			realName = message.getUser().getName();
-		}
-		if(message.getUser().getProperties().get("screenName") != null)
-		{
-			username = (String)message.getUser().getProperties().get("screenName");
-		}
-		else
-		{
-			if(realName !=null)
-			{
-				username = realName;
-			}
-			else
-			{
-				username = "Unknown";
-			}
-		}
-		//get the message timestamp
-		messageCreation = message.getCreatedAt();
-		//user id 
-		userID = message.getUser().getID().getName();
-		//message text
-		messageText = message.getText();
-		//the path to the user's image.
-		imagePath = (String)message.getUser().getProperties().get("image");
-	}
 	
 	
 	private void createContents()
@@ -247,13 +176,13 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 //		if(message.getUser() != null && message.getUser().getProperties().get("image") != null)
 //		{
 			//Get user image from cache
-		Image userImage = TwitterCache.getUserImage(userID);
+		Image userImage = TwitterCache.getUserImage(tweet.getUserID());
 		if (userImage!=null) {
 			imageLabel.setImage(userImage);
 		} else {
 			//if not cached => queue label for image
 			imageLabel.setImage(blankUserImg);
-			TwitterCache.queueMessageForUserImageLoading(userID, imagePath, imageLabel);
+			TwitterCache.queueMessageForUserImageLoading(tweet.getUserID(), tweet.getImagePath(), imageLabel);
 		}
 //		}
 		TableWrapData td=new TableWrapData();
@@ -267,21 +196,21 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		nameLabel = new StyledText(composite, SWT.WRAP | SWT.MULTI|SWT.READ_ONLY);
 		
 		//SimpleDateFormat format = new SimpleDateFormat("hh:mm a MMM d");
-		String timestamp = timeFormatter.format(messageCreation);
+		String timestamp = timeFormatter.format(tweet.getMessageCreation());
 		
-		if(realName == null || (realName.equals(username)))
+		if(tweet.getRealName() == null || (tweet.getRealName().equals(tweet.getUsername())))
 		{
-			nameLabel.setText(username + " - " + timestamp);
+			nameLabel.setText(tweet.getUsername() + " - " + timestamp);
 		}
 		else
 		{
-			nameLabel.setText(username + "(" + realName + ") - " + timestamp);
+			nameLabel.setText(tweet.getUsername() + "(" + tweet.getRealName() + ") - " + timestamp);
 		}
 		nameLabel.addMouseTrackListener(this);
 		
 		styleRange = new StyleRange();
 		styleRange.start = 0;
-		styleRange.length = username.length();
+		styleRange.length = tweet.getUsername().length();
 		styleRange.fontStyle = SWT.BOLD;
 		styleRange.foreground = PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY);
 		nameLabel.setStyleRange(styleRange);
@@ -320,7 +249,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		/**
 		 * Display the status of this twitter message
 		 */
-		String msgTxt = TwitterStringUtils.decorateUserTags(messageText);
+		String msgTxt = TwitterStringUtils.decorateUserTags(tweet.getText());
 		//FraGuid
 //		msgTxt = "<form><p>"+msgTxt+"</p></form>";
 		statusTxt = toolkit.createFormText(composite,false);
@@ -338,7 +267,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		catch(IllegalArgumentException iae)
 		{
 			//form text was invalid - so just use plain
-			statusTxt.setText(messageText, false, true);
+			statusTxt.setText(tweet.getText(), false, true);
 		}
 	}
 
@@ -419,16 +348,16 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		if(event.widget.equals(reply))
 		{
 			//send a reply to this user 
-			tweetView.setTweetText("@"+username);
+			tweetView.setTweetText("@"+tweet.getUsername());
 		}
 		
 		if(event.widget.equals(retweet))
 		{
 			StringBuffer rtBuffer = new StringBuffer();
 			rtBuffer.append("RT @");
-			rtBuffer.append(username);
+			rtBuffer.append(tweet.getUsername());
 			rtBuffer.append(" ");
-			rtBuffer.append(messageText);
+			rtBuffer.append(tweet.getText());
 			
 			tweetView.setTweetText(rtBuffer.toString());
 		}
@@ -436,10 +365,5 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	}
 
 
-	
-	private static void main(String[] args)
-	{
-		
-	}
 	
 }

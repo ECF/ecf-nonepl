@@ -15,7 +15,7 @@ import java.util.Arrays;
 import java.util.List;
 
 
-import org.eclipse.ecf.provider.twitter.ui.hub.Activator;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.Activator;
 import org.eclipse.ecf.ui.SharedImages;
 import org.eclipse.ecf.ui.util.PasswordCacheHelper;
 import org.eclipse.jface.dialogs.IDialogSettings;

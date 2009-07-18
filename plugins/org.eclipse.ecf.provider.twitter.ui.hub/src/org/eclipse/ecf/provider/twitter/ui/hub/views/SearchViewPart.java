@@ -1,79 +1,55 @@
-package org.eclipse.ecf.provider.twitter.ui.hub;
+package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
 import java.util.ArrayList;
 import java.util.Iterator;
+import java.util.Observable;
 
-import org.eclipse.ecf.internal.provider.twitter.search.TweetItem;
 import org.eclipse.ecf.presence.search.IResultList;
 import org.eclipse.ecf.presence.search.message.MessageSearchException;
+import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.search.ITweetItem;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
+import org.eclipse.ecf.provider.twitter.ui.model.Message;
+import org.eclipse.jface.resource.JFaceResources;
+import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Listener;
-import org.eclipse.swt.widgets.Table;
 import org.eclipse.swt.widgets.Text;
-import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.IFormColors;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
 import org.eclipse.ui.forms.widgets.TableWrapData;
 import org.eclipse.ui.forms.widgets.TableWrapLayout;
-import org.eclipse.ui.part.ViewPart;
 
-public class SearchViewPart extends ViewPart implements Listener {
+public class SearchViewPart extends AbstractMessageViewPart implements Listener {
 
 	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.searchView";
 	private FormToolkit toolkit; 
-	private ScrolledForm form;
-	private Composite formComposite;
 	private TwitterController controller;
 	
 	private ArrayList<MessageComposite> lastResults = new ArrayList<MessageComposite>();
 	
-	private Text searchQuery;
-	
+	//private Text searchQuery;
+	private ControlComposite controls;
 	
 	public SearchViewPart() {
-		// TODO Auto-generated constructor stub
+		super("Twitter Search");
 	}
 
-	@Override
-	public void createPartControl(Composite parent) {	
-		toolkit = new FormToolkit(parent.getDisplay());
-		form = toolkit.createScrolledForm(parent);
-		form.setText("Twitter Search");
-		
-		TableWrapLayout layout = new TableWrapLayout();
-		layout.numColumns = 1;
-		form.getBody().setLayout(layout);
-		formComposite = form.getBody();
-		
-		//Composite searchComp = toolkit.createComposite(formComposite);
-		
-		TableWrapData data = new TableWrapData(TableWrapData.FILL_GRAB);
-		data.grabHorizontal = true;
-		
-		searchQuery = toolkit.createText(formComposite,"");
-		searchQuery.setLayoutData(data);
-		
-		Button searchBtn = toolkit.createButton(formComposite, "Search",SWT.NONE);
-		searchBtn.addListener(SWT.Selection, this);
- 
+//	@Override
+	public void createPartControl(Composite parent) {
+			super.createPartControl(parent);
+			controls = new ControlComposite(getBody(), SWT.NONE, this, getToolkit());
 	}
-	
-	
+
 	public void setController(TwitterController controller)
 	{
 		this.controller = controller;
 	}
 
-	@Override
-	public void setFocus() {
-		// TODO Auto-generated method stub
-	}
 
 	public void handleEvent(Event event) 
 	{	
@@ -82,7 +58,7 @@ public class SearchViewPart extends ViewPart implements Listener {
 		//run a search 
 		clearPreviousResults();
 		
-		String query = searchQuery.getText();
+		String query = controls.getQuery();
 		try
 		{
 			IResultList resultList =   controller.runSearch(query);
@@ -95,10 +71,13 @@ public class SearchViewPart extends ViewPart implements Listener {
 			{
 				ITweetItem res = results.next();
 				
-				MessageComposite message = new MessageComposite(formComposite, SWT.NONE, res, toolkit);
-				lastResults.add(message);
-				form.reflow(true);
-				form.redraw();
+				
+				displayMessage(extractMessageDetails(res));
+				
+//				MessageComposite message = new MessageComposite(formComposite, SWT.NONE, res, toolkit);
+//				lastResults.add(message);
+//				form.reflow(true);
+//				form.redraw();
 			}
 			
 			
@@ -114,6 +93,10 @@ public class SearchViewPart extends ViewPart implements Listener {
 	  
 	}
 
+	
+	
+	
+	
 	private void clearPreviousResults()
 	{
 		for(MessageComposite msg: lastResults)
@@ -124,4 +107,39 @@ public class SearchViewPart extends ViewPart implements Listener {
 		lastResults.clear();
 	}
 
+	private Message extractMessageDetails(ITweetItem message)
+	{
+		Message tweet = new Message();
+		/**
+		 * Is there a way to seperate the user's real name 
+		 * and screenname in the search api.
+		 */
+		
+		if(message.getFromUser() != null)
+		{
+			tweet.setRealName(message.getFromUser());
+			tweet.setUsername(message.getFromUser());
+		}
+		
+
+		//get the message timestamp
+		tweet.setMessageCreation(message.getCreatedAt());
+		//user id 
+		tweet.setUserID(message.getFromUser());
+		//message text
+		tweet.setText(message.getText());
+		//the path to the user's image.
+		tweet.setImagePath(message.getProfileImageUrl());
+		
+		tweet.setMessageId(message.getId());
+		
+		return tweet;
+	}
+	
+	/**
+	 * Not required for search view.
+	 */
+	public void update(Observable o, Object arg) {
+	
+	}
 }
