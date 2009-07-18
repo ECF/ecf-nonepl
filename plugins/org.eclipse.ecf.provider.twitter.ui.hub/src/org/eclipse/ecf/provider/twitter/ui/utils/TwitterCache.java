@@ -1,4 +1,4 @@
-package org.eclipse.ecf.provider.twitter.ui.hub;
+package org.eclipse.ecf.provider.twitter.ui.utils;
 
 import java.io.IOException;
 import java.io.InputStream;
