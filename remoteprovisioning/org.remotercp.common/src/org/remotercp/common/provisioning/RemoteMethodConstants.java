@@ -1,4 +1,4 @@
-package org.remotercp.ecf;
+package org.remotercp.common.provisioning;
 
 public class RemoteMethodConstants {
 
