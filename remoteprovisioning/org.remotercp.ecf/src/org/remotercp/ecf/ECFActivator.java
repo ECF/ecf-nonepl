@@ -7,7 +7,7 @@ import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.ecf.session.SessionServiceImpl;
+import org.remotercp.ecf.session.impl.SessionServiceImpl;
 
 /**
  * The activator class controls the plug-in life cycle
