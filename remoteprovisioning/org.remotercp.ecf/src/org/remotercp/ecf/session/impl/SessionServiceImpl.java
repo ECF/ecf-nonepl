@@ -6,8 +6,6 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.Assert;
-import org.eclipse.core.runtime.CoreException;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
@@ -25,11 +23,10 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.common.authorization.IOperationAuthorization;
 import org.remotercp.ecf.session.ConnectionDetails;
 import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.util.authorization.AuthorizationUtil;
 import org.remotercp.util.roster.RosterUtil;
+
 
 public class SessionServiceImpl implements ISessionService {
 
@@ -40,30 +37,29 @@ public class SessionServiceImpl implements ISessionService {
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
 
+	public SessionServiceImpl(ConnectionDetails connectionDetails,
+			IContainer container) {
+		assert connectionDetails != null : "connectionDetails != null";
+		assert container != null : "container != null";
+		this.connectionDetails = connectionDetails;
+		this.containter = container;
+	}
+
 	public ConnectionDetails getConnectionDetails() {
 		return connectionDetails;
-	}
-
-	public void setConnectionDetails(ConnectionDetails connectionDetails) {
-		this.connectionDetails = connectionDetails;
-	}
-
-	public void setContainer(IContainer container) {
-		this.containter = container;
-
 	}
 
 	private IPresenceContainerAdapter getPresenceContainerAdapter() {
 		IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) this.containter
 				.getAdapter(IPresenceContainerAdapter.class);
-		Assert.isNotNull(adapter);
+		assert adapter != null : "adapter != null";
 		return adapter;
 	}
 
-	protected IRemoteServiceContainerAdapter getRemoteServiceContainerAdapter() {
+	protected synchronized IRemoteServiceContainerAdapter getRemoteServiceContainerAdapter() {
 		IRemoteServiceContainerAdapter adapter = (IRemoteServiceContainerAdapter) this.containter
 				.getAdapter(IRemoteServiceContainerAdapter.class);
-		Assert.isNotNull(adapter);
+		assert adapter != null : "adapter != null";
 
 		adapter.addRemoteServiceListener(new IRemoteServiceListener() {
 
@@ -97,7 +93,7 @@ public class SessionServiceImpl implements ISessionService {
 	 * @throws ECFException
 	 * @throws InvalidSyntaxException
 	 */
-	public <T> List<T> getRemoteService(Class<T> service, ID[] filterIDs,
+	public synchronized <T> List<T> getRemoteService(Class<T> service, ID[] filterIDs,
 			String filter) throws ECFException, InvalidSyntaxException {
 		List<T> remoteServices = new ArrayList<T>();
 
@@ -116,7 +112,7 @@ public class SessionServiceImpl implements ISessionService {
 					.getRemoteService(refs[serviceNumber]);
 
 			T castedService = service.cast(remoteService.getProxy());
-			Assert.isNotNull(castedService);
+			assert castedService != null : "castedService != null";
 			remoteServices.add(castedService);
 		}
 
@@ -146,7 +142,7 @@ public class SessionServiceImpl implements ISessionService {
 	 * @return An array of remote services for given user and filter
 	 * @throws InvalidSyntaxException
 	 */
-	public IRemoteService[] getRemoteServiceReference(Class<?> service,
+	public synchronized IRemoteService[] getRemoteServiceReference(Class<?> service,
 			ID[] filterIDs, String filter) throws InvalidSyntaxException {
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
 
@@ -172,7 +168,7 @@ public class SessionServiceImpl implements ISessionService {
 	public IRosterManager getRosterManager() {
 		IRosterManager rosterManager = this.getPresenceContainerAdapter()
 				.getRosterManager();
-		Assert.isNotNull(rosterManager);
+		assert rosterManager != null : "rosterManager != null";
 		return rosterManager;
 	}
 
@@ -205,7 +201,7 @@ public class SessionServiceImpl implements ISessionService {
 	 *            Buddies, who are to receive service registration. If
 	 *            <code>null</code> all buddies in roster will be taken
 	 */
-	public void registerRemoteService(String serviceName, Object impl,
+	public synchronized void registerRemoteService(String serviceName, Object impl,
 			ID[] targetIDs) {
 
 		Dictionary<String, ID[]> props = new Hashtable<String, ID[]>();
@@ -218,7 +214,7 @@ public class SessionServiceImpl implements ISessionService {
 		getRemoteServiceContainerAdapter().registerRemoteService(
 				new String[] { serviceName }, impl, props);
 
-		logger.info("Service Registered: " + serviceName);
+		logger.info(">>>> Service Registered: " + serviceName);
 	}
 
 	/**
@@ -234,7 +230,7 @@ public class SessionServiceImpl implements ISessionService {
 	 * @throws ECFException
 	 * @throws InvalidSyntaxException
 	 */
-	public void ungetRemoteService(ID[] idFilter, String serviceName,
+	public synchronized void ungetRemoteService(ID[] idFilter, String serviceName,
 			String filter) throws ECFException, InvalidSyntaxException {
 
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = (IRemoteServiceContainerAdapter) this.containter
@@ -253,43 +249,7 @@ public class SessionServiceImpl implements ISessionService {
 		}
 	}
 
-	/*
-	 * This method checks whether the provided user has the authorization to
-	 * receive remote method registrations. This check will only be performed if
-	 * an authorization extension has been provided.
-	 * 
-	 * @param fromId The user ID to check the authorization for
-	 * 
-	 * @return True if user is authorized to receive remote service
-	 * registrations, otherwise false
-	 */
-	private boolean checkAuthorization(ID fromId) {
-		boolean authorized = false;
-		try {
-			List<Object> executablesForExtensionPoint = AuthorizationUtil
-					.getExecutablesForExtensionPoint("org.remotercp.authorization");
-			if (executablesForExtensionPoint.isEmpty()) {
-				// no extensions for extension point provided, ignore
-				// authorization
-				authorized = true;
-			} else {
-				for (Object executable : executablesForExtensionPoint) {
-					if (executable instanceof IOperationAuthorization) {
-						IOperationAuthorization operation = (IOperationAuthorization) executable;
-						authorized = operation.canExecute(fromId,
-								"registerRemoteServices");
-					}
-				}
-			}
-		} catch (NullPointerException e) {
-			e.printStackTrace();
-		} catch (CoreException e) {
-			e.printStackTrace();
-		}
-
-		return authorized;
-	}
-
+	@SuppressWarnings("unchecked")
 	public <T> T getAdapter(Class<T> adapter) {
 		assert adapter != null : "adapter != null";
 		return (T) getContainer().getAdapter(adapter);
@@ -301,6 +261,7 @@ public class SessionServiceImpl implements ISessionService {
 	}
 
 	public ID getConnectedID() {
+		assert containter.getConnectedID() != null : "containter.getConnectedID() != null";
 		return containter.getConnectedID();
 	}
 

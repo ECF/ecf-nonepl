@@ -2,7 +2,6 @@ package org.remotercp.ecf.session;
 
 import java.util.List;
 
-import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.IIMMessageListener;
@@ -16,10 +15,6 @@ import org.osgi.framework.InvalidSyntaxException;
 public interface ISessionService {
 
 	public ConnectionDetails getConnectionDetails();
-
-	public void setConnectionDetails(ConnectionDetails connectionDetails);
-
-	public void setContainer(IContainer container);
 
 	public IRosterManager getRosterManager();
 

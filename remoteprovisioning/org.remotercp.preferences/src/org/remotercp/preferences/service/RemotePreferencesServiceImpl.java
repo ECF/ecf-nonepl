@@ -11,7 +11,6 @@ import java.util.Map;
 import java.util.SortedMap;
 import java.util.logging.Logger;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.CoreException;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Platform;
@@ -31,7 +30,6 @@ import org.remotercp.common.status.SerializableStatus;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
 import org.remotercp.util.authorization.AuthorizationUtil;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.preferences.PreferencesUtil;
 
 public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
@@ -40,6 +38,13 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 	private final static Logger logger = Logger
 			.getLogger(RemotePreferencesServiceImpl.class.getName());
+
+	public void bindSessionService(ISessionService sessionService) {
+		logger.info("+++++ Starting service: "
+				+ RemotePreferencesServiceImpl.class.getName() + " +++++");
+		sessionService.registerRemoteService(IRemotePreferenceService.class
+				.getName(), this, null);
+	}
 
 	public SortedMap<String, String> getPreferences(String[] preferenceFilter)
 			throws ECFException {
@@ -149,8 +154,8 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			ID fromId) throws ECFException {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 
-		boolean userAuthorized = AuthorizationUtil.checkAuthorization(
-				fromId, "setPreferences");
+		boolean userAuthorized = AuthorizationUtil.checkAuthorization(fromId,
+				"setPreferences");
 
 		if (userAuthorized) {
 
@@ -198,15 +203,4 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 		return statusCollector;
 	}
 
-	public void startServices() {
-		logger.info("********* Starting service: "
-				+ RemotePreferencesServiceImpl.class.getName() + "********");
-
-		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
-				PreferencesActivator.getBundleContext(), ISessionService.class);
-		assert sessionService != null : "sessionService != null";
-
-		sessionService.registerRemoteService(IRemotePreferenceService.class
-				.getName(), new RemotePreferencesServiceImpl(), null);
-	}
 }

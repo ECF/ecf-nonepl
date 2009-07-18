@@ -87,7 +87,7 @@ public class AvailableFeaturesComposite {
 		sessionService = OsgiServiceLocatorUtil
 				.getOSGiService(ProvisioningActivator.getBundleContext(),
 						ISessionService.class);
-		Assert.isNotNull(sessionService);
+		assert sessionService != null : "sessionService != null";
 	}
 
 	public void addPropertyChangeListener(PropertyChangeListener listener) {

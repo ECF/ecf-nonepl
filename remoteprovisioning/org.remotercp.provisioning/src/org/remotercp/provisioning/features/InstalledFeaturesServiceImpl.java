@@ -1,11 +1,8 @@
 package org.remotercp.provisioning.features;
 
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Dictionary;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.logging.Logger;
 
 import org.eclipse.core.runtime.CoreException;
@@ -15,7 +12,6 @@ import org.eclipse.update.configuration.ILocalSite;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.IFeatureReference;
 import org.eclipse.update.core.SiteManager;
-import org.eclipse.update.core.VersionedIdentifier;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
@@ -23,7 +19,6 @@ import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.provisioning.UpdateActivator;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class InstalledFeaturesServiceImpl implements IInstalledFeaturesService {
 
@@ -32,15 +27,17 @@ public class InstalledFeaturesServiceImpl implements IInstalledFeaturesService {
 	private final static Logger logger = Logger
 			.getLogger(InstalledFeaturesServiceImpl.class.getName());
 
-	public InstalledFeaturesServiceImpl() {
-
-		this.init();
-	}
-
-	private void init() {
-		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
-				UpdateActivator.getBundleContext(), ISessionService.class);
-		userID = sessionService.getConnectedID();
+	/*
+	 * DependencyInjection by OSGI Declarative services
+	 */
+	public void bindSessionService(ISessionService sessionService) {
+		logger.info("+++++ Starting service: "
+				+ InstalledFeaturesServiceImpl.class.getName() + " +++++");
+		ID connectedID = sessionService.getConnectedID();
+		assert connectedID != null : "connectedID != null";
+		this.userID = connectedID;
+		sessionService.registerRemoteService(IInstalledFeaturesService.class
+				.getName(), this, null);
 	}
 
 	/**
@@ -128,16 +125,4 @@ public class InstalledFeaturesServiceImpl implements IInstalledFeaturesService {
 	public ID getUserID() {
 		return this.userID;
 	}
-
-	public void startServices() {
-		logger.info("******* Starting service: "
-				+ InstalledFeaturesServiceImpl.class.getName() + " ********");
-
-		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
-				UpdateActivator.getBundleContext(), ISessionService.class);
-		sessionService.registerRemoteService(IInstalledFeaturesService.class
-				.getName(), new InstalledFeaturesServiceImpl(), null);
-
-	}
-
 }

@@ -79,10 +79,6 @@ public class PreferenceEditor extends EditorPart {
 		public String getLabel() {
 			return label;
 		}
-
-		public int getColumnIndex() {
-			return columnIndex;
-		}
 	}
 
 	public PreferenceEditor() {

@@ -4,9 +4,8 @@ import java.util.List;
 
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.core.identity.ID;
-import org.remotercp.common.servicelauncher.IRemoteServiceLauncher;
 
-public interface IInstallFeaturesService extends IRemoteServiceLauncher {
+public interface IInstallFeaturesService  {
 
 	public List<IStatus> installFeatures(SerializedFeatureWrapper[] features,
 			ID fromId);

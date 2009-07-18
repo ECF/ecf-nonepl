@@ -15,3 +15,4 @@ Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
  org.eclipse.ecf.filetransfer,
  org.eclipse.ecf.filetransfer.events,
  org.remotercp.ecf.session
+Service-Component: OSGI-INF/component.xml

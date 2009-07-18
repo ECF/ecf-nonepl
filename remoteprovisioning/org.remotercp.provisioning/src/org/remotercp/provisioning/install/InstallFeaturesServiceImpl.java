@@ -60,6 +60,14 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 
 	private final ReentrantLock lock = new ReentrantLock(true);
 
+	public void bindSessionService(ISessionService sessionService) {
+
+		LOGGER.info("+++++ Starting service: "
+				+ InstallFeaturesServiceImpl.class.getName() + " +++++");
+		sessionService.registerRemoteService(IInstallFeaturesService.class
+				.getName(), this, null);
+	}
+
 	/**
 	 * This method prepares the {@link IInstallFeatureOperation} and calls the
 	 * execution of the installation process.
@@ -585,19 +593,5 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 					message, e);
 		}
 
-	}
-
-	/***************************************************************************
-	 * This method does register the remote InstallFeatureService as a remote
-	 * operation.
-	 */
-	public void startServices() {
-		LOGGER.info("******* Starting service: "
-				+ InstallFeaturesServiceImpl.class.getName() + " *******");
-
-		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
-				UpdateActivator.getBundleContext(), ISessionService.class);
-		sessionService.registerRemoteService(IInstallFeaturesService.class
-				.getName(), new InstallFeaturesServiceImpl(), null);
 	}
 }

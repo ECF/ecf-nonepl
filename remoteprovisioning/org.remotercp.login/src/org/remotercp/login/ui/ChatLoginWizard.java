@@ -24,13 +24,12 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
+import org.remotercp.ecf.ECFConnector;
 import org.remotercp.ecf.ECFConstants;
 import org.remotercp.ecf.session.ConnectionDetails;
-import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.login.ImageKeys;
 import org.remotercp.login.LoginActivator;
 import org.remotercp.login.connection.HeadlessConnection;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class ChatLoginWizard extends Wizard {
 
@@ -92,10 +91,7 @@ public class ChatLoginWizard extends Wizard {
 			ConnectionDetails connectionDetails = new ConnectionDetails(
 					userName, server);
 
-			ISessionService session = OsgiServiceLocatorUtil.getOSGiService(
-					LoginActivator.getBundleContext(), ISessionService.class);
-			session.setConnectionDetails(connectionDetails);
-			session.setContainer(container);
+			ECFConnector.createConnection(connectionDetails, container);
 
 		} catch (IDCreateException e) {
 			logger.log(Level.SEVERE, "Uable to initiate the target ID", e);

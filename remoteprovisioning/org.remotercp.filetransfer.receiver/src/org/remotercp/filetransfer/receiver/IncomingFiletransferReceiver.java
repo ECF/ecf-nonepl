@@ -35,15 +35,13 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.remotercp.common.servicelauncher.IRemoteServiceLauncher;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.filetransfer.receiver.dialogs.AcceptFiletransferDialog;
 import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.filesize.FilesizeConverterUtil;
-import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 
 public class IncomingFiletransferReceiver implements
-		IIncomingFileTransferRequestListener, IRemoteServiceLauncher {
+		IIncomingFileTransferRequestListener {
 
 	private Logger logger = Logger.getLogger(IncomingFiletransferReceiver.class
 			.getName());
@@ -51,6 +49,16 @@ public class IncomingFiletransferReceiver implements
 	private FileOutputStream out;
 
 	private File localFile;
+
+	public void bindSessionService(ISessionService sessionService) {
+		logger.info("******* Starting service: "
+				+ IncomingFiletransferReceiver.class.getName() + " ********");
+		ISendFileTransferContainerAdapter adapter = sessionService
+				.getAdapter(ISendFileTransferContainerAdapter.class);
+		assert adapter != null : "adapter != null";
+
+		adapter.addListener(this);
+	}
 
 	public void handleFileTransferRequest(final IFileTransferRequestEvent event) {
 		logger.info("Filestransfer request received.");
@@ -346,21 +354,4 @@ public class IncomingFiletransferReceiver implements
 		};
 	}
 
-	public void startServices() {
-
-		logger.info("******* Starting service: "
-				+ IncomingFiletransferReceiver.class.getName() + " ********");
-
-		ISessionService service = OsgiServiceLocatorUtil.getOSGiService(
-				FiletransferReceiverActivator.getBundleContext(),
-				ISessionService.class);
-		assert service != null : "service != null";
-
-		ISendFileTransferContainerAdapter adapter = service
-				.getAdapter(ISendFileTransferContainerAdapter.class);
-		assert adapter != null : "adapter != null";
-
-		adapter.addListener(new IncomingFiletransferReceiver());
-
-	}
 }

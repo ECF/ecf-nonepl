@@ -5,7 +5,7 @@ import java.util.Collection;
 import org.eclipse.ecf.core.identity.ID;
 import org.remotercp.common.servicelauncher.IRemoteServiceLauncher;
 
-public interface IInstalledFeaturesService extends IRemoteServiceLauncher{
+public interface IInstalledFeaturesService {
 
 	/**
 	 * Returns an array with installed bundles in the users rcp application.

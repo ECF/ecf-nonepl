@@ -6,11 +6,14 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.provisioning.UpdateActivator
 Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.update.core,
- org.remotercp.ecf,
- org.eclipse.ui,
- org.remotercp.util,
- org.remotercp.common,
- org.remotercp.login;bundle-version="1.0.0"
-Bundle-ActivationPolicy: lazy
-Import-Package: org.eclipse.ecf.core.identity;version="3.0.0"
+ org.eclipse.ui
+Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
+ org.remotercp.common.provisioning,
+ org.remotercp.common.status,
+ org.remotercp.ecf.session,
+ org.remotercp.util.authorization,
+ org.remotercp.util.osgi,
+ org.remotercp.util.status
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/installedcomponent.xml, OSGI-INF/installcomponent.xml
+Bundle-ActivationPolicy: lazy

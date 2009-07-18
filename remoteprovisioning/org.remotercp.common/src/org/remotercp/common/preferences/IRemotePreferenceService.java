@@ -7,9 +7,8 @@ import java.util.SortedMap;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.remotercp.common.servicelauncher.IRemoteServiceLauncher;
 
-public interface IRemotePreferenceService extends IRemoteServiceLauncher {
+public interface IRemotePreferenceService {
 
 	public SortedMap<String, String> getPreferences(String[] preferenceFilter)
 			throws ECFException;
