@@ -6,7 +6,17 @@ import org.eclipse.ecf.presence.im.IChatMessage;
 
 public interface IStatus extends IChatMessage{
 	
+	
+	public static final int NORMAL_STATUS_TYPE = 0;
+	public static final int MENTION_STATUS_TYPE = 1;
+	public static final int DIRECT_MESSAGE_TYPE = 2;
+	public static final int SENT_MESSAGE_TYPE = 3;
 
+	/**
+	 * @return
+	 */
+	public abstract int getStatusMessageType();
+	
 	/**
 	 * @return
 	 */
