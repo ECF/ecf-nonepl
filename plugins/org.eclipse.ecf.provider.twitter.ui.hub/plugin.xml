@@ -84,6 +84,57 @@
                   label="Login"
                   style="push">
             </command>
+            <menu
+                  label="Views">
+               <command
+                     commandId="org.eclipse.ecf.provider.twitter.ui.hub.showTweetWindow"
+                     label="TweetView"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ecf.provider.twitter.ui.hub.showMessages"
+                     label="Messages"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ecf.provider.twitter.ui.hub.showMentions"
+                     label="Mentions"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ecf.provider.twitter.ui.hub.showDirect"
+                     label="Direct Messages"
+                     style="push">
+               </command>
+               <separator
+                     name="org.eclipse.ecf.provider.twitter.ui.hub.separator2"
+                     visible="true">
+               </separator>
+               <command
+                     commandId="org.eclipse.ecf.provider.twitter.ui.hub.showFollowing"
+                     label="Following"
+                     style="push">
+               </command>
+               <command
+                     commandId="org.eclipse.ecf.provider.twitter.ui.hub.showFollowers"
+                     label="Followers"
+                     style="push">
+               </command>
+               <separator
+                     name="org.eclipse.ecf.provider.twitter.ui.hub.separator3"
+                     visible="true">
+               </separator>
+               <command
+                     commandId="org.eclipse.ecf.provider.twitter.ui.hub.showTrends"
+                     label="Trends"
+                     style="push">
+               </command>
+            </menu>
+            <command
+                  commandId="org.eclipse.ui.window.preferences"
+                  label="Preferences"
+                  style="push">
+            </command>
          </menu>
       </menuContribution>
    </extension>
@@ -93,6 +144,41 @@
             defaultHandler="org.eclipse.ecf.provider.twitter.ui.logic.TwitterLoginHandler"
             id="org.eclipse.ecf.provider.twitter.ui.hub.login"
             name="Login">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.internal.provider.twitter.ui.windows.ShowViewHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.showTweetWindow"
+            name="TweetView">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.internal.provider.twitter.ui.windows.ShowViewHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.showFollowers"
+            name="Followers">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.internal.provider.twitter.ui.windows.ShowViewHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.showFollowing"
+            name="Following">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.internal.provider.twitter.ui.windows.ShowViewHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.showMessages"
+            name="Messages">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.internal.provider.twitter.ui.windows.ShowViewHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.showMentions"
+            name="Mentions">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.internal.provider.twitter.ui.windows.ShowViewHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.showDirect"
+            name="Direct Messages">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.internal.provider.twitter.ui.windows.ShowViewHandler"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.showTrends"
+            name="Trends">
       </command>
    </extension>
 
