@@ -1,12 +1,9 @@
 package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
 
 import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
-import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
 import org.eclipse.ecf.provider.twitter.ui.utils.TwitterCache;
 import org.eclipse.swt.SWT;
@@ -14,10 +11,13 @@ import org.eclipse.swt.custom.StyleRange;
 import org.eclipse.swt.custom.StyledText;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.MouseTrackListener;
+import org.eclipse.swt.graphics.Color;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Point;
+import org.eclipse.swt.graphics.RGB;
 import org.eclipse.swt.graphics.Rectangle;
-import org.eclipse.swt.layout.FillLayout;
+import org.eclipse.swt.graphics.Region;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Event;
@@ -136,7 +136,9 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 	}
 
 	
-
+	
+	
+	
 	public void mouseEnter(MouseEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource() instanceof Label)
@@ -151,17 +153,37 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 					tip.dispose ();
 				
 				
-				tip = new Shell (l.getShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL);
-				tip.setBackground (display.getSystemColor (SWT.COLOR_INFO_BACKGROUND));
-				FillLayout layout = new FillLayout ();
-				layout.marginWidth = 2;
-				tip.setLayout (layout);
+				tip = new Shell (l.getShell(), SWT.ON_TOP | SWT.NO_FOCUS | SWT.TOOL | SWT.BALLOON);
+				Color backgroundColor=new Color(tip.getDisplay(), new RGB(245, 245, 245));
+				tip.setBackground (backgroundColor);//(SWT.COLOR_INFO_BACKGROUND));
+//				FillLayout layout = new FillLayout ();
+//				layout.marginWidth = 2;
+//				tip.setLayout (layout);
+				tip.setLayout(new GridLayout(2, false));
 				
+				Label imageLabel = new Label(tip, SWT.NONE);
+				imageLabel.addListener (SWT.MouseExit, this);
+				imageLabel.addListener (SWT.MouseDown, this);
 				
+				imageLabel.setBackground(backgroundColor);
+				imageLabel.setData(user);
+				if(user.getProperties().get("image") != null)
+				{
+					String userID = user.getID().getName();
+					String imagePath = (String)user.getProperties().get("image");
+					Image userImage = TwitterCache.getUserImage(userID);
+					if (userImage!=null) {
+						imageLabel.setImage(userImage);
+					} else {
+						//if not cached => queue label for image
+						imageLabel.setImage(blankUserImg);
+						TwitterCache.queueMessageForUserImageLoading(userID, imagePath, imageLabel);
+					}
+				}
 				FormText text = new FormText(tip,SWT.WRAP);
 				
 				text.setForeground (display.getSystemColor (SWT.COLOR_INFO_FOREGROUND));
-				text.setBackground (display.getSystemColor (SWT.COLOR_INFO_BACKGROUND));
+				text.setBackground (backgroundColor);
 				
 				/**
 				 * Add all profile data to this
@@ -208,12 +230,9 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 				Point pt = l.toDisplay (rect.x, rect.y);
 				tip.setBounds (pt.x, pt.y, size.x, size.y);
 				tip.setVisible (true);
-			
 		}
 		
 	}
-
-	
 	public void handleEvent(Event event) {
 		// TODO Auto-generated method stub
 		if(tip != null && !tip.isDisposed())
