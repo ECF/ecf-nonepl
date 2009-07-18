@@ -48,6 +48,7 @@ import org.eclipse.ecf.presence.service.IPresenceService;
 import org.eclipse.ecf.provider.twitter.identity.TwitterID;
 import org.eclipse.ecf.provider.twitter.identity.TwitterNamespace;
 
+import twitter4j.DirectMessage;
 import twitter4j.Paging;
 import twitter4j.Status;
 import twitter4j.Twitter;
@@ -233,6 +234,34 @@ public class TwitterContainer extends AbstractContainer implements
 			throw new ECFException("Exception getting friends timeline", e);
 		}
 	}
+	
+	
+	
+	/**
+	 * 
+	 * @return Returns mentions in twitter List of {@link IStatus}
+	 * @throws ECFException
+	 */
+	public List getMentions() throws ECFException {
+		List timeLine;
+		List result = new ArrayList();
+		try {
+			timeLine = getTwitter().getMentions();
+			for (Iterator iterator = timeLine.iterator(); iterator.hasNext();) {
+				Status status = (Status) iterator.next();
+				TwitterUser user = new TwitterUser(status.getUser());
+				// FIXME
+				result.add(new StatusTwitter(user.getID(), status.getText(),
+						status, StatusTwitter.MENTION_STATUS_TYPE));
+			}
+			return result;
+		} catch (TwitterException e) {
+			throw new ECFException("Exception getting friends timeline", e);
+		}
+	}
+	
+	
+	
 
 	/**
 	 * 
@@ -470,6 +499,9 @@ public class TwitterContainer extends AbstractContainer implements
 							return;
 						refreshTwitterFriends();
 						refreshTwitterStatuses();
+						refreshTwitterMentions();
+						//refreshDirectMessages();
+						
 					} catch (final ECFException e) {
 						// XXX todo...this would be caused by some twitter
 						// failure...should probably
@@ -509,6 +541,9 @@ public class TwitterContainer extends AbstractContainer implements
 		rosterManager.addTwitterFriendsToRoster(twitterUsers);
 	}
 
+	
+	
+	
 	public void refreshTwitterStatuses() throws ECFException {
 		// Then get friend's status messages
 		final List statuses = getFriendsTimeline();
@@ -517,6 +552,17 @@ public class TwitterContainer extends AbstractContainer implements
 				.toArray(new IStatus[] {}));
 	}
 
+	
+	public void refreshTwitterMentions() throws ECFException {
+		// get your mentions from twitter
+		final List statuses = getMentions();
+		// Add notify message listeners
+		chatManager.handleStatusMessages((IStatus[]) statuses
+				.toArray(new IStatus[] {}));
+	}
+	
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * 

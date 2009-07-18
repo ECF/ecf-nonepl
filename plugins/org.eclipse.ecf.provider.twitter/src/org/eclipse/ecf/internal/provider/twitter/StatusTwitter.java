@@ -16,12 +16,26 @@ public class StatusTwitter extends ChatMessage implements IStatus {
 	 */
 	private static final long serialVersionUID = -4588588139099653930L;
 	Status status;
-
+	private int statusMessageType = NORMAL_STATUS_TYPE;
+	
 	public StatusTwitter(ID id, String message, Status status){
 		super(id, message);
 		this.status = status;
+		
 	}
+	
+	public StatusTwitter(ID id, String message, Status status, int type){
+		this(id, message, status);
+		statusMessageType = type;
+		
+	}
+	
 
+	public int getStatusMessageType()
+	{
+		return statusMessageType;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.internal.provider.twitter.IStatus#getCreatedAt()
 	 */
