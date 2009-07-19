@@ -165,10 +165,6 @@ public class ContactsView extends ViewPart {
 
 					public void dragFinished(DragSourceEvent event) {
 						if (event.detail == DND.DROP_MOVE) {
-							/*
-							 * think of coloring the draged files gray in order
-							 * to show which items have already been selected
-							 */
 							logger.info("drag finished");
 						}
 
