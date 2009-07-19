@@ -12,7 +12,7 @@
  * Contributors:
  *     Jean-Michel Lemieux and Jeff McAffer - initial implementation
  *******************************************************************************/
-package org.remotercp.ecf.session;
+package org.remotercp.ecf.connection;
 
 public class ConnectionDetails {
 	private String userName, server;

@@ -10,8 +10,7 @@ Require-Bundle: org.eclipse.ui,
  org.remotercp.common;bundle-version="1.0.0",
  org.remotercp.util
 Bundle-ActivationPolicy: lazy
-Export-Package: org.remotercp.login.connection,
- org.remotercp.login.ui
+Export-Package: org.remotercp.login.ui
 Import-Package: org.eclipse.ecf.core;version="3.0.0",
  org.eclipse.ecf.core.identity;version="3.0.0",
  org.eclipse.ecf.core.security,

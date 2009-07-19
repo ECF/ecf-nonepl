@@ -1,13 +1,10 @@
 package org.remotercp.core;
 
-import org.eclipse.jface.window.Window;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
 import org.eclipse.ui.application.IWorkbenchWindowConfigurer;
 import org.eclipse.ui.application.WorkbenchWindowAdvisor;
-import org.remotercp.common.servicelauncher.ServiceLauncher;
-import org.remotercp.login.ui.ChatLoginWizardDialog;
 
 public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 
@@ -31,18 +28,5 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		// Show jobs in a progress dialog!!!
 		configurer.setShowProgressIndicator(true);
 		configurer.setTitle("Remote Eclipse RCP Management");
-
-		/*
-		 * open the user login dialog
-		 */
-		ChatLoginWizardDialog wizardDialog = new ChatLoginWizardDialog();
-		if (wizardDialog.open() == Window.CANCEL) {
-			// close application
-			getWindowConfigurer().getWindow().getShell().close();
-		} else {
-			// start remote services
-			ServiceLauncher.startRemoteServices();
-		}
-		
 	}
 }

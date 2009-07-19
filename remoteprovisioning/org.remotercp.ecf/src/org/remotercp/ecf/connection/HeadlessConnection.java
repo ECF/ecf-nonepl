@@ -1,6 +1,7 @@
-package org.remotercp.login.connection;
+package org.remotercp.ecf.connection;
 
 import java.net.URISyntaxException;
+import java.util.logging.Logger;
 
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.ContainerCreateException;
@@ -10,7 +11,10 @@ import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.provider.xmpp.identity.XMPPID;
-import org.remotercp.ecf.ECFConstants;
+import org.osgi.framework.BundleContext;
+import org.remotercp.ecf.ECFActivator;
+import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.ecf.session.impl.SessionServiceImpl;
 
 /**
  * This class can be used in headless application to log-in to a server.
@@ -20,6 +24,9 @@ import org.remotercp.ecf.ECFConstants;
  * 
  */
 public class HeadlessConnection {
+
+	private final static Logger logger = Logger
+			.getLogger(HeadlessConnection.class.getName());
 
 	/**
 	 * Creates a connection to an server.
@@ -57,8 +64,30 @@ public class HeadlessConnection {
 
 		container.connect(xmppid, connectContext);
 
+		ConnectionDetails connectionDetails = new ConnectionDetails(userName,
+				server);
+
+		createSessionService(container, connectionDetails);
+
 		return container;
 
+	}
+
+	/*
+	 * Create and publish an OSGi-sessionService. This service will be used to
+	 * register and retrieve remoe services
+	 */
+	private static void createSessionService(IContainer container,
+			ConnectionDetails connectionDetails) {
+		ISessionService sessionService = new SessionServiceImpl(
+				connectionDetails, container);
+
+		BundleContext bundleContext = ECFActivator.getBundleContext();
+
+		bundleContext.registerService(ISessionService.class.getName(),
+				sessionService, null);
+
+		logger.info(">>> SessionService registred");
 	}
 
 }

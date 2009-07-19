@@ -8,7 +8,6 @@ import org.eclipse.core.runtime.preferences.ConfigurationScope;
 import org.eclipse.core.runtime.preferences.IEclipsePreferences;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.ContainerCreateException;
-import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.jface.dialogs.DialogSettings;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -24,12 +23,10 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.remotercp.ecf.ECFConnector;
-import org.remotercp.ecf.ECFConstants;
-import org.remotercp.ecf.session.ConnectionDetails;
+import org.remotercp.ecf.connection.ECFConstants;
+import org.remotercp.ecf.connection.HeadlessConnection;
 import org.remotercp.login.ImageKeys;
 import org.remotercp.login.LoginActivator;
-import org.remotercp.login.connection.HeadlessConnection;
 
 public class ChatLoginWizard extends Wizard {
 
@@ -85,13 +82,8 @@ public class ChatLoginWizard extends Wizard {
 			/*
 			 * Establish the server connection
 			 */
-			IContainer container = HeadlessConnection.connect(userName,
-					password, server, ECFConstants.XMPP);
-
-			ConnectionDetails connectionDetails = new ConnectionDetails(
-					userName, server);
-
-			ECFConnector.createConnection(connectionDetails, container);
+			HeadlessConnection.connect(userName, password, server,
+					ECFConstants.XMPP);
 
 		} catch (IDCreateException e) {
 			logger.log(Level.SEVERE, "Uable to initiate the target ID", e);
