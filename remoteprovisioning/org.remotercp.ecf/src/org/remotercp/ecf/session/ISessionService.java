@@ -103,4 +103,10 @@ public interface ISessionService {
 	 */
 	public IRemoteService[] getRemoteServiceReference(Class<?> service,
 			ID[] filterIDs, String filter) throws InvalidSyntaxException;
+
+	/**
+	 * Returns the currently logged-in user.
+	 * @return
+	 */
+	public String getUserName();
 }

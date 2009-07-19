@@ -66,10 +66,10 @@ public class RestartApplicationAction implements IViewActionDelegate {
 				.getOSGiService(ProvisioningActivator.getBundleContext(),
 						ISessionService.class);
 		final ID fromId = sessionService.getConnectedID();
-		Assert.isNotNull(sessionService);
+		assert sessionService != null : "sessionService != null";
 
 		ID[] userIDs = RosterUtil.getUserIDs(this.roster);
-		Assert.isNotNull(userIDs);
+		assert userIDs != null : "userIDs != null";
 
 		try {
 			List<IInstallFeaturesService> remoteService = sessionService

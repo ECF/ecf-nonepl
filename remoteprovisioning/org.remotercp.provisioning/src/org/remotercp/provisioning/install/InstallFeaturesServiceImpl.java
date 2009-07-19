@@ -60,8 +60,11 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 
 	private final ReentrantLock lock = new ReentrantLock(true);
 
+	private ISessionService sessionService;
+
 	public void bindSessionService(ISessionService sessionService) {
 
+		this.sessionService = sessionService;
 		LOGGER.info("+++++ Starting service: "
 				+ InstallFeaturesServiceImpl.class.getName() + " +++++");
 		sessionService.registerRemoteService(IInstallFeaturesService.class
@@ -389,28 +392,16 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 */
 	public List<IStatus> restartApplication(ID fromId) {
 		final List<IStatus> statusCollector = new ArrayList<IStatus>();
-		// is user fromId allowed to execute this operation?
-		boolean canExecute = AuthorizationUtil.checkAuthorization(fromId,
-				"restartApplication");
 
-		if (canExecute) {
-			Display.getDefault().asyncExec(new Runnable() {
-				public void run() {
-					PlatformUI.getWorkbench().restart();
-					IStatus authorizationFailed = createStatus(Status.ERROR,
-							"Application has been sucessfully restarted", null);
-					statusCollector.add(authorizationFailed);
-				}
-			});
-		} else {
-			IStatus authorizationFailed = createStatus(
-					Status.ERROR,
-					"Authorization failed for user: "
-							+ fromId.getName()
-							+ ". Only administrators are allowed to perform restart operations.",
-					null);
-			statusCollector.add(authorizationFailed);
-		}
+		Display.getDefault().asyncExec(new Runnable() {
+			public void run() {
+				PlatformUI.getWorkbench().restart();
+				IStatus authorizationFailed = createStatus(Status.OK,
+						"Application has been sucessfully restarted", null);
+				statusCollector.add(authorizationFailed);
+			}
+		});
+
 		return statusCollector;
 	}
 
@@ -422,11 +413,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService {
 	 * @return The status whether client has accepted (Status.OK) the update or
 	 *         cancelled (Status.CANCELLED)
 	 */
-	public IStatus acceptUpdate(ID fromId) {
-		ISessionService sessionService = OsgiServiceLocatorUtil.getOSGiService(
-				UpdateActivator.getBundleContext(), ISessionService.class);
-		final String userName = sessionService.getConnectionDetails()
-				.getUserName();
+	public synchronized IStatus acceptUpdate(ID fromId) {
+		final String userName = this.sessionService.getUserName();
 		/*
 		 * XXX: this list is a workaround for syncExec-Operation. As we are only
 		 * able to pass final parameters to the run() method there is no other

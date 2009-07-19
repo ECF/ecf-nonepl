@@ -274,4 +274,8 @@ public class SessionServiceImpl implements ISessionService {
 		return getChatManager().getChatMessageSender();
 	}
 
+	public String getUserName() {
+		return getConnectionDetails().getUserName();
+	}
+
 }
