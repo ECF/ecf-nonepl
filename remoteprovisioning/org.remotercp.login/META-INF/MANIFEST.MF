@@ -5,14 +5,12 @@ Bundle-SymbolicName: org.remotercp.login;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.login.LoginActivator
 Require-Bundle: org.eclipse.ui,
- org.eclipse.core.runtime,
- org.remotercp.ecf,
- org.remotercp.common;bundle-version="1.0.0",
- org.remotercp.util
+ org.eclipse.core.runtime
 Bundle-ActivationPolicy: lazy
 Export-Package: org.remotercp.login.ui
 Import-Package: org.eclipse.ecf.core;version="3.0.0",
  org.eclipse.ecf.core.identity;version="3.0.0",
  org.eclipse.ecf.core.security,
- org.eclipse.ecf.provider.xmpp.identity
+ org.eclipse.ecf.provider.xmpp.identity,
+ org.remotercp.ecf.connection
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
