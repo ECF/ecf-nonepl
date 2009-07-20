@@ -193,18 +193,18 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 				String url = (String)user.getProperties().get("url");
 				
 				StringBuffer textBuffer = new StringBuffer();
-				textBuffer.append("<form><p><b>Name:</b>");
+				textBuffer.append("<form><p><b>Name:</b> ");
 				textBuffer.append(user.getName());
 				textBuffer.append("</p>");
 				if(bio != null)
 				{
-					textBuffer.append("<p><b>Bio:</b>");
+					textBuffer.append("<p><b>Bio:</b> ");
 					textBuffer.append(bio);
 					textBuffer.append("</p>");
 				}
 				if(location != null)
 				{
-					textBuffer.append("<p><b>Location:</b>");
+					textBuffer.append("<p><b>Location:</b> ");
 					textBuffer.append(location);
 					textBuffer.append("</p>");
 				}
