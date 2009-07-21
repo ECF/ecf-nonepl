@@ -11,9 +11,10 @@
 
 package org.eclipse.ecf.provider.twitter.container;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Vector;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
@@ -35,7 +36,7 @@ import org.eclipse.ecf.presence.search.message.IMessageSearchManager;
  */
 public class TwitterChatManager implements IChatManager {
 
-	private final Vector chatListeners = new Vector();
+	private final Collection<IIMMessageListener> chatListeners = new ArrayList<IIMMessageListener>();
 
 	private final TwitterContainer container;
 
@@ -47,8 +48,10 @@ public class TwitterChatManager implements IChatManager {
 
 		public void sendChatMessage(ID toID, String body) throws ECFException {
 			if (toID == null || toID.equals(container.getTargetID())) {
+				//just update status
 				container.sendTwitterUpdate(body);
 			} else {
+				//send a direct message
 				container.sendTwitterMessage(toID.getName(), body);
 			}
 		}
@@ -102,7 +105,7 @@ public class TwitterChatManager implements IChatManager {
 	 * @param chat
 	 */
 	private void fireMessageListeners(IStatus status) {
-		for (final Iterator i = chatListeners.iterator(); i.hasNext();) {
+		for (final Iterator<IIMMessageListener> i = chatListeners.iterator(); i.hasNext();) {
 			final IIMMessageListener l = (IIMMessageListener) i.next();
 			l.handleMessageEvent(new TwitterMessageChatEvent(status.getUser().getID(), status));
 		}

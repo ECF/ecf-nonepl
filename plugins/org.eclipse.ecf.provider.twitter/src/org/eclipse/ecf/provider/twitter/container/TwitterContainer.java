@@ -33,6 +33,7 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.twitter.DirectMessageTwitter;
 import org.eclipse.ecf.internal.provider.twitter.StatusTwitter;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
@@ -235,7 +236,26 @@ public class TwitterContainer extends AbstractContainer implements
 		}
 	}
 	
-	
+	/**
+	 * Return the list of direct messages sent to the user
+	 * @return
+	 * @throws ECFException
+	 */
+	public List<IStatus> getDirectMessages() throws ECFException{
+		List<IStatus> result = new ArrayList<IStatus>();
+		try {
+			List<DirectMessage> messages = getTwitter().getDirectMessages();
+			for (Iterator<DirectMessage> iterator = messages.iterator(); iterator.hasNext();) {
+				DirectMessage directMessage =  iterator.next();
+				TwitterUser user = new TwitterUser(directMessage.getSender());
+				result.add(new DirectMessageTwitter(user.getID(), directMessage.getText(), directMessage));
+			}
+			return result;
+		} catch (TwitterException e) {
+			throw new ECFException("Exception getting direct Messages", e);
+		}
+		
+	}
 	
 	/**
 	 * 
@@ -500,7 +520,7 @@ public class TwitterContainer extends AbstractContainer implements
 						refreshTwitterFriends();
 						refreshTwitterStatuses();
 						refreshTwitterMentions();
-						//refreshDirectMessages();
+						refreshTwitterDirectedMessages();
 						
 					} catch (final ECFException e) {
 						// XXX todo...this would be caused by some twitter
@@ -540,9 +560,6 @@ public class TwitterContainer extends AbstractContainer implements
 		// Add to roster
 		rosterManager.addTwitterFriendsToRoster(twitterUsers);
 	}
-
-	
-	
 	
 	public void refreshTwitterStatuses() throws ECFException {
 		// Then get friend's status messages
@@ -552,7 +569,15 @@ public class TwitterContainer extends AbstractContainer implements
 				.toArray(new IStatus[] {}));
 	}
 
-	
+	/**
+	 * Refresh the direct messages sent to the user, considering the latest
+	 * @throws ECFException
+	 */
+	public void refreshTwitterDirectedMessages() throws ECFException {
+		List<IStatus> messages = getDirectMessages();
+		chatManager.handleStatusMessages((IStatus[]) messages.toArray(new IStatus[] {}));
+	}
+
 	public void refreshTwitterMentions() throws ECFException {
 		// get your mentions from twitter
 		final List statuses = getMentions();
@@ -560,8 +585,6 @@ public class TwitterContainer extends AbstractContainer implements
 		chatManager.handleStatusMessages((IStatus[]) statuses
 				.toArray(new IStatus[] {}));
 	}
-	
-	
 	
 	/*
 	 * (non-Javadoc)
@@ -615,6 +638,17 @@ public class TwitterContainer extends AbstractContainer implements
 	 */
 	public void sendStatusUpdate(String status) throws ECFException {
 		chatManager.getChatMessageSender().sendChatMessage(targetID, status);
+	}
+
+
+	/**
+	 * Send a direct message using presence API behind scenes
+	 * @param toID. Twitter username that you receive the direct message
+	 * @param message. String for direct message
+	 * @throws ECFException
+	 */
+	public void sendDirectMessage(String toID, String message) throws ECFException {
+		chatManager.getChatMessageSender().sendChatMessage(IDFactory.getDefault().createID(targetID.getNamespace(), toID), message);
 	}
 
 	public IUserSearchManager getUserSearchManager() {
