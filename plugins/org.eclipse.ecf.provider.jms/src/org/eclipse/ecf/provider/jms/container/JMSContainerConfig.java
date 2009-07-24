@@ -60,7 +60,7 @@ public class JMSContainerConfig extends SOContainerConfig {
 	}
 
 	public JMSContainerConfig(String name, int keepAlive) {
-		this((JMSID) IDFactory.getDefault().createID(JMSNamespace.NAME, new Object[] {name}));
+		this((JMSID) IDFactory.getDefault().createID(JMSNamespace.NAME, name));
 	}
 
 	public JMSContainerConfig(String name) {
