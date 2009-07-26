@@ -71,6 +71,14 @@
             name="Trends"
             restorable="true">
       </view>
+      <view
+            category="org.eclipse.ecf.provider.twitter.ui.hub.category"
+            class="org.eclipse.ecf.provider.twitter.ui.hub.views.SendDirectMessagePart"
+            icon="icons/Mail 1_32.png"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.sendDM"
+            name="Direct Message"
+            restorable="true">
+      </view>
    </extension>
    <extension
          point="org.eclipse.ui.menus">
