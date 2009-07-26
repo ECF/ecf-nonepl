@@ -25,6 +25,7 @@ import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
+import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.events.HyperlinkEvent;
@@ -48,9 +49,12 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 	//statically load the images for now.
 	private static Image replyImg = ImageUtils.loadImage("reply.png");
 	private static Image retweetImg = ImageUtils.loadImage("retweet.png");
+	private static Image dmImg = ImageUtils.loadImage("dm.png");
+
 	private static Image blankUserImg = ImageUtils.loadImage("blankUserImage.png");
 	private Button reply; 
 	private Button retweet;
+	private Button dm;
 	
 	
 	private Message tweet;
@@ -227,23 +231,33 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		td=new TableWrapData(TableWrapData.FILL_GRAB, TableWrapData.TOP, 2, 1);
 		buttons.setLayoutData(td);
 		buttons.addMouseTrackListener(this);
-		buttons.setLayout(new GridLayout(1,false));
+		buttons.setLayout(new GridLayout(2,false));
 		
 		reply = toolkit.createButton(buttons, "", SWT.FLAT);
 		reply.setToolTipText("Reply");
 		reply.addListener(SWT.Selection, this);
 		reply.setImage(replyImg);
 		reply.addMouseTrackListener(this);
-		reply.setLayoutData(new GridData(SWT.RIGHT,SWT.NONE,true,false));
+		reply.setLayoutData(new GridData(SWT.RIGHT,SWT.NONE,false,false));
 		reply.setVisible(false);
+		//should grab horizontal
+		dm = toolkit.createButton(buttons, "", SWT.FLAT);
+		dm.setToolTipText("Direct Message");
+		dm.setImage(dmImg);
+		dm.addListener(SWT.Selection, this);
+		dm.addMouseTrackListener(this);
+		dm.setLayoutData(new GridData(SWT.RIGHT,SWT.NONE,false,false));
+		dm.setVisible(false);
 		
 		retweet = toolkit.createButton(buttons, "", SWT.FLAT);
 		retweet.setToolTipText("Retweet");
 		retweet.setImage(retweetImg);
 		retweet.addListener(SWT.Selection, this);
 		retweet.addMouseTrackListener(this);
-		retweet.setLayoutData(new GridData(SWT.RIGHT,SWT.NONE,true,false));
+		retweet.setLayoutData(new GridData(SWT.RIGHT,SWT.NONE,false,false));
 		retweet.setVisible(false);
+		
+		
 		
 		td = new TableWrapData(TableWrapData.FILL_GRAB);
 		/**
@@ -286,6 +300,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		nameLabel.setForeground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_BLACK));
 		retweet.setVisible(true);
 		reply.setVisible(true);
+		dm.setVisible(true);
 //		statusTxt.redraw();
 	}
 
@@ -302,6 +317,7 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 		statusTxt.setForeground(PlatformUI.getWorkbench().getDisplay().getSystemColor(SWT.COLOR_DARK_GRAY));
 		retweet.setVisible(false);
 		reply.setVisible(false);
+		dm.setVisible(false);
 //		statusTxt.redraw();
 	}
 
@@ -360,6 +376,23 @@ public class MessageComposite implements MouseTrackListener, IHyperlinkListener,
 			rtBuffer.append(tweet.getText());
 			
 			tweetView.setTweetText(rtBuffer.toString());
+		}
+		
+		if(event.widget.equals(dm))
+		{
+			SendDirectMessagePart dmView = 
+				(SendDirectMessagePart)PlatformUI.getWorkbench().getActiveWorkbenchWindow().getActivePage().findViewReference(SendDirectMessagePart.VIEW_ID).getView(false);
+			dmView.sendDMTo(tweet.getRealName());
+			IWorkbench workbench = PlatformUI.getWorkbench();
+
+			try {
+				workbench.getActiveWorkbenchWindow().getActivePage().showView(dmView.VIEW_ID);
+			} catch (PartInitException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+
+			
 		}
 		
 	}

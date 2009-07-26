@@ -1,11 +1,17 @@
 package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
+import java.util.List;
+
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.core.user.IUser;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.provider.twitter.container.TwitterUser;
 import org.eclipse.ecf.provider.twitter.ui.Messages;
 import org.eclipse.ecf.provider.twitter.ui.dialogs.UrlShortenDialog;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
+import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
+import org.eclipse.ecf.provider.twitter.ui.utils.TwitterCache;
 import org.eclipse.jface.dialogs.ErrorDialog;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
@@ -19,8 +25,10 @@ import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
+import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Event;
+import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Menu;
 import org.eclipse.swt.widgets.MenuItem;
@@ -31,15 +39,21 @@ import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.part.ViewPart;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 
-public class TweetViewPart extends ViewPart {
+public class SendDirectMessagePart extends ViewPart implements SelectionListener{
 
-	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.tweetView"; //$NON-NLS-1$
+	public static final String VIEW_ID = "org.eclipse.ecf.provider.twitter.ui.hub.sendDM"; //$NON-NLS-1$
 	private static final int TWITTER_CHAR_LIMIT = 140;
 
-	private Text tweetTxt;
+	private Text tweetTxt; 
 	private TwitterController controller;
-
-	public TweetViewPart() {
+	private Combo combo;
+	private static Image blankUserImg = ImageUtils.loadImage("blankUserImage.png");
+	private List<IUser> following;
+	private TwitterUser selectedUser;
+	
+	private Label userImgLabel;
+	
+	public SendDirectMessagePart() {
 		// TODO Auto-generated constructor stub
 	}
 
@@ -47,21 +61,70 @@ public class TweetViewPart extends ViewPart {
 		this.controller = controller;
 	}
 
+	
+	public void addFollowing(List<IUser> following)
+	{
+		this.following = following;
+		int index = 0;
+		for(IUser follower: following)
+		{
+			TwitterUser user = (TwitterUser)follower;
+			combo.add(user.getName());
+			index++;
+		}
+	}
+	
+	
+	
+	
+	/**
+	 * Note that if the user isn't in your list of followers this isn't going 
+	 * to work right now. 
+	 * 
+	 * @param username
+	 */
+	public void sendDMTo(String username)
+	{
+	System.err.println("sending dm to " + username);
+		//find out if the person is in the list 
+		String[] items = combo.getItems();
+		for(int i = 0; i < items.length; i++)
+		{
+			if(items[i].equals(username))
+			{
+				combo.select(i);
+				listSelect();
+			}
+		}
+		
+		
+	}
+	
 	@Override
 	public void createPartControl(Composite parent) {
 
 		FormToolkit toolkit = new FormToolkit(parent.getDisplay());
 		Form tweetForm = toolkit.createForm(parent);
 
-		tweetForm.setText(Messages.TweetViewPart_What_doing);
+		tweetForm.setText("Send Direct Message");
 
 		Composite tweet = tweetForm.getBody();
-		tweet.setLayout(new GridLayout(2, false));
+		tweet.setLayout(new GridLayout(5, false));
 		tweet.setLayoutData(new GridData(GridData.FILL_HORIZONTAL));
+		
+		GridData gdTop = new GridData();
+		gdTop.verticalAlignment = GridData.BEGINNING;
+		userImgLabel = new Label(tweet, SWT.NONE);
+		userImgLabel.setImage(blankUserImg);
+		
+		userImgLabel.setLayoutData(gdTop);
+		
 
-		tweetTxt = toolkit.createText(tweet, "", SWT.MULTI);// new Text(tweet, //$NON-NLS-1$
-															// SWT.BORDER |
-															// SWT.MULTI);
+		combo = new Combo(tweet, SWT.BORDER);
+		combo.addSelectionListener(this);
+		combo.setLayoutData(gdTop);
+	
+		tweetTxt = toolkit.createText(tweet, "", SWT.MULTI);
 		final Button tweeter = toolkit.createButton(tweet, " ", SWT.NONE); //$NON-NLS-1$
 		final StyledText charLimitLbl = new StyledText(tweet, SWT.NONE);
 		charLimitLbl.setText("" + TWITTER_CHAR_LIMIT); //$NON-NLS-1$
@@ -158,19 +221,23 @@ public class TweetViewPart extends ViewPart {
 
 	private void sendTweet(String text) {
 		// TODO: send off this tweet
-		System.err.println(Messages.TweetViewPart_Tweeting + text);
-		try {
-			controller.tweet(text);
-			// clear text
-			tweetTxt.setText(""); //$NON-NLS-1$
-		} catch (ECFException e) {
-			// handle exception
-			Status status = new Status(IStatus.ERROR,
-					"org.eclipse.ecf.twitter.ui.hub", 0, e.getMessage(), null); //$NON-NLS-1$
-			ErrorDialog.openError(this.getSite().getShell(),
-					Messages.TweetViewPart_13, e.getMessage(), status);
+		
+		System.err.println("Sending direct message containing " + text + " to " + selectedUser.getID().getName());
+		if(selectedUser != null)
+		{
+		
+			try {
+				controller.sendDirectMessage(selectedUser.getID().getName(), text);
+				// clear text
+				tweetTxt.setText(""); //$NON-NLS-1$
+			} catch (ECFException e) {
+				// handle exception
+				Status status = new Status(IStatus.ERROR,
+						"org.eclipse.ecf.twitter.ui.hub", 0, e.getMessage(), null); //$NON-NLS-1$
+				ErrorDialog.openError(this.getSite().getShell(),
+						Messages.TweetViewPart_13, e.getMessage(), status);
+			}
 		}
-
 	}
 
 	@Override
@@ -187,4 +254,37 @@ public class TweetViewPart extends ViewPart {
 	public void setTweetText(String tweetText) {
 		tweetTxt.setText(tweetText);
 	}
+
+	public void widgetDefaultSelected(SelectionEvent e) {
+		listSelect();
+		
+	}
+
+	public void widgetSelected(SelectionEvent e) {
+		listSelect();
+	}
+	
+	private void listSelect()
+	{
+		int selected = combo.getSelectionIndex();
+		
+		selectedUser = (TwitterUser)following.get(selected);
+		
+		String userId = selectedUser.getID().getName();
+		String imagePath = (String)selectedUser.getProperties().get("image");
+		Image userImage = TwitterCache.getUserImage(userId);
+		userImgLabel.setToolTipText(userId);
+		if (userImage!=null) {
+			userImgLabel.setImage(userImage);
+		} else {
+			//if not cached => queue label for image
+			userImgLabel.setImage(blankUserImg);
+			TwitterCache.queueMessageForUserImageLoading(userId, imagePath, userImgLabel);
+		}
+		
+		
+		
+	}
+
+	
 }

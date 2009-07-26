@@ -6,6 +6,7 @@ import org.eclipse.ecf.provider.twitter.ui.hub.views.FriendsViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.MessagesViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.ReplyViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.SearchViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.SendDirectMessagePart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.TrendViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.TweetViewPart;
 import org.eclipse.ui.IFolderLayout;
@@ -19,7 +20,11 @@ public class PerspectiveFactory implements IPerspectiveFactory {
 	public void createInitialLayout(IPageLayout layout) {
 		// TODO Auto-generated method stub
 		String editorArea = layout.getEditorArea();
-		layout.addView(TweetViewPart.VIEW_ID, IPageLayout.TOP, 0.2f,editorArea);
+
+		IFolderLayout sendMessages = layout.createFolder("senderFolder", IPageLayout.TOP, 0.2f,editorArea);		
+		sendMessages.addView(TweetViewPart.VIEW_ID);
+		sendMessages.addView(SendDirectMessagePart.VIEW_ID);
+		
 		
 		IFolderLayout friends = layout.createFolder("friendsFolder", IPageLayout.BOTTOM, 0.26f,TweetViewPart.VIEW_ID);
 		friends.addView(FriendsViewPart.VIEW_ID);

@@ -1,5 +1,7 @@
 package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.List;
 
 import org.eclipse.ecf.core.user.IUser;
@@ -24,7 +26,10 @@ import org.eclipse.swt.widgets.Event;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Shell;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
+import org.eclipse.ui.forms.events.HyperlinkEvent;
+import org.eclipse.ui.forms.events.IHyperlinkListener;
 import org.eclipse.ui.forms.widgets.FormText;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 import org.eclipse.ui.forms.widgets.ScrolledForm;
@@ -39,7 +44,7 @@ import org.eclipse.ui.part.ViewPart;
  * @author jsugrue
  *
  */
-public class AbstractUserViewPart extends ViewPart implements  MouseTrackListener, Listener {
+public class AbstractUserViewPart extends ViewPart implements  MouseTrackListener, Listener, IHyperlinkListener{
 
 	private Composite formComposite;
 	private List<IUser> people;
@@ -192,10 +197,18 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 				String location = (String)user.getProperties().get("location");
 				String url = (String)user.getProperties().get("url");
 				
+				
 				StringBuffer textBuffer = new StringBuffer();
 				textBuffer.append("<form><p><b>Name:</b> ");
 				textBuffer.append(user.getName());
-				textBuffer.append("</p>");
+				
+				textBuffer.append(" <a href='");
+				textBuffer.append("http://www.twitter.com/");
+				textBuffer.append((String)user.getProperties().get("screenName"));
+				textBuffer.append("'>");
+				textBuffer.append("View Profile");
+				textBuffer.append("</a></p>");
+				
 				if(bio != null)
 				{
 					textBuffer.append("<p><b>Bio:</b> ");
@@ -216,13 +229,18 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 					textBuffer.append(url);
 					textBuffer.append("</a></p>");
 				}
+				//add in link to profile 
+				
 				textBuffer.append("</form>");
+				
+				
 				text.setText(textBuffer.toString(), true, true);
 				
 				
 				
 				text.addListener (SWT.MouseExit, this);
 				text.addListener (SWT.MouseDown, this);
+				text.addHyperlinkListener(this);
 				
 				
 				Point size = tip.computeSize (SWT.DEFAULT, SWT.DEFAULT);
@@ -235,6 +253,7 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 	}
 	public void handleEvent(Event event) {
 		// TODO Auto-generated method stub
+		
 		if(tip != null && !tip.isDisposed())
 			tip.dispose();
 		
@@ -248,6 +267,32 @@ public class AbstractUserViewPart extends ViewPart implements  MouseTrackListene
 
 
 	public void mouseHover(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public void linkActivated(HyperlinkEvent e) {
+		//open up the link in a browser window.
+		String link = (String)e.getHref();
+		
+		try {
+			PlatformUI.getWorkbench().getBrowserSupport().createBrowser("tweetbrowse")
+						.openURL(new URL(link));
+		} catch (PartInitException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		} catch (MalformedURLException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
+	}
+
+	public void linkEntered(HyperlinkEvent e) {
+		
+		
+	}
+
+	public void linkExited(HyperlinkEvent e) {
 		// TODO Auto-generated method stub
 		
 	}

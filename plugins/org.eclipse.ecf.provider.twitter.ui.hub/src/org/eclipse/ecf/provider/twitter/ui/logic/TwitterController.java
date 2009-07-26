@@ -29,6 +29,7 @@ import org.eclipse.ecf.provider.twitter.ui.hub.views.FriendsViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.MessagesViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.ReplyViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.SearchViewPart;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.SendDirectMessagePart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.TweetViewPart;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
@@ -52,8 +53,11 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	private FollowersViewPart followersView;
 	private DirectMessagesViewPart directMessages;
 	
+	
 	private ReplyViewPart replyView;
 	private TweetViewPart tweetView;
+	private SendDirectMessagePart dmView;
+
 	private SearchViewPart searchView;
 	private Display display;
 
@@ -97,6 +101,11 @@ public class TwitterController extends Observable implements IIMMessageListener,
 			{
 				tweetView = (TweetViewPart)views[i].getPart(true);
 				tweetView.setController(this);
+			}
+			if( views[i].getId().equals(SendDirectMessagePart.VIEW_ID))
+			{
+				dmView = (SendDirectMessagePart)views[i].getPart(true);
+				dmView.setController(this);
 			}
 			if(views[i].getId().equals(SearchViewPart.VIEW_ID))
 			{
@@ -207,6 +216,13 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	{
 		container.sendStatusUpdate(message);
 	}
+	
+	
+	
+	public void sendDirectMessage(String receiver, String message) throws ECFException
+	{
+		container.sendDirectMessage(receiver, message);
+	}
 
 
 	public void handleEvent(IContainerEvent event) {
@@ -258,6 +274,8 @@ public class TwitterController extends Observable implements IIMMessageListener,
 	}
 	
 	
+	
+	
 	/**
 	 * Thread to add the list of Friends to the Twitter view.
 	 * @author jsugrue
@@ -271,6 +289,7 @@ public class TwitterController extends Observable implements IIMMessageListener,
 				public void run() 
 				{	//System.err.println("Number of friends: " + friendsList.length);
 						followingView.addFriends(following);
+						dmView.addFollowing(following);
 				}});
 		}
 	}
