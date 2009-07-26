@@ -1,5 +1,9 @@
 package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
+import org.eclipse.ecf.provider.twitter.ui.hub.preferences.PreferenceConstants;
+import org.eclipse.ecf.provider.twitter.ui.hub.preferences.TweetHubPreferences;
+import org.eclipse.ecf.provider.twitter.ui.logic.AutoConnector;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -30,6 +34,8 @@ public class Activator extends AbstractUIPlugin {
 		plugin = this;
 	}
 
+	
+	
 	/*
 	 * (non-Javadoc)
 	 * @see org.eclipse.ui.plugin.AbstractUIPlugin#stop(org.osgi.framework.BundleContext)
