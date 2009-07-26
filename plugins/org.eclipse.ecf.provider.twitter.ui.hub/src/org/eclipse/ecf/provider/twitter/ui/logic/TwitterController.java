@@ -23,6 +23,8 @@ import org.eclipse.ecf.presence.search.message.MessageSearchException;
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.container.TwitterContainer;
 import org.eclipse.ecf.provider.twitter.container.TwitterUser;
+import org.eclipse.ecf.provider.twitter.ui.hub.preferences.PreferenceConstants;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.Activator;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.DirectMessagesViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.FollowersViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.FriendsViewPart;
@@ -31,6 +33,7 @@ import org.eclipse.ecf.provider.twitter.ui.hub.views.ReplyViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.SearchViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.SendDirectMessagePart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.TweetViewPart;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
@@ -69,7 +72,9 @@ public class TwitterController extends Observable implements IIMMessageListener,
 		super();
 		display = PlatformUI.getWorkbench().getDisplay();
 		addObservers();
+	
 	}
+	
 	
 	private void addObservers()
 	{

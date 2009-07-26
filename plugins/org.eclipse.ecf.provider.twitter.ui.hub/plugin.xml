@@ -189,6 +189,20 @@
             name="Trends">
       </command>
    </extension>
+   <extension
+         point="org.eclipse.ui.preferencePages">
+      <page
+            class="org.eclipse.ecf.provider.twitter.ui.hub.preferences.TweetHubPreferences"
+            id="org.eclipse.ecf.provider.twitter.ui.hub.preferences.TweetHub"
+            name="TweetHub Preferences">
+      </page>
+   </extension>
+   <extension
+         point="org.eclipse.core.runtime.preferences">
+      <initializer
+            class="org.eclipse.ecf.provider.twitter.ui.hub.preferences.PreferenceInitializer">
+      </initializer>
+   </extension>
 
 
 </plugin>
