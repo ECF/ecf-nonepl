@@ -21,11 +21,14 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.ui.MultiRosterView;
+import org.eclipse.ecf.provider.twitter.ui.hub.preferences.PreferenceConstants;
+import org.eclipse.ecf.provider.twitter.ui.hub.views.Activator;
 import org.eclipse.ecf.provider.twitter.ui.logic.TwitterController;
 import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
 import org.eclipse.ecf.ui.dialogs.IDCreateErrorDialog;
 import org.eclipse.ecf.ui.util.PasswordCacheHelper;
+import org.eclipse.jface.preference.IPreferenceStore;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
@@ -85,6 +88,15 @@ public final class TwitterConnectWizard extends Wizard implements IConnectWizard
 
 		final String connectID = page.getConnectID();
 		final String password = page.getPassword();
+		final boolean autoConnect= page.isAutoConnectSelected();
+		
+		//save to preferences 
+		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
+		
+		store.setValue(PreferenceConstants.P_AUTO_LOGIN, autoConnect);
+		store.setValue(PreferenceConstants.P_PASSWORD, password);
+		store.setValue(PreferenceConstants.P_USERNAME,connectID);
+		
 
 		page.saveComboText();
 

@@ -14,7 +14,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-
 import org.eclipse.ecf.provider.twitter.ui.hub.views.Activator;
 import org.eclipse.ecf.ui.SharedImages;
 import org.eclipse.ecf.ui.util.PasswordCacheHelper;
@@ -27,6 +26,7 @@ import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.events.SelectionListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
+import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
@@ -39,6 +39,10 @@ final class TwitterConnectWizardPage extends WizardPage {
 	private Text passwordText;
 
 	private String username;
+	
+	private Button autoConnect; 
+	
+	
 
 	TwitterConnectWizardPage() {
 		super(""); //$NON-NLS-1$
@@ -112,6 +116,18 @@ final class TwitterConnectWizardPage extends WizardPage {
 		label.setText("Password required for Twitter accounts");
 		label.setLayoutData(endData);
 
+		
+		autoConnect = new Button(parent, SWT.CHECK);
+		autoConnect.setText("Auto Connect On Startup");
+		passwordText.setLayoutData(fillData);
+//		label = new Label(parent, SWT.RIGHT | SWT.WRAP);
+//		label.setText("Password required for Twitter accounts");
+//		label.setLayoutData(endData);
+
+		
+		
+		
+		
 		restoreCombo();
 
 		if (username != null) {
@@ -179,6 +195,11 @@ final class TwitterConnectWizardPage extends WizardPage {
 			return pageSettings;
 		}
 		return null;
+	}
+	
+	public boolean isAutoConnectSelected()
+	{
+		return autoConnect.getSelection();
 	}
 
 	protected void restoreCombo() {
