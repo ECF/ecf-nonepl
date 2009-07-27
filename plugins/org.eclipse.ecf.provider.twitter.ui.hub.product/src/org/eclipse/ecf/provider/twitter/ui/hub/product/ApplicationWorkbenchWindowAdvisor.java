@@ -1,5 +1,6 @@
 package org.eclipse.ecf.provider.twitter.ui.hub.product;
 
+import org.eclipse.ecf.provider.twitter.ui.logic.AutoConnector;
 import org.eclipse.swt.graphics.Point;
 import org.eclipse.ui.application.ActionBarAdvisor;
 import org.eclipse.ui.application.IActionBarConfigurer;
@@ -24,4 +25,11 @@ public class ApplicationWorkbenchWindowAdvisor extends WorkbenchWindowAdvisor {
 		configurer.setShowStatusLine(true);
 		configurer.setShowProgressIndicator(true);
 	}
+	
+	public void postWindowOpen()
+	{
+		//get preferences etc
+		AutoConnector.checkAutoLogin();
+	}
+	
 }
