@@ -55,12 +55,10 @@ public class TweetHubPreferences
 		super(GRID);
 		setPreferenceStore(Activator.getDefault().getPreferenceStore());
 		setDescription("TweetHub User Settings");
-
+		
 		allValue = getPreferenceStore().getInt(PreferenceConstants.P_ALL);
 		mentionValue = getPreferenceStore().getInt(PreferenceConstants.P_MENTIONS);
 		dmValue = getPreferenceStore().getInt(PreferenceConstants.P_DM);
-		
-		
 	}
 	
 	private StringFieldEditor passwordEditor;
@@ -181,6 +179,7 @@ public class TweetHubPreferences
 		//check our limits 
 		if( (allValue + dmValue + mentionValue) > 100)
 		{
+			setErrorMessage("Call Limit Reached");
 		    if(source.equals(dmScale))
 		    {
 		    	dmScale.setSelection(this.dmValue);
@@ -202,7 +201,7 @@ public class TweetHubPreferences
 			 allLabel.setText(calcTime(allValue));
 			 dmLabel.setText(calcTime(dmValue));
 			 mentionLabel.setText(calcTime(mentionValue));
-			 
+			 setErrorMessage(null);
 		}
 		
 	}
