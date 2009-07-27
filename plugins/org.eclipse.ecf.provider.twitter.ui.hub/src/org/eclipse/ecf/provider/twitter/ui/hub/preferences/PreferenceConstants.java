@@ -11,4 +11,8 @@ public class PreferenceConstants {
 	public static final String P_USERNAME = "username";
 	public static final String P_PASSWORD = "password";
 	
+	public static final String P_ALL = "pollAll";
+	public static final String P_DM = "pollDM";
+	public static final String P_MENTIONS = "pollMentions";
+	
 }

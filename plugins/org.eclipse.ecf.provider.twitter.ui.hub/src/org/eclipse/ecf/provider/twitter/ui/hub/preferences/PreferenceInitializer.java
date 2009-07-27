@@ -18,6 +18,10 @@ public class PreferenceInitializer extends AbstractPreferenceInitializer {
 	public void initializeDefaultPreferences() {
 		IPreferenceStore store = Activator.getDefault().getPreferenceStore();
 		store.setDefault(PreferenceConstants.P_AUTO_LOGIN, false);
+		store.setDefault(PreferenceConstants.P_ALL, 60);
+		store.setDefault(PreferenceConstants.P_MENTIONS, 5);
+		store.setDefault(PreferenceConstants.P_DM, 5);
+		
 		
 	}
 
