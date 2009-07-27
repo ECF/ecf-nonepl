@@ -10,8 +10,11 @@
 package org.eclipse.ecf.provider.jms.container;
 
 import javax.jms.*;
+import org.eclipse.ecf.core.identity.ID;
 
 public interface IJMSQueueContainer {
+
+	public ID getID();
 
 	public Session getSession();
 

@@ -17,13 +17,14 @@ import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.events.ContainerConnectingEvent;
 import org.eclipse.ecf.core.identity.*;
 import org.eclipse.ecf.core.security.IConnectContext;
+import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 import org.eclipse.ecf.remoteservice.*;
 import org.eclipse.equinox.concurrent.future.IFuture;
 import org.osgi.framework.InvalidSyntaxException;
 
-public abstract class AbstractLBServiceHostContainer extends AbstractContainer implements MessageListener, IRemoteServiceContainerAdapter, IJMSQueueContainer {
+public abstract class AbstractJMSQueueConsumerContainer extends AbstractContainer implements MessageListener, IRemoteServiceContainerAdapter, IJMSQueueContainer {
 
 	private JMSID id;
 	private JMSID connectedID;
@@ -38,10 +39,23 @@ public abstract class AbstractLBServiceHostContainer extends AbstractContainer i
 
 	private LBRegistrySharedObject registry;
 
-	public AbstractLBServiceHostContainer(JMSID id) {
-		this.id = id;
-		registry = new LBRegistrySharedObject(this);
+	public JMSID queueID;
+
+	public AbstractJMSQueueConsumerContainer(JMSID containerID, JMSID queueID) {
+		this.id = containerID;
+		this.queueID = queueID;
+		registry = new LBRegistrySharedObject(IDFactory.getDefault().createStringID(LBRegistrySharedObject.class.getName()), this);
 	}
+
+	protected JMSID getQueueID() {
+		return queueID;
+	}
+
+	protected void setQueueID(JMSID queueID) {
+		this.queueID = queueID;
+	}
+
+	public abstract void start() throws ECFException;
 
 	public Session getSession() {
 		return session;
@@ -79,8 +93,8 @@ public abstract class AbstractLBServiceHostContainer extends AbstractContainer i
 
 	protected void setupJMSQueueConsumer(JMSID jmsTargetID) throws JMSException {
 		synchronized (getQueueConnectLock()) {
-			String jmsServerString = jmsTargetID.getServer();
-			String messageQueueName = jmsTargetID.getTopic();
+			String jmsServerString = jmsTargetID.getBroker();
+			String messageQueueName = jmsTargetID.getTopicOrQueueName();
 			ConnectionFactory connectionFactory = getQueueConnectionFactory(jmsServerString, null);
 			connection = connectionFactory.createConnection();
 			connection.start();

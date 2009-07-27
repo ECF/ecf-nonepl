@@ -42,19 +42,24 @@ public class ActiveMQJMSServer implements IApplication {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.IApplicationContext)
+	 * @seeorg.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
+	 * IApplicationContext)
 	 */
 	public Object start(IApplicationContext context) throws Exception {
-		final String[] args = mungeArguments((String[]) context.getArguments().get("application.args")); //$NON-NLS-1$
+		final String[] args = mungeArguments((String[]) context.getArguments()
+				.get("application.args")); //$NON-NLS-1$
 		if (args.length < 1) {
 			usage();
 			return IApplication.EXIT_OK;
 		} else {
 			// Create/run ActiveMQ server
 			// Create server ID
-			final JMSID serverID = (JMSID) IDFactory.getDefault().createID(IDFactory.getDefault().getNamespaceByName(JMSNamespace.NAME), args[0]);
+			final JMSID serverID = (JMSID) IDFactory.getDefault().createID(
+					IDFactory.getDefault()
+							.getNamespaceByName(JMSNamespace.NAME), args[0]);
 			// Create config
-			final JMSContainerConfig config = new JMSContainerConfig(serverID, ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
+			final JMSContainerConfig config = new JMSContainerConfig(serverID,
+					ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
 
 			synchronized (this) {
 				serverContainer = new ActiveMQJMSServerContainer(config);
@@ -85,8 +90,10 @@ public class ActiveMQJMSServer implements IApplication {
 
 	private void usage() {
 		System.out.println("Usage: eclipse.exe -application " //$NON-NLS-1$
-				+ this.getClass().getName() + "<jmsprotocol>://<jmsserver>:<jmsport>/<jmstopic>"); //$NON-NLS-1$
-		System.out.println("   Examples: eclipse -application org.eclipse.ecf.provider.jms.ActiveMQJMSServer tcp://localhost:61616/exampleTopic"); //$NON-NLS-1$
+				+ this.getClass().getName()
+				+ "<jmsprotocol>://<jmsserver>:<jmsport>/<jmstopic>"); //$NON-NLS-1$
+		System.out
+				.println("   Examples: eclipse -application org.eclipse.ecf.provider.jms.ActiveMQJMSServer tcp://localhost:61616/exampleTopic"); //$NON-NLS-1$
 	}
 
 }

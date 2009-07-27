@@ -10,11 +10,12 @@
 package org.eclipse.ecf.provider.jms.container;
 
 import javax.jms.*;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.jms.identity.JMSID;
 import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
 
-public abstract class AbstractLBServiceConsumerContainer extends AbstractJMSServer implements IJMSQueueContainer {
+public abstract class AbstractLBQueueProducerContainer extends AbstractJMSServer implements IJMSQueueContainer {
 
 	private Object queueConnectLock = new Object();
 
@@ -27,8 +28,19 @@ public abstract class AbstractLBServiceConsumerContainer extends AbstractJMSServ
 
 	private LBRegistrySharedObject lbRegistry;
 
-	public AbstractLBServiceConsumerContainer(JMSContainerConfig config) {
+	private JMSID queueID;
+
+	public AbstractLBQueueProducerContainer(JMSContainerConfig config, JMSID queueID) {
 		super(config);
+		setQueueID(queueID);
+	}
+
+	protected JMSID getQueueID() {
+		return queueID;
+	}
+
+	protected void setQueueID(JMSID queueID) {
+		this.queueID = queueID;
 	}
 
 	public Session getSession() {
@@ -49,8 +61,8 @@ public abstract class AbstractLBServiceConsumerContainer extends AbstractJMSServ
 
 	protected void setupJMSQueueProducer(JMSID jmsTargetID) throws JMSException {
 		synchronized (getQueueConnectLock()) {
-			String jmsServerString = jmsTargetID.getServer();
-			String messageQueueName = jmsTargetID.getTopic();
+			String jmsServerString = jmsTargetID.getBroker();
+			String messageQueueName = jmsTargetID.getTopicOrQueueName();
 			ConnectionFactory connectionFactory = getQueueConnectionFactory(jmsServerString, null);
 			connection = connectionFactory.createConnection();
 			connection.start();
@@ -76,9 +88,10 @@ public abstract class AbstractLBServiceConsumerContainer extends AbstractJMSServ
 	Object registryLock = new Object();
 
 	LBRegistrySharedObject createAndAddLBRegistry() {
+		ID soID = IDFactory.getDefault().createStringID(LBRegistrySharedObject.class.getName());
 		LBRegistrySharedObject registry = new LBRegistrySharedObject(this);
 		try {
-			getSharedObjectManager().addSharedObject(IDFactory.getDefault().createStringID(LBRegistrySharedObject.class.getName()), lbRegistry, null);
+			getSharedObjectManager().addSharedObject(soID, lbRegistry, null);
 		} catch (Exception e) {
 			// Should not occur
 			throw new RuntimeException("createAndAddLBRegistry cannot add shared object"); //$NON-NLS-1$

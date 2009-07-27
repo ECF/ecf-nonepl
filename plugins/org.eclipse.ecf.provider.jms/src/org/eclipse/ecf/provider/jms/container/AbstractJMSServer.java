@@ -130,7 +130,7 @@ public abstract class AbstractJMSServer extends ServerSOContainer {
 				if (isClosing)
 					throw new ContainerConnectException(Messages.AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
 				// Now check to see if this request is going to be allowed
-				checkJoin(channel, remoteID, request.getTargetJMSID().getTopic(), jgm.getData());
+				checkJoin(channel, remoteID, request.getTargetJMSID().getTopicOrQueueName(), jgm.getData());
 
 				newclient = channel.new Client(remoteID);
 

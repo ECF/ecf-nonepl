@@ -9,7 +9,6 @@
 package org.eclipse.ecf.provider.jms.channel;
 
 import java.io.Serializable;
-
 import org.eclipse.ecf.core.identity.ID;
 
 public class DisconnectResponseMessage implements Serializable, ECFMessage, SynchResponseMessage {

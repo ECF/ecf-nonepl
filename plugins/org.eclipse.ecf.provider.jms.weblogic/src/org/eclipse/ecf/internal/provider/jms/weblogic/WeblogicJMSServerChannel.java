@@ -48,8 +48,8 @@ public class WeblogicJMSServerChannel extends AbstractJMSServerChannel {
 
 	protected Serializable setupJMS(JMSID targetID, Object data) throws ECFException {
 		try {
-			final InitialContext ctx = getInitialContext(targetID.getServer());
-			final Destination topicDestination = (Destination) ctx.lookup(targetID.getTopic());
+			final InitialContext ctx = getInitialContext(targetID.getBroker());
+			final Destination topicDestination = (Destination) ctx.lookup(targetID.getTopicOrQueueName());
 			final ConnectionFactory factory = (ConnectionFactory) ctx.lookup(WeblogicJMSServerContainer.JMS_CONNECTION_FACTORY);
 
 			connection = factory.createConnection();

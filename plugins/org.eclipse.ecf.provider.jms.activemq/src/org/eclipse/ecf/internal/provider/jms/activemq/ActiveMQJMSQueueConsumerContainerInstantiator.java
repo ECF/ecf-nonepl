@@ -1,10 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004 Composent, Inc. and others. All rights reserved. This
+ * Copyright (c) 2009 EclipseSource and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors: Composent, Inc. - initial API and implementation
+ *
+ * Contributors:
+ *   EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jms.activemq;
 
@@ -14,16 +15,18 @@ import java.util.List;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.provider.generic.GenericContainerInstantiator;
-import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSClientContainer;
-import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSServerContainer;
+import org.eclipse.ecf.provider.jms.activemq.container.ActiveMQJMSQueueConsumerContainer;
+import org.eclipse.ecf.provider.jms.identity.JMSID;
+import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 
-public class ActiveMQJMSClientContainerInstantiator extends
+public class ActiveMQJMSQueueConsumerContainerInstantiator extends
 		GenericContainerInstantiator {
 
 	protected static final String[] jmsIntents = { "JMS" };
 
-	public ActiveMQJMSClientContainerInstantiator() {
+	public ActiveMQJMSQueueConsumerContainerInstantiator() {
 
 	}
 
@@ -37,32 +40,29 @@ public class ActiveMQJMSClientContainerInstantiator extends
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] args) throws ContainerCreateException {
 		try {
-			Integer ka = new Integer(
-					ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
 			String name = null;
-			if (args != null) {
-				if (args.length > 0) {
-					name = (String) args[0];
-					if (args.length > 1) {
-						ka = getIntegerFromArg(args[1]);
-					}
-				}
+			if (args.length == 0)
+				throw new ContainerCreateException(
+						"No QueueID provided for creation");
+			name = (String) args[0];
+			JMSID queueID = (JMSID) IDFactory.getDefault().createID(
+					JMSNamespace.NAME, name);
+			JMSID containerID = null;
+			if (args.length > 1) {
+				containerID = (JMSID) IDFactory.getDefault().createID(
+						JMSNamespace.NAME, (String) args[1]);
 			}
-			if (name == null) {
-				if (ka == null)
-					return new ActiveMQJMSClientContainer(
-							ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
-				else
-					return new ActiveMQJMSClientContainer(ka.intValue());
-			} else {
-				if (ka == null)
-					ka = new Integer(
-							ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
-				return new ActiveMQJMSClientContainer(name, ka.intValue());
-			}
+			if (containerID == null)
+				containerID = (JMSID) IDFactory.getDefault().createID(
+						JMSNamespace.NAME,
+						IDFactory.getDefault().createGUID().getName());
+			ActiveMQJMSQueueConsumerContainer server = new ActiveMQJMSQueueConsumerContainer(
+					containerID, queueID);
+			server.start();
+			return server;
 		} catch (Exception e) {
 			throw new ContainerCreateException(
-					"Exception creating activemq client container", e);
+					"Exception creating activemq server container", e);
 		}
 	}
 
@@ -76,4 +76,5 @@ public class ActiveMQJMSClientContainerInstantiator extends
 		}
 		return (String[]) results.toArray(new String[] {});
 	}
+
 }

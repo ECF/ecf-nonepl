@@ -20,14 +20,17 @@ class ActiveMQServerChannel extends AbstractJMSServerChannel {
 	private final String username;
 	private final String password;
 
-	public ActiveMQServerChannel(ISynchAsynchEventHandler handler, int keepAlive, String username, String pw) throws ECFException {
+	public ActiveMQServerChannel(ISynchAsynchEventHandler handler,
+			int keepAlive, String username, String pw) throws ECFException {
 		super(handler, keepAlive);
 		this.username = username;
 		this.password = pw;
 	}
 
-	protected ConnectionFactory createJMSConnectionFactory(JMSID targetID) throws IOException {
-		return new ActiveMQConnectionFactory(getActiveMQUsername(targetID), getActiveMQPassword(targetID), targetID.getName());
+	protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
+			throws IOException {
+		return new ActiveMQConnectionFactory(getActiveMQUsername(targetID),
+				getActiveMQPassword(targetID), targetID.getName());
 	}
 
 	private String getActiveMQPassword(JMSID targetID) {

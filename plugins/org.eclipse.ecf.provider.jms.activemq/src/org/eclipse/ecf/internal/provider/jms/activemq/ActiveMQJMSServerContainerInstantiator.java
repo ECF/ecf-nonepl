@@ -1,10 +1,11 @@
 /*******************************************************************************
- * Copyright (c) 2004 Composent, Inc. and others. All rights reserved. This
+ * Copyright (c) 2009 EclipseSource and others. All rights reserved. This
  * program and the accompanying materials are made available under the terms of
  * the Eclipse Public License v1.0 which accompanies this distribution, and is
  * available at http://www.eclipse.org/legal/epl-v10.html
- * 
- * Contributors: Composent, Inc. - initial API and implementation
+ *
+ * Contributors:
+ *   EclipseSource - initial API and implementation
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jms.activemq;
 
@@ -24,8 +25,8 @@ import org.eclipse.ecf.provider.jms.identity.JMSNamespace;
 public class ActiveMQJMSServerContainerInstantiator extends
 		GenericContainerInstantiator {
 
-	protected static final String [] jmsIntents = { "JMS" };
-	
+	protected static final String[] jmsIntents = { "JMS" };
+
 	public ActiveMQJMSServerContainerInstantiator() {
 
 	}
@@ -33,8 +34,9 @@ public class ActiveMQJMSServerContainerInstantiator extends
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription,
-	 *      java.lang.Object[])
+	 * @see
+	 * org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org
+	 * .eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
 	 */
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] args) throws ContainerCreateException {
@@ -52,8 +54,8 @@ public class ActiveMQJMSServerContainerInstantiator extends
 				ka = getIntegerFromArg(args[1]);
 			if (ka == null)
 				ka = new Integer(ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
-			ActiveMQJMSServerContainer server = new ActiveMQJMSServerContainer(new JMSContainerConfig(
-					serverID, ka.intValue(), null));
+			ActiveMQJMSServerContainer server = new ActiveMQJMSServerContainer(
+					new JMSContainerConfig(serverID, ka.intValue(), null));
 			server.start();
 			return server;
 		} catch (Exception e) {
@@ -61,16 +63,16 @@ public class ActiveMQJMSServerContainerInstantiator extends
 					"Exception creating activemq server container", e);
 		}
 	}
-	
+
 	public String[] getSupportedIntents(ContainerTypeDescription description) {
 		List results = new ArrayList();
-		for(int i=0; i < genericProviderIntents.length; i++) {
+		for (int i = 0; i < genericProviderIntents.length; i++) {
 			results.add(genericProviderIntents[i]);
 		}
-		for(int i=0; i < jmsIntents.length; i++) {
+		for (int i = 0; i < jmsIntents.length; i++) {
 			results.add(jmsIntents[i]);
 		}
-		return (String []) results.toArray(new String[] {});
+		return (String[]) results.toArray(new String[] {});
 	}
 
 }
