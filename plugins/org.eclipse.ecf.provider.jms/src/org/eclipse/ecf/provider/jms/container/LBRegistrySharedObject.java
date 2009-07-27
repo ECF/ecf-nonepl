@@ -26,10 +26,23 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 
 	private IJMSQueueContainer container;
 
-	public LBRegistrySharedObject(IJMSQueueContainer container) {
+	public LBRegistrySharedObject() {
+		super();
+	}
+
+	public LBRegistrySharedObject(final ID soID, final IJMSQueueContainer container) {
 		this.container = container;
+		try {
+			this.init(new LBRegistrySharedObjectConfig(soID, container));
+		} catch (Exception e) {
+			// should not happen
+		}
 		// Set to LoadBalancingRemoteServiceRegistryImpl rather than to RemoteServiceRegistryImpl
 		localRegistry = new LoadBalancingRemoteServiceRegistryImpl();
+	}
+
+	public LBRegistrySharedObject(IJMSQueueContainer container) {
+		this.container = container;
 	}
 
 	// this class LoadBalancingRemoteServiceRegistryImpl is here only because the org.eclipse.ecf.provider.remoteservice.generic.RegistrySharedObject.getLocalRegistrationForRequest(Request)

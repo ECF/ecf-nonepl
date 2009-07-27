@@ -77,8 +77,9 @@ public class ActiveMQJMSClientContainer extends AbstractJMSClient {
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org.eclipse.ecf.core.identity.ID,
-	 *      java.lang.Object)
+	 * @see
+	 * org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org
+	 * .eclipse.ecf.core.identity.ID, java.lang.Object)
 	 */
 	protected ISynchAsynchConnection createConnection(ID remoteSpace,
 			Object data) throws ConnectionCreateException {

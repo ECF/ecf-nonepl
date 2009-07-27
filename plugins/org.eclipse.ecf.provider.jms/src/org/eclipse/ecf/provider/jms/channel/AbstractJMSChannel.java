@@ -172,7 +172,7 @@ public abstract class AbstractJMSChannel extends SocketAddress implements ISynch
 				}
 			});
 			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-			jmsTopic = new JmsTopic(session, targetID.getTopic());
+			jmsTopic = new JmsTopic(session, targetID.getTopicOrQueueName());
 			jmsTopic.getConsumer().setMessageListener(new TopicReceiver());
 			connected = true;
 			isStopping = false;

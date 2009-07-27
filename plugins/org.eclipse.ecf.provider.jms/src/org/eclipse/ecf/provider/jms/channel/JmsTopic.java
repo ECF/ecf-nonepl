@@ -11,11 +11,7 @@
 
 package org.eclipse.ecf.provider.jms.channel;
 
-import javax.jms.Destination;
-import javax.jms.JMSException;
-import javax.jms.MessageConsumer;
-import javax.jms.MessageProducer;
-import javax.jms.Session;
+import javax.jms.*;
 
 /**
  * 

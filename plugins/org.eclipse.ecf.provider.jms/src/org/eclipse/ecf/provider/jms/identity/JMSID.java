@@ -41,8 +41,8 @@ public class JMSID extends StringID {
 		return sb.toString();
 	}
 
-	public String getTopic() {
-		String server = getServer();
+	public String getTopicOrQueueName() {
+		String server = getBroker();
 		if (server.length() > 0) {
 			String postServer = getName().substring(server.length());
 			int indexOfPathStart = postServer.indexOf("/"); //$NON-NLS-1$
@@ -56,7 +56,7 @@ public class JMSID extends StringID {
 		return ""; //$NON-NLS-1$
 	}
 
-	public String getServer() {
+	public String getBroker() {
 		int indexOfSlashes = getName().indexOf(PROTOCOLSEPARATOR);
 		if (indexOfSlashes != -1) {
 			String postProtocol = getName().substring(indexOfSlashes + PROTOCOLSEPARATOR.length());
