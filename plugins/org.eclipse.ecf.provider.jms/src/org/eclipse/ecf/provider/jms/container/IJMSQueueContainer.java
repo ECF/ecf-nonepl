@@ -19,4 +19,6 @@ public interface IJMSQueueContainer {
 
 	public TemporaryQueue getResponseQueue();
 
+	public ConnectionFactory getQueueConnectionFactory(String target, Object[] jmsConfiguration);
+
 }

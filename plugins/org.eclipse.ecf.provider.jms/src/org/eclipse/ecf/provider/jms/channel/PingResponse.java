@@ -12,8 +12,7 @@ import java.io.Serializable;
 
 import org.eclipse.ecf.core.identity.ID;
 
-public class PingResponse implements Serializable, ECFMessage,
-		SynchResponseMessage {
+public class PingResponse implements Serializable, ECFMessage, SynchResponseMessage {
 
 	private static final long serialVersionUID = 8216706445987157595L;
 	ID targetID;

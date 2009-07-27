@@ -32,8 +32,7 @@ public class JmsTopic {
 		producer = session.createProducer(destination);
 	}
 
-	public JmsTopic(Session session, Destination destination)
-			throws JMSException {
+	public JmsTopic(Session session, Destination destination) throws JMSException {
 		this.destination = destination;
 		this.consumer = session.createConsumer(destination);
 		this.producer = session.createProducer(destination);

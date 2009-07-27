@@ -23,23 +23,24 @@ import org.eclipse.ecf.remoteservice.*;
 import org.eclipse.equinox.concurrent.future.IFuture;
 import org.osgi.framework.InvalidSyntaxException;
 
-public abstract class AbstractLoadBalancedServiceHostContainer extends AbstractContainer implements MessageListener, IRemoteServiceContainerAdapter, IJMSQueueContainer {
+public abstract class AbstractLBServiceHostContainer extends AbstractContainer implements MessageListener, IRemoteServiceContainerAdapter, IJMSQueueContainer {
 
 	private JMSID id;
 	private JMSID connectedID;
-	private Object connectLock = new Object();
+	private Object queueConnectLock = new Object();
 
+	// JMS
 	private Connection connection;
 	private Session session;
 	private Queue queue;
-	private MessageProducer replyProducer;
+	private MessageProducer messageProducer;
 	private TemporaryQueue responseQueue;
 
-	private LoadBalancingRegistrySharedObject registry;
+	private LBRegistrySharedObject registry;
 
-	public AbstractLoadBalancedServiceHostContainer(JMSID id) {
+	public AbstractLBServiceHostContainer(JMSID id) {
 		this.id = id;
-		registry = new LoadBalancingRegistrySharedObject(this);
+		registry = new LBRegistrySharedObject(this);
 	}
 
 	public Session getSession() {
@@ -47,7 +48,7 @@ public abstract class AbstractLoadBalancedServiceHostContainer extends AbstractC
 	}
 
 	public MessageProducer getMessageProducer() {
-		return replyProducer;
+		return messageProducer;
 	}
 
 	public TemporaryQueue getResponseQueue() {
@@ -56,52 +57,56 @@ public abstract class AbstractLoadBalancedServiceHostContainer extends AbstractC
 
 	public void connect(ID targetID, IConnectContext connectContext) throws ContainerConnectException {
 		if (targetID == null)
-			throw new ContainerConnectException("targetID cannot be null");
+			throw new ContainerConnectException("targetID cannot be null"); //$NON-NLS-1$
 		if (!(targetID instanceof JMSID))
-			throw new ContainerConnectException("targetID not of correct type (JMSID)");
+			throw new ContainerConnectException("targetID not JMSID type"); //$NON-NLS-1$
 		JMSID jmsTargetID = (JMSID) targetID;
-		synchronized (connectLock) {
+		synchronized (getQueueConnectLock()) {
 			fireContainerEvent(new ContainerConnectingEvent(getID(), jmsTargetID));
 			try {
-				setupJMSConsumerOnQueue(jmsTargetID);
+				setupJMSQueueConsumer(jmsTargetID);
 			} catch (JMSException e) {
-				throw new ContainerConnectException("could not connect to targetID=" + targetID, e);
+				throw new ContainerConnectException("Could not connect to targetID=" + targetID, e); //$NON-NLS-1$
 			}
 			this.connectedID = jmsTargetID;
 		}
 		fireContainerEvent(new ContainerConnectedEvent(getID(), jmsTargetID));
 	}
 
-	protected abstract ConnectionFactory getConnectionFactory(String broker, String username, String password);
-
-	private void setupJMSConsumerOnQueue(JMSID jmsTargetID) throws JMSException {
-		String jmsServerString = jmsTargetID.getServer();
-		String messageQueueName = jmsTargetID.getTopic();
-		ConnectionFactory connectionFactory = getConnectionFactory(jmsServerString, null, null);
-		connection = connectionFactory.createConnection();
-		connection.start();
-		session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
-		queue = this.session.createQueue(messageQueueName);
-		//Setup a message producer to respond to messages from clients, we will get the destination 
-		//to send to from the JMSReplyTo header field from a Message 
-		this.replyProducer = this.session.createProducer(null);
-		// Setup a temporary queue to handle responses from servers
-		this.responseQueue = this.session.createTemporaryQueue();
-
-		MessageConsumer consumer = this.session.createConsumer(queue);
-		consumer.setMessageListener(this);
+	protected Object getQueueConnectLock() {
+		return queueConnectLock;
 	}
 
-	public void disconnect() {
-		synchronized (connectLock) {
+	protected void setupJMSQueueConsumer(JMSID jmsTargetID) throws JMSException {
+		synchronized (getQueueConnectLock()) {
+			String jmsServerString = jmsTargetID.getServer();
+			String messageQueueName = jmsTargetID.getTopic();
+			ConnectionFactory connectionFactory = getQueueConnectionFactory(jmsServerString, null);
+			connection = connectionFactory.createConnection();
+			connection.start();
+			session = connection.createSession(false, Session.AUTO_ACKNOWLEDGE);
+			queue = this.session.createQueue(messageQueueName);
+			//Setup a message producer to respond to messages from clients, we will get the destination 
+			//to send to from the JMSReplyTo header field from a Message 
+			this.messageProducer = this.session.createProducer(null);
+			// Setup a temporary queue to handle responses from servers
+			this.responseQueue = this.session.createTemporaryQueue();
+
+			MessageConsumer consumer = this.session.createConsumer(queue);
+			consumer.setMessageListener(this);
+		}
+	}
+
+	protected void shutdownJMSQueueConsumer() {
+		synchronized (getQueueConnectLock()) {
 			if (connection != null) {
 				try {
-					replyProducer.close();
+					messageProducer.close();
 				} catch (JMSException e1) {
 					// TODO log
 					e1.printStackTrace();
 				}
-				replyProducer = null;
+				messageProducer = null;
 				queue = null;
 				try {
 					session.close();
@@ -118,8 +123,21 @@ public abstract class AbstractLoadBalancedServiceHostContainer extends AbstractC
 				}
 				connection = null;
 			}
+		}
+	}
+
+	public void disconnect() {
+		synchronized (getQueueConnectLock()) {
+			shutdownJMSQueueConsumer();
 			connectedID = null;
 		}
+	}
+
+	public void dispose() {
+		disconnect();
+		super.dispose();
+		registry.dispose(getID());
+		registry = null;
 	}
 
 	public Namespace getConnectNamespace() {
@@ -136,7 +154,6 @@ public abstract class AbstractLoadBalancedServiceHostContainer extends AbstractC
 
 	// Message Listener implementation
 	public void onMessage(Message message) {
-		System.out.println("Message=" + message);
 		registry.handleJMSMessage(message);
 	}
 
