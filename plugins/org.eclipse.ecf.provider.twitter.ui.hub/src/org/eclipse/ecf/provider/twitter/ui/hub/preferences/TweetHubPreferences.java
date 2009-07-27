@@ -208,20 +208,37 @@ public class TweetHubPreferences
 	
 	private String calcTime(int time)
 	{
-		StringBuffer buffer = new StringBuffer();
-		buffer.append("Every ");
-		if(time > 60)
+		if(time == 0)
 		{
-			//then it'll be seconds
-			buffer.append((double)(60/time));
+			return "No calls";
 		}
 		else
 		{
-			buffer.append( (60/time));
+			StringBuffer buffer = new StringBuffer();
+			buffer.append("Every ");
+			if(time > 60)
+			{
+				buffer.append((60*60)/time);
+				buffer.append(" seconds  ");
+			}
+			else
+			{
+				buffer.append( (60/time));
+				
+				if(time==1)
+				{
+					buffer.append(" minute      ");
+				}
+				else
+				{
+					buffer.append(" minutes     ");
+				} 
+				
+			}
+			
+		
+			return buffer.toString();
 		}
-		buffer.append(" minutes");
-	
-		return buffer.toString();
 	}
 	
 	protected void performApply()
