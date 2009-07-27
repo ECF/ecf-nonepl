@@ -24,8 +24,7 @@ public class JMSMessage implements Serializable, ECFMessage {
 
 	private Serializable data;
 
-	protected JMSMessage(String clientID, ID sender, ID target,
-			Serializable data) {
+	protected JMSMessage(String clientID, ID sender, ID target, Serializable data) {
 		this.jmsClientID = clientID;
 		this.sender = sender;
 		this.target = target;

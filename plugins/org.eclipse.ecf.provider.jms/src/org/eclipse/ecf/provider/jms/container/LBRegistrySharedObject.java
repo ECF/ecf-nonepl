@@ -11,15 +11,22 @@ package org.eclipse.ecf.provider.jms.container;
 
 import java.io.IOException;
 import java.io.Serializable;
+import java.util.Dictionary;
 import javax.jms.*;
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.remoteservice.Messages;
 import org.eclipse.ecf.provider.remoteservice.generic.*;
 import org.eclipse.ecf.remoteservice.IRemoteCall;
+import org.eclipse.ecf.remoteservice.IRemoteServiceRegistration;
 
-public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
+public class LBRegistrySharedObject extends RegistrySharedObject {
+
+	private static final Object LBSERVICE_PROP_KEY = "jms.queue.loadbalance"; //$NON-NLS-1$
 
 	private IJMSQueueContainer container;
 
-	public LoadBalancingRegistrySharedObject(IJMSQueueContainer container) {
+	public LBRegistrySharedObject(IJMSQueueContainer container) {
 		this.container = container;
 		// Set to LoadBalancingRemoteServiceRegistryImpl rather than to RemoteServiceRegistryImpl
 		localRegistry = new LoadBalancingRemoteServiceRegistryImpl();
@@ -31,6 +38,8 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 	// call the RemoteServiceRegistryImpl.findRegistrationForServiceId.  When this bug is addressed (ECF 3.1)
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=284676 then this code can be removed.
 	public class LoadBalancingRemoteServiceRegistryImpl extends RemoteServiceRegistryImpl {
+		private static final long serialVersionUID = -2870359169249086805L;
+
 		public RemoteServiceRegistrationImpl findRegistrationForJMSRequest(Request request) {
 			return findRegistrationForServiceId(request.getServiceId());
 		}
@@ -42,6 +51,7 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 		}
 	}
 
+	// JMS Queue Consumer handles incoming request messages
 	// JMS message handling entry point for incoming Request messages (i.e. requests for remote method invocation).
 	public void handleJMSMessage(Message jmsMessage) {
 		if (jmsMessage == null)
@@ -55,9 +65,9 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 					request = (Request) object;
 			}
 			if (request == null)
-				throw new JMSException("Invalid message=" + jmsMessage);
+				throw new JMSException("Invalid message=" + jmsMessage); //$NON-NLS-1$
 		} catch (JMSException e) {
-			log("handleJMSMessage message=" + jmsMessage, e);
+			log("handleJMSMessage message=" + jmsMessage, e); //$NON-NLS-1$
 			return;
 		}
 		// Process call request locally
@@ -78,7 +88,7 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 			response = new Response(request.getRequestId(), result);
 		} catch (final Exception e) {
 			response = new Response(request.getRequestId(), e);
-			log(208, "Exception invoking service", e);
+			log(208, "Exception invoking service", e); //$NON-NLS-1$
 		}
 		// Then send response back to initial sender
 		try {
@@ -87,7 +97,7 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 			responseMessage.setJMSCorrelationID(jmsMessage.getJMSCorrelationID());
 			container.getMessageProducer().send(jmsMessage.getJMSReplyTo(), responseMessage);
 		} catch (JMSException e) {
-			log("sendCallResponse jmsMessage=" + jmsMessage + ", response=" + response, e);
+			log("sendCallResponse jmsMessage=" + jmsMessage + ", response=" + response, e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		// XXX end need for job
 	}
@@ -108,9 +118,9 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 					response = (Response) object;
 			}
 			if (response == null)
-				throw new JMSException("handleJMSResponse invalid message=" + jmsMessage);
+				throw new JMSException("handleJMSResponse invalid message=" + jmsMessage); //$NON-NLS-1$
 		} catch (JMSException e) {
-			log("handleJMSResponse exception for message=" + jmsMessage, e);
+			log("handleJMSResponse exception for message=" + jmsMessage, e); //$NON-NLS-1$
 			return;
 		}
 		// Actually handle the response (via superclass)
@@ -119,6 +129,9 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 
 	// Override of RegistrySharedObject.sendCallRequest.  This is called when RegistrySharedObject.callSynch is
 	// called (i.e. when an IRemoteService proxy or IRemoteService.callSync is called.
+	/**
+	 * @throws IOException  
+	 */
 	protected Request sendCallRequest(RemoteServiceRegistrationImpl remoteRegistration, final IRemoteCall call) throws IOException {
 		Request request = new Request(this.getLocalContainerID(), remoteRegistration.getServiceId(), RemoteCallImpl.createRemoteCall(null, call.getMethod(), call.getParameters(), call.getTimeout()), null);
 		requests.add(request);
@@ -139,12 +152,59 @@ public class LoadBalancingRegistrySharedObject extends RegistrySharedObject {
 			objMessage.setJMSReplyTo(tempDest);
 
 			//Set a correlation ID so when you get a response you know which sent message the response is for 
-			objMessage.setJMSCorrelationID(request.getRequestContainerID().getName() + "-" + request.getRequestId());
+			objMessage.setJMSCorrelationID(request.getRequestContainerID().getName() + "-" + request.getRequestId()); //$NON-NLS-1$
 			container.getMessageProducer().send(objMessage);
 		} catch (JMSException e) {
-			log("sendCallRequest request=" + request, e);
+			log("sendCallRequest request=" + request, e); //$NON-NLS-1$
 		}
 		return request;
 	}
 
+	public IRemoteServiceRegistration registerRemoteService(String[] clazzes, Object service, Dictionary properties) {
+		if (properties != null && properties.get(LBSERVICE_PROP_KEY) != null) {
+			return registerLBRemoteService(clazzes, service, properties);
+		}
+		return super.registerRemoteService(clazzes, service, properties);
+	}
+
+	private IRemoteServiceRegistration registerLBRemoteService(String[] clazzes, Object service, Dictionary properties) {
+		if (service == null) {
+			throw new NullPointerException(Messages.RegistrySharedObject_EXCEPTION_SERVICE_CANNOT_BE_NULL);
+		}
+		final int size = clazzes.length;
+		if (size == 0) {
+			throw new IllegalArgumentException(Messages.RegistrySharedObject_EXCEPTION_SERVICE_CLASSES_LIST_EMPTY);
+		}
+
+		final String[] copy = new String[clazzes.length];
+		for (int i = 0; i < clazzes.length; i++) {
+			copy[i] = new String(clazzes[i].getBytes());
+		}
+		clazzes = copy;
+
+		// skip checking the service class
+		/*
+		final String invalidService = checkServiceClass(clazzes, service);
+		if (invalidService != null) {
+			throw new IllegalArgumentException(Messages.RegistrySharedObject_7 + invalidService);
+		}
+		*/
+
+		final RemoteServiceRegistrationImpl reg = new LBRemoteServiceRegistrationImpl(this);
+		reg.publish(this, localRegistry, service, clazzes, properties);
+
+		final ID[] targets = getTargetsFromProperties(properties);
+		if (targets == null)
+			sendAddRegistration(null, reg);
+		else
+			for (int i = 0; i < targets.length; i++)
+				sendAddRegistration(targets[i], reg);
+
+		fireRemoteServiceListeners(createRegisteredEvent(reg));
+		return reg;
+	}
+
+	protected Object callSynch(RemoteServiceRegistrationImpl registration, IRemoteCall call) throws ECFException {
+		return super.callSynch(registration, call);
+	}
 }

@@ -12,8 +12,7 @@ import java.io.Serializable;
 
 import org.eclipse.ecf.core.identity.ID;
 
-public class ConnectResponseMessage implements Serializable, ECFMessage,
-		SynchResponseMessage {
+public class ConnectResponseMessage implements Serializable, ECFMessage, SynchResponseMessage {
 
 	private static final long serialVersionUID = 6736665818126048265L;
 
@@ -25,8 +24,7 @@ public class ConnectResponseMessage implements Serializable, ECFMessage,
 
 	Serializable data;
 
-	public ConnectResponseMessage(String jmsTopicClientID, ID clientID,
-			ID targetID, Serializable data) {
+	public ConnectResponseMessage(String jmsTopicClientID, ID clientID, ID targetID, Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.jmsTopicClientID = jmsTopicClientID;
