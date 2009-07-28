@@ -14,8 +14,8 @@ package org.eclipse.ecf.tests.provider.jms.activemq.lb;
  */
 public interface ActiveMQLB {
 
-	public static final String QUEUE_PRODUCER_CONTAINER_NAME = "ecf.jms.activemq.tcp.manager.lb.svcproxy";
-	public static final String QUEUE_CONSUMER_CONTAINER_NAME = "ecf.jms.activemq.tcp.lb.svchost";
+	public static final String QUEUE_PRODUCER_CONTAINER_NAME = "ecf.jms.activemq.tcp.manager.lb.svchost";
+	public static final String QUEUE_CONSUMER_CONTAINER_NAME = "ecf.jms.activemq.tcp.lb.server";
 	public static final String QUEUE_NAME = "tcp://localhost:61616/junit.testQueue";
 	public static final String TOPIC_NAME = "tcp://localhost:61616/junit.testTopic";
 }
