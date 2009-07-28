@@ -196,12 +196,6 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 		clazzes = copy;
 
 		// skip checking the service class
-		/*
-		final String invalidService = checkServiceClass(clazzes, service);
-		if (invalidService != null) {
-			throw new IllegalArgumentException(Messages.RegistrySharedObject_7 + invalidService);
-		}
-		*/
 
 		final RemoteServiceRegistrationImpl reg = new LBRemoteServiceRegistrationImpl(this);
 		reg.publish(this, localRegistry, service, clazzes, properties);
