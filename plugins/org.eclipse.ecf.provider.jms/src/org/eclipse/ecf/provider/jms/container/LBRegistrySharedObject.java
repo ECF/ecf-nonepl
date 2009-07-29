@@ -38,7 +38,7 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 			// should not happen
 		}
 		// Set to LoadBalancingRemoteServiceRegistryImpl rather than to RemoteServiceRegistryImpl
-		localRegistry = new LoadBalancingRemoteServiceRegistryImpl();
+		localRegistry = new LoadBalancingRemoteServiceRegistryImpl(container.getID());
 	}
 
 	public LBRegistrySharedObject(IJMSQueueContainer container) {
@@ -52,6 +52,10 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 	// https://bugs.eclipse.org/bugs/show_bug.cgi?id=284676 then this code can be removed.
 	public class LoadBalancingRemoteServiceRegistryImpl extends RemoteServiceRegistryImpl {
 		private static final long serialVersionUID = -2870359169249086805L;
+
+		public LoadBalancingRemoteServiceRegistryImpl(ID id) {
+			super(id);
+		}
 
 		public RemoteServiceRegistrationImpl findRegistrationForJMSRequest(Request request) {
 			return findRegistrationForServiceId(request.getServiceId());
