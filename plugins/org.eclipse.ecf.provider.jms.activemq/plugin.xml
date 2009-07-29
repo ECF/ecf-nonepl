@@ -24,7 +24,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.internal.provider.jms.activemq.ActiveMQJMSQueueProducerContainerInstantiator"
-            description="ActiveMQ Load Balancing Service Host"
+            description="ActiveMQ Load Balancing Service Host Container"
             name="ecf.jms.activemq.tcp.manager.lb.svchost">
       </containerFactory>
    </extension>
