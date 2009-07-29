@@ -22,7 +22,7 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceRegistration;
 
 public class LBRegistrySharedObject extends RegistrySharedObject {
 
-	private static final Object LBSERVICE_PROP_KEY = "jms.queue.loadbalance"; //$NON-NLS-1$
+	private static final String LBSERVICE_PROP_KEY = "jms.queue.loadbalance"; //$NON-NLS-1$
 
 	private IJMSQueueContainer container;
 
