@@ -89,20 +89,20 @@ public abstract class AbstractLBQueueProducerContainer extends AbstractJMSServer
 
 	LBRegistrySharedObject createAndAddLBRegistry() {
 		ID soID = IDFactory.getDefault().createStringID(LBRegistrySharedObject.class.getName());
-		LBRegistrySharedObject registry = new LBRegistrySharedObject(this);
+		lbRegistry = new LBRegistrySharedObject(this);
 		try {
 			getSharedObjectManager().addSharedObject(soID, lbRegistry, null);
 		} catch (Exception e) {
 			// Should not occur
 			throw new RuntimeException("createAndAddLBRegistry cannot add shared object"); //$NON-NLS-1$
 		}
-		return registry;
+		return lbRegistry;
 	}
 
 	private synchronized Object getRegistry() {
 		synchronized (registryLock) {
 			if (lbRegistry == null) {
-				lbRegistry = createAndAddLBRegistry();
+				createAndAddLBRegistry();
 			}
 			return lbRegistry;
 		}
