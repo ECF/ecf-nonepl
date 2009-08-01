@@ -117,6 +117,10 @@
             configFile="stacks/conf/tunnel.xml"
             id="org.eclipse.ecf.internal.provider.jgroups.tunnel">
       </stackConfig>
+      <stackConfig
+            configFile="stacks/conf/pulltheplug.xml"
+            id="org.eclipse.ecf.internal.provider.jgroups.pulltheplug">
+      </stackConfig>
    </extension>
 
 </plugin>
