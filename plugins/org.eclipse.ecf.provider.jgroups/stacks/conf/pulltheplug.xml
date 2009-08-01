@@ -1,8 +1,11 @@
 <!-- Config to experiment with pulling the ethernet cables, pulling the power plug on the switch etc...
  -->
-
+<protocol_stacks>
+	<stack name="pulltheplug"
+			description="Pull the plug, but dont forget Him">
+			
 <config>
-    <UDP bind_addr="yourhost"
+    <UDP bind_addr="localhost"
          mcast_port="45566" 
          mcast_addr="228.10.10.10"
          tos="16"
@@ -39,3 +42,5 @@
     <FRAG2 frag_size="60000"  />
     <pbcast.STATE_TRANSFER  />
 </config>
+</stack>
+</protocol_stacks>
