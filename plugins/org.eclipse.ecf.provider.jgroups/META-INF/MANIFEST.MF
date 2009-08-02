@@ -15,11 +15,11 @@ Require-Bundle: org.eclipse.equinox.common,
  org.eclipse.ecf.provider.datashare,
  org.eclipse.ecf.provider.remoteservice,
  org.eclipse.equinox.registry,
- org.jgroups.mchannel;bundle-version="2.5.2"
+ org.jgroups.mchannel;bundle-version="2.5.2",
+ org.apache.commons.logging;bundle-version="1.0.4"
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: global
-Bundle-ClassPath: lib/commons-logging.jar,
- .
+Bundle-ClassPath: .
 Import-Package: org.eclipse.equinox.app;version="1.0.0",
  org.eclipse.osgi.util;version="1.1.0",
  org.osgi.framework;version="1.4.0",
