@@ -11,8 +11,10 @@ package org.eclipse.ecf.provider.jms.container;
 
 import java.io.IOException;
 import java.io.Serializable;
-import java.util.Dictionary;
+import java.util.*;
 import javax.jms.*;
+import org.eclipse.core.runtime.*;
+import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.remoteservice.Messages;
@@ -117,6 +119,59 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 			log("sendCallResponse jmsMessage=" + jmsMessage + ", response=" + response, e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
 		// XXX end need for job
+	}
+
+	class RequestHandlerJob extends Job {
+
+		Message jmsMessage;
+		Request request;
+
+		public RequestHandlerJob(Message jmsMessage, Request request) {
+			super("RequestHandlerJob[" + request + "]"); //$NON-NLS-1$ //$NON-NLS-2$
+			this.jmsMessage = jmsMessage;
+			this.request = request;
+			addRequestHandlerJob(this);
+		}
+
+		protected IStatus run(IProgressMonitor monitor) {
+			try {
+				// Handle request synchronously
+				handleJMSRequest(jmsMessage, request);
+			} catch (Exception e) {
+				log("RequestHandlerJob Error", e); //$NON-NLS-1$
+			}
+			removeRequestHandlerJob(this);
+			return Status.OK_STATUS;
+		}
+
+	}
+
+	List requestHandlerJobs = new ArrayList();
+
+	boolean addRequestHandlerJob(RequestHandlerJob job) {
+		synchronized (requestHandlerJobs) {
+			return requestHandlerJobs.add(job);
+		}
+	}
+
+	boolean removeRequestHandlerJob(RequestHandlerJob job) {
+		synchronized (requestHandlerJobs) {
+			return requestHandlerJobs.remove(job);
+		}
+	}
+
+	void cancelRequestHandlerJobs() {
+		synchronized (requestHandlerJobs) {
+			for (Iterator i = requestHandlerJobs.iterator(); i.hasNext();) {
+				RequestHandlerJob job = (RequestHandlerJob) i.next();
+				if (job.cancel())
+					i.remove();
+			}
+		}
+	}
+
+	void handleJMSRequestAsync(Message jmsMessage, Request request) {
+		new RequestHandlerJob(jmsMessage, request).schedule();
 	}
 
 	private MessageListener responseHandler = new MessageListener() {
