@@ -88,7 +88,7 @@ public abstract class AbstractLBQueueProducerContainer extends AbstractJMSServer
 	Object registryLock = new Object();
 
 	LBRegistrySharedObject createAndAddLBRegistry() {
-		ID soID = IDFactory.getDefault().createStringID(LBRegistrySharedObject.class.getName());
+		ID soID = IDFactory.getDefault().createStringID(IRemoteServiceContainerAdapter.class.getName());
 		lbRegistry = new LBRegistrySharedObject(this);
 		try {
 			getSharedObjectManager().addSharedObject(soID, lbRegistry, null);

@@ -16,13 +16,19 @@ public class LBRemoteServiceRegistrationImpl extends RemoteServiceRegistrationIm
 
 	private static final long serialVersionUID = -8066562963342697221L;
 
-	private LBRegistrySharedObject lbRegistry;
+	private transient LBRegistrySharedObject lbRegistry;
+
+	public LBRemoteServiceRegistrationImpl() {
+		// nothing
+	}
 
 	public LBRemoteServiceRegistrationImpl(LBRegistrySharedObject lbRegistry) {
 		this.lbRegistry = lbRegistry;
 	}
 
 	public Object callService(RemoteCallImpl call) throws Exception {
+		if (lbRegistry == null)
+			new NullPointerException("cannot call proxy directly"); //$NON-NLS-1$
 		return lbRegistry.callSynch(this, call);
 	}
 }
