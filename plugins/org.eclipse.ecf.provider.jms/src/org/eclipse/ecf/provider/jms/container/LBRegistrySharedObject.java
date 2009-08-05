@@ -90,7 +90,7 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 			return;
 		}
 		// Process call request locally
-		handleJMSRequest(jmsMessage, request);
+		handleJMSRequestAsync(jmsMessage, request);
 	}
 
 	void handleJMSRequest(Message jmsMessage, Request request) {
