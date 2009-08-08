@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="JGroups Manager" uid="org.eclipse.ecf.server.jgroups" application="org.eclipse.ecf.server.jgroups.Manager" version="1.0.0" useFeatures="false" includeLaunchers="false">
+<product name="JGroups Manager" uid="org.eclipse.ecf.server.jgroups" id="org.eclipse.ecf.server.jgroups.product" application="org.eclipse.ecf.server.jgroups.Manager" version="1.0.0" useFeatures="false" includeLaunchers="false">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} jgroups:///exampleChannel</programArgs>
+      <programArgs>-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} jgroups://ecf.eclipse.org:3282/exampleChannel&amp;stackName=pulltheplug</programArgs>
       <vmArgs>-Xms100m -Xmx512m -Djava.net.preferIPv4Stack=true</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
