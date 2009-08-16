@@ -1,6 +1,7 @@
 package org.codehaus.jackson.util;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 

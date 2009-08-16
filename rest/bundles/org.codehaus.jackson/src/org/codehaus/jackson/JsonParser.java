@@ -1,6 +1,9 @@
 package org.codehaus.jackson;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.OutputStream;
+import java.io.Reader;
 import java.math.BigDecimal;
 
 /**

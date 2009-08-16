@@ -1,9 +1,11 @@
 package org.codehaus.jackson.impl;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 
-import org.codehaus.jackson.*;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonWriteContext;
 
 /**
  * This base class defines API that a JSON generator exposes

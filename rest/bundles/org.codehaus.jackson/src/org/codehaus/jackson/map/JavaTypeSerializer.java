@@ -1,9 +1,11 @@
 package org.codehaus.jackson.map;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.Collection;
+import java.util.Map;
 
-import org.codehaus.jackson.*;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.JsonParseException;
 
 /**
  * This interface defines the core API that some mappers expose, as

@@ -1,10 +1,13 @@
 package org.codehaus.jackson.impl;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.Writer;
 import java.math.BigDecimal;
 
-import org.codehaus.jackson.*;
-import org.codehaus.jackson.io.*;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonWriteContext;
+import org.codehaus.jackson.io.IOContext;
+import org.codehaus.jackson.io.NumberOutput;
 import org.codehaus.jackson.util.CharTypes;
 
 public final class WriterBasedGenerator

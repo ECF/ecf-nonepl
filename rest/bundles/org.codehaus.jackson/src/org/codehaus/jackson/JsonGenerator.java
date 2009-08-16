@@ -1,6 +1,6 @@
 package org.codehaus.jackson;
 
-import java.io.*;
+import java.io.IOException;
 import java.math.BigDecimal;
 
 /**

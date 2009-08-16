@@ -1,6 +1,7 @@
 package org.codehaus.jackson.map;
 
-import org.codehaus.jackson.*;
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
 
 /**
  * This base class defines API aspects that are shared

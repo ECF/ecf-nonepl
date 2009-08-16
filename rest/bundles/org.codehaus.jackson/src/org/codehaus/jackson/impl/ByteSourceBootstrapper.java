@@ -1,10 +1,18 @@
 package org.codehaus.jackson.impl;
 
-import java.io.*;
+import java.io.ByteArrayInputStream;
+import java.io.CharConversionException;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.Reader;
 
 import org.codehaus.jackson.JsonEncoding;
 import org.codehaus.jackson.JsonParseException;
-import org.codehaus.jackson.io.*;
+import org.codehaus.jackson.io.IOContext;
+import org.codehaus.jackson.io.MergedStream;
+import org.codehaus.jackson.io.UTF32Reader;
+import org.codehaus.jackson.io.UTF8Reader;
 import org.codehaus.jackson.sym.NameCanonicalizer;
 
 /**

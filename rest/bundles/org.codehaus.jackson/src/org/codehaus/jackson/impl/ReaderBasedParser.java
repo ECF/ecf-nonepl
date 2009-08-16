@@ -1,11 +1,23 @@
 package org.codehaus.jackson.impl;
 
-import java.io.*;
+import static org.codehaus.jackson.JsonReadContext.HANDLED_EXPECT_NAME;
+import static org.codehaus.jackson.JsonReadContext.HANDLED_EXPECT_VALUE;
+import static org.codehaus.jackson.JsonReadContext.MISSING_COLON;
+import static org.codehaus.jackson.JsonReadContext.MISSING_COMMA;
+import static org.codehaus.jackson.JsonReadContext.NOT_EXP_SEPARATOR_NEED_NAME;
+import static org.codehaus.jackson.JsonReadContext.NOT_EXP_SEPARATOR_NEED_VALUE;
 
-import org.codehaus.jackson.*;
+import java.io.IOException;
+import java.io.OutputStream;
+import java.io.Reader;
+
+import org.codehaus.jackson.JsonParseException;
+import org.codehaus.jackson.JsonParser;
+import org.codehaus.jackson.JsonToken;
 import org.codehaus.jackson.io.IOContext;
-import org.codehaus.jackson.util.*;
-import static org.codehaus.jackson.JsonReadContext.*;
+import org.codehaus.jackson.util.CharTypes;
+import org.codehaus.jackson.util.SymbolTable;
+import org.codehaus.jackson.util.TextBuffer;
 
 /**
  * This is a concrete implementation of {@link JsonParser}, which is

@@ -1,9 +1,11 @@
 package org.codehaus.jackson.impl;
 
-import java.io.*;
+import java.io.IOException;
 import java.util.Arrays;
 
-import org.codehaus.jackson.*;
+import org.codehaus.jackson.JsonGenerationException;
+import org.codehaus.jackson.JsonGenerator;
+import org.codehaus.jackson.PrettyPrinter;
 
 public class DefaultPrettyPrinter
     implements PrettyPrinter
