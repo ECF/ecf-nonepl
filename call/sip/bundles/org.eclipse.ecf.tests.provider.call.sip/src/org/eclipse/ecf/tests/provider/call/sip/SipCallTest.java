@@ -49,7 +49,8 @@ public class SipCallTest  extends TestCase{
 		assertTrue(result);
 		
 		try {
-			Thread.currentThread().sleep(timeToKeepAlive);
+			
+			Thread.sleep(timeToKeepAlive);
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}

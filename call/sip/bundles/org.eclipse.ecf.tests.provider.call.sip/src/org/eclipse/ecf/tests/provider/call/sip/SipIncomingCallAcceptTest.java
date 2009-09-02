@@ -64,8 +64,9 @@ public class SipIncomingCallAcceptTest extends TestCase {
 
 			}
 
+			
 			// Give 15 secs to verify it's working
-			Thread.currentThread().sleep(timeToKeepAlive);
+			Thread.sleep(timeToKeepAlive);
 
 			call.terminateIncomingCall();
 			result = true;

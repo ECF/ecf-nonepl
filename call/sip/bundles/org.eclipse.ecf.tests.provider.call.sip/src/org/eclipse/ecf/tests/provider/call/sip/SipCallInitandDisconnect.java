@@ -24,7 +24,7 @@ public class SipCallInitandDisconnect extends TestCase{
 	static SipCall call;
 	static SipLocalParticipant localParty;
 	static SipRemoteParticipant remoteParty;
-	int timeToKeepAlive=15000;
+	int timeToKeepAlive=20000;
 	
 	/*
 	 * (non-Javadoc)
@@ -66,7 +66,8 @@ public class SipCallInitandDisconnect extends TestCase{
 				  
 				  //Give 15 secs to verify it's working
 				  try {
-					Thread.currentThread().sleep(timeToKeepAlive);
+					
+					Thread.sleep(timeToKeepAlive);
 				} catch (InterruptedException e) {
 					e.printStackTrace();
 				}

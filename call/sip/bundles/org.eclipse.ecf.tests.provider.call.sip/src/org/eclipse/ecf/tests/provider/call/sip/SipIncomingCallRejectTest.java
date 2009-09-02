@@ -60,8 +60,9 @@ public class SipIncomingCallRejectTest extends TestCase {
 
 			call = new SipCall(localParty);
 
+		
 			// Give 15 secs to verify it's working
-			Thread.currentThread().sleep(timeToKeepAlive);
+			Thread.sleep(timeToKeepAlive);
 
 			call.terminateIncomingCall();
 
