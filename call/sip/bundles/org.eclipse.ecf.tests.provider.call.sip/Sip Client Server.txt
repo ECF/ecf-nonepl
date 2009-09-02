@@ -1,0 +1,4173 @@
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251217262484"
+isSender="true" 
+transactionId="z9hg4bk558152d7fd32a94fd8dc65da80d7ed74" 
+callId="e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK558152d7fd32a94fd8dc65da80d7ed74
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251217262765"
+isSender="false" 
+transactionId="z9hg4bk558152d7fd32a94fd8dc65da80d7ed74" 
+callId="e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.dca5
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK558152d7fd32a94fd8dc65da80d7ed74
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a940f8b6220caaf3111b3c7859ea0713001fdae"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251217262781"
+isSender="true" 
+transactionId="z9hg4bk7e93c0edc62e98890306c33151d68d31" 
+callId="e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK7e93c0edc62e98890306c33151d68d31
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940f8b6220caaf3111b3c7859ea0713001fdae",uri="sip:sip2sip.info",response="68bb6d323fe7141d949cd50812758453",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251217263156"
+isSender="false" 
+transactionId="z9hg4bk7e93c0edc62e98890306c33151d68d31" 
+callId="e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: e4ee8857fa6cce6db7fed1ebb158714e@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.117e
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK7e93c0edc62e98890306c33151d68d31
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.150:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251217263484"
+isSender="true" 
+transactionId="z9hg4bk4610e836e340d7f5ae82091f9d7f9b27" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK4610e836e340d7f5ae82091f9d7f9b27
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251217263796"
+isSender="false" 
+transactionId="z9hg4bk4610e836e340d7f5ae82091f9d7f9b27" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK4610e836e340d7f5ae82091f9d7f9b27;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251217263796"
+isSender="false" 
+transactionId="z9hg4bk4610e836e340d7f5ae82091f9d7f9b27" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.0378
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK4610e836e340d7f5ae82091f9d7f9b27
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a940f8c6d4a8c3396fe1343245d8f18d861c443"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251217263796"
+isSender="true" 
+transactionId="z9hg4bk4610e836e340d7f5ae82091f9d7f9b27" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.0378
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK4610e836e340d7f5ae82091f9d7f9b27
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251217264625"
+isSender="true" 
+transactionId="z9hg4bka57ae44c5f1eef60723aa3e8ea340b8a" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKa57ae44c5f1eef60723aa3e8ea340b8a
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940f8c6d4a8c3396fe1343245d8f18d861c443",uri="sip:4444@sip2sip.info",response="9dec5e67592e8a61a47e0b5865b651ad",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251217264937"
+isSender="false" 
+transactionId="z9hg4bka57ae44c5f1eef60723aa3e8ea340b8a" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKa57ae44c5f1eef60723aa3e8ea340b8a;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251217264968"
+isSender="false" 
+transactionId="z9hg4bka57ae44c5f1eef60723aa3e8ea340b8a" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKa57ae44c5f1eef60723aa3e8ea340b8a
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=259.ec28a574>,<sip:81.23.228.150;lr=on;ftag=12345;did=259.b2c6be24>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as48fe7d88
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251217264968"
+isSender="true" 
+transactionId="z9hg4bka57ae44c5f1eef60723aa3e8ea340b8a:cancel" 
+callId="f860a06427c225d442695c836b4eb47a@192.168.1.5" 
+firstLine="CANCEL sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[CANCEL sip:4444@sip2sip.info SIP/2.0
+Call-ID: f860a06427c225d442695c836b4eb47a@192.168.1.5
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+CSeq: 2 CANCEL
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKa57ae44c5f1eef60723aa3e8ea340b8a
+Max-Forwards: 70
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217341546"
+isSender="true" 
+transactionId="z9hg4bk62a3ada690289c4622a2a4575cd6e523" 
+callId="785157ebd107c84319e61f7cfe780656@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 785157ebd107c84319e61f7cfe780656@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK62a3ada690289c4622a2a4575cd6e523
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217341828"
+isSender="false" 
+transactionId="z9hg4bk62a3ada690289c4622a2a4575cd6e523" 
+callId="785157ebd107c84319e61f7cfe780656@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 785157ebd107c84319e61f7cfe780656@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.5f8e
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK62a3ada690289c4622a2a4575cd6e523
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a940fda78f3eafbf078f3ea936b1b36c1b27446"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217341859"
+isSender="true" 
+transactionId="z9hg4bka45018c7da2ba2f08d2591fe53169219" 
+callId="785157ebd107c84319e61f7cfe780656@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 785157ebd107c84319e61f7cfe780656@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKa45018c7da2ba2f08d2591fe53169219
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940fda78f3eafbf078f3ea936b1b36c1b27446",uri="sip:sip2sip.info",response="d4842ea7fe0cef860dd58fd66e88162c",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217342203"
+isSender="false" 
+transactionId="z9hg4bka45018c7da2ba2f08d2591fe53169219" 
+callId="785157ebd107c84319e61f7cfe780656@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 785157ebd107c84319e61f7cfe780656@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.92ab
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKa45018c7da2ba2f08d2591fe53169219
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.129:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217343265"
+isSender="true" 
+transactionId="z9hg4bka0437d48cbb8a8c6a9ef3bb138c36725" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKa0437d48cbb8a8c6a9ef3bb138c36725
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217343562"
+isSender="false" 
+transactionId="z9hg4bka0437d48cbb8a8c6a9ef3bb138c36725" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKa0437d48cbb8a8c6a9ef3bb138c36725;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217343578"
+isSender="false" 
+transactionId="z9hg4bka0437d48cbb8a8c6a9ef3bb138c36725" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.0d10
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKa0437d48cbb8a8c6a9ef3bb138c36725
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a940fdcac083ef4665527e4ae96e534b62312d1"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217343578"
+isSender="true" 
+transactionId="z9hg4bka0437d48cbb8a8c6a9ef3bb138c36725" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.0d10
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKa0437d48cbb8a8c6a9ef3bb138c36725
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217344406"
+isSender="true" 
+transactionId="z9hg4bk3b1b94bad473a8536634ef893814e1fc" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK3b1b94bad473a8536634ef893814e1fc
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940fdcac083ef4665527e4ae96e534b62312d1",uri="sip:4444@sip2sip.info",response="615ebce67d3646ef9342409635c407f3",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217344703"
+isSender="false" 
+transactionId="z9hg4bk3b1b94bad473a8536634ef893814e1fc" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK3b1b94bad473a8536634ef893814e1fc;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217344734"
+isSender="false" 
+transactionId="z9hg4bk3b1b94bad473a8536634ef893814e1fc" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK3b1b94bad473a8536634ef893814e1fc
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=b7e.5608e081>,<sip:81.23.228.129;lr=on;ftag=12345;did=b7e.09d1a3d1>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as24010ea4
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217344750"
+isSender="true" 
+transactionId="z9hg4bk3b1b94bad473a8536634ef893814e1fc:cancel" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="CANCEL sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[CANCEL sip:4444@sip2sip.info SIP/2.0
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+CSeq: 2 CANCEL
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK3b1b94bad473a8536634ef893814e1fc
+Max-Forwards: 70
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217351390"
+isSender="true" 
+transactionId="z9hg4bkbd229a79a9fd385c2dcacfd10600d131" 
+callId="5b479d2c3016f479280d3952777c0f90@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 5b479d2c3016f479280d3952777c0f90@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKbd229a79a9fd385c2dcacfd10600d131
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217351656"
+isSender="false" 
+transactionId="z9hg4bkbd229a79a9fd385c2dcacfd10600d131" 
+callId="5b479d2c3016f479280d3952777c0f90@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 5b479d2c3016f479280d3952777c0f90@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.87b2
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKbd229a79a9fd385c2dcacfd10600d131
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a940fe4a77baca02feb7a72e2b2086815c91853"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217351671"
+isSender="true" 
+transactionId="z9hg4bkf2424bb1f861178e1e04a4c27ab3b758" 
+callId="5b479d2c3016f479280d3952777c0f90@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 5b479d2c3016f479280d3952777c0f90@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKf2424bb1f861178e1e04a4c27ab3b758
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940fe4a77baca02feb7a72e2b2086815c91853",uri="sip:sip2sip.info",response="d03bf74e6f3e9db5302afc66303a9201",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217352046"
+isSender="false" 
+transactionId="z9hg4bkf2424bb1f861178e1e04a4c27ab3b758" 
+callId="5b479d2c3016f479280d3952777c0f90@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 5b479d2c3016f479280d3952777c0f90@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.d9a6
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKf2424bb1f861178e1e04a4c27ab3b758
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.129:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217352296"
+isSender="true" 
+transactionId="z9hg4bkd5d47e93865fcb4040cf44297ccfa3e1" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKd5d47e93865fcb4040cf44297ccfa3e1
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217352578"
+isSender="false" 
+transactionId="z9hg4bk3b1b94bad473a8536634ef893814e1fc" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="SIP/2.0 487 Request Terminated" 
+>
+<![CDATA[SIP/2.0 487 Request Terminated
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK3b1b94bad473a8536634ef893814e1fc
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as24010ea4
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217352578"
+isSender="false" 
+transactionId="z9hg4bkd5d47e93865fcb4040cf44297ccfa3e1" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKd5d47e93865fcb4040cf44297ccfa3e1;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217352593"
+isSender="false" 
+transactionId="z9hg4bkd5d47e93865fcb4040cf44297ccfa3e1" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.855d
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKd5d47e93865fcb4040cf44297ccfa3e1
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a940fe55a2beb25d67bfcb8e873122e769fce23"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217352593"
+isSender="true" 
+transactionId="z9hg4bkd5d47e93865fcb4040cf44297ccfa3e1" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.855d
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKd5d47e93865fcb4040cf44297ccfa3e1
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217353328"
+isSender="false" 
+transactionId="4af1e8d6-5b0645d1-56e2d130-210620-81.23.228.129-1-notify-81.23.228.129-5060" 
+callId="5b0645d1-56e2d130-210620@81.23.228.129" 
+firstLine="NOTIFY sip:124.43.153.0:5060 SIP/2.0" 
+>
+<![CDATA[NOTIFY sip:124.43.153.0:5060 SIP/2.0
+Via: SIP/2.0/UDP 81.23.228.129:5060;branch=0
+From: <sip:keepalive@81.23.228.129>;tag=4af1e8d6
+To: <sip:124.43.153.0:5060>
+Call-ID: 5b0645d1-56e2d130-210620@81.23.228.129
+CSeq: 1 NOTIFY
+Event: keep-alive
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217353343"
+isSender="true" 
+transactionId="4af1e8d6-5b0645d1-56e2d130-210620-81.23.228.129-1-notify-81.23.228.129-5060" 
+callId="5b0645d1-56e2d130-210620@81.23.228.129" 
+firstLine="SIP/2.0 481 Subscription does not exist" 
+>
+<![CDATA[SIP/2.0 481 Subscription does not exist
+Via: SIP/2.0/UDP 81.23.228.129:5060;branch=0
+From: <sip:keepalive@81.23.228.129>;tag=4af1e8d6
+To: <sip:124.43.153.0:5060>
+Call-ID: 5b0645d1-56e2d130-210620@81.23.228.129
+CSeq: 1 NOTIFY
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217353421"
+isSender="true" 
+transactionId="z9hg4bkb2cf107e8e4b90568adb0bf36ecbe31f" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKb2cf107e8e4b90568adb0bf36ecbe31f
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940fe55a2beb25d67bfcb8e873122e769fce23",uri="sip:4444@sip2sip.info",response="3a7fd68167d57b7eff1e3e17486a8f14",algorithm=MD5
+Content-Length: 232
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217353718"
+isSender="false" 
+transactionId="z9hg4bkb2cf107e8e4b90568adb0bf36ecbe31f" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKb2cf107e8e4b90568adb0bf36ecbe31f;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217353734"
+isSender="false" 
+transactionId="z9hg4bkb2cf107e8e4b90568adb0bf36ecbe31f" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKb2cf107e8e4b90568adb0bf36ecbe31f
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=e2c.29254d42>,<sip:81.23.228.129;lr=on;ftag=12345;did=e2c.bc154212>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217355750"
+isSender="false" 
+transactionId="z9hg4bkb2cf107e8e4b90568adb0bf36ecbe31f" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKb2cf107e8e4b90568adb0bf36ecbe31f
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=e2c.29254d42>,<sip:81.23.228.129;lr=on;ftag=12345;did=e2c.bc154212>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Type: application/sdp
+Content-Length: 208
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217355750"
+isSender="true" 
+transactionId="z9hg4bk7485f5588eac1b4727cfcb98b4004ea7" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK7485f5588eac1b4727cfcb98b4004ea7
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+Max-Forwards: 70
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=e2c.bc154212>,<sip:85.17.186.7;lr=on;ftag=12345;did=e2c.29254d42>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217356578"
+isSender="false" 
+transactionId="z9hg4bk3b1b94bad473a8536634ef893814e1fc" 
+callId="32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5" 
+firstLine="SIP/2.0 487 Request Terminated" 
+>
+<![CDATA[SIP/2.0 487 Request Terminated
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK3b1b94bad473a8536634ef893814e1fc
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as24010ea4
+Call-ID: 32373d6d2d984a0c00cb74cc6ac5d888@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217357109"
+isSender="true" 
+transactionId="z9hg4bkba9dcf707c793f5dd73addee789e9b7d" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="REFER sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[REFER sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKba9dcf707c793f5dd73addee789e9b7d
+CSeq: 3 REFER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Contact: <sip:192.168.1.5:5060;transport=udp>
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=e2c.bc154212>,<sip:85.17.186.7;lr=on;ftag=12345;did=e2c.29254d42>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217357125"
+isSender="true" 
+transactionId="z9hg4bk7485f5588eac1b4727cfcb98b4004ea7" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK7485f5588eac1b4727cfcb98b4004ea7
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+Max-Forwards: 70
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=e2c.bc154212>,<sip:85.17.186.7;lr=on;ftag=12345;did=e2c.29254d42>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217357406"
+isSender="false" 
+transactionId="z9hg4bkba9dcf707c793f5dd73addee789e9b7d" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="SIP/2.0 400 Bad Request (Refer-to missing)" 
+>
+<![CDATA[SIP/2.0 400 Bad Request (Refer-to missing)
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKba9dcf707c793f5dd73addee789e9b7d
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 3 REFER
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217364406"
+isSender="true" 
+transactionId="z9hg4bkd53a8c5655f085567cb9dd119b478a3c" 
+callId="233acacb8753bec641b5aa710e1e4d9b@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 233acacb8753bec641b5aa710e1e4d9b@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKd53a8c5655f085567cb9dd119b478a3c
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217364671"
+isSender="false" 
+transactionId="z9hg4bkd53a8c5655f085567cb9dd119b478a3c" 
+callId="233acacb8753bec641b5aa710e1e4d9b@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 233acacb8753bec641b5aa710e1e4d9b@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.7228
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKd53a8c5655f085567cb9dd119b478a3c
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a940ff10d41538b776ee474523f3157ac76da98"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217364687"
+isSender="true" 
+transactionId="z9hg4bk04b2db64baeef326c9c8391909f72faf" 
+callId="233acacb8753bec641b5aa710e1e4d9b@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 233acacb8753bec641b5aa710e1e4d9b@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK04b2db64baeef326c9c8391909f72faf
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940ff10d41538b776ee474523f3157ac76da98",uri="sip:sip2sip.info",response="e5cdc948500deb50ac43e5934e664979",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217364984"
+isSender="false" 
+transactionId="z9hg4bk04b2db64baeef326c9c8391909f72faf" 
+callId="233acacb8753bec641b5aa710e1e4d9b@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 233acacb8753bec641b5aa710e1e4d9b@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.b329
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK04b2db64baeef326c9c8391909f72faf
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.129:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217366109"
+isSender="true" 
+transactionId="z9hg4bk4e9d51fe8f54f806417cb5487f53aad7" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK4e9d51fe8f54f806417cb5487f53aad7
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 232
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217366390"
+isSender="false" 
+transactionId="z9hg4bk4e9d51fe8f54f806417cb5487f53aad7" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK4e9d51fe8f54f806417cb5487f53aad7;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217366390"
+isSender="false" 
+transactionId="z9hg4bk4e9d51fe8f54f806417cb5487f53aad7" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.8525
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK4e9d51fe8f54f806417cb5487f53aad7
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a940ff3daf619eccf8eaed408ce7b780d292977"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217366390"
+isSender="true" 
+transactionId="z9hg4bk4e9d51fe8f54f806417cb5487f53aad7" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.8525
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK4e9d51fe8f54f806417cb5487f53aad7
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217367234"
+isSender="true" 
+transactionId="z9hg4bkafa14ec12cec49871d0a2a36d8e36592" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKafa14ec12cec49871d0a2a36d8e36592
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a940ff3daf619eccf8eaed408ce7b780d292977",uri="sip:4444@sip2sip.info",response="1f0f9f3ea283410ec02124632b0cbb8b",algorithm=MD5
+Content-Length: 232
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217367531"
+isSender="false" 
+transactionId="z9hg4bkafa14ec12cec49871d0a2a36d8e36592" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKafa14ec12cec49871d0a2a36d8e36592;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217367562"
+isSender="false" 
+transactionId="z9hg4bkafa14ec12cec49871d0a2a36d8e36592" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKafa14ec12cec49871d0a2a36d8e36592
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=f3d.4e221973>,<sip:81.23.228.129;lr=on;ftag=12345;did=f3d.f8a9d406>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as21cc7bee
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217369546"
+isSender="false" 
+transactionId="z9hg4bkafa14ec12cec49871d0a2a36d8e36592" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKafa14ec12cec49871d0a2a36d8e36592
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=f3d.4e221973>,<sip:81.23.228.129;lr=on;ftag=12345;did=f3d.f8a9d406>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as21cc7bee
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Type: application/sdp
+Content-Length: 208
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217369562"
+isSender="true" 
+transactionId="z9hg4bk7b78323d81d0019b6d8f4996a3f92355" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK7b78323d81d0019b6d8f4996a3f92355
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as21cc7bee
+Max-Forwards: 70
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=f3d.f8a9d406>,<sip:85.17.186.7;lr=on;ftag=12345;did=f3d.4e221973>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217370546"
+isSender="true" 
+transactionId="z9hg4bk9a8f06e046e98afc99969d4134cc3723" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="REFER sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[REFER sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK9a8f06e046e98afc99969d4134cc3723
+CSeq: 3 REFER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as21cc7bee
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Contact: <sip:192.168.1.5:5060;transport=udp>
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=f3d.f8a9d406>,<sip:85.17.186.7;lr=on;ftag=12345;did=f3d.4e221973>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217370828"
+isSender="false" 
+transactionId="z9hg4bk9a8f06e046e98afc99969d4134cc3723" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="SIP/2.0 400 Bad Request (Refer-to missing)" 
+>
+<![CDATA[SIP/2.0 400 Bad Request (Refer-to missing)
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK9a8f06e046e98afc99969d4134cc3723
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as21cc7bee
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 3 REFER
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217383546"
+isSender="true" 
+transactionId="z9hg4bkfec70fa0936ea3a2435abcfe515924f1" 
+callId="31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKfec70fa0936ea3a2435abcfe515924f1
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217383828"
+isSender="false" 
+transactionId="z9hg4bkfec70fa0936ea3a2435abcfe515924f1" 
+callId="31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.d2bb
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKfec70fa0936ea3a2435abcfe515924f1
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a94100453a7c339e136a26cbfab7982b652043a"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217383843"
+isSender="true" 
+transactionId="z9hg4bkdeda9946614e3173416d2b2c094bc826" 
+callId="31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKdeda9946614e3173416d2b2c094bc826
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a94100453a7c339e136a26cbfab7982b652043a",uri="sip:sip2sip.info",response="15a94870f74249b1e4cd687c17bd9233",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217384203"
+isSender="false" 
+transactionId="z9hg4bkdeda9946614e3173416d2b2c094bc826" 
+callId="31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 31ef8b7e12860eb6125cf93f8e6a91fa@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.62d3
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKdeda9946614e3173416d2b2c094bc826
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.129:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217385250"
+isSender="true" 
+transactionId="z9hg4bk8d7c05778d24d59126b37a493221893a" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK8d7c05778d24d59126b37a493221893a
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217385531"
+isSender="false" 
+transactionId="z9hg4bk8d7c05778d24d59126b37a493221893a" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK8d7c05778d24d59126b37a493221893a;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217385546"
+isSender="false" 
+transactionId="z9hg4bk8d7c05778d24d59126b37a493221893a" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.fa6d
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK8d7c05778d24d59126b37a493221893a
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a941006c60995fb7a6d0d798745eef4887675e1"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217385546"
+isSender="true" 
+transactionId="z9hg4bk8d7c05778d24d59126b37a493221893a" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.fa6d
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK8d7c05778d24d59126b37a493221893a
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217386390"
+isSender="true" 
+transactionId="z9hg4bk65b6d0487db6005b08b320e49131c5c1" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK65b6d0487db6005b08b320e49131c5c1
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a941006c60995fb7a6d0d798745eef4887675e1",uri="sip:4444@sip2sip.info",response="6ea6cb8e5f228b95781dab2d7aa80f67",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217386687"
+isSender="false" 
+transactionId="z9hg4bk65b6d0487db6005b08b320e49131c5c1" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK65b6d0487db6005b08b320e49131c5c1;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217386703"
+isSender="false" 
+transactionId="z9hg4bk65b6d0487db6005b08b320e49131c5c1" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK65b6d0487db6005b08b320e49131c5c1
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=33f.d0543c95>,<sip:81.23.228.129;lr=on;ftag=12345;did=33f.62a1ec36>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1a74843a
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217388703"
+isSender="false" 
+transactionId="z9hg4bk65b6d0487db6005b08b320e49131c5c1" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK65b6d0487db6005b08b320e49131c5c1
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=33f.d0543c95>,<sip:81.23.228.129;lr=on;ftag=12345;did=33f.62a1ec36>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1a74843a
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Type: application/sdp
+Content-Length: 208
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217388718"
+isSender="true" 
+transactionId="z9hg4bkcc5ac5a8b5a227e3c99a80a3ad65abb6" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKcc5ac5a8b5a227e3c99a80a3ad65abb6
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1a74843a
+Max-Forwards: 70
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=33f.62a1ec36>,<sip:85.17.186.7;lr=on;ftag=12345;did=33f.d0543c95>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217389500"
+isSender="true" 
+transactionId="z9hg4bk6d589087cabf802683d6aa91a1503dd7" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="REFER sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[REFER sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK6d589087cabf802683d6aa91a1503dd7
+CSeq: 3 REFER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1a74843a
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Contact: <sip:192.168.1.5:5060;transport=udp>
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=33f.62a1ec36>,<sip:85.17.186.7;lr=on;ftag=12345;did=33f.d0543c95>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217389781"
+isSender="false" 
+transactionId="z9hg4bk6d589087cabf802683d6aa91a1503dd7" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="SIP/2.0 400 Bad Request (Refer-to missing)" 
+>
+<![CDATA[SIP/2.0 400 Bad Request (Refer-to missing)
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK6d589087cabf802683d6aa91a1503dd7
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1a74843a
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 3 REFER
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217412484"
+isSender="true" 
+transactionId="z9hg4bk0afc46e2b37e3931bd44e3097e79d8ab" 
+callId="c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK0afc46e2b37e3931bd44e3097e79d8ab
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217412781"
+isSender="false" 
+transactionId="z9hg4bk0afc46e2b37e3931bd44e3097e79d8ab" 
+callId="c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.7cec
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK0afc46e2b37e3931bd44e3097e79d8ab
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a941021b22372c9632f2659f738e466a8caf8aa"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217412828"
+isSender="true" 
+transactionId="z9hg4bk55fa47352cbe336573fd5406fd04e2ae" 
+callId="c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK55fa47352cbe336573fd5406fd04e2ae
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a941021b22372c9632f2659f738e466a8caf8aa",uri="sip:sip2sip.info",response="692b2f8588644bdf29c5ff22f658ae6c",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251217412875"
+isSender="false" 
+transactionId="68e1afd1-5cbe767b-75a19ab0-2102d0-81.23.228.150-1-notify-81.23.228.150-5060" 
+callId="5cbe767b-75a19ab0-2102d0@81.23.228.150" 
+firstLine="NOTIFY sip:124.43.153.0:5060 SIP/2.0" 
+>
+<![CDATA[NOTIFY sip:124.43.153.0:5060 SIP/2.0
+Via: SIP/2.0/UDP 81.23.228.150:5060;branch=0
+From: <sip:keepalive@81.23.228.150>;tag=68e1afd1
+To: <sip:124.43.153.0:5060>
+Call-ID: 5cbe767b-75a19ab0-2102d0@81.23.228.150
+CSeq: 1 NOTIFY
+Event: keep-alive
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251217412890"
+isSender="true" 
+transactionId="68e1afd1-5cbe767b-75a19ab0-2102d0-81.23.228.150-1-notify-81.23.228.150-5060" 
+callId="5cbe767b-75a19ab0-2102d0@81.23.228.150" 
+firstLine="SIP/2.0 481 Subscription does not exist" 
+>
+<![CDATA[SIP/2.0 481 Subscription does not exist
+Via: SIP/2.0/UDP 81.23.228.150:5060;branch=0
+From: <sip:keepalive@81.23.228.150>;tag=68e1afd1
+To: <sip:124.43.153.0:5060>
+Call-ID: 5cbe767b-75a19ab0-2102d0@81.23.228.150
+CSeq: 1 NOTIFY
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217413203"
+isSender="false" 
+transactionId="z9hg4bk55fa47352cbe336573fd5406fd04e2ae" 
+callId="c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: c8934da180c2fb3c4ea3db6fbae9de7a@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.2765
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK55fa47352cbe336573fd5406fd04e2ae
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.129:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217413500"
+isSender="true" 
+transactionId="z9hg4bk8c524cf745291db974ba5c34dac81c24" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK8c524cf745291db974ba5c34dac81c24
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217413828"
+isSender="false" 
+transactionId="z9hg4bk8c524cf745291db974ba5c34dac81c24" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK8c524cf745291db974ba5c34dac81c24;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217413828"
+isSender="false" 
+transactionId="z9hg4bk8c524cf745291db974ba5c34dac81c24" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.38fe
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK8c524cf745291db974ba5c34dac81c24
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a94102225748859d04d2edc34254c0ea13afe96"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217413828"
+isSender="true" 
+transactionId="z9hg4bk8c524cf745291db974ba5c34dac81c24" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.38fe
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK8c524cf745291db974ba5c34dac81c24
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217414703"
+isSender="true" 
+transactionId="z9hg4bkf35ec310bf86b2e8a04f25eb96cc7f33" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKf35ec310bf86b2e8a04f25eb96cc7f33
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a94102225748859d04d2edc34254c0ea13afe96",uri="sip:4444@sip2sip.info",response="77c06859993d77db0b75a7873d9651c8",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217415078"
+isSender="false" 
+transactionId="z9hg4bkf35ec310bf86b2e8a04f25eb96cc7f33" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKf35ec310bf86b2e8a04f25eb96cc7f33;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217415109"
+isSender="false" 
+transactionId="z9hg4bkf35ec310bf86b2e8a04f25eb96cc7f33" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKf35ec310bf86b2e8a04f25eb96cc7f33
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=db9.1eda8627>,<sip:81.23.228.129;lr=on;ftag=12345;did=db9.0dc93cc2>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as2b6e4346
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217417093"
+isSender="false" 
+transactionId="z9hg4bkf35ec310bf86b2e8a04f25eb96cc7f33" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKf35ec310bf86b2e8a04f25eb96cc7f33
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=db9.1eda8627>,<sip:81.23.228.129;lr=on;ftag=12345;did=db9.0dc93cc2>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as2b6e4346
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Type: application/sdp
+Content-Length: 210
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217417093"
+isSender="true" 
+transactionId="z9hg4bka9cb8d2b4bf9790e71840bfd09ed4118" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKa9cb8d2b4bf9790e71840bfd09ed4118
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as2b6e4346
+Max-Forwards: 70
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=db9.0dc93cc2>,<sip:85.17.186.7;lr=on;ftag=12345;did=db9.1eda8627>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217418093"
+isSender="true" 
+transactionId="z9hg4bke83fe1c527be2cb9745f1a0c29968f26" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="REFER sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[REFER sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe83fe1c527be2cb9745f1a0c29968f26
+CSeq: 3 REFER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as2b6e4346
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Contact: <sip:192.168.1.5:5060;transport=udp>
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=db9.0dc93cc2>,<sip:85.17.186.7;lr=on;ftag=12345;did=db9.1eda8627>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217418453"
+isSender="false" 
+transactionId="z9hg4bke83fe1c527be2cb9745f1a0c29968f26" 
+callId="e537e346df0c12d0cb24110a6ae6db17@192.168.1.5" 
+firstLine="SIP/2.0 400 Bad Request (Refer-to missing)" 
+>
+<![CDATA[SIP/2.0 400 Bad Request (Refer-to missing)
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKe83fe1c527be2cb9745f1a0c29968f26
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as2b6e4346
+Call-ID: e537e346df0c12d0cb24110a6ae6db17@192.168.1.5
+CSeq: 3 REFER
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217419500"
+isSender="false" 
+transactionId="z9hg4bk8d9f.c13bfff1.0" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="BYE sip:2233375055@124.43.153.0:5060 SIP/2.0" 
+>
+<![CDATA[BYE sip:2233375055@124.43.153.0:5060 SIP/2.0
+Record-Route: <sip:81.23.228.129;lr=on;ftag=as3e76f2c6>,<sip:85.17.186.7;lr=on;ftag=as3e76f2c6>
+Via: SIP/2.0/UDP 81.23.228.129;branch=z9hG4bK8d9f.c13bfff1.0,SIP/2.0/UDP 85.17.186.7;branch=z9hG4bK8d9f.5122ee63.0,SIP/2.0/UDP 81.23.228.143:5060;received=81.23.228.143;branch=z9hG4bK0a371adb;rport=5060
+From: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 102 BYE
+User-Agent: Asterisk PBX
+Max-Forwards: 68
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217419500"
+isSender="true" 
+transactionId="z9hg4bk8d9f.c13bfff1.0" 
+callId="9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5" 
+firstLine="SIP/2.0 481 Dialog Not Found" 
+>
+<![CDATA[SIP/2.0 481 Dialog Not Found
+Via: SIP/2.0/UDP 81.23.228.129;branch=z9hG4bK8d9f.c13bfff1.0,SIP/2.0/UDP 85.17.186.7;branch=z9hG4bK8d9f.5122ee63.0,SIP/2.0/UDP 81.23.228.143:5060;received=81.23.228.143;branch=z9hG4bK0a371adb;rport=5060
+From: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as3e76f2c6
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Call-ID: 9a0e5b96fcc116d8a9cf5cf513672521@192.168.1.5
+CSeq: 102 BYE
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217444609"
+isSender="true" 
+transactionId="z9hg4bkcc1d6605c65bfbf0515593511c62577e" 
+callId="2d06312f980b1bef187e2e4822451dc2@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 2d06312f980b1bef187e2e4822451dc2@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKcc1d6605c65bfbf0515593511c62577e
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217444953"
+isSender="false" 
+transactionId="z9hg4bkcc1d6605c65bfbf0515593511c62577e" 
+callId="2d06312f980b1bef187e2e4822451dc2@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 2d06312f980b1bef187e2e4822451dc2@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.60d1
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKcc1d6605c65bfbf0515593511c62577e
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a94104107ec92d3663479e0f2494870678a547c"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217444968"
+isSender="true" 
+transactionId="z9hg4bk43d9b6c35b97ed4e0cc576e44a62ae1e" 
+callId="2d06312f980b1bef187e2e4822451dc2@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 2d06312f980b1bef187e2e4822451dc2@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK43d9b6c35b97ed4e0cc576e44a62ae1e
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a94104107ec92d3663479e0f2494870678a547c",uri="sip:sip2sip.info",response="6743f0f58b4ed08397dd72d04b6ba09a",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217445390"
+isSender="false" 
+transactionId="z9hg4bk43d9b6c35b97ed4e0cc576e44a62ae1e" 
+callId="2d06312f980b1bef187e2e4822451dc2@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 2d06312f980b1bef187e2e4822451dc2@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.3e80
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK43d9b6c35b97ed4e0cc576e44a62ae1e
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.129:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217445531"
+isSender="true" 
+transactionId="z9hg4bke60cbb45de4a8a3d4754c749380579d1" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe60cbb45de4a8a3d4754c749380579d1
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217445906"
+isSender="false" 
+transactionId="z9hg4bke60cbb45de4a8a3d4754c749380579d1" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe60cbb45de4a8a3d4754c749380579d1;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217445921"
+isSender="false" 
+transactionId="z9hg4bke60cbb45de4a8a3d4754c749380579d1" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.6efd
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKe60cbb45de4a8a3d4754c749380579d1
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a94104211d701f9105bdbf8a6dfc61e9c57447f"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217445921"
+isSender="true" 
+transactionId="z9hg4bke60cbb45de4a8a3d4754c749380579d1" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.6efd
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe60cbb45de4a8a3d4754c749380579d1
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217446765"
+isSender="true" 
+transactionId="z9hg4bk9cc03dbb0ae910a5a8c0d5a7f03787a0" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK9cc03dbb0ae910a5a8c0d5a7f03787a0
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a94104211d701f9105bdbf8a6dfc61e9c57447f",uri="sip:4444@sip2sip.info",response="a032ba7d6a3d81795387a12f1cbc3dd6",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217447140"
+isSender="false" 
+transactionId="z9hg4bk9cc03dbb0ae910a5a8c0d5a7f03787a0" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK9cc03dbb0ae910a5a8c0d5a7f03787a0;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217447171"
+isSender="false" 
+transactionId="z9hg4bk9cc03dbb0ae910a5a8c0d5a7f03787a0" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK9cc03dbb0ae910a5a8c0d5a7f03787a0
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=a3d.e1907d34>,<sip:81.23.228.129;lr=on;ftag=12345;did=a3d.91d67c67>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as7edcd815
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217447906"
+isSender="false" 
+transactionId="z9hg4bk9ea.c90e0a57.0" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="BYE sip:2233375055@124.43.153.0:5060 SIP/2.0" 
+>
+<![CDATA[BYE sip:2233375055@124.43.153.0:5060 SIP/2.0
+Record-Route: <sip:81.23.228.129;lr=on;ftag=as21cc7bee>,<sip:85.17.186.7;lr=on;ftag=as21cc7bee>
+Via: SIP/2.0/UDP 81.23.228.129;branch=z9hG4bK9ea.c90e0a57.0,SIP/2.0/UDP 85.17.186.7;branch=z9hG4bK9ea.88916303.0,SIP/2.0/UDP 81.23.228.143:5060;received=81.23.228.143;branch=z9hG4bK0738b0cc;rport=5060
+From: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as21cc7bee
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 102 BYE
+User-Agent: Asterisk PBX
+Max-Forwards: 68
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217447906"
+isSender="true" 
+transactionId="z9hg4bk9ea.c90e0a57.0" 
+callId="9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5" 
+firstLine="SIP/2.0 481 Dialog Not Found" 
+>
+<![CDATA[SIP/2.0 481 Dialog Not Found
+Via: SIP/2.0/UDP 81.23.228.129;branch=z9hG4bK9ea.c90e0a57.0,SIP/2.0/UDP 85.17.186.7;branch=z9hG4bK9ea.88916303.0,SIP/2.0/UDP 81.23.228.143:5060;received=81.23.228.143;branch=z9hG4bK0738b0cc;rport=5060
+From: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as21cc7bee
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Call-ID: 9a442f65f8f7cedab94fb85a8b382bf2@192.168.1.5
+CSeq: 102 BYE
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217449140"
+isSender="false" 
+transactionId="z9hg4bk9cc03dbb0ae910a5a8c0d5a7f03787a0" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK9cc03dbb0ae910a5a8c0d5a7f03787a0
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=a3d.e1907d34>,<sip:81.23.228.129;lr=on;ftag=12345;did=a3d.91d67c67>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as7edcd815
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Type: application/sdp
+Content-Length: 210
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217449156"
+isSender="true" 
+transactionId="z9hg4bkcbe45291681eed6746daef92cb548801" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKcbe45291681eed6746daef92cb548801
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as7edcd815
+Max-Forwards: 70
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=a3d.91d67c67>,<sip:85.17.186.7;lr=on;ftag=12345;did=a3d.e1907d34>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217449875"
+isSender="true" 
+transactionId="z9hg4bk83f322d963edbbbe58238d1584babd45" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="REFER sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[REFER sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK83f322d963edbbbe58238d1584babd45
+CSeq: 3 REFER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as7edcd815
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Contact: <sip:192.168.1.5:5060;transport=udp>
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=a3d.91d67c67>,<sip:85.17.186.7;lr=on;ftag=12345;did=a3d.e1907d34>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217450234"
+isSender="false" 
+transactionId="z9hg4bk83f322d963edbbbe58238d1584babd45" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="SIP/2.0 400 Bad Request (Refer-to missing)" 
+>
+<![CDATA[SIP/2.0 400 Bad Request (Refer-to missing)
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK83f322d963edbbbe58238d1584babd45
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as7edcd815
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+CSeq: 3 REFER
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251217459453"
+isSender="false" 
+transactionId="z9hg4bkdde4.1ee08104.0" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="BYE sip:2233375055@124.43.153.0:5060 SIP/2.0" 
+>
+<![CDATA[BYE sip:2233375055@124.43.153.0:5060 SIP/2.0
+Record-Route: <sip:81.23.228.129;lr=on;ftag=as1a74843a>,<sip:85.17.186.7;lr=on;ftag=as1a74843a>
+Via: SIP/2.0/UDP 81.23.228.129;branch=z9hG4bKdde4.1ee08104.0,SIP/2.0/UDP 85.17.186.7;branch=z9hG4bKdde4.129d3ad6.0,SIP/2.0/UDP 81.23.228.143:5060;received=81.23.228.143;branch=z9hG4bK1a3d6c84;rport=5060
+From: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1a74843a
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 102 BYE
+User-Agent: Asterisk PBX
+Max-Forwards: 68
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217459468"
+isSender="true" 
+transactionId="z9hg4bkdde4.1ee08104.0" 
+callId="edac41d27b3261b485aced1651d2eab3@192.168.1.5" 
+firstLine="SIP/2.0 481 Dialog Not Found" 
+>
+<![CDATA[SIP/2.0 481 Dialog Not Found
+Via: SIP/2.0/UDP 81.23.228.129;branch=z9hG4bKdde4.1ee08104.0,SIP/2.0/UDP 85.17.186.7;branch=z9hG4bKdde4.129d3ad6.0,SIP/2.0/UDP 81.23.228.143:5060;received=81.23.228.143;branch=z9hG4bK1a3d6c84;rport=5060
+From: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1a74843a
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Call-ID: edac41d27b3261b485aced1651d2eab3@192.168.1.5
+CSeq: 102 BYE
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251217464875"
+isSender="true" 
+transactionId="z9hg4bk7b9855cb9b7de3682197bb16a26c7a5a" 
+callId="5a554c2caeefe28b0da2947bce3b6873@192.168.1.5" 
+firstLine="BYE sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[BYE sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK7b9855cb9b7de3682197bb16a26c7a5a
+CSeq: 4 BYE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as7edcd815
+Call-ID: 5a554c2caeefe28b0da2947bce3b6873@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Route: <sip:81.23.228.129;lr=on;ftag=12345;did=a3d.91d67c67>,<sip:85.17.186.7;lr=on;ftag=12345;did=a3d.e1907d34>
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251226944546"
+isSender="true" 
+transactionId="z9hg4bkc1721a2c39fdcb462fbbb5fb78558536" 
+callId="7f28b45cf036ff9706caf518b00c14cb@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 7f28b45cf036ff9706caf518b00c14cb@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKc1721a2c39fdcb462fbbb5fb78558536
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251226944812"
+isSender="false" 
+transactionId="z9hg4bkc1721a2c39fdcb462fbbb5fb78558536" 
+callId="7f28b45cf036ff9706caf518b00c14cb@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 7f28b45cf036ff9706caf518b00c14cb@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.eef2
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKc1721a2c39fdcb462fbbb5fb78558536
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a94355d9449bf58ad63e2c2206be61de13003e9"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251226944828"
+isSender="true" 
+transactionId="z9hg4bk93674849e86553577dc3d9ae6ea4d39e" 
+callId="7f28b45cf036ff9706caf518b00c14cb@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 7f28b45cf036ff9706caf518b00c14cb@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK93674849e86553577dc3d9ae6ea4d39e
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a94355d9449bf58ad63e2c2206be61de13003e9",uri="sip:sip2sip.info",response="4791d74d6b9485bec6a7a5835d66e861",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251226945187"
+isSender="false" 
+transactionId="z9hg4bk93674849e86553577dc3d9ae6ea4d39e" 
+callId="7f28b45cf036ff9706caf518b00c14cb@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 7f28b45cf036ff9706caf518b00c14cb@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.ac34
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK93674849e86553577dc3d9ae6ea4d39e
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.150:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251226945546"
+isSender="true" 
+transactionId="z9hg4bkc065cd05c0755b39d772869064881b18" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKc065cd05c0755b39d772869064881b18
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251226945843"
+isSender="false" 
+transactionId="z9hg4bkc065cd05c0755b39d772869064881b18" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKc065cd05c0755b39d772869064881b18;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251226945843"
+isSender="false" 
+transactionId="z9hg4bkc065cd05c0755b39d772869064881b18" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.a9e9
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKc065cd05c0755b39d772869064881b18
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a94355e69d6c07d525013549058e12f3731494b"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251226945843"
+isSender="true" 
+transactionId="z9hg4bkc065cd05c0755b39d772869064881b18" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.a9e9
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKc065cd05c0755b39d772869064881b18
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251226946687"
+isSender="true" 
+transactionId="z9hg4bkb1ed7dcc07f05414cc451ec2de532c44" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKb1ed7dcc07f05414cc451ec2de532c44
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a94355e69d6c07d525013549058e12f3731494b",uri="sip:4444@sip2sip.info",response="eea9502bf2dcaa9608476d2b7e3a9265",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251226946984"
+isSender="false" 
+transactionId="z9hg4bkb1ed7dcc07f05414cc451ec2de532c44" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKb1ed7dcc07f05414cc451ec2de532c44;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.150:5060" 
+to="192.168.1.5:5060" 
+time="1251226947015"
+isSender="false" 
+transactionId="z9hg4bkb1ed7dcc07f05414cc451ec2de532c44" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKb1ed7dcc07f05414cc451ec2de532c44
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=dbb.9d6d0ae7>,<sip:81.23.228.150;lr=on;ftag=12345;did=dbb.37210c12>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as0f386916
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.150:5060" 
+time="1251226947031"
+isSender="true" 
+transactionId="z9hg4bkb1ed7dcc07f05414cc451ec2de532c44:cancel" 
+callId="98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5" 
+firstLine="CANCEL sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[CANCEL sip:4444@sip2sip.info SIP/2.0
+Call-ID: 98bc1fa26dc3a67e43dd92b0b37c2473@192.168.1.5
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+CSeq: 2 CANCEL
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKb1ed7dcc07f05414cc451ec2de532c44
+Max-Forwards: 70
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251227317750"
+isSender="true" 
+transactionId="z9hg4bk0cab83c715c7ba61e9ce64f83032f4db" 
+callId="dabf96a029103de31c59657a0481cb09@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: dabf96a029103de31c59657a0481cb09@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK0cab83c715c7ba61e9ce64f83032f4db
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251227318015"
+isSender="false" 
+transactionId="z9hg4bk0cab83c715c7ba61e9ce64f83032f4db" 
+callId="dabf96a029103de31c59657a0481cb09@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: dabf96a029103de31c59657a0481cb09@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.e305
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK0cab83c715c7ba61e9ce64f83032f4db
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a9436d357cd75e2e13520d64edf732370db6f84"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251227318031"
+isSender="true" 
+transactionId="z9hg4bk98ae133c6ea96807274a6d6063609e02" 
+callId="dabf96a029103de31c59657a0481cb09@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: dabf96a029103de31c59657a0481cb09@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK98ae133c6ea96807274a6d6063609e02
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a9436d357cd75e2e13520d64edf732370db6f84",uri="sip:sip2sip.info",response="abef7ec2860821bc526c87b599a86ca6",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251227318343"
+isSender="false" 
+transactionId="z9hg4bk98ae133c6ea96807274a6d6063609e02" 
+callId="dabf96a029103de31c59657a0481cb09@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: dabf96a029103de31c59657a0481cb09@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.4dc4
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK98ae133c6ea96807274a6d6063609e02
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:81.23.228.129:5060;target=sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251227318671"
+isSender="true" 
+transactionId="z9hg4bkc7e07969d00b5e19ce0c92fbe91f1a1b" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKc7e07969d00b5e19ce0c92fbe91f1a1b
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251227318953"
+isSender="false" 
+transactionId="z9hg4bkc7e07969d00b5e19ce0c92fbe91f1a1b" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKc7e07969d00b5e19ce0c92fbe91f1a1b;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251227318968"
+isSender="false" 
+transactionId="z9hg4bkc7e07969d00b5e19ce0c92fbe91f1a1b" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.21c9
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKc7e07969d00b5e19ce0c92fbe91f1a1b
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a9436d48e820173b42c574119361ea5e00b3e7a"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251227318968"
+isSender="true" 
+transactionId="z9hg4bkc7e07969d00b5e19ce0c92fbe91f1a1b" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.21c9
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKc7e07969d00b5e19ce0c92fbe91f1a1b
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251227320531"
+isSender="true" 
+transactionId="z9hg4bk42c5360fe2e82cdff953c945f0e8e9bc" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK42c5360fe2e82cdff953c945f0e8e9bc
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a9436d48e820173b42c574119361ea5e00b3e7a",uri="sip:4444@sip2sip.info",response="2ad45538955f234514df03d798ca4207",algorithm=MD5
+Content-Length: 232
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251227320828"
+isSender="false" 
+transactionId="z9hg4bk42c5360fe2e82cdff953c945f0e8e9bc" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK42c5360fe2e82cdff953c945f0e8e9bc;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="81.23.228.129:5060" 
+to="192.168.1.5:5060" 
+time="1251227320843"
+isSender="false" 
+transactionId="z9hg4bk42c5360fe2e82cdff953c945f0e8e9bc" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK42c5360fe2e82cdff953c945f0e8e9bc
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=51.2c8ac035>,<sip:81.23.228.129;lr=on;ftag=12345;did=51.f7083051>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as03c11260
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="81.23.228.129:5060" 
+time="1251227320859"
+isSender="true" 
+transactionId="z9hg4bk42c5360fe2e82cdff953c945f0e8e9bc:cancel" 
+callId="da8cd227e721503623f9ffab56c552b7@192.168.1.5" 
+firstLine="CANCEL sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[CANCEL sip:4444@sip2sip.info SIP/2.0
+Call-ID: da8cd227e721503623f9ffab56c552b7@192.168.1.5
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+CSeq: 2 CANCEL
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK42c5360fe2e82cdff953c945f0e8e9bc
+Max-Forwards: 70
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228831906"
+isSender="true" 
+transactionId="z9hg4bk9cbed8889cdaa5b5c9017bc255f4003b" 
+callId="17c121e08207c06fa50699f1696467cc@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 17c121e08207c06fa50699f1696467cc@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK9cbed8889cdaa5b5c9017bc255f4003b
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228832218"
+isSender="false" 
+transactionId="z9hg4bk9cbed8889cdaa5b5c9017bc255f4003b" 
+callId="17c121e08207c06fa50699f1696467cc@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 17c121e08207c06fa50699f1696467cc@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.f86b
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK9cbed8889cdaa5b5c9017bc255f4003b;rport=5060;received=124.43.153.0
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a943cbd53f2e6cd2cd7f5e229ad33c42147965a"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228832250"
+isSender="true" 
+transactionId="z9hg4bkb91354f99cf18be9b23d7539ade68db7" 
+callId="17c121e08207c06fa50699f1696467cc@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 17c121e08207c06fa50699f1696467cc@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKb91354f99cf18be9b23d7539ade68db7
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a943cbd53f2e6cd2cd7f5e229ad33c42147965a",uri="sip:sip2sip.info",response="e8f49480c275fb2156aa2c6b75dd3023",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228832656"
+isSender="false" 
+transactionId="z9hg4bkb91354f99cf18be9b23d7539ade68db7" 
+callId="17c121e08207c06fa50699f1696467cc@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 17c121e08207c06fa50699f1696467cc@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.a9c7
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKb91354f99cf18be9b23d7539ade68db7;rport=5060;received=124.43.153.0
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228832828"
+isSender="true" 
+transactionId="z9hg4bke25c97d647049c7fb240dcc13347d029" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe25c97d647049c7fb240dcc13347d029
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228833156"
+isSender="false" 
+transactionId="z9hg4bke25c97d647049c7fb240dcc13347d029" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.3531
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe25c97d647049c7fb240dcc13347d029;rport=5060;received=124.43.153.0
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a943cbe40809a34918f60d95df9efe09fa47712"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228833156"
+isSender="true" 
+transactionId="z9hg4bke25c97d647049c7fb240dcc13347d029" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.3531
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe25c97d647049c7fb240dcc13347d029
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228833968"
+isSender="true" 
+transactionId="z9hg4bk7ca9c9e9007c8b4ab03c68c2a0ffa458" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK7ca9c9e9007c8b4ab03c68c2a0ffa458
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a943cbe40809a34918f60d95df9efe09fa47712",uri="sip:4444@sip2sip.info",response="3f6959496d4a9eefb1464c9483a4aabf",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228834312"
+isSender="false" 
+transactionId="z9hg4bk7ca9c9e9007c8b4ab03c68c2a0ffa458" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="SIP/2.0 100 Trying" 
+>
+<![CDATA[SIP/2.0 100 Trying
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK7ca9c9e9007c8b4ab03c68c2a0ffa458;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228834328"
+isSender="false" 
+transactionId="z9hg4bk7ca9c9e9007c8b4ab03c68c2a0ffa458" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK7ca9c9e9007c8b4ab03c68c2a0ffa458;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228834343"
+isSender="false" 
+transactionId="z9hg4bk7ca9c9e9007c8b4ab03c68c2a0ffa458" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK7ca9c9e9007c8b4ab03c68c2a0ffa458
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=dff.635b3d24>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as40060b6f
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228836343"
+isSender="false" 
+transactionId="z9hg4bk7ca9c9e9007c8b4ab03c68c2a0ffa458" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK7ca9c9e9007c8b4ab03c68c2a0ffa458
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=dff.635b3d24>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as40060b6f
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Type: application/sdp
+Content-Length: 210
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228836343"
+isSender="true" 
+transactionId="z9hg4bkd3bcac7921bcc8e6b34164b0d9c7cb35" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKd3bcac7921bcc8e6b34164b0d9c7cb35
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as40060b6f
+Max-Forwards: 70
+Route: <sip:85.17.186.7;lr=on;ftag=12345;did=dff.635b3d24>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228837187"
+isSender="true" 
+transactionId="z9hg4bkdb08bf28e6d953cf34a35dc7fbd00460" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="REFER sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[REFER sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKdb08bf28e6d953cf34a35dc7fbd00460
+CSeq: 3 REFER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as40060b6f
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Contact: <sip:192.168.1.5:5060;transport=udp>
+Route: <sip:85.17.186.7;lr=on;ftag=12345;did=dff.635b3d24>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228837484"
+isSender="false" 
+transactionId="z9hg4bkdb08bf28e6d953cf34a35dc7fbd00460" 
+callId="a4edd9950a8744e6747e7228fd32818c@192.168.1.5" 
+firstLine="SIP/2.0 400 Bad Request (Refer-to missing)" 
+>
+<![CDATA[SIP/2.0 400 Bad Request (Refer-to missing)
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bKdb08bf28e6d953cf34a35dc7fbd00460
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as40060b6f
+Call-ID: a4edd9950a8744e6747e7228fd32818c@192.168.1.5
+CSeq: 3 REFER
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228841515"
+isSender="false" 
+transactionId="760ea12f-3bc12d0a-37c3a6f-212f59-85.17.186.7-1-notify-85.17.186.7-5060" 
+callId="3bc12d0a-37c3a6f-212f59@85.17.186.7" 
+firstLine="NOTIFY sip:124.43.153.0:5060 SIP/2.0" 
+>
+<![CDATA[NOTIFY sip:124.43.153.0:5060 SIP/2.0
+Via: SIP/2.0/UDP 85.17.186.7:5060;branch=0
+From: <sip:keepalive@85.17.186.7>;tag=760ea12f
+To: <sip:124.43.153.0:5060>
+Call-ID: 3bc12d0a-37c3a6f-212f59@85.17.186.7
+CSeq: 1 NOTIFY
+Event: keep-alive
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228841546"
+isSender="true" 
+transactionId="760ea12f-3bc12d0a-37c3a6f-212f59-85.17.186.7-1-notify-85.17.186.7-5060" 
+callId="3bc12d0a-37c3a6f-212f59@85.17.186.7" 
+firstLine="SIP/2.0 481 Subscription does not exist" 
+>
+<![CDATA[SIP/2.0 481 Subscription does not exist
+Via: SIP/2.0/UDP 85.17.186.7:5060;branch=0
+From: <sip:keepalive@85.17.186.7>;tag=760ea12f
+To: <sip:124.43.153.0:5060>
+Call-ID: 3bc12d0a-37c3a6f-212f59@85.17.186.7
+CSeq: 1 NOTIFY
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228868000"
+isSender="true" 
+transactionId="z9hg4bk233673a1147cd33bef08a8c19b76841f" 
+callId="971c49add15edbac81f008baa37eeafe@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 971c49add15edbac81f008baa37eeafe@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK233673a1147cd33bef08a8c19b76841f
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228868296"
+isSender="false" 
+transactionId="z9hg4bk233673a1147cd33bef08a8c19b76841f" 
+callId="971c49add15edbac81f008baa37eeafe@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 971c49add15edbac81f008baa37eeafe@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.94f5
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK233673a1147cd33bef08a8c19b76841f;rport=5060;received=124.43.153.0
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a943ce1edb29ffb42b5eca50698b1f6c4001687"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228868312"
+isSender="true" 
+transactionId="z9hg4bk2e1414401710b25b45099d1915d251d4" 
+callId="971c49add15edbac81f008baa37eeafe@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 971c49add15edbac81f008baa37eeafe@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK2e1414401710b25b45099d1915d251d4
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a943ce1edb29ffb42b5eca50698b1f6c4001687",uri="sip:sip2sip.info",response="63f37d5785bb2465c49c7b75eb53a07e",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228868718"
+isSender="false" 
+transactionId="z9hg4bk2e1414401710b25b45099d1915d251d4" 
+callId="971c49add15edbac81f008baa37eeafe@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 971c49add15edbac81f008baa37eeafe@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.5e1c
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK2e1414401710b25b45099d1915d251d4;rport=5060;received=124.43.153.0
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<!-- Use the  Trace Viewer in src/tools/tracesviewer to view this  trace  
+Here are the stack configuration properties 
+javax.sip.IP_ADDRESS= 192.168.1.5
+javax.sip.STACK_NAME= Eclipse Sip Stack
+javax.sip.ROUTER_PATH= null
+javax.sip.OUTBOUND_PROXY= proxy.sipthor.net/udp
+-->
+<description
+ logDescription="Eclipse Sip Stack"
+ name="Eclipse Sip Stack"
+ auxInfo="null"/>
+ 
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228886937"
+isSender="true" 
+transactionId="z9hg4bk26880d6c4c35d56f018bb7a7b323c1b4" 
+callId="1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK26880d6c4c35d56f018bb7a7b323c1b4
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info:5060>
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228887234"
+isSender="false" 
+transactionId="z9hg4bk26880d6c4c35d56f018bb7a7b323c1b4" 
+callId="1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5" 
+firstLine="SIP/2.0 401 Unauthorized" 
+>
+<![CDATA[SIP/2.0 401 Unauthorized
+Call-ID: 1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5
+CSeq: 1 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=98765
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.1cd4
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK26880d6c4c35d56f018bb7a7b323c1b4;rport=5060;received=124.43.153.0
+WWW-Authenticate: Digest realm="sip2sip.info",nonce="4a943cf404bcb33c73dcccb1a965abf991ac6fdd"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228887250"
+isSender="true" 
+transactionId="z9hg4bk7054406257b0f1aad4a3d7eed3b22d58" 
+callId="1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5" 
+firstLine="REGISTER sip:sip2sip.info SIP/2.0" 
+>
+<![CDATA[REGISTER sip:sip2sip.info SIP/2.0
+Call-ID: 1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK7054406257b0f1aad4a3d7eed3b22d58
+Max-Forwards: 70
+Contact: "ECF SIP Tester 1" <sip:2233375055@192.168.1.5:5060>
+Call-Info: <http://www.antd.nist.gov>
+Expires: 3600
+User-Agent: Eclipse ECF 3.0
+Allow: INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO
+Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a943cf404bcb33c73dcccb1a965abf991ac6fdd",uri="sip:sip2sip.info",response="45c96a077111e90daf77c51ee0a8b403",algorithm=MD5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228887578"
+isSender="false" 
+transactionId="z9hg4bk7054406257b0f1aad4a3d7eed3b22d58" 
+callId="1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Call-ID: 1faedc11dc96dcec3263a069b4bd9aef@192.168.1.5
+CSeq: 2 REGISTER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=56789
+To: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.99ec
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK7054406257b0f1aad4a3d7eed3b22d58;rport=5060;received=124.43.153.0
+Contact: <sip:2233375055@192.168.1.5:5060>;expires=3600;received="sip:124.43.153.0:5060"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228887875"
+isSender="true" 
+transactionId="z9hg4bke4a6aa414a2b0705817987e24374cde2" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe4a6aa414a2b0705817987e24374cde2
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@sip2sip.info:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228888203"
+isSender="false" 
+transactionId="z9hg4bke4a6aa414a2b0705817987e24374cde2" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="SIP/2.0 407 Proxy Authentication Required" 
+>
+<![CDATA[SIP/2.0 407 Proxy Authentication Required
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 1 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.c1e4
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe4a6aa414a2b0705817987e24374cde2;rport=5060;received=124.43.153.0
+Proxy-Authenticate: Digest realm="sip2sip.info",nonce="4a943cf5a4baee94438718d9d959955bba84bbcf"
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228888203"
+isSender="true" 
+transactionId="z9hg4bke4a6aa414a2b0705817987e24374cde2" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="ACK sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@sip2sip.info SIP/2.0
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+Max-Forwards: 70
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=ac7e0189ab09b4fde10c77c8597b662a.c1e4
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bKe4a6aa414a2b0705817987e24374cde2
+CSeq: 1 ACK
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228889015"
+isSender="true" 
+transactionId="z9hg4bk0c943692d2b416dbb2d7bdcaeb6d3012" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="INVITE sip:4444@sip2sip.info SIP/2.0" 
+>
+<![CDATA[INVITE sip:4444@sip2sip.info SIP/2.0
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK0c943692d2b416dbb2d7bdcaeb6d3012
+Max-Forwards: 70
+Contact: "2233375055" <sip:2233375055@192.168.1.5:5060>
+My-Header: my header value
+Content-Type: application/sdp
+My-Other-Header: my new header value
+Call-Info: <http://www.antd.nist.gov>
+Proxy-Authorization: Digest username="2233375055",realm="sip2sip.info",nonce="4a943cf5a4baee94438718d9d959955bba84bbcf",uri="sip:4444@sip2sip.info",response="fbedef6389cb8d5a444cbf788e43492e",algorithm=MD5
+Content-Length: 234
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228889359"
+isSender="false" 
+transactionId="z9hg4bk0c943692d2b416dbb2d7bdcaeb6d3012" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="SIP/2.0 100 Trying" 
+>
+<![CDATA[SIP/2.0 100 Trying
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK0c943692d2b416dbb2d7bdcaeb6d3012;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228889359"
+isSender="false" 
+transactionId="z9hg4bk0c943692d2b416dbb2d7bdcaeb6d3012" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="SIP/2.0 100 Giving a try" 
+>
+<![CDATA[SIP/2.0 100 Giving a try
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 2 INVITE
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK0c943692d2b416dbb2d7bdcaeb6d3012;rport=5060;received=124.43.153.0
+Server: SIP Thor on OpenSIPS XS 1.4.5
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228889375"
+isSender="false" 
+transactionId="z9hg4bk0c943692d2b416dbb2d7bdcaeb6d3012" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="SIP/2.0 180 Ringing" 
+>
+<![CDATA[SIP/2.0 180 Ringing
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK0c943692d2b416dbb2d7bdcaeb6d3012
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=4f.e6d96237>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1c60a4ac
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228891375"
+isSender="false" 
+transactionId="z9hg4bk0c943692d2b416dbb2d7bdcaeb6d3012" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="SIP/2.0 200 OK" 
+>
+<![CDATA[SIP/2.0 200 OK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK0c943692d2b416dbb2d7bdcaeb6d3012
+Record-Route: <sip:85.17.186.7;lr=on;ftag=12345;did=4f.e6d96237>
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1c60a4ac
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 2 INVITE
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Contact: <sip:4444@81.23.228.143>
+Content-Type: application/sdp
+Content-Length: 208
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228891375"
+isSender="true" 
+transactionId="z9hg4bk55d3ef28bf7a7894a3dbfddab1fe46d1" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="ACK sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[ACK sip:4444@81.23.228.143 SIP/2.0
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 2 ACK
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK55d3ef28bf7a7894a3dbfddab1fe46d1
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1c60a4ac
+Max-Forwards: 70
+Route: <sip:85.17.186.7;lr=on;ftag=12345;did=4f.e6d96237>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="192.168.1.5:5060" 
+to="85.17.186.7:5060" 
+time="1251228892359"
+isSender="true" 
+transactionId="z9hg4bk8ffe6e869d4f5b1b0a5137f1af620e8a" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="REFER sip:4444@81.23.228.143 SIP/2.0" 
+>
+<![CDATA[REFER sip:4444@81.23.228.143 SIP/2.0
+Via: SIP/2.0/UDP 192.168.1.5:5060;branch=z9hG4bK8ffe6e869d4f5b1b0a5137f1af620e8a
+CSeq: 3 REFER
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1c60a4ac
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Max-Forwards: 70
+Contact: <sip:192.168.1.5:5060;transport=udp>
+Route: <sip:85.17.186.7;lr=on;ftag=12345;did=4f.e6d96237>
+Content-Length: 0
+
+]]>
+</message>
+
+<message
+from="85.17.186.7:5060" 
+to="192.168.1.5:5060" 
+time="1251228892656"
+isSender="false" 
+transactionId="z9hg4bk8ffe6e869d4f5b1b0a5137f1af620e8a" 
+callId="bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5" 
+firstLine="SIP/2.0 400 Bad Request (Refer-to missing)" 
+>
+<![CDATA[SIP/2.0 400 Bad Request (Refer-to missing)
+Via: SIP/2.0/UDP 192.168.1.5:5060;rport=5060;received=124.43.153.0;branch=z9hG4bK8ffe6e869d4f5b1b0a5137f1af620e8a
+From: "ECF SIP Tester 1" <sip:2233375055@sip2sip.info>;tag=12345
+To: "SIP2SIP Echo Service" <sip:4444@sip2sip.info>;tag=as1c60a4ac
+Call-ID: bcad5f43a7d0d59f2486cef462e3ba3e@192.168.1.5
+CSeq: 3 REFER
+User-Agent: Asterisk PBX
+Allow: INVITE,ACK,CANCEL,OPTIONS,BYE,REFER,SUBSCRIBE,NOTIFY
+Supported: replaces
+Content-Length: 0
+
+]]>
+</message>
+
