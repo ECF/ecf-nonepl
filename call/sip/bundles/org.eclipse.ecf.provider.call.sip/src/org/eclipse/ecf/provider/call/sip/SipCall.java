@@ -1643,7 +1643,7 @@ public class SipCall {
 
 			SipRemoteParticipant remoteParty = new SipRemoteParticipant(
 					(SipUriID) new SipUriNamespace()
-							.createInstance(new Object[] { "sip:4444@sip2sip.info" }),
+							.createInstance(new Object[] { "sip:3333@sip2sip.info" }),
 					"Harshana Eranga Martin");
 
 			System.out
