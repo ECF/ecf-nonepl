@@ -28,7 +28,8 @@ import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
 import org.eclipse.ui.PlatformUI;
 
-public class JoinGroupWizardAction implements IObjectActionDelegate, IWorkbenchWindowActionDelegate {
+public class JoinGroupWizardAction implements IObjectActionDelegate,
+		IWorkbenchWindowActionDelegate {
 
 	private static final String CONNECT_PROJECT_MENU_TEXT = "Connect Project to JGroups Channel...";
 	private static final String DISCONNECT_PROJECT_MENU_TEXT = "Disconnect JGroups Project";
@@ -42,7 +43,8 @@ public class JoinGroupWizardAction implements IObjectActionDelegate, IWorkbenchW
 		if (res == null)
 			return null;
 		final CollabClient client = CollabClient.getDefault();
-		final ClientEntry entry = client.isConnected(res, CollabClient.GENERIC_CONTAINER_CLIENT_NAME);
+		final ClientEntry entry = client.isConnected(res,
+				CollabClient.GENERIC_CONTAINER_CLIENT_NAME);
 		return entry;
 	}
 
@@ -63,7 +65,8 @@ public class JoinGroupWizardAction implements IObjectActionDelegate, IWorkbenchW
 
 	public void run(IAction action) {
 		if (!connected) {
-			final JoinGroupWizard wizard = new JoinGroupWizard(resource, PlatformUI.getWorkbench());
+			final JoinGroupWizard wizard = new JoinGroupWizard(resource,
+					PlatformUI.getWorkbench());
 			Shell shell = null;
 			if (targetPart == null) {
 				shell = (window == null) ? null : window.getShell();
@@ -80,7 +83,8 @@ public class JoinGroupWizardAction implements IObjectActionDelegate, IWorkbenchW
 				connected = false;
 				action.setText(CONNECT_PROJECT_MENU_TEXT);
 			} else {
-				final EclipseCollabSharedObject collab = client.getSharedObject();
+				final EclipseCollabSharedObject collab = client
+						.getSharedObject();
 				if (collab != null) {
 					collab.chatGUIDestroy();
 				}
@@ -95,7 +99,8 @@ public class JoinGroupWizardAction implements IObjectActionDelegate, IWorkbenchW
 			if (obj instanceof IProject) {
 				resource = (IProject) obj;
 			} else if (obj instanceof IAdaptable) {
-				resource = (IProject) ((IAdaptable) obj).getAdapter(IProject.class);
+				resource = (IProject) ((IAdaptable) obj)
+						.getAdapter(IProject.class);
 			} else {
 				resource = ResourcesPlugin.getWorkspace().getRoot();
 			}

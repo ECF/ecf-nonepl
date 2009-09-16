@@ -10,11 +10,6 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jgroups.ui.wizard;
 
-import java.util.ArrayList;
-import java.util.List;
-
-import org.eclipse.ecf.core.ContainerFactory;
-import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.ui.SharedImages;
 import org.eclipse.jface.dialogs.IDialogSettings;
 import org.eclipse.jface.wizard.WizardPage;
@@ -23,25 +18,21 @@ import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Combo;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
 public class JoinGroupWizardPage extends WizardPage {
 
-	protected static final String CLASSNAME = JoinGroupWizardPage.class.getName();
+	protected static final String CLASSNAME = JoinGroupWizardPage.class
+			.getName();
 
 	protected static final String USER_NAME_SYSTEM_PROPERTY = "user.name";
 
 	protected static final String PAGE_DESCRIPTION = "Complete account info and choose 'Finish' to login.";
-	protected static final String JOINGROUP_FIELDNAME = "JGroups Channel URL:";
+	protected static final String JOINGROUP_FIELDNAME = "JavaGroups Channel URL:";
 	protected static final String NICKNAME_FIELDNAME = "Nickname:";
-	protected static final String ECF_DEFAULT_URL = "jgroups:///jgroupsChannel";
-	protected static final String ECF_TEMPLATE_URL = "jgroups:///<channelName>";
-	protected static final String PAGE_TITLE = "Connect JGroups Client";
-
-	protected static final String DEFAULT_CLIENT = "ecf.jgroups.client";
+	protected static final String PAGE_TITLE = "Connect JavaGroups Client";
 
 	private static final String DIALOG_SETTINGS = CLASSNAME;
 
@@ -49,59 +40,43 @@ public class JoinGroupWizardPage extends WizardPage {
 		super("wizardPage");
 		setTitle(PAGE_TITLE);
 		setDescription(PAGE_DESCRIPTION);
-		setImageDescriptor(SharedImages.getImageDescriptor(SharedImages.IMG_COLLABORATION_WIZARD));
+		setImageDescriptor(SharedImages
+				.getImageDescriptor(SharedImages.IMG_COLLABORATION_WIZARD));
 	}
 
-	protected String template_url = ECF_TEMPLATE_URL;
-	protected String default_url = ECF_DEFAULT_URL;
+	protected String template_url = JGroups.DEFAULT_TARGET_URL_TEMPLATE;
+	protected String default_url = JGroups.DEFAULT_TARGET_URL;
 
 	protected Text nicknameText;
 	protected Text joinGroupText;
-	protected Combo combo;
-	protected List containerDescriptions = new ArrayList();
 	protected String urlPrefix = "";
 
 	// private Button autoLogin = null;
-	private final boolean autoLoginFlag = false;
+	private boolean autoLoginFlag = false;
 
 	public boolean getAutoLoginFlag() {
 		return autoLoginFlag;
 	}
 
-	protected void fillCombo() {
-		final ContainerTypeDescription desc = ContainerFactory.getDefault().getDescriptionByName(DEFAULT_CLIENT);
-		if (desc != null) {
-			final String name = desc.getName();
-			final String description = desc.getDescription();
-			combo.add(description + " - " + name);
-			containerDescriptions.add(desc);
-			combo.select(0);
-		}
-	}
-
 	public void createControl(Composite parent) {
-		final Composite container = new Composite(parent, SWT.NONE);
+		Composite container = new Composite(parent, SWT.NONE);
 		final GridLayout gridLayout = new GridLayout(2, false);
 		container.setLayout(gridLayout);
 		setControl(container);
 
-		final Label label_4 = new Label(container, SWT.NONE);
-		label_4.setText("Protocol:");
+		GridData data = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
 
-		combo = new Combo(container, SWT.BORDER | SWT.READ_ONLY);
-		final GridData data = new GridData(SWT.FILL, SWT.BEGINNING, true, false);
-		combo.setLayoutData(data);
-
-		final Label groupIDLabel = new Label(container, SWT.NONE);
+		Label groupIDLabel = new Label(container, SWT.NONE);
 		groupIDLabel.setText(JOINGROUP_FIELDNAME);
 
 		joinGroupText = new Text(container, SWT.BORDER);
 		joinGroupText.setText(default_url);
 		joinGroupText.setLayoutData(data);
 
-		final Label exampleLabel = new Label(container, SWT.NONE);
+		Label exampleLabel = new Label(container, SWT.NONE);
 		exampleLabel.setText(template_url);
-		exampleLabel.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false, false, 2, 1));
+		exampleLabel.setLayoutData(new GridData(SWT.END, SWT.BEGINNING, false,
+				false, 2, 1));
 
 		joinGroupText.setLayoutData(data);
 		joinGroupText.addFocusListener(new FocusAdapter() {
@@ -110,7 +85,7 @@ public class JoinGroupWizardPage extends WizardPage {
 			}
 		});
 
-		final Label nicknameLabel = new Label(container, SWT.NONE);
+		Label nicknameLabel = new Label(container, SWT.NONE);
 		nicknameLabel.setLayoutData(new GridData());
 		nicknameLabel.setText(NICKNAME_FIELDNAME);
 
@@ -123,25 +98,16 @@ public class JoinGroupWizardPage extends WizardPage {
 			}
 		});
 
-		fillCombo();
 		restoreDialogSettings();
 	}
 
 	private void restoreDialogSettings() {
-		final IDialogSettings dialogSettings = getDialogSettings();
+		IDialogSettings dialogSettings = getDialogSettings();
 		if (dialogSettings != null) {
-			final IDialogSettings pageSettings = dialogSettings.getSection(DIALOG_SETTINGS);
+			IDialogSettings pageSettings = dialogSettings
+					.getSection(DIALOG_SETTINGS);
 			if (pageSettings != null) {
-				String strVal = pageSettings.get("provider");
-				if (strVal != null) {
-					final String[] items = combo.getItems();
-					for (int i = 0; i < items.length; ++i)
-						if (strVal.equals(items[i])) {
-							break;
-						}
-				}
-
-				strVal = pageSettings.get("url");
+				String strVal = pageSettings.get("url");
 				if (strVal != null)
 					joinGroupText.setText(strVal);
 
@@ -153,17 +119,15 @@ public class JoinGroupWizardPage extends WizardPage {
 	}
 
 	public void saveDialogSettings() {
-		final IDialogSettings dialogSettings = getDialogSettings();
+		IDialogSettings dialogSettings = getDialogSettings();
 		if (dialogSettings != null) {
-			IDialogSettings pageSettings = dialogSettings.getSection(DIALOG_SETTINGS);
+			IDialogSettings pageSettings = dialogSettings
+					.getSection(DIALOG_SETTINGS);
 			if (pageSettings == null)
 				pageSettings = dialogSettings.addNewSection(DIALOG_SETTINGS);
 
 			pageSettings.put("url", joinGroupText.getText());
 			pageSettings.put("nickname", nicknameText.getText());
-			final int i = combo.getSelectionIndex();
-			if (i >= 0)
-				pageSettings.put("provider", combo.getItem(i));
 		}
 	}
 
@@ -181,13 +145,4 @@ public class JoinGroupWizardPage extends WizardPage {
 		return nicknameText.getText().trim();
 	}
 
-	public String getContainerType() {
-		final int index = combo.getSelectionIndex();
-		if (index == -1)
-			return null;
-		else {
-			final ContainerTypeDescription desc = (ContainerTypeDescription) containerDescriptions.get(index);
-			return desc.getName();
-		}
-	}
 }

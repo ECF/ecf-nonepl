@@ -33,7 +33,7 @@ public class Activator implements BundleActivator {
 	private static final String STACK_CONFIG_ID_ATTRIBUTE = "id";
 	private static final String STACK_CONFIG_FILE_ATTRIBUTE = "configFile";
 
-	public final String STACK_CONFIG_ID = Activator.PLUGIN_ID + ".default";
+	public static final String STACK_CONFIG_ID = Activator.PLUGIN_ID + ".default";
 
 	// The shared instance
 	private static Activator plugin;

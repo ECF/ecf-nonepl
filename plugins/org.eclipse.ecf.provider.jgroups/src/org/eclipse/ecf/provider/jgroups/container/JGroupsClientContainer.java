@@ -12,20 +12,14 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
 import org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection;
-import org.eclipse.ecf.provider.jgroups.connection.IChannelConfigurator;
 import org.eclipse.ecf.provider.jgroups.connection.JGroupsClientConnection;
-import org.eclipse.ecf.provider.jgroups.connection.JGroupsManagerConnection;
-import org.eclipse.ecf.provider.jgroups.connection.MChannelConfigurator;
-import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
-
-import urv.machannel.MChannel;
+import org.jgroups.Channel;
 
 /**
  * Trivial container implementation. Note that container adapter implementations can be
@@ -33,9 +27,7 @@ import urv.machannel.MChannel;
  */
 public class JGroupsClientContainer extends ClientSOContainer {
 
-	private IChannelConfigurator channelConfigurator;
-
-	public JGroupsClientContainer(SOJGContainerConfig config) throws IDCreateException {
+	public JGroupsClientContainer(SOContainerConfig config) throws IDCreateException {
 		super(config);
 	}
 
@@ -52,17 +44,14 @@ public class JGroupsClientContainer extends ClientSOContainer {
 	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org.eclipse.ecf.core.identity.ID, java.lang.Object)
 	 */
 	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data) throws ConnectionCreateException {
-		channelConfigurator= new MChannelConfigurator( ((SOJGContainerConfig) getConfig()).getStackName());
-		ISynchAsynchConnection clientConnection=  new JGroupsClientConnection(getReceiver(), channelConfigurator);
-		return clientConnection;
+		return new JGroupsClientConnection(getReceiver());
 	}
 
-	public MChannel getJChannel() {
+	public Channel getJChannel() {
 		synchronized (getConnectLock()) {
 			if (isConnected())
 				return ((AbstractJGroupsConnection) getConnection()).getJChannel();
 			return null;
 		}
 	}
-
 }
