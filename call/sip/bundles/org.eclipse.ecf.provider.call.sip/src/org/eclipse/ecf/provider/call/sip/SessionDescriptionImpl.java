@@ -11,31 +11,32 @@
 package org.eclipse.ecf.provider.call.sip;
 
 import java.io.IOException;
-import java.net.HttpURLConnection;
-import java.net.Inet4Address;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
-import java.util.ArrayList;
-import java.util.TreeMap;
-import java.util.Vector;
-
-import javax.sdp.Connection;
-import javax.sdp.Media;
-import javax.sdp.MediaDescription;
-import javax.sdp.SdpException;
-import javax.sdp.SdpFactory;
-import javax.sdp.SdpParseException;
-import javax.sdp.SessionDescription;
-
+import java.net.*;
+import java.util.*;
+import javax.sdp.*;
 import org.eclipse.ecf.provider.fmj.Transceiver;
-
-
 
 public class SessionDescriptionImpl {
 
 	private String publicIP;
 
 	private String localIP;
+
+	public String getRemoteNetworkType() {
+		return remoteNetworkType;
+	}
+
+	public void setRemoteNetworkType(String remoteNetworkType) {
+		this.remoteNetworkType = remoteNetworkType;
+	}
+
+	public String getRemoteIPType() {
+		return remoteIPType;
+	}
+
+	public void setRemoteIPType(String remoteIpType) {
+		remoteIPType = remoteIpType;
+	}
 
 	private TreeMap<String, String> localMediaMApAudio;
 
@@ -56,7 +57,7 @@ public class SessionDescriptionImpl {
 	private String remoteIPType;
 
 	private ArrayList<String> commonMediaAudio;
-	
+
 	Transceiver transceiver;
 
 	/**
@@ -70,13 +71,11 @@ public class SessionDescriptionImpl {
 		try {
 			java.net.URL URL = new java.net.URL("http://www.whatismyip.org/");
 
-			java.net.HttpURLConnection Conn = (HttpURLConnection) URL
-					.openConnection();
+			java.net.HttpURLConnection Conn = (HttpURLConnection) URL.openConnection();
 
 			java.io.InputStream InStream = Conn.getInputStream();
 
-			java.io.InputStreamReader Isr = new java.io.InputStreamReader(
-					InStream);
+			java.io.InputStreamReader Isr = new java.io.InputStreamReader(InStream);
 
 			java.io.BufferedReader Br = new java.io.BufferedReader(Isr);
 
@@ -84,8 +83,8 @@ public class SessionDescriptionImpl {
 
 			return publicIp;
 		} catch (IOException e) {
-//			e.printStackTrace();
-//			System.exit(-1);
+			//			e.printStackTrace();
+			//			System.exit(-1);
 			try {
 				System.out.println("Public IP retrieving failed. Using localIP");
 				return InetAddress.getLocalHost().getHostAddress();
@@ -96,27 +95,18 @@ public class SessionDescriptionImpl {
 		return null;
 	}
 
-	public SessionDescription getInviteSDP() throws SdpParseException,
-			IOException {
+	public SessionDescription getInviteSDP() throws SdpParseException, IOException {
 
 		publicIP = getPublicIp();
 
-		String sdp = "v=0\r\n" + "o=- 2 5" + " IN IP4 " + publicIP + "\r\n"
-				+ "s=Eclipse ECF\r\n" + "p=+94 71 6062650\r\n" + "c=IN IP4 "
-				+ publicIP + "\r\n" + "t=0 0\r\n"
-				+ "m=audio 6022 RTP/AVP 0 8 97 98\r\n"
-				+ "a=rtpmap:0 PCMU/8000\r\n" + "a=rtpmap:8 PCMA/8000\r\n"
-				+ "a=rtpmap:97 speex/16000\r\n" + "a=rtpmap:98 speex/8000\r\n"
-				+ "a=sendrecv\r\n";
+		String sdp = "v=0\r\n" + "o=- 2 5" + " IN IP4 " + publicIP + "\r\n" + "s=Eclipse ECF\r\n" + "p=+94 71 6062650\r\n" + "c=IN IP4 " + publicIP + "\r\n" + "t=0 0\r\n" + "m=audio 6022 RTP/AVP 0 8 97 98\r\n" + "a=rtpmap:0 PCMU/8000\r\n" + "a=rtpmap:8 PCMA/8000\r\n" + "a=rtpmap:97 speex/16000\r\n" + "a=rtpmap:98 speex/8000\r\n" + "a=sendrecv\r\n";
 
 		SdpFactory sdpFactory = SdpFactory.getInstance();
-		SessionDescription sdpSession = sdpFactory
-				.createSessionDescription(sdp);
+		SessionDescription sdpSession = sdpFactory.createSessionDescription(sdp);
 		return sdpSession;
 	}
 
-	public SessionDescription getOkSDP(String inviteSDP) throws SdpException,
-			IOException {
+	public SessionDescription getOkSDP(String inviteSDP) throws SdpException, IOException {
 
 		SdpFactory sdpFactory = SdpFactory.getInstance();
 		SessionDescription sdp = sdpFactory.createSessionDescription(inviteSDP);
@@ -129,14 +119,12 @@ public class SessionDescriptionImpl {
 
 		System.out.println("Remote IP= " + remoteIPAddress);
 
-		Vector<MediaDescription> remoteCapabilities = sdp
-				.getMediaDescriptions(true);
+		Vector<MediaDescription> remoteCapabilities = sdp.getMediaDescriptions(true);
 
 		System.out.println(remoteCapabilities);
 
 		for (int i = 0; i < remoteCapabilities.size(); i++) {
-			MediaDescription m = (MediaDescription) remoteCapabilities
-					.elementAt(i);
+			MediaDescription m = (MediaDescription) remoteCapabilities.elementAt(i);
 
 			// //TODO TEST
 			// Added last
@@ -150,21 +138,16 @@ public class SessionDescriptionImpl {
 				if (resArr.length > 2) {
 					String[] realArr = resArr[2].trim().split(" ");
 					if (realArr.length > 3) {
-						if (realArr[2].startsWith("192.168.")
-								|| realArr[2].startsWith("10.")) {
+						if (realArr[2].startsWith("192.168.") || realArr[2].startsWith("10.")) {
 							remotePrivateIPAddress = realArr[2];
-							System.out.println("remotePrivateIPAddress ="
-									+ remotePrivateIPAddress);
+							System.out.println("remotePrivateIPAddress =" + remotePrivateIPAddress);
 						} else {
 							remoteGlobalIPAddress = realArr[2];
-							System.out.println("remoteGlobalIPAddress= "
-									+ remoteGlobalIPAddress);
+							System.out.println("remoteGlobalIPAddress= " + remoteGlobalIPAddress);
 						}
 
-						remoteAudioPortBehindNAT = Integer.parseInt(realArr[3]
-								.trim());
-						System.out.println("remoteAudioPortBehindNAT= "
-								+ remoteAudioPortBehindNAT);
+						remoteAudioPortBehindNAT = Integer.parseInt(realArr[3].trim());
+						System.out.println("remoteAudioPortBehindNAT= " + remoteAudioPortBehindNAT);
 					}
 
 				}
@@ -174,11 +157,9 @@ public class SessionDescriptionImpl {
 			System.out.println("m = " + m.toString());
 			Media media = m.getMedia();
 
-			if (media.getMediaType().equalsIgnoreCase("Audio")
-					&& media.getProtocol().equalsIgnoreCase("RTP/AVP")) {
+			if (media.getMediaType().equalsIgnoreCase("Audio") && media.getProtocol().equalsIgnoreCase("RTP/AVP")) {
 				if (remoteMediaAudio == null) {
-					remoteMediaAudio = new ArrayList<String>(media
-							.getMediaFormats(false));
+					remoteMediaAudio = new ArrayList<String>(media.getMediaFormats(false));
 				} else {
 					Vector<String> mediaFormats = media.getMediaFormats(false);
 
@@ -198,10 +179,7 @@ public class SessionDescriptionImpl {
 		publicIP = getPublicIp();
 		localIP = Inet4Address.getLocalHost().getHostAddress();
 
-		String sdpData = "v=0\r\n" + "o=- 2 5" + " IN IP4 " + publicIP + "\r\n"
-				+ "s=Eclipse ECF\r\n" + "p=+94 71 6062650\r\n" + "c=IN IP4 "
-				+ publicIP + "\r\n" + "t=0 0\r\n" + "m=audio 6022 RTP/AVP "
-				+ commonAudioCodec + "\r\n" + "a=sendrecv\r\n";
+		String sdpData = "v=0\r\n" + "o=- 2 5" + " IN IP4 " + publicIP + "\r\n" + "s=Eclipse ECF\r\n" + "p=+94 71 6062650\r\n" + "c=IN IP4 " + publicIP + "\r\n" + "t=0 0\r\n" + "m=audio 6022 RTP/AVP " + commonAudioCodec + "\r\n" + "a=sendrecv\r\n";
 
 		sdp = sdpFactory.createSessionDescription(sdpData);
 
@@ -211,17 +189,16 @@ public class SessionDescriptionImpl {
 
 	public void initFMJ() {
 
-		 transceiver = new Transceiver("" + remoteIPAddress, ""
-				+ remoteAudioPort);
+		transceiver = new Transceiver("" + remoteIPAddress, "" + remoteAudioPort);
 		transceiver.initiateMediaSession();
 
 	}
-	
-	public void disposeFMJ(){
-		
-		if(transceiver!=null)
+
+	public void disposeFMJ() {
+
+		if (transceiver != null)
 			transceiver.closeMediaSession();
-		
+
 	}
 
 	private String selectBestAudioCodec() {
@@ -259,12 +236,9 @@ public class SessionDescriptionImpl {
 	}
 
 	public void resolveOkSDP(String incomingOKSDP) throws SdpException {
-		System.out
-				.println("This is the SDP data recived to resolve from Listener as a reply to invite="
-						+ incomingOKSDP);
+		System.out.println("This is the SDP data recived to resolve from Listener as a reply to invite=" + incomingOKSDP);
 		SdpFactory sdpFactory = SdpFactory.getInstance();
-		SessionDescription sdp = sdpFactory
-				.createSessionDescription(incomingOKSDP);
+		SessionDescription sdp = sdpFactory.createSessionDescription(incomingOKSDP);
 
 		Connection c = sdp.getConnection();
 
@@ -274,14 +248,12 @@ public class SessionDescriptionImpl {
 
 		System.out.println("Remote IP= " + remoteIPAddress);
 
-		Vector<MediaDescription> remoteCapabilities = sdp
-				.getMediaDescriptions(true);
+		Vector<MediaDescription> remoteCapabilities = sdp.getMediaDescriptions(true);
 
 		System.out.println(remoteCapabilities);
 
 		for (int i = 0; i < remoteCapabilities.size(); i++) {
-			MediaDescription m = (MediaDescription) remoteCapabilities
-					.elementAt(i);
+			MediaDescription m = (MediaDescription) remoteCapabilities.elementAt(i);
 
 			Vector attributeLst = m.getAttributes(true);
 			System.out.println("Attributes a= " + attributeLst);
@@ -293,21 +265,16 @@ public class SessionDescriptionImpl {
 				if (resArr.length > 2) {
 					String[] realArr = resArr[2].trim().split(" ");
 					if (realArr.length > 3) {
-						if (realArr[2].startsWith("192.168.")
-								|| realArr[2].startsWith("10.")) {
+						if (realArr[2].startsWith("192.168.") || realArr[2].startsWith("10.")) {
 							remotePrivateIPAddress = realArr[2];
-							System.out.println("remotePrivateIPAddress ="
-									+ remotePrivateIPAddress);
+							System.out.println("remotePrivateIPAddress =" + remotePrivateIPAddress);
 						} else {
 							remoteGlobalIPAddress = realArr[2];
-							System.out.println("remoteGlobalIPAddress= "
-									+ remoteGlobalIPAddress);
+							System.out.println("remoteGlobalIPAddress= " + remoteGlobalIPAddress);
 						}
 
-						remoteAudioPortBehindNAT = Integer.parseInt(realArr[3]
-								.trim());
-						System.out.println("remoteAudioPortBehindNAT= "
-								+ remoteAudioPortBehindNAT);
+						remoteAudioPortBehindNAT = Integer.parseInt(realArr[3].trim());
+						System.out.println("remoteAudioPortBehindNAT= " + remoteAudioPortBehindNAT);
 					}
 
 				}
@@ -317,11 +284,9 @@ public class SessionDescriptionImpl {
 			System.out.println("m = " + m.toString());
 			Media media = m.getMedia();
 
-			if (media.getMediaType().equalsIgnoreCase("Audio")
-					&& media.getProtocol().equalsIgnoreCase("RTP/AVP")) {
+			if (media.getMediaType().equalsIgnoreCase("Audio") && media.getProtocol().equalsIgnoreCase("RTP/AVP")) {
 				if (remoteMediaAudio == null) {
-					remoteMediaAudio = new ArrayList<String>(media
-							.getMediaFormats(false));
+					remoteMediaAudio = new ArrayList<String>(media.getMediaFormats(false));
 				} else {
 					Vector<String> mediaFormats = media.getMediaFormats(false);
 
@@ -341,6 +306,14 @@ public class SessionDescriptionImpl {
 		// OK Received cz remote party agreed to answer the call. So initiate
 		// media session to remote party
 		initFMJ();
+	}
+
+	public String getLocalIP() {
+		return localIP;
+	}
+
+	public void setLocalIP(String localIp) {
+		localIP = localIp;
 	}
 
 }

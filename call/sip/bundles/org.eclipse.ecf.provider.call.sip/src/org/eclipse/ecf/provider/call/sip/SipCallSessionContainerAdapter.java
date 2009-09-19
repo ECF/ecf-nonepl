@@ -11,34 +11,15 @@
 package org.eclipse.ecf.provider.call.sip;
 
 import java.io.IOException;
-import java.util.Iterator;
-import java.util.Map;
-import java.util.Vector;
-
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.security.Callback;
-import org.eclipse.ecf.core.security.CallbackHandler;
-import org.eclipse.ecf.core.security.IConnectContext;
-import org.eclipse.ecf.core.security.ObjectCallback;
-import org.eclipse.ecf.core.security.UnsupportedCallbackException;
+import java.util.*;
+import org.eclipse.ecf.core.identity.*;
+import org.eclipse.ecf.core.security.*;
 import org.eclipse.ecf.provider.call.sip.container.SipContainer;
-import org.eclipse.ecf.provider.call.sip.identity.SipLocalParticipant;
-import org.eclipse.ecf.provider.call.sip.identity.SipRemoteParticipant;
-import org.eclipse.ecf.provider.call.sip.identity.SipUriID;
-import org.eclipse.ecf.provider.call.sip.identity.SipUriNamespace;
-import org.eclipse.ecf.telephony.call.CallException;
-import org.eclipse.ecf.telephony.call.CallSessionState;
-import org.eclipse.ecf.telephony.call.ICallSession;
-import org.eclipse.ecf.telephony.call.ICallSessionContainerAdapter;
-import org.eclipse.ecf.telephony.call.ICallSessionListener;
-import org.eclipse.ecf.telephony.call.ICallSessionRequestListener;
+import org.eclipse.ecf.provider.call.sip.identity.*;
+import org.eclipse.ecf.telephony.call.*;
 import org.eclipse.ecf.telephony.call.events.ICallSessionRequestEvent;
 
-
-public class SipCallSessionContainerAdapter implements
-		ICallSessionContainerAdapter {
+public class SipCallSessionContainerAdapter implements ICallSessionContainerAdapter {
 
 	private SipContainer container;
 	private Vector callSessionRequestListener = new Vector<ICallSessionRequestListener>();
@@ -60,8 +41,7 @@ public class SipCallSessionContainerAdapter implements
 		return cbs;
 	}
 
-	protected Object getConnectData(ID remote, IConnectContext joinContext)
-			throws IOException, UnsupportedCallbackException {
+	protected Object getConnectData(ID remote, IConnectContext joinContext) throws IOException, UnsupportedCallbackException {
 		final Callback[] callbacks = createAuthorizationCallbacks();
 		if (joinContext != null && callbacks != null && callbacks.length > 0) {
 			final CallbackHandler handler = joinContext.getCallbackHandler();
@@ -82,15 +62,12 @@ public class SipCallSessionContainerAdapter implements
 		try {
 			final Object connectData = getConnectData(remote, joinContext);
 
-			SipUriID initiatorId = (SipUriID) new SipUriNamespace()
-					.createInstance(new Object[] { "<sip:" + remote.getName()
-							+ ">" });
+			SipUriID initiatorId = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + remote.getName() + ">"});
 			String initiatorName = null;
 			String password = (String) connectData;
 			String proxyServer = "proxy.sipthor.net";//TODO Remove hard code
 
-			localUser = new SipLocalParticipant(initiatorId, initiatorName,
-					password, proxyServer);
+			localUser = new SipLocalParticipant(initiatorId, initiatorName, password, proxyServer);
 
 			sipCall.connect(localUser);
 
@@ -108,64 +85,51 @@ public class SipCallSessionContainerAdapter implements
 		sipCall = null;
 	}
 
-	public void incomingCallRequest(final SipUriID callerId){
-		
-		Iterator it=callSessionRequestListener.iterator();
-		while(it.hasNext()){
-			
-			((ICallSessionRequestListener) it.next())
-            .handleCallSessionRequest(new ICallSessionRequestEvent() {
+	public void incomingCallRequest(final SipUriID callerId) {
 
-                    public ICallSession accept(
-                                    ICallSessionListener listener, Map properties)
-                                    throws CallException {
-                            SipCallSession session = new SipCallSession(
-                                            userId, callerId, listener,
-                                            SipCallSessionContainerAdapter.this);
-                            sipCall.getDefault(
-                                            SipCallSessionContainerAdapter.this)
-                                            .acceptIncomingCall(callerId);
-                            return session;
-                    }
+		Iterator it = callSessionRequestListener.iterator();
+		while (it.hasNext()) {
 
-                    public CallSessionState getCallSessionState() {
-                            return CallSessionState.PENDING;
-                    }
+			((ICallSessionRequestListener) it.next()).handleCallSessionRequest(new ICallSessionRequestEvent() {
 
-                    public ID getInitiator() {
-                            SipUriID initiatorId = (SipUriID) new SipUriNamespace()
-							.createInstance(new Object[] { "<sip:" + callerId.getName()
-									+ ">" });
-							    return initiatorId;
-                    }
+				public ICallSession accept(ICallSessionListener listener, Map properties) throws CallException {
+					SipCallSession session = new SipCallSession(userId, callerId, listener, SipCallSessionContainerAdapter.this);
+					sipCall.getDefault(SipCallSessionContainerAdapter.this).acceptIncomingCall(callerId);
+					return session;
+				}
 
-                    public Map getProperties() {
-                            // TODO Auto-generated method stub
-                            return null;
-                    }
+				public CallSessionState getCallSessionState() {
+					return CallSessionState.PENDING;
+				}
 
-                    public ID getReceiver() {
-                            return IDFactory.getDefault()
-                                            .createStringID(userId.getSIPUrl());
-                    }
+				public ID getInitiator() {
+					SipUriID initiatorId = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + callerId.getName() + ">"});
+					return initiatorId;
+				}
 
-                    public ID getSessionID() {
-                            return null;
-                    }
+				public Map getProperties() {
+					// TODO Auto-generated method stub
+					return null;
+				}
 
-                    public void reject() {
-                            sipCall.getDefault(
-                                            SipCallSessionContainerAdapter.this)
-                                            .rejectIncomingCall();
-                    }
+				public ID getReceiver() {
+					return IDFactory.getDefault().createStringID(userId.getSIPUrl());
+				}
 
-            });
+				public ID getSessionID() {
+					return null;
+				}
 
+				public void reject() {
+					sipCall.getDefault(SipCallSessionContainerAdapter.this).rejectIncomingCall();
+				}
+
+			});
 
 		}
-		
+
 	}
-	
+
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -173,9 +137,7 @@ public class SipCallSessionContainerAdapter implements
 	 * addCallSessionRequestListener
 	 * (org.eclipse.ecf.telephony.call.ICallSessionRequestListener)
 	 */
-	@Override
-	public void addCallSessionRequestListener(
-			ICallSessionRequestListener listener) {
+	public void addCallSessionRequestListener(ICallSessionRequestListener listener) {
 		callSessionRequestListener.add(listener);
 	}
 
@@ -185,7 +147,7 @@ public class SipCallSessionContainerAdapter implements
 	 * @seeorg.eclipse.ecf.telephony.call.ICallSessionContainerAdapter#
 	 * getReceiverNamespace()
 	 */
-	@Override
+
 	public Namespace getReceiverNamespace() {
 		return null;
 	}
@@ -197,9 +159,8 @@ public class SipCallSessionContainerAdapter implements
 	 * removeCallSessionRequestListener
 	 * (org.eclipse.ecf.telephony.call.ICallSessionRequestListener)
 	 */
-	@Override
-	public void removeCallSessionRequestListener(
-			ICallSessionRequestListener listener) {
+
+	public void removeCallSessionRequestListener(ICallSessionRequestListener listener) {
 		callSessionRequestListener.remove(listener);
 	}
 
@@ -211,9 +172,8 @@ public class SipCallSessionContainerAdapter implements
 	 * (org.eclipse.ecf.core.identity.ID[],
 	 * org.eclipse.ecf.telephony.call.ICallSessionListener, java.util.Map)
 	 */
-	@Override
-	public void sendCallRequest(ID[] receivers, ICallSessionListener listener,
-			Map properties) throws CallException {
+
+	public void sendCallRequest(ID[] receivers, ICallSessionListener listener, Map properties) throws CallException {
 		throw new CallException("Conference Call support not implemented");
 	}
 
@@ -225,16 +185,12 @@ public class SipCallSessionContainerAdapter implements
 	 * (org.eclipse.ecf.core.identity.ID,
 	 * org.eclipse.ecf.telephony.call.ICallSessionListener, java.util.Map)
 	 */
-	@Override
-	public void sendCallRequest(ID receiver, ICallSessionListener listener,
-			Map properties) throws CallException {
-		
-		SipUriID receipient=(SipUriID) new SipUriNamespace()
-		.createInstance(new Object[] { "<sip:"+receiver.getName()+">" });
-		SipRemoteParticipant remoteParty = new SipRemoteParticipant(
-				receipient,
-				null);
-		
+
+	public void sendCallRequest(ID receiver, ICallSessionListener listener, Map properties) throws CallException {
+
+		SipUriID receipient = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + receiver.getName() + ">"});
+		SipRemoteParticipant remoteParty = new SipRemoteParticipant(receipient, null);
+
 		sipCall.initiateCall(remoteParty, new SipCallSession(userId, receipient, listener, this));
 	}
 
@@ -243,20 +199,20 @@ public class SipCallSessionContainerAdapter implements
 	 * 
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
-	@Override
+
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
 
-	public void hangupActiveCall(){
+	public void hangupActiveCall() {
 		sipCall.hangupActiveCall(1000);
 	}
-	
-	public void rejectIncomingCall(){
+
+	public void rejectIncomingCall() {
 		sipCall.rejectIncomingCall();
 	}
-	
-	public void cancelUnansweredCall(){
+
+	public void cancelUnansweredCall() {
 		sipCall.createCallCancel();
 	}
 

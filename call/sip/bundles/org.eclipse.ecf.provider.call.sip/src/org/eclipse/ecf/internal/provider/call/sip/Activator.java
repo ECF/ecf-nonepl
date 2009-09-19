@@ -24,8 +24,8 @@ public class Activator implements BundleActivator {
 	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		plugin=this;
-		this.context=context;
+		setPlugin(this);
+		this.setContext(context);
 		// register the service
 		context.registerService(
 				SimpleLogService.class.getName(), 
@@ -57,6 +57,22 @@ public class Activator implements BundleActivator {
 		simpleLogServiceTracker = null;
 		
 		simpleLogService = null;
+	}
+
+	public static void setPlugin(Activator plugin) {
+		Activator.plugin = plugin;
+	}
+
+	public static Activator getPlugin() {
+		return plugin;
+	}
+
+	public void setContext(BundleContext context) {
+		this.context = context;
+	}
+
+	public BundleContext getContext() {
+		return context;
 	}
 
 }
