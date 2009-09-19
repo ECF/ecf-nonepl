@@ -5,15 +5,10 @@
  */
 package org.eclipse.ecf.tests.provider.call.sip;
 
-import static org.junit.Assert.*;
 import junit.framework.TestCase;
-
 import org.eclipse.ecf.internal.tests.provider.call.sip.UserSettings;
 import org.eclipse.ecf.provider.call.sip.SipCall;
-import org.eclipse.ecf.provider.call.sip.identity.SipLocalParticipant;
-import org.eclipse.ecf.provider.call.sip.identity.SipRemoteParticipant;
-import org.eclipse.ecf.provider.call.sip.identity.SipUriID;
-import org.eclipse.ecf.provider.call.sip.identity.SipUriNamespace;
+import org.eclipse.ecf.provider.call.sip.identity.*;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -35,17 +30,9 @@ public class SipIncomingCallRejectTest extends TestCase {
 	@Before
 	protected void setUp() throws Exception {
 
-		localParty = new SipLocalParticipant(
-				(SipUriID) new SipUriNamespace()
-						.createInstance(new Object[] { UserSettings.LOCAL_ECF_TESTER_USER_NAME }),
-				UserSettings.LOCAL_ECF_TESTER_NAME,
-				UserSettings.LOCAL_ECF_TESTER_PASSWORD,
-				UserSettings.LOCAL_ECF_TESTER_OUTBOUND_PROXY_NAME);
+		localParty = new SipLocalParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {UserSettings.LOCAL_ECF_TESTER_USER_NAME}), UserSettings.LOCAL_ECF_TESTER_NAME, UserSettings.LOCAL_ECF_TESTER_PASSWORD, UserSettings.LOCAL_ECF_TESTER_OUTBOUND_PROXY_NAME);
 
-		remoteParty = new SipRemoteParticipant(
-				(SipUriID) new SipUriNamespace()
-						.createInstance(new Object[] { UserSettings.REMOTE_ECF_TESTER_USER_NAME }),
-				UserSettings.REMOTE_ECF_SIP_TESTER_NAME);
+		remoteParty = new SipRemoteParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {UserSettings.REMOTE_ECF_TESTER_USER_NAME}), UserSettings.REMOTE_ECF_SIP_TESTER_NAME);
 	}
 
 	/**
@@ -60,7 +47,6 @@ public class SipIncomingCallRejectTest extends TestCase {
 
 			call = new SipCall(localParty);
 
-		
 			// Give 15 secs to verify it's working
 			Thread.sleep(timeToKeepAlive);
 
