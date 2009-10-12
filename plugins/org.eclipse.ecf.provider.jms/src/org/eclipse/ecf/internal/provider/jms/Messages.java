@@ -27,7 +27,6 @@ public class Messages extends NLS {
 	public static String AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID;
 	public static String AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_NOT_NULL;
 	public static String AbstractJMSClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION;
-	public static String AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLIENT_NOT_FOUND;
 	public static String AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_CLOSING;
 	public static String AbstractJMSServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL;
 	public static String AbstractJMSServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL;

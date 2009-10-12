@@ -21,8 +21,6 @@ public class Messages extends NLS {
 	public static String SkypeActionContributionItems_Call_User;
 	public static String SkypeActionContributionItems_Call_User_Tooltip;
 	public static String SkypeCallAction_Call_Image_Icon_Name;
-	public static String SkypeConnectWizard_EXCEPTION_SEE_DETAILS;
-	public static String SkypeConnectWizard_EXCEPTION_SKYPE_EXCEPTION;
 	public static String SkypeConnectWizard_NEW_CONNECTION_TITLE;
 	public static String SkypeConnectWizardPage_CONNECT_WIZARD_PAGE_MESSAGE;
 	public static String SkypeConnectWizardPage_CONNECTION_WIZARD_TITLE;
@@ -42,11 +40,6 @@ public class Messages extends NLS {
 	public static String SkypeHyperlink_ERROR_OPEN_VIEW_TITLE;
 	public static String SkypeHyperlink_MESSAGING_ERROR_MESSAGE;
 	public static String SkypeHyperlink_MESSAGING_ERROR_TITLE;
-	public static String SkypeOpenAction_3;
-	public static String SkypeOpenAction_4;
-	public static String SkypeOpenAction_Initiate_Skype_Call_Message;
-	public static String SkypeOpenAction_Initiate_Skype_Call_Title;
-	public static String SkypeOpenAction_Message_Title_Call_Failed;
 	static {
 		// initialize resource bundle
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
