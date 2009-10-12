@@ -4,7 +4,7 @@ Bundle-Name: ECF JGroups Provider UI
 Bundle-SymbolicName: org.eclipse.ecf.provider.jgroups.ui;singleton:=true
 Bundle-Version: 1.3.0.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.provider.jgroups.ui.Activator
-Bundle-Vendor: Eclipse.org
+Bundle-Vendor: Eclipse.org - ECF
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,

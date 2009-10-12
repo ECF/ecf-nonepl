@@ -8,7 +8,6 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jgroups.connection;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.Serializable;
@@ -25,7 +24,6 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOContainer;
-import org.eclipse.ecf.provider.jgroups.container.SOJGContainerConfig;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
@@ -41,20 +39,11 @@ import org.jgroups.blocks.MessageDispatcher;
  */
 public class JGroupsClientConnection extends AbstractJGroupsConnection {
 
-	private final IChannelConfigurator channelConfigurator;
-
 	/**
 	 * @param eventHandler
-	 * @param chConf 
 	 */
-	public JGroupsClientConnection(ISynchAsynchEventHandler eventHandler, IChannelConfigurator chConf) {
+	public JGroupsClientConnection(ISynchAsynchEventHandler eventHandler) {
 		super(eventHandler);
-		this.channelConfigurator=chConf;
-		try {
-			this.channel= channelConfigurator.createMChannel( "225.222.222.222", ((JGroupsID) getLocalID()).getName()  );
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-		}
 	}
 
 	/* (non-Javadoc)
@@ -75,6 +64,7 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 		Object result = null;
 		try {
 			final JGroupsID jgroupsID = (JGroupsID) targetID;
+			setupJGroups(jgroupsID);
 			Trace.trace(Activator.PLUGIN_ID, "connecting to " + targetID + "," //$NON-NLS-1$ //$NON-NLS-2$
 					+ data + "," + timeout + ")"); //$NON-NLS-1$ //$NON-NLS-2$
 			result = getConnectResult(jgroupsID, (Serializable) data, timeout);
@@ -90,8 +80,7 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
 		Object connectResponseResult = null;
 		try {
-//			connectResponseResult = SOContainer.deserializeContainerMessage((byte[]) ((ConnectResponseMessage) result).getData());
-			connectResponseResult = ContainerMessage.createViewChangeMessage(getLocalID(), targetID, 0, new ID[]{ getLocalID() }, true, null);
+			connectResponseResult = SOContainer.deserializeContainerMessage((byte[]) ((ConnectResponseMessage) result).getData());
 		} catch (final Exception e) {
 			throw new ContainerConnectException(e);
 		}
@@ -102,7 +91,6 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 		return connectResponseResult;
 	}
 
-
 	/**
 	 * @param jgroupsID
 	 * @param data
@@ -110,9 +98,21 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 	 * @return
 	 */
 	private Object getConnectResult(JGroupsID jgroupsID, Serializable data, int timeout) throws ECFException {
-		final Message msg = new Message( jgroupsID.getAddress(), null, new ConnectRequestMessage((JGroupsID) getLocalID(), jgroupsID, data));
-		channel.send(msg);
-		return new ConnectResponseMessage( jgroupsID, (JGroupsID) getLocalID(), data );
+		final MessageDispatcher messageDispatcher = getMessageDispatcher();
+		final Message msg = new Message(getConnectDestination(), null, new ConnectRequestMessage((JGroupsID) getLocalID(), jgroupsID, data));
+		Object response = null;
+		try {
+			response = messageDispatcher.sendMessage(msg, GroupRequest.GET_FIRST, timeout);
+		} catch (final TimeoutException e) {
+			throw new ECFException("connect timeout", e);
+		} catch (final SuspectedException e) {
+			throw new ECFException("connect failure", e);
+		}
+		return response;
+	}
+
+	private Address getConnectDestination() {
+		return getChannel().getView().getCreator();
 	}
 
 	/* (non-Javadoc)

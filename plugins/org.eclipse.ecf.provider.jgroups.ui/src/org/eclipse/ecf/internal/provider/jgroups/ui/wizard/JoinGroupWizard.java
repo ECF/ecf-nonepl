@@ -29,23 +29,28 @@ import org.eclipse.jface.wizard.Wizard;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
 
-public class JoinGroupWizard extends Wizard implements IConnectWizard, INewWizard {
+public class JoinGroupWizard extends Wizard implements IConnectWizard,
+		INewWizard {
 
-	protected static final String PAGE_TITLE = "Collaboration Connect";
-
-	private static final String DIALOG_SETTINGS = JoinGroupWizard.class.getName();
+	private static final String DIALOG_SETTINGS = JoinGroupWizard.class
+			.getName();
 
 	JoinGroupWizardPage mainPage;
-	private final IResource resource;
-	
+	private IResource resource;
+
 	protected IContainer container;
+
+	public JoinGroupWizard() {
+	}
 
 	public JoinGroupWizard(IResource resource, IWorkbench workbench) {
 		super();
 		this.resource = resource;
-		setWindowTitle(PAGE_TITLE);
-		final IDialogSettings dialogSettings = Activator.getDefault().getDialogSettings();
-		IDialogSettings wizardSettings = dialogSettings.getSection(DIALOG_SETTINGS);
+		setWindowTitle("JavaGroups Connect");
+		final IDialogSettings dialogSettings = Activator.getDefault()
+				.getDialogSettings();
+		IDialogSettings wizardSettings = dialogSettings
+				.getSection(DIALOG_SETTINGS);
 		if (wizardSettings == null)
 			wizardSettings = dialogSettings.addNewSection(DIALOG_SETTINGS);
 
@@ -72,37 +77,42 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard, INewWizar
 		return true;
 	}
 
-	protected void finishPage(final IProgressMonitor monitor) throws InterruptedException, CoreException {
+	protected void finishPage(final IProgressMonitor monitor)
+			throws InterruptedException, CoreException {
 
 		mainPage.saveDialogSettings();
 		URIClientConnectAction client = null;
 		final String groupName = mainPage.getJoinGroupText();
 		final String nickName = mainPage.getNicknameText();
-		final String containerType = mainPage.getContainerType();
+		final String containerType = JGroups.CLIENT_CONTAINER_NAME;
 		final boolean autoLogin = mainPage.getAutoLoginFlag();
 		try {
-			client = new URIClientConnectAction(containerType, groupName, nickName, "", resource, autoLogin);
+			client = new URIClientConnectAction(containerType, groupName,
+					nickName, "", resource, autoLogin);
 			client.run(null);
 		} catch (final Exception e) {
-			final String id = Activator.getDefault().getBundle().getSymbolicName();
-			throw new CoreException(new Status(Status.ERROR, id, IStatus.ERROR, "Could not connect to " + groupName, e));
+			final String id = Activator.getDefault().getBundle()
+					.getSymbolicName();
+			throw new CoreException(new Status(Status.ERROR, id, IStatus.ERROR,
+					"Could not connect to " + groupName, e));
 		}
 	}
 
-        public void init(IWorkbench workbench, IContainer container) {
-            this.container= container;
-            
-        }
+	public void init(IWorkbench workbench, IContainer container) {
+		this.container = container;
 
-        public void init(IWorkbench workbench, IStructuredSelection selection) {
-            this.container = null;
-            try {
-                    this.container = ContainerFactory.getDefault().createContainer( JGroups.CLIENT_CONTAINER_NAME );
-            } catch (final ContainerCreateException e) {
-                    // None
-            }
+	}
 
-            setWindowTitle( JoinGroupWizard.DIALOG_SETTINGS );
-            
-        }
+	public void init(IWorkbench workbench, IStructuredSelection selection) {
+		this.container = null;
+		try {
+			this.container = ContainerFactory.getDefault().createContainer(
+					JGroups.CLIENT_CONTAINER_NAME);
+		} catch (final ContainerCreateException e) {
+			// None
+		}
+
+		setWindowTitle(JoinGroupWizard.DIALOG_SETTINGS);
+
+	}
 }

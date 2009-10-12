@@ -9,6 +9,7 @@
 package org.eclipse.ecf.provider.jgroups.connection;
 
 import java.io.IOException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
@@ -31,7 +32,10 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Channel;
+import org.jgroups.ChannelClosedException;
 import org.jgroups.ChannelListener;
+import org.jgroups.ChannelNotConnectedException;
+import org.jgroups.JChannelFactory;
 import org.jgroups.Message;
 import org.jgroups.Receiver;
 import org.jgroups.ReceiverAdapter;
@@ -39,16 +43,13 @@ import org.jgroups.View;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.blocks.RequestHandler;
 
-import urv.machannel.MChannel;
-import urv.machannel.MChannelImpl;
-
 public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
 
 	protected static final String JGROUPS_UDP_MCAST_PORT_PROPNAME = "jgroups.udp.mcast_port";
 	protected static final String JGROUPS_UDP_MCAST_ADDR_PROPNAME = "jgroups.udp.mcast_addr";
 	private static final String SYNCH_CHANNEL_NAME = "ch2";
 	private static final String ASYNCH_CHANNEL_NAME = "ch1";
-	protected MChannel channel;
+	private Channel channel;
 	protected boolean started = false;
 	protected final ISynchAsynchEventHandler eventHandler;
 
@@ -158,12 +159,18 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			} else
 				throw new IOException("targetID not of JGroupsID type");
 		}
-		channel.send(destination, null, new JGroupsMessage((JGroupsID) getLocalID(), jid, data));
+		try {
+			channel.send(destination, null, new JGroupsMessage((JGroupsID) getLocalID(), jid, data));
+		} catch (final ChannelNotConnectedException e) {
+			throw new IOException(e.getLocalizedMessage());
+		} catch (final ChannelClosedException e) {
+			throw new IOException(e.getLocalizedMessage());
+		}
 		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "sendAsynch");
 
 	}
 
-	public MChannel getJChannel() {
+	public Channel getJChannel() {
 		return channel;
 	}
 
@@ -258,7 +265,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		return channel.getLocalAddress();
 	}
 
-	protected MChannel getChannel() {
+	protected Channel getChannel() {
 		return channel;
 	}
 
@@ -304,13 +311,46 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		}
 	}
 
+	protected void setupJGroups(JGroupsID targetID) throws ECFException {
+		try {
+			final String stackConfigID = targetID.getStackConfigID();
+			URL stackConfigURL = null;
+			final JChannelFactory factory = new JChannelFactory();
+			stackConfigURL = (stackConfigID == null) ? Activator.getDefault().getConfigURLForStackID(Activator.STACK_CONFIG_ID) : Activator.getDefault().getConfigURLForStackID(stackConfigID);
+			if (stackConfigURL != null) {
+				factory.setMultiplexerConfig(stackConfigURL);
+			} else {
+				setPropertiesForStack(targetID);
+				if (stackConfigID == null || stackConfigID.equals(JGroupsID.DEFAULT_STACK_FILE))
+					factory.setMultiplexerConfig(JGroupsID.DEFAULT_STACK_FILE);
+				else
+					factory.setMultiplexerConfig(new URL(stackConfigID));
+			}
+			final String stackName = targetID.getStackName();
+			channel = factory.createMultiplexerChannel(stackName, ASYNCH_CHANNEL_NAME);
+			channel.addChannelListener(channelListener);
+			channel.setReceiver(receiver);
+			messageDispatcher = new MessageDispatcher(factory.createMultiplexerChannel(stackName, SYNCH_CHANNEL_NAME), null, null, messageDispatcherHandler);
+			channel.connect(targetID.getChannelName());
+			final ID localID = getLocalID();
+			// Set our identity address
+			if (localID instanceof JGroupsID) {
+				((JGroupsID) localID).setAddress(getLocalAddress());
+			}
+		} catch (final Exception e) {
+			throw new ECFException("channel exception", e);
+		} finally {
+			resetPropertiesForStack(targetID);
+		}
+	}
+
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
 	 */
 	public synchronized void disconnect() {
 		stop();
 		if (channel != null) {
-			channel.close();
+			channel.disconnect();
 			channel.close();
 			channel = null;
 			if (messageDispatcher != null) {
@@ -337,7 +377,7 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	 * @see org.eclipse.ecf.provider.comm.IConnection#isConnected()
 	 */
 	public synchronized boolean isConnected() {
-		return (channel != null )&&((MChannelImpl)channel).getReceiver_thread()!=null;
+		return (channel != null && channel.isConnected());
 	}
 
 	protected synchronized boolean isActive() {

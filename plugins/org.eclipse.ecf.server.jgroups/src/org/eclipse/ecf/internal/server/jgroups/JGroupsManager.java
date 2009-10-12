@@ -11,31 +11,27 @@
 
 package org.eclipse.ecf.internal.server.jgroups;
 
-import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.eclipse.ecf.core.ContainerFactory;
+import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDCreateException;
-import org.eclipse.ecf.core.identity.IDFactory;
-import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.provider.jgroups.container.JGroupsManagerContainer;
-import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
+import org.eclipse.ecf.core.IContainerFactory;
+import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.equinox.app.IApplication;
 import org.eclipse.equinox.app.IApplicationContext;
+import org.osgi.util.tracker.ServiceTracker;
 
 /**
  * JGroups Manager Application.
  */
-public class JGroupsManager implements IApplication, IJGroupsManager {
+public class JGroupsManager implements IApplication {
 
 	private IContainer managerContainer = null;
-	private IApplicationContext appContext=null;
-	private static String jgURL;
-	private static Object lock=new Object();
-	
+	private ServiceTracker containerManagerTracker;
+	private boolean done = false;
+	private Object appLock = new Object();
+
 	private String[] mungeArguments(String originalArgs[]) {
 		if (originalArgs == null)
 			return new String[0];
@@ -46,56 +42,87 @@ public class JGroupsManager implements IApplication, IJGroupsManager {
 		return l.toArray(new String[] {});
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @seeorg.eclipse.equinox.app.IApplication#start(org.eclipse.equinox.app.
+	 * IApplicationContext)
+	 */
 	public Object start(IApplicationContext context) throws Exception {
-		final String[] args = mungeArguments((String[]) context.getArguments().get("application.args")); //$NON-NLS-1$
+		final String[] args = mungeArguments((String[]) context.getArguments()
+				.get("application.args")); //$NON-NLS-1$
 		if (args.length < 1) {
 			usage();
 			return IApplication.EXIT_OK;
 		} else {
-			this.appContext=context;
-			jgURL=args[0];
-			
-			synchronized (this ) {
-				managerContainer = createServer();
-				System.out.println("JGroups Manager started with id=" + ((JGroupsManagerContainer)managerContainer).getID());
-				this.wait( );
-			}
+			managerContainer = createContainer("ecf.jgroups.manager", args[0]);
+			System.out.println("JGroups Manager started with id="
+					+ managerContainer.getID());
+			waitForDone();
 			return IApplication.EXIT_OK;
+		}
+
+	}
+
+	protected void waitForDone() {
+		// then just wait here
+		synchronized (appLock) {
+			while (!done) {
+				try {
+					appLock.wait();
+				} catch (InterruptedException e) {
+					// do nothing
+				}
+			}
 		}
 	}
 
-    private static ID getServerIdentity() throws IDCreateException, URISyntaxException {
-    	return IDFactory.getDefault().createID("ecf.namespace.jgroupsid",jgURL);
-    }
-
-    protected static IContainer createServer() throws Exception {
-    	final ID myID=getServerIdentity();
-        return ContainerFactory.getDefault().createContainer(getServerContainerName(), new Object[] { myID });
-    }
-    private static String getServerContainerName() {
-        return "ecf.jgroups.manager";
-    }
-
-
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.equinox.app.IApplication#stop()
+	 */
 	public void stop() {
-		synchronized (this) {
-			if (managerContainer != null) {
-				managerContainer.dispose();
-				managerContainer = null;
-				this.notifyAll();
-			}
+		if (managerContainer != null) {
+			managerContainer.dispose();
+			getContainerManager().removeAllContainers();
+			managerContainer = null;
 		}
-		appContext=null;
+		if (containerManagerTracker != null) {
+			containerManagerTracker.close();
+			containerManagerTracker = null;
+		}
+		synchronized (appLock) {
+			done = true;
+			appLock.notifyAll();
+		}
+	}
+
+	protected IContainerManager getContainerManager() {
+		if (containerManagerTracker == null) {
+			containerManagerTracker = new ServiceTracker(
+					Activator.getContext(), IContainerManager.class.getName(),
+					null);
+			containerManagerTracker.open();
+		}
+		return (IContainerManager) containerManagerTracker.getService();
+	}
+
+	protected IContainer createContainer(String containerType,
+			String containerId) throws ContainerCreateException {
+		IContainerFactory containerFactory = getContainerManager()
+				.getContainerFactory();
+		return (containerId == null) ? containerFactory
+				.createContainer(containerType) : containerFactory
+				.createContainer(containerType, new Object[] { containerId });
 	}
 
 	private void usage() {
 		System.out.println("Usage: eclipse.exe -application " //$NON-NLS-1$
-				+ this.getClass().getName() + " jgroups://host/<jgroupsChannelName>&stackName=<stackName>"); //$NON-NLS-1$
-		System.out.println("   Examples: eclipse -application org.eclipse.ecf.provider.jgroups.JGroupsManager jgroups:///jgroupsChannel"); //$NON-NLS-1$
-	}
-
-	public ID getManagerID() {
-		return this.managerContainer.getID();
+				+ this.getClass().getName()
+				+ " jgroups:///<jgroupsChannelName>"); //$NON-NLS-1$
+		System.out
+				.println("   Examples: eclipse -application org.eclipse.ecf.provider.jgroups.JGroupsManager jgroups:///jgroupsChannel"); //$NON-NLS-1$
 	}
 
 }

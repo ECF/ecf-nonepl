@@ -13,7 +13,8 @@ public class Activator implements BundleActivator {
 
 	// The shared instance
 	private static Activator plugin;
-
+	private static BundleContext context;
+	
 	/**
 	 * The constructor
 	 */
@@ -24,8 +25,9 @@ public class Activator implements BundleActivator {
 	 * (non-Javadoc)
 	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
-	public void start(BundleContext context) throws Exception {
+	public void start(BundleContext cntx) throws Exception {
 		plugin = this;
+		context = cntx;
 	}
 
 	/*
@@ -34,6 +36,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		plugin = null;
+		context = null;
 	}
 
 	/**
@@ -45,4 +48,7 @@ public class Activator implements BundleActivator {
 		return plugin;
 	}
 
+	public static BundleContext getContext() {
+		return context;
+	}
 }

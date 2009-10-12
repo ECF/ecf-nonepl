@@ -3,19 +3,6 @@
 <plugin>
 
    <extension
-         id="org.eclipse.ecf.provider.JGroupsManager"
-         name="JGroups Manager"
-         point="org.eclipse.core.runtime.applications">
-      <application
-            thread="main"
-            visible="true">
-         <run
-               class="org.eclipse.ecf.internal.server.jgroups.JGroupsManager">
-         </run>
-      </application>
-   </extension>
-
-   <extension
          id="Manager"
          name="JGroups Manager"
          point="org.eclipse.core.runtime.applications">
@@ -26,6 +13,18 @@
                class="org.eclipse.ecf.internal.server.jgroups.JGroupsManager">
          </run>
       </application>
+   </extension>
+   <extension
+         id="product"
+         point="org.eclipse.core.runtime.products">
+      <product
+            application="org.eclipse.ecf.server.jgroups.Manager"
+            name="JGroups Manager">
+         <property
+               name="appName"
+               value="JGroups Manager">
+         </property>
+      </product>
    </extension>
 
 </plugin>
