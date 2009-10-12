@@ -9,7 +9,6 @@
 package org.eclipse.ecf.provider.jgroups.identity;
 
 import java.net.URI;
-import java.net.URISyntaxException;
 import java.util.StringTokenizer;
 
 import org.eclipse.core.runtime.Assert;
@@ -51,7 +50,7 @@ public class JGroupsID extends BaseID {
 	}
 
 	private void setStackInfo() {
-		final String query = uri.getPath();
+		final String query = uri.getRawQuery();
 		if (query != null) {
 			final StringTokenizer st = new StringTokenizer(query, "&");
 			while (st.hasMoreTokens()) {
@@ -81,17 +80,6 @@ public class JGroupsID extends BaseID {
 		final String path = getPathNoSlashes();
 		if (path == null || path.length() < 1)
 			throw new IDCreateException("channel name not valid");
-		setStackInfo();
-	}
-
-	public JGroupsID(Namespace ns, String channelName) throws IDCreateException {
-		super(ns);
-		Assert.isNotNull(channelName);
-		try {
-			this.uri = new URI(ns.getScheme() + ":" + channelName);
-		} catch (final URISyntaxException e) {
-			throw new IDCreateException("invalid channel name", e);
-		}
 		setStackInfo();
 	}
 

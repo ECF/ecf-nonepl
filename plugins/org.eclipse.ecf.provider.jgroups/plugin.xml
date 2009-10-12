@@ -64,62 +64,11 @@
          <adapter type="org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter"/>
       </factory>
    </extension>
-   <extension-point id="org.eclipse.ecf.provider.jgroups.stackConfig" name="JGroups Stack Configuration" schema="schema/stackConfig.exsd"/>
-   
-      <extension
-            id="org.eclipse.ecf.provider.jgroups.stackConfig"
-            point="org.eclipse.ecf.provider.jgroups.stackConfig">
+   <extension
+         point="org.eclipse.ecf.provider.jgroups.stackConfig">
       <stackConfig
-            configFile="stacks/conf/udp.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.udp">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/tcp.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.tcp">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/defaultStacks.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.default">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/manet.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.manet">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/auth_md5.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.auth_md5">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/encrypt.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.encrypt">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/gossip-service.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.gossip-service">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/stacks.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.stacks">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/mping.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.mping">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/gossip-service.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.gossip-service">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/compress.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.compress">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/tunnel.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.tunnel">
-      </stackConfig>
-      <stackConfig
-            configFile="stacks/conf/pulltheplug.xml"
-            id="org.eclipse.ecf.internal.provider.jgroups.pulltheplug">
+            configFile="stacks/defaultStacks.xml"
+            id="org.eclipse.ecf.provider.jgroups.default">
       </stackConfig>
    </extension>
 

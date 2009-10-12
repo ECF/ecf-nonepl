@@ -28,7 +28,6 @@ import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
-import org.eclipse.ecf.provider.jgroups.container.SOJGContainerConfig;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
@@ -44,36 +43,13 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 
 	private static final long DEFAULT_DISCONNECT_TIMEOUT = 3000;
 
-	private final IChannelConfigurator channelConfigurator;
-	
 	/**
 	 * @param eventHandler
-	 * @param chConf 
 	 * @throws ECFException 
 	 */
-	public JGroupsManagerConnection(ISynchAsynchEventHandler eventHandler, IChannelConfigurator chConf) throws ECFException {
+	public JGroupsManagerConnection(ISynchAsynchEventHandler eventHandler) throws ECFException {
 		super(eventHandler);
-		this.channelConfigurator=chConf;
-		try {
-			this.channel= channelConfigurator.createMChannel( "225.222.222.222", ((JGroupsID) getLocalID()).getName()  );
-		} catch (Exception e) {
-			// TODO Auto-generated catch block
-		}
-	}
-
-	@Override
-	public void start() {
-		super.start();
-		
-	}
-
-	@Override
-	public void stop() {
-		channel.close();
-	}
-
-	public View getOldView() {
-		return oldView;
+		setupJGroups((JGroupsID) getLocalID());
 	}
 
 	/* (non-Javadoc)
@@ -184,7 +160,6 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 		/* (non-Javadoc)
 		 * @see org.eclipse.ecf.provider.comm.IConnection#getProperties()
 		 */
-		@SuppressWarnings("unchecked")
 		public Map getProperties() {
 			return null;
 		}
@@ -226,7 +201,6 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 		/* (non-Javadoc)
 		 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 		 */
-		@SuppressWarnings("unchecked")
 		public Object getAdapter(Class adapter) {
 			return null;
 		}
@@ -295,7 +269,6 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 		});
 		t.start();
 	}
-
 
 	private final Map addressClientMap = Collections.synchronizedMap(new HashMap());
 

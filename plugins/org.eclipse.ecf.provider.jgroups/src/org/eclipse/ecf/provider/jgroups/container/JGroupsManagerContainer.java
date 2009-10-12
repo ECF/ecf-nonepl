@@ -37,14 +37,11 @@ import org.eclipse.ecf.provider.generic.ServerSOContainer;
 import org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection;
 import org.eclipse.ecf.provider.jgroups.connection.ConnectRequestMessage;
 import org.eclipse.ecf.provider.jgroups.connection.DisconnectRequestMessage;
-import org.eclipse.ecf.provider.jgroups.connection.IChannelConfigurator;
 import org.eclipse.ecf.provider.jgroups.connection.JGroupsManagerConnection;
-import org.eclipse.ecf.provider.jgroups.connection.MChannelConfigurator;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.jgroups.Address;
+import org.jgroups.Channel;
 import org.jgroups.stack.IpAddress;
-
-import urv.machannel.MChannel;
 
 /**
  *
@@ -55,8 +52,6 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 
 	private ISynchAsynchConnection serverConnection;
 
-	private IChannelConfigurator channelConfigurator;
-
 	/**
 	 * @param config
 	 */
@@ -64,7 +59,7 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 		super(config);
 	}
 
-	public MChannel getJChannel() {
+	public Channel getJChannel() {
 		return ((AbstractJGroupsConnection) serverConnection).getJChannel();
 	}
 
@@ -77,8 +72,7 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 	 *             taken)
 	 */
 	public void start() throws ECFException {
-		channelConfigurator = new MChannelConfigurator( ((SOJGContainerConfig) getConfig()).getStackName());
-		serverConnection = new JGroupsManagerConnection(getReceiver(), channelConfigurator );
+		serverConnection = new JGroupsManagerConnection(getReceiver());
 		serverConnection.start();
 	}
 
