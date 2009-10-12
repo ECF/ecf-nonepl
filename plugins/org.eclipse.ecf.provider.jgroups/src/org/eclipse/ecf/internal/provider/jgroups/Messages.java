@@ -15,7 +15,6 @@ import org.eclipse.osgi.util.NLS;
  */
 public class Messages extends NLS {
 	private static final String BUNDLE_NAME = "org.eclipse.ecf.internal.provider.jgroups.messages"; //$NON-NLS-1$
-	public static String JGroupsClient_EXCEPTION_INVALID_SERVER_RESPONSE;
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_ALREADY_CONNECTED;
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_ERROR;
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED;
@@ -24,13 +23,11 @@ public class Messages extends NLS {
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID;
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_NOT_NULL;
 	public static String JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION;
-	public static String JGroupsServer_CONNECT_EXCEPTION_CONTAINER_CLIENT_NOT_FOUND;
 	public static String JGroupsServer_CONNECT_EXCEPTION_CONTAINER_CLOSING;
 	public static String JGroupsServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL;
 	public static String JGroupsServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL;
 	public static String JGroupsServer_CONNECT_EXCEPTION_REFUSED;
 	public static String JGroupsServer_CONNECT_EXCEPTION_REMOTEID_NOT_NULL;
-	public static String JGroupsServerChannel_CONNECT_EXCEPTION_CONTAINER_NOT_JMSID;
 	public static String JGroupsServerChannel_CONNECT_EXCEPTION_CONTAINER_SERVER_CANNOT_CONNECT;
 
 	static {
