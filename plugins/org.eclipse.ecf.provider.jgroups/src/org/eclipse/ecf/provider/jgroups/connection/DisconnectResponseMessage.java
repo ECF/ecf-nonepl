@@ -22,7 +22,8 @@ public class DisconnectResponseMessage implements Serializable {
 
 	Serializable data;
 
-	public DisconnectResponseMessage(JGroupsID clientID, JGroupsID targetID, Serializable data) {
+	public DisconnectResponseMessage(JGroupsID clientID, JGroupsID targetID,
+			Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.data = data;

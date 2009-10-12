@@ -22,7 +22,8 @@ public class ConnectResponseMessage implements Serializable {
 
 	private final Serializable data;
 
-	public ConnectResponseMessage(JGroupsID clientID, JGroupsID targetID, Serializable data) {
+	public ConnectResponseMessage(JGroupsID clientID, JGroupsID targetID,
+			Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.data = data;

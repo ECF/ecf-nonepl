@@ -22,7 +22,8 @@ public class DisconnectRequestMessage implements Serializable {
 
 	private final Serializable data;
 
-	public DisconnectRequestMessage(JGroupsID clientID, JGroupsID targetID, Serializable data) {
+	public DisconnectRequestMessage(JGroupsID clientID, JGroupsID targetID,
+			Serializable data) {
 		this.clientID = clientID;
 		this.targetID = targetID;
 		this.data = data;

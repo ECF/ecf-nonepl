@@ -22,27 +22,37 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 /**
  *
  */
-public class JGroupsManagerContainerInstantiator extends GenericContainerInstantiator {
+public class JGroupsManagerContainerInstantiator extends
+		GenericContainerInstantiator {
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.provider.BaseContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.core.provider.BaseContainerInstantiator#createInstance
+	 * (org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
 	 */
-	public IContainer createInstance(ContainerTypeDescription description, Object[] parameters) throws ContainerCreateException {
+	public IContainer createInstance(ContainerTypeDescription description,
+			Object[] parameters) throws ContainerCreateException {
 		try {
 			ID newID = null;
 			if (parameters != null && parameters.length > 0) {
 				if (parameters[0] instanceof JGroupsID)
 					newID = (ID) parameters[0];
 				else if (parameters[0] instanceof String)
-					newID = IDFactory.getDefault().createID(JGroupsNamespace.NAME, (String) parameters[0]);
+					newID = IDFactory.getDefault().createID(
+							JGroupsNamespace.NAME, (String) parameters[0]);
 			}
 			if (newID == null)
-				throw new ContainerCreateException("invalid parameters for creating jgroups manager instance");
-			final JGroupsManagerContainer manager = new JGroupsManagerContainer(new SOContainerConfig(newID));
+				throw new ContainerCreateException(
+						"invalid parameters for creating jgroups manager instance");
+			final JGroupsManagerContainer manager = new JGroupsManagerContainer(
+					new SOContainerConfig(newID));
 			manager.start();
 			return manager;
 		} catch (final Exception e) {
-			throw new ContainerCreateException("Exception creating jgroups manager container", e);
+			throw new ContainerCreateException(
+					"Exception creating jgroups manager container", e);
 		}
 	}
 

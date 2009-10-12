@@ -8,7 +8,6 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jgroups;
 
-
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;

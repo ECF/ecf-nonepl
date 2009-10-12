@@ -29,11 +29,13 @@ public class Activator implements BundleActivator {
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.eclipse.ecf.provider.jgroups";
 
-	private static final String STACK_CONFIG_EPOINT = Activator.PLUGIN_ID + ".stackConfig";
+	private static final String STACK_CONFIG_EPOINT = Activator.PLUGIN_ID
+			+ ".stackConfig";
 	private static final String STACK_CONFIG_ID_ATTRIBUTE = "id";
 	private static final String STACK_CONFIG_FILE_ATTRIBUTE = "configFile";
 
-	public static final String STACK_CONFIG_ID = Activator.PLUGIN_ID + ".default";
+	public static final String STACK_CONFIG_ID = Activator.PLUGIN_ID
+			+ ".default";
 
 	// The shared instance
 	private static Activator plugin;
@@ -52,7 +54,9 @@ public class Activator implements BundleActivator {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
+	 * 
+	 * @see
+	 * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
 		plugin = this;
@@ -61,7 +65,9 @@ public class Activator implements BundleActivator {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
+	 * 
+	 * @see
+	 * org.eclipse.core.runtime.Plugin#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		if (logServiceTracker != null) {
@@ -78,7 +84,7 @@ public class Activator implements BundleActivator {
 
 	/**
 	 * Returns the shared instance
-	 *
+	 * 
 	 * @return the shared instance
 	 */
 	public static Activator getDefault() {
@@ -88,13 +94,15 @@ public class Activator implements BundleActivator {
 	public void log(IStatus status) {
 		final LogService logService = getLogService();
 		if (logService != null) {
-			logService.log(LogHelper.getLogCode(status), LogHelper.getLogMessage(status), status.getException());
+			logService.log(LogHelper.getLogCode(status), LogHelper
+					.getLogMessage(status), status.getException());
 		}
 	}
 
 	protected LogService getLogService() {
 		if (logServiceTracker == null) {
-			logServiceTracker = new ServiceTracker(this.context, LogService.class.getName(), null);
+			logServiceTracker = new ServiceTracker(this.context,
+					LogService.class.getName(), null);
 			logServiceTracker.open();
 		}
 		return (LogService) logServiceTracker.getService();
@@ -102,7 +110,8 @@ public class Activator implements BundleActivator {
 
 	private IExtensionRegistry getExtensionRegistry() {
 		if (extensionRegistryTracker == null) {
-			extensionRegistryTracker = new ServiceTracker(this.context, IExtensionRegistry.class.getName(), null);
+			extensionRegistryTracker = new ServiceTracker(this.context,
+					IExtensionRegistry.class.getName(), null);
 			extensionRegistryTracker.open();
 		}
 		return (IExtensionRegistry) extensionRegistryTracker.getService();
@@ -114,8 +123,10 @@ public class Activator implements BundleActivator {
 		final IConfigurationElement configElement = findConfigurationElementForStackID(stackID);
 		if (configElement == null)
 			return null;
-		final String bundleSymbolicName = configElement.getContributor().getName();
-		final String stackConfigFile = configElement.getAttribute(STACK_CONFIG_FILE_ATTRIBUTE);
+		final String bundleSymbolicName = configElement.getContributor()
+				.getName();
+		final String stackConfigFile = configElement
+				.getAttribute(STACK_CONFIG_FILE_ATTRIBUTE);
 		if (stackConfigFile == null || stackConfigFile.equals(""))
 			return null;
 		final Bundle[] bundles = context.getBundles();
@@ -130,17 +141,22 @@ public class Activator implements BundleActivator {
 	 * @param stackID
 	 * @return
 	 */
-	private IConfigurationElement findConfigurationElementForStackID(String stackID) {
-		final IExtensionRegistry extensionRegistry = Activator.getDefault().getExtensionRegistry();
+	private IConfigurationElement findConfigurationElementForStackID(
+			String stackID) {
+		final IExtensionRegistry extensionRegistry = Activator.getDefault()
+				.getExtensionRegistry();
 		if (extensionRegistry == null)
 			return null;
-		final IExtensionPoint extensionPoint = extensionRegistry.getExtensionPoint(STACK_CONFIG_EPOINT);
+		final IExtensionPoint extensionPoint = extensionRegistry
+				.getExtensionPoint(STACK_CONFIG_EPOINT);
 		if (extensionPoint == null) {
 			return null;
 		}
-		final IConfigurationElement configurationElements[] = extensionPoint.getConfigurationElements();
+		final IConfigurationElement configurationElements[] = extensionPoint
+				.getConfigurationElements();
 		for (int i = 0; i < configurationElements.length; i++) {
-			final String idAttribute = configurationElements[i].getAttribute(STACK_CONFIG_ID_ATTRIBUTE);
+			final String idAttribute = configurationElements[i]
+					.getAttribute(STACK_CONFIG_ID_ATTRIBUTE);
 			if (idAttribute != null && idAttribute.equals(stackID))
 				return configurationElements[i];
 		}

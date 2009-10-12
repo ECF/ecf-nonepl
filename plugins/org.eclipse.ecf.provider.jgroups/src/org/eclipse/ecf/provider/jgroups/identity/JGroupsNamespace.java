@@ -24,8 +24,12 @@ public class JGroupsNamespace extends Namespace {
 	public JGroupsNamespace() {
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.core.identity.Namespace#createInstance(java.lang.Object
+	 * [])
 	 */
 	public ID createInstance(Object[] parameters) throws IDCreateException {
 		try {
@@ -36,25 +40,32 @@ public class JGroupsNamespace extends Namespace {
 					return new JGroupsID(this, new URI((String) parameters[0]));
 				}
 			}
-			throw new IDCreateException("JGroupsID cannot be created with given parameters");
+			throw new IDCreateException(
+					"JGroupsID cannot be created with given parameters");
 		} catch (final Exception e) {
-			if (e instanceof IDCreateException) throw (IDCreateException) e;
-			throw new IDCreateException(NLS.bind("{0} createInstance()", getName()), e); //$NON-NLS-1$
+			if (e instanceof IDCreateException)
+				throw (IDCreateException) e;
+			throw new IDCreateException(NLS.bind(
+					"{0} createInstance()", getName()), e); //$NON-NLS-1$
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.core.identity.Namespace#getScheme()
 	 */
 	public String getScheme() {
 		return SCHEME;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.core.identity.Namespace#getSupportedParameterTypes()
 	 */
 	public Class[][] getSupportedParameterTypes() {
-		return new Class[][] { {String.class}, {}};
+		return new Class[][] { { String.class }, {} };
 	}
 
 }

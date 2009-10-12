@@ -46,20 +46,31 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 		super(eventHandler);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.internal.provider.jgroups.AbstractJGroupsConnection#connect(org.eclipse.ecf.core.identity.ID, java.lang.Object, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.internal.provider.jgroups.AbstractJGroupsConnection#connect
+	 * (org.eclipse.ecf.core.identity.ID, java.lang.Object, int)
 	 */
-	public synchronized Object connect(ID targetID, Object data, int timeout) throws ECFException {
-		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "connect", new Object[] {targetID, data, //$NON-NLS-1$
-				new Integer(timeout)});
+	public synchronized Object connect(ID targetID, Object data, int timeout)
+			throws ECFException {
+		Trace.entering(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"connect", new Object[] { targetID, data, //$NON-NLS-1$
+						new Integer(timeout) });
 		if (isConnected())
-			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_ALREADY_CONNECTED);
+			throw new ContainerConnectException("Already connected");//$NON-NLS-1$
 		if (targetID == null)
-			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_NOT_NULL);
+			throw new ContainerConnectException("TargetID must not be null");//$NON-NLS-1$
 		if (!(targetID instanceof JGroupsID))
-			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID);
+			throw new ContainerConnectException(
+					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_NOT_JMSID);
 		if (!(data instanceof Serializable)) {
-			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_ERROR, new NotSerializableException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_NOT_SERIALIZABLE));
+			throw new ContainerConnectException(
+					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_ERROR,
+					new NotSerializableException(
+							Messages.JGroupsClientChannel_CONNECT_EXCEPTION_NOT_SERIALIZABLE));
 		}
 		Object result = null;
 		try {
@@ -72,22 +83,33 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 			final ECFException except = e;
 			throw new ContainerConnectException(except.getStatus());
 		} catch (final Exception e) {
-			throw new ContainerConnectException(NLS.bind(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED, targetID.getName()), e);
+			throw new ContainerConnectException(
+					NLS
+							.bind(
+									Messages.JGroupsClientChannel_CONNECT_EXCEPTION_CONNECT_FAILED,
+									targetID.getName()), e);
 		}
 		if (result == null)
-			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION);
+			throw new ContainerConnectException(
+					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_TARGET_REFUSED_CONNECTION);
 		if (!(result instanceof ConnectResponseMessage))
-			throw new ContainerConnectException(Messages.JGroupsClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
+			throw new ContainerConnectException(
+					Messages.JGroupsClientChannel_CONNECT_EXCEPTION_INVALID_RESPONSE);
 		Object connectResponseResult = null;
 		try {
-			connectResponseResult = SOContainer.deserializeContainerMessage((byte[]) ((ConnectResponseMessage) result).getData());
+			connectResponseResult = SOContainer
+					.deserializeContainerMessage((byte[]) ((ConnectResponseMessage) result)
+							.getData());
 		} catch (final Exception e) {
 			throw new ContainerConnectException(e);
 		}
-		if (connectResponseResult == null || !(connectResponseResult instanceof ContainerMessage))
-			throw new ContainerConnectException("Server response not of type ContainerMessage");
+		if (connectResponseResult == null
+				|| !(connectResponseResult instanceof ContainerMessage))
+			throw new ContainerConnectException(
+					"Server response not of type ContainerMessage");
 		fireListenersConnect(new ConnectionEvent(this, connectResponseResult));
-		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "connect", connectResponseResult); //$NON-NLS-1$
+		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING,
+				this.getClass(), "connect", connectResponseResult); //$NON-NLS-1$
 		return connectResponseResult;
 	}
 
@@ -97,12 +119,16 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 	 * @param timeout
 	 * @return
 	 */
-	private Object getConnectResult(JGroupsID jgroupsID, Serializable data, int timeout) throws ECFException {
+	private Object getConnectResult(JGroupsID jgroupsID, Serializable data,
+			int timeout) throws ECFException {
 		final MessageDispatcher messageDispatcher = getMessageDispatcher();
-		final Message msg = new Message(getConnectDestination(), null, new ConnectRequestMessage((JGroupsID) getLocalID(), jgroupsID, data));
+		final Message msg = new Message(getConnectDestination(), null,
+				new ConnectRequestMessage((JGroupsID) getLocalID(), jgroupsID,
+						data));
 		Object response = null;
 		try {
-			response = messageDispatcher.sendMessage(msg, GroupRequest.GET_FIRST, timeout);
+			response = messageDispatcher.sendMessage(msg,
+					GroupRequest.GET_FIRST, timeout);
 		} catch (final TimeoutException e) {
 			throw new ECFException("connect timeout", e);
 		} catch (final SuspectedException e) {
@@ -115,43 +141,68 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection {
 		return getChannel().getView().getCreator();
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.internal.provider.jgroups.AbstractJGroupsConnection#sendSynch(org.eclipse.ecf.core.identity.ID, byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.internal.provider.jgroups.AbstractJGroupsConnection#sendSynch
+	 * (org.eclipse.ecf.core.identity.ID, byte[])
 	 */
-	public synchronized Object sendSynch(ID receiver, byte[] data) throws IOException {
-		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "sendSynch", new Object[] {receiver, data}); //$NON-NLS-1$
+	public synchronized Object sendSynch(ID receiver, byte[] data)
+			throws IOException {
+		Trace.entering(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"sendSynch", new Object[] { receiver, data }); //$NON-NLS-1$
 		Object result = null;
 		if (receiver == null || !(receiver instanceof JGroupsID))
 			throw new IOException("invalid receiver id");
 		if (isActive())
-			result = new DisconnectRequestMessage((JGroupsID) getLocalID(), (JGroupsID) receiver, data);
-		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "sendSynch", result);
+			result = new DisconnectRequestMessage((JGroupsID) getLocalID(),
+					(JGroupsID) receiver, data);
+		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING,
+				this.getClass(), "sendSynch", result);
 		return result;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection#internalHandleSynch(org.jgroups.Message)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection
+	 * #internalHandleSynch(org.jgroups.Message)
 	 */
 	protected Object internalHandleSynch(Message message) {
-		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "internalHandleSynch", new Object[] {message}); //$NON-NLS-1$
+		Trace.entering(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"internalHandleSynch", new Object[] { message }); //$NON-NLS-1$
 		final boolean active = isActive();
 		final Object o = message.getObject();
 		try {
 			if (o instanceof DisconnectRequestMessage) {
 				final DisconnectRequestMessage dcm = (DisconnectRequestMessage) o;
 				if (active)
-					eventHandler.handleSynchEvent(new SynchEvent(this, dcm.getData()));
-				Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "internalHandleSynch");
-				return new DisconnectResponseMessage(dcm.getTargetID(), dcm.getSenderID(), null);
+					eventHandler.handleSynchEvent(new SynchEvent(this, dcm
+							.getData()));
+				Trace.exiting(Activator.PLUGIN_ID,
+						JGroupsDebugOptions.METHODS_EXITING, this.getClass(),
+						"internalHandleSynch");
+				return new DisconnectResponseMessage(dcm.getTargetID(), dcm
+						.getSenderID(), null);
 			}
 		} catch (final Exception e) {
-			Trace.catching(Activator.PLUGIN_ID, JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "internalHandleSynch", e);
+			Trace.catching(Activator.PLUGIN_ID,
+					JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+					"internalHandleSynch", e);
 		}
 		return null;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection#handleViewAccepted(org.jgroups.View)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection
+	 * #handleViewAccepted(org.jgroups.View)
 	 */
 	protected void handleViewAccepted(View view) {
 		Trace.trace(Activator.PLUGIN_ID, "viewAccepted(" + view + ")");
