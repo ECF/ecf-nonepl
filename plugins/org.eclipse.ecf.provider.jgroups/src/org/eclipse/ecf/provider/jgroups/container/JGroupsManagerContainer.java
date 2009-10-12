@@ -101,7 +101,8 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 	protected Serializable processSynch(SynchEvent e) throws IOException {
 		final Object req = e.getData();
 		if (req instanceof ConnectRequestMessage) {
-			return handleConnectRequest((ConnectRequestMessage) req, (JGroupsManagerConnection) e.getConnection());
+			return handleConnectRequest((ConnectRequestMessage) req,
+					(JGroupsManagerConnection) e.getConnection());
 		} else if (req instanceof DisconnectRequestMessage) {
 			// disconnect them
 			final DisconnectRequestMessage dcm = (DisconnectRequestMessage) req;
@@ -114,45 +115,63 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 		return null;
 	}
 
-	protected void traceAndLogExceptionCatch(int code, String method, Throwable e) {
-		Trace.catching(Activator.PLUGIN_ID, JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), method, e);
-		Activator.getDefault().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, code, method, e));
+	protected void traceAndLogExceptionCatch(int code, String method,
+			Throwable e) {
+		Trace.catching(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(),
+				method, e);
+		Activator.getDefault()
+				.log(
+						new Status(IStatus.ERROR, Activator.PLUGIN_ID, code,
+								method, e));
 	}
 
-	protected void handleConnectException(ContainerMessage mess, JGroupsManagerConnection serverChannel, Exception e) {
+	protected void handleConnectException(ContainerMessage mess,
+			JGroupsManagerConnection serverChannel, Exception e) {
 	}
 
-	protected Object checkJoin(SocketAddress socketAddress, ID fromID, String targetPath, Serializable data) throws Exception {
+	protected Object checkJoin(SocketAddress socketAddress, ID fromID,
+			String targetPath, Serializable data) throws Exception {
 		if (joinPolicy != null)
-			return joinPolicy.checkConnect(socketAddress, fromID, getID(), targetPath, data);
+			return joinPolicy.checkConnect(socketAddress, fromID, getID(),
+					targetPath, data);
 		else
 			return null;
 	}
 
-	protected Serializable handleConnectRequest(ConnectRequestMessage request, JGroupsManagerConnection connection) {
-		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "handleConnectRequest", new Object[] { //$NON-NLS-1$
-				request, connection});
+	protected Serializable handleConnectRequest(ConnectRequestMessage request,
+			JGroupsManagerConnection connection) {
+		Trace.entering(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"handleConnectRequest", new Object[] { //$NON-NLS-1$
+				request, connection });
 		try {
-			final ContainerMessage containerMessage = (ContainerMessage) request.getData();
+			final ContainerMessage containerMessage = (ContainerMessage) request
+					.getData();
 			if (containerMessage == null)
-				throw new InvalidObjectException(Messages.JGroupsServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL);
+				throw new InvalidObjectException(
+						Messages.JGroupsServer_CONNECT_EXCEPTION_CONTAINER_MESSAGE_NOT_NULL);
 			final ID remoteID = containerMessage.getFromContainerID();
 			if (remoteID == null)
-				throw new InvalidObjectException(Messages.JGroupsServer_CONNECT_EXCEPTION_REMOTEID_NOT_NULL);
+				throw new InvalidObjectException("remoteID cannot be null");
 			JGroupsID jgid = null;
 			if (remoteID instanceof JGroupsID) {
 				jgid = (JGroupsID) remoteID;
 			} else
-				throw new InvalidObjectException("remoteID not of JGroupsID type");
-			final ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) containerMessage.getData();
+				throw new InvalidObjectException(
+						"remoteID not of JGroupsID type");
+			final ContainerMessage.JoinGroupMessage jgm = (ContainerMessage.JoinGroupMessage) containerMessage
+					.getData();
 			if (jgm == null)
-				throw new InvalidObjectException(Messages.JGroupsServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
+				throw new InvalidObjectException(
+						Messages.JGroupsServer_CONNECT_EXCEPTION_JOINGROUPMESSAGE_NOT_NULL);
 			ID memberIDs[] = null;
 			final Serializable[] messages = new Serializable[2];
 			JGroupsManagerConnection.Client newclient = null;
 			synchronized (getGroupMembershipLock()) {
 				if (isClosing)
-					throw new ContainerConnectException(Messages.JGroupsServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
+					throw new ContainerConnectException(
+							Messages.JGroupsServer_CONNECT_EXCEPTION_CONTAINER_CLOSING);
 				final Address address = jgid.getAddress();
 				int port = -1;
 				InetAddress host = null;
@@ -161,7 +180,8 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 					host = ((IpAddress) address).getIpAddress();
 				}
 				// Now check to see if this request is going to be allowed
-				checkJoin(new InetSocketAddress(host, port), jgid, request.getTargetID().getChannelName(), jgm.getData());
+				checkJoin(new InetSocketAddress(host, port), jgid, request
+						.getTargetID().getChannelName(), jgm.getData());
 
 				newclient = connection.new Client(jgid);
 
@@ -169,16 +189,22 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 					// Get current membership
 					memberIDs = getGroupMemberIDs();
 					// Notify existing remotes about new member
-					messages[1] = serialize(ContainerMessage.createViewChangeMessage(getID(), null, getNextSequenceNumber(), new ID[] {jgid}, true, null));
+					messages[1] = serialize(ContainerMessage
+							.createViewChangeMessage(getID(), null,
+									getNextSequenceNumber(), new ID[] { jgid },
+									true, null));
 				} else {
-					final ConnectException e = new ConnectException(Messages.JGroupsServer_CONNECT_EXCEPTION_REFUSED);
+					final ConnectException e = new ConnectException(
+							Messages.JGroupsServer_CONNECT_EXCEPTION_REFUSED);
 					throw e;
 				}
 			}
 			// notify listeners
 			fireContainerEvent(new ContainerConnectedEvent(this.getID(), jgid));
 
-			messages[0] = serialize(ContainerMessage.createViewChangeMessage(getID(), jgid, getNextSequenceNumber(), memberIDs, true, null));
+			messages[0] = serialize(ContainerMessage.createViewChangeMessage(
+					getID(), jgid, getNextSequenceNumber(), memberIDs, true,
+					null));
 
 			newclient.start();
 
@@ -190,15 +216,18 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 		}
 	}
 
-	protected void forwardExcluding(ID from, ID excluding, ContainerMessage data) throws IOException {
+	protected void forwardExcluding(ID from, ID excluding, ContainerMessage data)
+			throws IOException {
 		// no forwarding necessary
 	}
 
-	protected void forwardToRemote(ID from, ID to, ContainerMessage data) throws IOException {
+	protected void forwardToRemote(ID from, ID to, ContainerMessage data)
+			throws IOException {
 		// no forwarding necessary
 	}
 
-	protected void queueContainerMessage(ContainerMessage mess) throws IOException {
+	protected void queueContainerMessage(ContainerMessage mess)
+			throws IOException {
 		serverConnection.sendAsynch(mess.getToContainerID(), serialize(mess));
 	}
 
@@ -207,7 +236,9 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 			return;
 		if (removeRemoteMember(target)) {
 			try {
-				queueContainerMessage(ContainerMessage.createViewChangeMessage(getID(), null, getNextSequenceNumber(), new ID[] {target}, false, null));
+				queueContainerMessage(ContainerMessage.createViewChangeMessage(
+						getID(), null, getNextSequenceNumber(),
+						new ID[] { target }, false, null));
 			} catch (final IOException e) {
 				traceAndLogExceptionCatch(IStatus.ERROR, "memberLeave", e); //$NON-NLS-1$
 			}

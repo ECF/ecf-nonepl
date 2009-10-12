@@ -43,7 +43,8 @@ import org.jgroups.View;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.blocks.RequestHandler;
 
-public abstract class AbstractJGroupsConnection implements ISynchAsynchConnection {
+public abstract class AbstractJGroupsConnection implements
+		ISynchAsynchConnection {
 
 	protected static final String JGROUPS_UDP_MCAST_PORT_PROPNAME = "jgroups.udp.mcast_port";
 	protected static final String JGROUPS_UDP_MCAST_ADDR_PROPNAME = "jgroups.udp.mcast_addr";
@@ -98,11 +99,14 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		}
 
 		public void channelDisconnected(Channel arg0) {
-			Trace.trace(Activator.PLUGIN_ID, "channelDisconnected(" + arg0 + ")");
+			Trace.trace(Activator.PLUGIN_ID, "channelDisconnected(" + arg0
+					+ ")");
 		}
 
 		public void channelReconnected(Address arg0) {
-			Trace.trace(Activator.PLUGIN_ID, "channelReconnected(" + arg0 + ")");
+			Trace
+					.trace(Activator.PLUGIN_ID, "channelReconnected(" + arg0
+							+ ")");
 		}
 
 		public void channelShunned() {
@@ -143,11 +147,18 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		this.eventHandler = eventHandler;
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.comm.IAsynchConnection#sendAsynch(org.eclipse.ecf.core.identity.ID, byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.comm.IAsynchConnection#sendAsynch(org.eclipse
+	 * .ecf.core.identity.ID, byte[])
 	 */
-	public synchronized void sendAsynch(ID targetID, byte[] data) throws IOException {
-		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "sendAsynch", new Object[] {targetID, data});
+	public synchronized void sendAsynch(ID targetID, byte[] data)
+			throws IOException {
+		Trace.entering(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"sendAsynch", new Object[] { targetID, data });
 		if (!isConnected())
 			throw new IOException("channel not connected");
 		JGroupsID jid = null;
@@ -160,13 +171,16 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 				throw new IOException("targetID not of JGroupsID type");
 		}
 		try {
-			channel.send(destination, null, new JGroupsMessage((JGroupsID) getLocalID(), jid, data));
+			channel.send(destination, null, new JGroupsMessage(
+					(JGroupsID) getLocalID(), jid, data));
 		} catch (final ChannelNotConnectedException e) {
 			throw new IOException(e.getLocalizedMessage());
 		} catch (final ChannelClosedException e) {
 			throw new IOException(e.getLocalizedMessage());
 		}
-		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "sendAsynch");
+		Trace.entering(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.METHODS_EXITING, this.getClass(),
+				"sendAsynch");
 
 	}
 
@@ -177,7 +191,9 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#addCommEventListener(org.eclipse.ecf.core.comm.IConnectionListener)
+	 * @see
+	 * org.eclipse.ecf.core.comm.IConnection#addCommEventListener(org.eclipse
+	 * .ecf.core.comm.IConnectionListener)
 	 */
 	public void addListener(IConnectionListener listener) {
 		connectionListeners.add(listener);
@@ -186,30 +202,50 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 	/*
 	 * (non-Javadoc)
 	 * 
-	 * @see org.eclipse.ecf.core.comm.IConnection#removeCommEventListener(org.eclipse.ecf.core.comm.IConnectionListener)
+	 * @see
+	 * org.eclipse.ecf.core.comm.IConnection#removeCommEventListener(org.eclipse
+	 * .ecf.core.comm.IConnectionListener)
 	 */
 	public void removeListener(IConnectionListener listener) {
 		connectionListeners.remove(listener);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.comm.IConnection#connect(org.eclipse.ecf.core.identity.ID, java.lang.Object, int)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.comm.IConnection#connect(org.eclipse.ecf.core
+	 * .identity.ID, java.lang.Object, int)
 	 */
-	public abstract Object connect(ID targetID, Object data, int timeout) throws ECFException;
+	public abstract Object connect(ID targetID, Object data, int timeout)
+			throws ECFException;
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.comm.ISynchConnection#sendSynch(org.eclipse.ecf.core.identity.ID, byte[])
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.comm.ISynchConnection#sendSynch(org.eclipse.
+	 * ecf.core.identity.ID, byte[])
 	 */
-	public abstract Object sendSynch(ID receiver, byte[] data) throws IOException;
+	public abstract Object sendSynch(ID receiver, byte[] data)
+			throws IOException;
 
 	protected void logMessageError(String errorString, Message message) {
-		final String messageError = NLS.bind("jgroups message receive error.  error=%1 message=%2", errorString, message);
-		Activator.getDefault().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, messageError, null));
-		Trace.trace(Activator.PLUGIN_ID, "AbstractJGroupsConnection.logMessageError(" + errorString + "," + message + ")");
+		final String messageError = NLS.bind(
+				"jgroups message receive error.  error=%1 message=%2",
+				errorString, message);
+		Activator.getDefault().log(
+				new Status(IStatus.ERROR, Activator.PLUGIN_ID, messageError,
+						null));
+		Trace.trace(Activator.PLUGIN_ID,
+				"AbstractJGroupsConnection.logMessageError(" + errorString
+						+ "," + message + ")");
 	}
 
 	private void handleAsynch(Message message) {
-		Trace.entering(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_ENTERING, this.getClass(), "handleAsynch", new Object[] {message}); //$NON-NLS-1$
+		Trace.entering(Activator.PLUGIN_ID,
+				JGroupsDebugOptions.METHODS_ENTERING, this.getClass(),
+				"handleAsynch", new Object[] { message }); //$NON-NLS-1$
 		if (message == null) {
 			logMessageError("handleAsynch:message is null", message);
 			return;
@@ -229,17 +265,25 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			try {
 				final boolean fromUs = src.equals(getLocalAddress());
 				final ID receiverID = msg.getTargetID();
-				final boolean toUs = receiverID == null || getLocalID().equals(receiverID);
+				final boolean toUs = receiverID == null
+						|| getLocalID().equals(receiverID);
 				if (!fromUs && toUs) {
-					Trace.trace(Activator.PLUGIN_ID, "calling handleAsynchEvent");
-					eventHandler.handleAsynchEvent(new AsynchEvent(this, msg.getData()));
+					Trace.trace(Activator.PLUGIN_ID,
+							"calling handleAsynchEvent");
+					eventHandler.handleAsynchEvent(new AsynchEvent(this, msg
+							.getData()));
 				}
 			} catch (final IOException e) {
-				Trace.catching(Activator.PLUGIN_ID, JGroupsDebugOptions.EXCEPTIONS_CATCHING, this.getClass(), "handleAsynch", e); //$NON-NLS-1$
-				Activator.getDefault().log(new Status(IStatus.ERROR, Activator.PLUGIN_ID, IStatus.ERROR, "Exception on handleAsynch", e)); //$NON-NLS-1$
+				Trace.catching(Activator.PLUGIN_ID,
+						JGroupsDebugOptions.EXCEPTIONS_CATCHING, this
+								.getClass(), "handleAsynch", e); //$NON-NLS-1$
+				Activator.getDefault().log(
+						new Status(IStatus.ERROR, Activator.PLUGIN_ID,
+								IStatus.ERROR, "Exception on handleAsynch", e)); //$NON-NLS-1$
 			}
 		}
-		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING, this.getClass(), "handleAsynch"); //$NON-NLS-1$
+		Trace.exiting(Activator.PLUGIN_ID, JGroupsDebugOptions.METHODS_EXITING,
+				this.getClass(), "handleAsynch"); //$NON-NLS-1$
 	}
 
 	private Object handleSynch(Message message) {
@@ -283,12 +327,15 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		if (stackName.equalsIgnoreCase(JGroupsID.DEFAULT_STACK_NAME)) {
 			if (targetID.getHost() != null) {
 				oldHost = System.getProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME);
-				System.setProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME, targetID.getHost());
+				System.setProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME, targetID
+						.getHost());
 				if (targetID.getPort() != -1) {
-					final String oPort = System.getProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME);
+					final String oPort = System
+							.getProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME);
 					if (oPort != null)
 						oldPort = Integer.parseInt(oPort);
-					System.setProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME, "" + targetID.getPort());
+					System.setProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME, ""
+							+ targetID.getPort());
 				}
 			}
 		}
@@ -302,11 +349,13 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			if (oldHost != null) {
 				System.setProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME, oldHost);
 				if (oldPort != -1)
-					System.setProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME, "" + oldPort);
+					System.setProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME, ""
+							+ oldPort);
 			} else if (System.getProperty(JGROUPS_UDP_MCAST_ADDR_PROPNAME) != null) {
 				System.getProperties().remove(JGROUPS_UDP_MCAST_ADDR_PROPNAME);
 				if (System.getProperty(JGROUPS_UDP_MCAST_PORT_PROPNAME) != null)
-					System.getProperties().remove(JGROUPS_UDP_MCAST_PORT_PROPNAME);
+					System.getProperties().remove(
+							JGROUPS_UDP_MCAST_PORT_PROPNAME);
 			}
 		}
 	}
@@ -316,21 +365,28 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 			final String stackConfigID = targetID.getStackConfigID();
 			URL stackConfigURL = null;
 			final JChannelFactory factory = new JChannelFactory();
-			stackConfigURL = (stackConfigID == null) ? Activator.getDefault().getConfigURLForStackID(Activator.STACK_CONFIG_ID) : Activator.getDefault().getConfigURLForStackID(stackConfigID);
+			stackConfigURL = (stackConfigID == null) ? Activator.getDefault()
+					.getConfigURLForStackID(Activator.STACK_CONFIG_ID)
+					: Activator.getDefault().getConfigURLForStackID(
+							stackConfigID);
 			if (stackConfigURL != null) {
 				factory.setMultiplexerConfig(stackConfigURL);
 			} else {
 				setPropertiesForStack(targetID);
-				if (stackConfigID == null || stackConfigID.equals(JGroupsID.DEFAULT_STACK_FILE))
+				if (stackConfigID == null
+						|| stackConfigID.equals(JGroupsID.DEFAULT_STACK_FILE))
 					factory.setMultiplexerConfig(JGroupsID.DEFAULT_STACK_FILE);
 				else
 					factory.setMultiplexerConfig(new URL(stackConfigID));
 			}
 			final String stackName = targetID.getStackName();
-			channel = factory.createMultiplexerChannel(stackName, ASYNCH_CHANNEL_NAME);
+			channel = factory.createMultiplexerChannel(stackName,
+					ASYNCH_CHANNEL_NAME);
 			channel.addChannelListener(channelListener);
 			channel.setReceiver(receiver);
-			messageDispatcher = new MessageDispatcher(factory.createMultiplexerChannel(stackName, SYNCH_CHANNEL_NAME), null, null, messageDispatcherHandler);
+			messageDispatcher = new MessageDispatcher(factory
+					.createMultiplexerChannel(stackName, SYNCH_CHANNEL_NAME),
+					null, null, messageDispatcherHandler);
 			channel.connect(targetID.getChannelName());
 			final ID localID = getLocalID();
 			// Set our identity address
@@ -344,7 +400,9 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
 	 */
 	public synchronized void disconnect() {
@@ -359,21 +417,27 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		}
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#getLocalID()
 	 */
 	public ID getLocalID() {
 		return eventHandler.getEventHandlerID();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#getProperties()
 	 */
 	public Map getProperties() {
 		return null;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#isConnected()
 	 */
 	public synchronized boolean isConnected() {
@@ -384,28 +448,36 @@ public abstract class AbstractJGroupsConnection implements ISynchAsynchConnectio
 		return isConnected() && isStarted();
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#isStarted()
 	 */
 	public boolean isStarted() {
 		return started;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#start()
 	 */
 	public void start() {
 		started = true;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.ecf.provider.comm.IConnection#stop()
 	 */
 	public void stop() {
 		started = false;
 	}
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
 	 */
 	public Object getAdapter(Class adapter) {

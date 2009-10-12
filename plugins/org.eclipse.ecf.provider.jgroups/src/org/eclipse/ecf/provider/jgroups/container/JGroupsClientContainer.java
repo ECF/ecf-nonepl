@@ -22,12 +22,13 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.jgroups.Channel;
 
 /**
- * Trivial container implementation. Note that container adapter implementations can be
- * provided by the container class to expose appropriate adapters.
+ * Trivial container implementation. Note that container adapter implementations
+ * can be provided by the container class to expose appropriate adapters.
  */
 public class JGroupsClientContainer extends ClientSOContainer {
 
-	public JGroupsClientContainer(SOContainerConfig config) throws IDCreateException {
+	public JGroupsClientContainer(SOContainerConfig config)
+			throws IDCreateException {
 		super(config);
 	}
 
@@ -40,17 +41,23 @@ public class JGroupsClientContainer extends ClientSOContainer {
 		return IDFactory.getDefault().getNamespaceByName(JGroupsNamespace.NAME);
 	}
 
-	/* (non-Javadoc)
-	 * @see org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org.eclipse.ecf.core.identity.ID, java.lang.Object)
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org
+	 * .eclipse.ecf.core.identity.ID, java.lang.Object)
 	 */
-	protected ISynchAsynchConnection createConnection(ID remoteSpace, Object data) throws ConnectionCreateException {
+	protected ISynchAsynchConnection createConnection(ID remoteSpace,
+			Object data) throws ConnectionCreateException {
 		return new JGroupsClientConnection(getReceiver());
 	}
 
 	public Channel getJChannel() {
 		synchronized (getConnectLock()) {
 			if (isConnected())
-				return ((AbstractJGroupsConnection) getConnection()).getJChannel();
+				return ((AbstractJGroupsConnection) getConnection())
+						.getJChannel();
 			return null;
 		}
 	}
