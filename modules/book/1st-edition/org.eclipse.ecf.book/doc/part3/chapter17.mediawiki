@@ -1,7 +1,0 @@
-=Distributed OSGiP=
-
-Voice over IP in ECF
-
-==Summary==
-
-TODO
