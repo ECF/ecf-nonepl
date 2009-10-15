@@ -9,5 +9,13 @@
             name="ecf.googlewave.wave.n">
       </namespace>
    </extension>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
+            class="org.eclipse.ecf.wave.identity.WaveletNamespace"
+            description="Google Wavelet Namespace"
+            name="ecf.googlewave.wavelet.ns">
+      </namespace>
+   </extension>
 
 </plugin>
