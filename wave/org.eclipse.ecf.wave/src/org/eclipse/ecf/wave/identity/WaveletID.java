@@ -18,11 +18,14 @@ public class WaveletID extends BaseID {
 
 	private static final long serialVersionUID = -6043054539024233450L;
 	private WaveletId waveletId;
+	private int hashCode;
 	
 	protected WaveletID(WaveletNamespace ns, WaveletId waveletId) {
 		super(ns);
 		Assert.isNotNull(waveletId);
 		this.waveletId = waveletId;
+		hashCode = 7;
+		hashCode = 31 * hashCode + waveletId.hashCode();
 	}
 	
 	protected WaveletID(WaveletNamespace ns, String waveletDomain, String waveletId) {
@@ -39,6 +42,7 @@ public class WaveletID extends BaseID {
 	}
 
 	protected boolean namespaceEquals(BaseID o) {
+		if (o == this) return true;
 		if (!(o instanceof WaveletID))
 			return false;
 		WaveletID wo = (WaveletID) o;
@@ -50,7 +54,7 @@ public class WaveletID extends BaseID {
 	}
 
 	protected int namespaceHashCode() {
-		return waveletId.hashCode();
+		return hashCode;
 	}
 
 }

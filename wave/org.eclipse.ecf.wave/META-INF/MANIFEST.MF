@@ -6,7 +6,11 @@ Bundle-Version: 1.0.0.qualifier
 Bundle-Activator: org.eclipse.ecf.internal.wave.Activator
 Bundle-Vendor: %pluginProvider
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
+Import-Package: org.eclipse.ecf.core;version="3.0.0",
+ org.eclipse.ecf.core.events,
+ org.eclipse.ecf.core.identity;version="3.0.0",
+ org.eclipse.ecf.core.security,
+ org.eclipse.osgi.util,
  org.osgi.framework;version="1.5.0"
 Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
@@ -14,7 +18,7 @@ Require-Bundle: org.eclipse.equinox.common;bundle-version="3.5.1"
 Bundle-ClassPath: lib/fedone-api-0.2.jar,
  .
 Export-Package: org.eclipse.ecf.internal.wave;x-internal:=true,
- org.eclipse.ecf.wave,
+ org.eclipse.ecf.wave.container,
  org.eclipse.ecf.wave.identity,
  org.waveprotocol.wave.crypto,
  org.waveprotocol.wave.examples.fedone,

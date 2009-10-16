@@ -19,11 +19,14 @@ public class WaveID extends BaseID {
 	private static final long serialVersionUID = -4591927740497040435L;
 
 	private WaveId waveId;
+	private int hashCode;
 	
 	protected WaveID(WaveNamespace ns, WaveId waveId) {
 		super(ns);
 		Assert.isNotNull(waveId);
 		this.waveId = waveId;
+		hashCode = 7;
+		hashCode = 31 * hashCode + waveId.hashCode();
 	}
 	
 	protected WaveID(WaveNamespace ns, String waveDomain, String waveId) {
@@ -40,6 +43,7 @@ public class WaveID extends BaseID {
 	}
 
 	protected boolean namespaceEquals(BaseID o) {
+		if (o == this) return true;
 		if (!(o instanceof WaveID))
 			return false;
 		WaveID wo = (WaveID) o;
@@ -51,7 +55,7 @@ public class WaveID extends BaseID {
 	}
 
 	protected int namespaceHashCode() {
-		return waveId.hashCode();
+		return hashCode;
 	}
 
 }
