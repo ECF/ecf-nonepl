@@ -6,6 +6,8 @@ import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.events.ContainerConnectingEvent;
+import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
+import org.eclipse.ecf.core.events.ContainerDisconnectingEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
@@ -99,12 +101,15 @@ public class WaveClientContainer extends AbstractContainer {
 	}
 	
 	private void disconnectFromBackend() {
+		fireContainerEvent(new ContainerDisconnectingEvent(localID, connectedID));
+		ID previouslyConnectedID = connectedID;
 		synchronized (connectLock) {
 			if (backend == null) return;
 			backend.shutdown();
 			backend = null;
 			connectedID = null;
 		}
+		fireContainerEvent(new ContainerDisconnectedEvent(localID, previouslyConnectedID));
 	}
 	
 	public void disconnect() {
@@ -112,7 +117,6 @@ public class WaveClientContainer extends AbstractContainer {
 	}
 
 	public Namespace getConnectNamespace() {
-		// TODO Auto-generated method stub
 		return IDFactory.getDefault().getNamespaceByName(WaveBackendNamespace.NAME);
 	}
 
