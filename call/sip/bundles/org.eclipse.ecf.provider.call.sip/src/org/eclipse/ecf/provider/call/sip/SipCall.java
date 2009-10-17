@@ -1412,7 +1412,7 @@ public class SipCall {
 			System.out.println(localParty.getInitiatorID());
 			SipCall ecfCall = new SipCall(localParty);
 
-			SipRemoteParticipant remoteParty = new SipRemoteParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:2233369447@sip2sip.info"}), "Harshana Eranga Martin");
+			SipRemoteParticipant remoteParty = new SipRemoteParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:4444@sip2sip.info"}), "Harshana Eranga Martin");
 
 			System.out.println(((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:2233371083@sip2sip.info"})).getUser());
 			System.out.println(localParty.getInitiatorID());
