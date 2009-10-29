@@ -48,7 +48,7 @@ public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConsta
 	private ServerStartup serverStartup = null;
 
 	// processArgs
-	protected String containerType = "ecf.jgroups.moderator";
+	protected String containerType = "ecf.jgroups.client";
 	protected ID containerID = null;
 	protected String targetId = "jgroups:///soladhoc";
 	protected String topic = "admin";
@@ -61,7 +61,7 @@ public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConsta
 	protected ServiceRegistration eventAdminRegistration;
 
 	//	My Moderator
-	protected IContainer jGroupsModerator;
+	protected IContainer jGroupsClient;
 
 	private ServiceRegistration testEventHandlerRegistration = null;
 
@@ -186,19 +186,19 @@ public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConsta
 
 		// get container factory and create container
 		IContainerFactory containerFactory = getContainerManager().getContainerFactory();
-		jGroupsModerator = (containerID == null) ? containerFactory.createContainer(containerType) : containerFactory.createContainer(containerType, new Object[] {containerID});
-		containerID = jGroupsModerator.getID();
+		jGroupsClient = (containerID == null) ? containerFactory.createContainer(containerType) : containerFactory.createContainer(containerType, new Object[] {containerID});
+		containerID = jGroupsClient.getID();
 
 		// Get socontainer 
-		ISharedObjectContainer soContainer = (ISharedObjectContainer) jGroupsModerator.getAdapter(ISharedObjectContainer.class);
+		ISharedObjectContainer soContainer = (ISharedObjectContainer) jGroupsClient.getAdapter(ISharedObjectContainer.class);
 
 		// Add to soContainer, with topic as name
 		props.put("topic", "admin");
-		soContainer.getSharedObjectManager().addSharedObject(IDFactory.getDefault().createStringID(jGroupsModerator.getID().getName()), eventAdminImpl, props);
+		soContainer.getSharedObjectManager().addSharedObject(IDFactory.getDefault().createStringID(jGroupsClient.getID().getName()), eventAdminImpl, props);
 
 		// then connect to target Id
 		if (targetId != null)
-			jGroupsModerator.connect(IDFactory.getDefault().createID(jGroupsModerator.getConnectNamespace(), targetId), new IConnectContext() {
+			jGroupsClient.connect(IDFactory.getDefault().createID(jGroupsClient.getConnectNamespace(), targetId), new IConnectContext() {
 
 				public CallbackHandler getCallbackHandler() {
 					// TODO [pierre cf connexion wizards]
@@ -216,10 +216,10 @@ public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConsta
 			eventAdminRegistration.unregister();
 			eventAdminRegistration = null;
 		}
-		if (jGroupsModerator != null) {
-			jGroupsModerator.dispose();
+		if (jGroupsClient != null) {
+			jGroupsClient.dispose();
 			getContainerManager().removeAllContainers();
-			jGroupsModerator = null;
+			jGroupsClient = null;
 		}
 		if (containerManagerTracker != null) {
 			containerManagerTracker.close();
