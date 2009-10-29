@@ -15,6 +15,7 @@ import java.util.Properties;
 
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -70,8 +71,8 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 
 		Properties props1 = new Properties();
 		props1.put(EventConstants.EVENT_TOPIC, "*");
-		eventHandlerRegistration = context.registerService(
-				EventHandler.class.getName(), this, props1);
+		eventHandlerRegistration = context.registerService(EventHandler.class
+				.getName(), this, props1);
 	}
 
 	@Override
@@ -219,13 +220,8 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 			final DisconnectRequestMessage message = new DisconnectRequestMessage(
 					(JGroupsID) this.getLocalID(), (JGroupsID) event
 							.getProperty("ID"), null);
-			try {
-				sendSynch((ID) event.getProperty("ID"), (byte[]) message
-						.getData());
-			} catch (IOException e) {
-				// AFAIRE [pierre] handle exception
-				e.printStackTrace();
-			}
+			ISharedObjectContainerGroupManager soManager = (ISharedObjectContainerGroupManager) getAdapter(ISharedObjectContainerGroupManager.class);
+			soManager.ejectGroupMember(this.getLocalID(), message);
 		}
 	}
 }
