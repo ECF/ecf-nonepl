@@ -19,7 +19,6 @@ import java.util.Map;
 import java.util.Properties;
 
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -30,12 +29,14 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
+import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Message;
 import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -44,11 +45,17 @@ import org.osgi.service.event.EventHandler;
 /**
  *
  */
-public class JGroupsManagerConnection extends AbstractJGroupsConnection implements EventHandler {
+public class JGroupsManagerConnection extends AbstractJGroupsConnection
+		implements EventHandler {
 
 	private static final long DEFAULT_DISCONNECT_TIMEOUT = 3000;
 
-	private final ServiceRegistration eventHandlerRegistration;
+	private ServiceRegistration eventHandlerRegistration = null;
+
+	private final DistributedEventAdmin eventAdminImpl;
+
+	private ServiceRegistration eventAdminRegistration = null;
+
 	/**
 	 * @param eventHandler
 	 * @throws ECFException
@@ -56,19 +63,23 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection implemen
 	public JGroupsManagerConnection(ISynchAsynchEventHandler eventHandler)
 			throws ECFException {
 		super(eventHandler);
-		Properties props = new Properties();
-		props.put(EventConstants.EVENT_TOPIC, "*");
-		eventHandlerRegistration = Activator.getDefault().getContext().registerService(EventHandler.class.getName(), this, props);
+		final BundleContext context = Activator.getDefault().getContext();
+		eventAdminImpl = new DistributedEventAdmin(context);
+		eventAdminImpl.start();
+
+		// register as EventAdmin service instance
+		Properties props0 = new Properties();
+		props0.put(EventConstants.EVENT_TOPIC, "*");
+		eventAdminRegistration = context.registerService(
+				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
+
+		Properties props1 = new Properties();
+		props1.put(EventConstants.EVENT_TOPIC, "*");
+		eventHandlerRegistration = context.registerService(EventHandler.class
+				.getName(), this, props1);
 		setupJGroups((JGroupsID) getLocalID());
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection
-	 * #connect(org.eclipse.ecf.core.identity.ID, java.lang.Object, int)
-	 */
 	@Override
 	public Object connect(ID targetID, Object data, int timeout)
 			throws ECFException {
@@ -298,19 +309,19 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection implemen
 		return (Client) addressClientMap.get(addr);
 	}
 
-
 	public void handleEvent(Event event) {
-		if( event.getTopic().equalsIgnoreCase("admin")){
-			String command= (String) event.getProperty("command"); 
-			if( command.equalsIgnoreCase("evict") ){
-				ISharedObjectContainer so=(ISharedObjectContainer) event.getProperty("ID");
-				System.out.println("killing ID : "+so.getID());
-				try {
-					this.sendSynch(so.getID(), null);
-				} catch (IOException e) {
-					// TODO handle exceptions
-					e.printStackTrace();
-				}
+		System.out.println("event received by client: " + event.toString());
+		if (event.getProperty("command").toString().equalsIgnoreCase("evict")) {
+			
+			final DisconnectRequestMessage message = new DisconnectRequestMessage(
+					(JGroupsID) this.getLocalID(), (JGroupsID) event
+							.getProperty("ID"), null);
+			try {
+				sendSynch((ID) event.getProperty("ID"), (byte[]) message
+						.getData());
+			} catch (IOException e) {
+				// AFAIRE [pierre] handle exception
+				e.printStackTrace();
 			}
 		}
 	}

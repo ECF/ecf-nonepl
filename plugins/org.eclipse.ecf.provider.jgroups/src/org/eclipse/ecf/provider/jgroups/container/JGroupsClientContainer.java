@@ -12,12 +12,13 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
+import org.eclipse.ecf.internal.provider.jgroups.connection.JGroupsClientConnection;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
-import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
-import org.eclipse.ecf.internal.provider.jgroups.connection.JGroupsClientConnection;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.jgroups.Channel;
 
@@ -32,25 +33,23 @@ public class JGroupsClientContainer extends ClientSOContainer {
 		super(config);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.core.IContainer#getConnectNamespace()
-	 */
+	@Override
 	public Namespace getConnectNamespace() {
 		return IDFactory.getDefault().getNamespaceByName(JGroupsNamespace.NAME);
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see
-	 * org.eclipse.ecf.provider.generic.ClientSOContainer#createConnection(org
-	 * .eclipse.ecf.core.identity.ID, java.lang.Object)
-	 */
+	@Override
 	protected ISynchAsynchConnection createConnection(ID remoteSpace,
 			Object data) throws ConnectionCreateException {
-		return new JGroupsClientConnection(getReceiver());
+		JGroupsClientConnection jgConnection = null;
+		try {
+			jgConnection = new JGroupsClientConnection(
+					getReceiver());
+		} catch (ECFException e) {
+			// TODO [pierre]
+			e.printStackTrace();
+		}
+		return jgConnection;
 	}
 
 	public Channel getJChannel() {

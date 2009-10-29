@@ -14,7 +14,8 @@ Require-Bundle: org.eclipse.equinox.common,
  org.eclipse.ecf.remoteservice,
  org.eclipse.ecf.provider.datashare,
  org.eclipse.ecf.provider.remoteservice,
- org.eclipse.equinox.registry
+ org.eclipse.equinox.registry,
+ org.eclipse.ecf.remoteservice.eventadmin;bundle-version="1.0.0"
 Eclipse-LazyStart: true
 Eclipse-BuddyPolicy: global
 Bundle-ClassPath: lib/commons-logging.jar,
