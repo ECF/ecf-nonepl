@@ -26,6 +26,7 @@ import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
+import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Message;
@@ -34,6 +35,7 @@ import org.jgroups.TimeoutException;
 import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
+import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventConstants;
@@ -46,16 +48,30 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 		implements EventHandler {
 
 	private final ServiceRegistration eventHandlerRegistration;
+	private final DistributedEventAdmin eventAdminImpl;
+	private final ServiceRegistration eventAdminRegistration;
 
 	/**
 	 * @param eventHandler
+	 * @throws ECFException
 	 */
-	public JGroupsClientConnection(ISynchAsynchEventHandler eventHandler) {
+	public JGroupsClientConnection(ISynchAsynchEventHandler eventHandler)
+			throws ECFException {
 		super(eventHandler);
-		Properties props = new Properties();
-		props.put(EventConstants.EVENT_TOPIC, "*");
-		eventHandlerRegistration = Activator.getDefault().getContext()
-				.registerService(EventHandler.class.getName(), this, props);
+		final BundleContext context = Activator.getDefault().getContext();
+		eventAdminImpl = new DistributedEventAdmin(context);
+		eventAdminImpl.start();
+
+		// register as EventAdmin service instance
+		Properties props0 = new Properties();
+		props0.put(EventConstants.EVENT_TOPIC, "*");
+		eventAdminRegistration = context.registerService(
+				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
+
+		Properties props1 = new Properties();
+		props1.put(EventConstants.EVENT_TOPIC, "*");
+		eventHandlerRegistration = context.registerService(
+				EventHandler.class.getName(), this, props1);
 	}
 
 	@Override
@@ -204,7 +220,8 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 					(JGroupsID) this.getLocalID(), (JGroupsID) event
 							.getProperty("ID"), null);
 			try {
-				sendSynch((ID) event.getProperty("ID"), (byte[]) message.getData());
+				sendSynch((ID) event.getProperty("ID"), (byte[]) message
+						.getData());
 			} catch (IOException e) {
 				// AFAIRE [pierre] handle exception
 				e.printStackTrace();

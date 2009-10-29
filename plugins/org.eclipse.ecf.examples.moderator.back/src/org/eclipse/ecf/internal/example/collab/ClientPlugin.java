@@ -111,8 +111,6 @@ public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConsta
 		eventAdminImpl = new DistributedEventAdmin(context);
 		eventAdminImpl.start();
 
-		//		this.createConfigureAndConnectContainer();
-
 		// register as EventAdmin service instance
 		Properties props = new Properties();
 		props.put(EventConstants.EVENT_TOPIC, "*");
@@ -180,6 +178,12 @@ public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConsta
 		return (IContainerManager) containerManagerTracker.getService();
 	}
 
+	/**
+	 * @deprecated use the CollabCLient.createAndConnectClient instead
+	 * @throws ContainerCreateException
+	 * @throws SharedObjectAddException
+	 * @throws ContainerConnectException
+	 */
 	protected void createConfigureAndConnectContainer() throws ContainerCreateException, SharedObjectAddException, ContainerConnectException {
 		Map props = new HashMap();
 		props.put("topic", "admin");
