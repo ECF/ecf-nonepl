@@ -70,6 +70,10 @@
             configFile="stacks/defaultStacks.xml"
             id="org.eclipse.ecf.provider.jgroups.default">
       </stackConfig>
+      <stackConfig
+            configFile="defaultStacks.xml"
+            id="encrypt">
+      </stackConfig>
    </extension>
 
 </plugin>
