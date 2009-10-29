@@ -28,16 +28,16 @@ import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
 import org.eclipse.ecf.internal.provider.jgroups.JGroupsDebugOptions;
 import org.eclipse.ecf.internal.provider.jgroups.Messages;
+import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
+import org.eclipse.ecf.internal.provider.jgroups.connection.ConnectRequestMessage;
+import org.eclipse.ecf.internal.provider.jgroups.connection.DisconnectRequestMessage;
+import org.eclipse.ecf.internal.provider.jgroups.connection.JGroupsManagerConnection;
 import org.eclipse.ecf.provider.comm.IAsynchConnection;
 import org.eclipse.ecf.provider.comm.IConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
-import org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection;
-import org.eclipse.ecf.provider.jgroups.connection.ConnectRequestMessage;
-import org.eclipse.ecf.provider.jgroups.connection.DisconnectRequestMessage;
-import org.eclipse.ecf.provider.jgroups.connection.JGroupsManagerConnection;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.jgroups.Address;
 import org.jgroups.Channel;
@@ -76,6 +76,7 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 		serverConnection.start();
 	}
 
+	@Override
 	public void dispose() {
 		getConnection().disconnect();
 		setConnection(null);
@@ -98,6 +99,7 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 		this.joinPolicy = policy;
 	}
 
+	@Override
 	protected Serializable processSynch(SynchEvent e) throws IOException {
 		final Object req = e.getData();
 		if (req instanceof ConnectRequestMessage) {
@@ -130,6 +132,7 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 			JGroupsManagerConnection serverChannel, Exception e) {
 	}
 
+	@Override
 	protected Object checkJoin(SocketAddress socketAddress, ID fromID,
 			String targetPath, Serializable data) throws Exception {
 		if (joinPolicy != null)
@@ -216,21 +219,25 @@ public class JGroupsManagerContainer extends ServerSOContainer {
 		}
 	}
 
+	@Override
 	protected void forwardExcluding(ID from, ID excluding, ContainerMessage data)
 			throws IOException {
 		// no forwarding necessary
 	}
 
+	@Override
 	protected void forwardToRemote(ID from, ID to, ContainerMessage data)
 			throws IOException {
 		// no forwarding necessary
 	}
 
+	@Override
 	protected void queueContainerMessage(ContainerMessage mess)
 			throws IOException {
 		serverConnection.sendAsynch(mess.getToContainerID(), serialize(mess));
 	}
 
+	@Override
 	protected void handleLeave(ID target, IConnection conn) {
 		if (target == null)
 			return;
