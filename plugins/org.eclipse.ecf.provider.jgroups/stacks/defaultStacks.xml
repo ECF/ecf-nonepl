@@ -1,7 +1,7 @@
 <!--
   Sample file that defines a number of stacks, used by the multiplexer
   Author: Bela Ban
-  Version: $Id: defaultStacks.xml,v 1.1 2007/09/15 23:11:08 slewis Exp $
+  Version: $Id: defaultStacks.xml,v 1.2 2009/10/29 14:20:45 phperret Exp $
 -->
 <protocol_stacks>
     <stack name="udp"
@@ -254,6 +254,9 @@
             <pbcast.STREAMING_STATE_TRANSFER/>
 	        <!-- <pbcast.STATE_TRANSFER/> -->
 	        <pbcast.FLUSH timeout="0"/>
+	        
+    <ENCRYPT encrypt_entire_message="true" sym_init="128" sym_algorithm="AES/ECB/PKCS5Padding" asym_init="512" asym_algorithm="RSA"/>
+
         </config>
     </stack>
 
@@ -396,7 +399,26 @@
         </config>
     </stack>
 
-
+	<stack name="encrypt_entire_message"
+			description="Encrpyt entire message">
+		
+		<config>
+    <UDP mcast_recv_buf_size="64000" mcast_send_buf_size="32000" mcast_port="45566" ucast_recv_buf_size="64000"
+        mcast_addr="228.8.8.8"
+        loopback="true" ucast_send_buf_size="32000" ip_ttl="32"/>
+    <PING timeout="2000" num_initial_members="3"/>
+    <MERGE2 max_interval="10000" min_interval="5000"/>
+    <FD timeout="2000" max_tries="3" />
+    <VERIFY_SUSPECT timeout="1500"/>
+    <ENCRYPT encrypt_entire_message="false" sym_init="128" sym_algorithm="AES/ECB/PKCS5Padding" asym_init="512" asym_algorithm="RSA"/>
+    <pbcast.NAKACK gc_lag="50" retransmit_timeout="600,1200,2400,4800"/>
+    <UNICAST timeout="1200,2400,3600"/>
+    <pbcast.STABLE stability_delay="1000" desired_avg_gossip="20000" max_bytes="0"/>
+    <FRAG2 frag_size="8192"  />
+    <pbcast.GMS print_local_addr="true" join_timeout="3000" />
+    
+    </config>
+  </stack>  
 </protocol_stacks>
 
 
