@@ -40,6 +40,10 @@ public class Activator implements BundleActivator {
 	// The shared instance
 	private static Activator plugin;
 
+	public BundleContext getContext() {
+		return context;
+	}
+
 	private BundleContext context;
 
 	private ServiceTracker logServiceTracker = null;
