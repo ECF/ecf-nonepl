@@ -521,13 +521,6 @@ That&apos;s all there is to it!
          unpack="false"/>
 
    <plugin
-         id="org.eclipse.ecf.provider.jgroups.ui"
-         download-size="0"
-         install-size="0"
-         version="0.0.0"
-         unpack="false"/>
-
-   <plugin
          id="org.eclipse.ecf.server.jgroups"
          download-size="0"
          install-size="0"
