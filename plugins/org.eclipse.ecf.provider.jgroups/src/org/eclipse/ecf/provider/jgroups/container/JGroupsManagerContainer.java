@@ -46,7 +46,8 @@ import org.jgroups.stack.IpAddress;
 /**
  *
  */
-public class JGroupsManagerContainer extends ServerSOContainer {
+public class JGroupsManagerContainer extends ServerSOContainer  {
+
 
 	private IConnectHandlerPolicy joinPolicy = null;
 

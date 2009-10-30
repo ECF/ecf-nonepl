@@ -18,7 +18,9 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
+import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -42,6 +44,7 @@ import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.blocks.RequestHandler;
+import org.osgi.util.tracker.ServiceTracker;
 
 public abstract class AbstractJGroupsConnection implements
 		ISynchAsynchConnection {
@@ -64,25 +67,31 @@ public abstract class AbstractJGroupsConnection implements
 	};
 
 	private final Receiver receiver = new ReceiverAdapter() {
+		@Override
 		public byte[] getState() {
 			return null;
 		}
 
+		@Override
 		public void receive(Message arg0) {
 			handleAsynch(arg0);
 		}
 
+		@Override
 		public void setState(byte[] arg0) {
 		}
 
+		@Override
 		public void block() {
 			Trace.trace(Activator.PLUGIN_ID, "block()");
 		}
 
+		@Override
 		public void suspect(Address arg0) {
 			Trace.trace(Activator.PLUGIN_ID, "suspect(" + arg0 + ")");
 		}
 
+		@Override
 		public void viewAccepted(View arg0) {
 			handleViewAccepted(arg0);
 		}
@@ -319,6 +328,9 @@ public abstract class AbstractJGroupsConnection implements
 
 	protected String oldHost = null;
 	protected int oldPort = -1;
+	private ServiceTracker containerManagerTracker;
+	private ServiceTracker soContainerGroupManagerTracker;
+	private Object remoteContainerManagerTracker;
 
 	protected void setPropertiesForStack(JGroupsID targetID) {
 		final String stackName = targetID.getStackName();
@@ -475,13 +487,41 @@ public abstract class AbstractJGroupsConnection implements
 		started = false;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
-	 */
-	public Object getAdapter(Class adapter) {
+	public IContainerManager getAdapter(Class adapter) {
+		if (adapter.getName().equals(IContainerManager.class.getName())) {
+			return getContainerManager();
+		}
 		return null;
 	}
 
+	protected ISharedObjectContainerGroupManager getSharedObjectContainerGroupManager() {
+		if (soContainerGroupManagerTracker == null) {
+			soContainerGroupManagerTracker = new ServiceTracker(Activator
+					.getDefault().getContext(),
+					ISharedObjectContainerGroupManager.class.getName(), null);
+			soContainerGroupManagerTracker.open();
+		}
+		return (ISharedObjectContainerGroupManager) soContainerGroupManagerTracker
+				.getService();
+	}
+
+	protected IContainerManager getContainerManager() {
+		if (containerManagerTracker == null) {
+			containerManagerTracker = new ServiceTracker(Activator.getDefault()
+					.getContext(), IContainerManager.class.getName(), null);
+			containerManagerTracker.open();
+		}
+		return (IContainerManager) containerManagerTracker.getService();
+	}
+
+//	protected IContainerManager getRemoteContainerManager(ID IRemote) {
+//		if (remoteContainerManagerTracker == null) {
+//			remoteContainerManagerTracker = new RemoteServiceTracker((IRemoteServiceContainerAdapter) Activator
+//					.getDefault().getContext(), null,
+//					new IRemoteServiceReference(), null);
+//			remoteContainerManagerTracker.open();
+//		}
+//		return (IContainerManager) remoteContainerManagerTracker.getService();
+//
+//	}
 }

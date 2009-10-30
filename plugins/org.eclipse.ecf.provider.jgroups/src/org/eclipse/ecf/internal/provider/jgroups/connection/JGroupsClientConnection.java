@@ -14,6 +14,8 @@ import java.io.Serializable;
 import java.util.Properties;
 
 import org.eclipse.ecf.core.ContainerConnectException;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
@@ -217,11 +219,17 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 	public void handleEvent(Event event) {
 		System.out.println("event received by client: " + event.toString());
 		if (event.getProperty("command").toString().equalsIgnoreCase("evict")) {
+
+			final JGroupsID sender = (JGroupsID) event.getProperty("ID");
+
 			final DisconnectRequestMessage message = new DisconnectRequestMessage(
-					(JGroupsID) this.getLocalID(), (JGroupsID) event
-							.getProperty("ID"), null);
-			ISharedObjectContainerGroupManager soManager = (ISharedObjectContainerGroupManager) getAdapter(ISharedObjectContainerGroupManager.class);
-			soManager.ejectGroupMember(this.getLocalID(), message);
+					(JGroupsID) this.getLocalID(), sender, null);
+
+			IContainerManager containerManager = getAdapter(IContainerManager.class);
+			IContainer container = containerManager.getContainer(sender);
+			ISharedObjectContainerGroupManager cgm = (ISharedObjectContainerGroupManager) container
+					.getAdapter(ISharedObjectContainerGroupManager.class);
+			cgm.ejectGroupMember(sender, "evict");
 		}
 	}
 }

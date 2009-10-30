@@ -18,7 +18,10 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -310,19 +313,19 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection
 	}
 
 	public void handleEvent(Event event) {
-		System.out.println("event received by client: " + event.toString());
+		System.out.println("event received from client: " + event.toString());
 		if (event.getProperty("command").toString().equalsIgnoreCase("evict")) {
 			
+			final JGroupsID sender = (JGroupsID) event.getProperty("ID");
+
 			final DisconnectRequestMessage message = new DisconnectRequestMessage(
-					(JGroupsID) this.getLocalID(), (JGroupsID) event
-							.getProperty("ID"), null);
-			try {
-				sendSynch((ID) event.getProperty("ID"), (byte[]) message
-						.getData());
-			} catch (IOException e) {
-				// AFAIRE [pierre] handle exception
-				e.printStackTrace();
+					(JGroupsID) this.getLocalID(), sender, null);
+
+			IContainerManager containerManager = getAdapter(IContainerManager.class);
+			IContainer container = containerManager.getContainer(sender);
+			ISharedObjectContainerGroupManager cgm = (ISharedObjectContainerGroupManager) container
+					.getAdapter(ISharedObjectContainerGroupManager.class);
+			cgm.ejectGroupMember(sender, "evict");
 			}
 		}
-	}
 }
