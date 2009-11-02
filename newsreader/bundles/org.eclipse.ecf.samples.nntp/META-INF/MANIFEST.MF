@@ -1,0 +1,10 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: nntp Samples
+Bundle-SymbolicName: org.eclipse.ecf.samples.nntp
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.ecf.samples.nntp.Activator
+Bundle-Vendor: eclipse,org
+Bundle-RequiredExecutionEnvironment: CDC-1.1/Foundation-1.1
+Import-Package: org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
