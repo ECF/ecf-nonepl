@@ -1,0 +1,23 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Ui Plug-in
+Bundle-SymbolicName: org.eclipse.ecf.salvo.ui;singleton:=true
+Bundle-Version: 0.5.0
+Bundle-Vendor: WELTEVREE
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Require-Bundle: org.eclipse.ui;bundle-version="3.4.1",
+ org.eclipse.core.runtime;bundle-version="3.4.0",
+ org.eclipse.ui.navigator,
+ org.eclipse.core.expressions,
+ org.eclipse.ui.views;bundle-version="3.3.0"
+Bundle-Activator: org.eclipse.ecf.salvo.ui.internal.Activator
+Import-Package: org.apache.james.mime4j;version="0.6.0",
+ org.apache.james.mime4j.codec;version="0.6.0",
+ org.apache.james.mime4j.descriptor;version="0.6.0",
+ org.apache.james.mime4j.parser;version="0.6.0",
+ org.apache.james.mime4j.util;version="0.6.0",
+ org.eclipse.ecf.protocol.nntp.core;version="0.5.0",
+ org.eclipse.ecf.protocol.nntp.model;version="0.5.0",
+ org.eclipse.equinox.security.storage;version="1.0.0"
+Bundle-ActivationPolicy: lazy
+Export-Package: org.eclipse.ecf.salvo.ui.internal.resources;x-internal:=true
