@@ -16,12 +16,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Properties;
 
-import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -32,32 +28,20 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.comm.ISynchAsynchEventHandler;
 import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Message;
 import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 
 /**
  *
  */
-public class JGroupsManagerConnection extends AbstractJGroupsConnection
-		implements EventHandler {
+@SuppressWarnings("unchecked")
+public class JGroupsManagerConnection extends AbstractJGroupsConnection {
 
 	private static final long DEFAULT_DISCONNECT_TIMEOUT = 3000;
-
-	private ServiceRegistration eventHandlerRegistration = null;
-
-	private final DistributedEventAdmin eventAdminImpl;
-
-	private ServiceRegistration eventAdminRegistration = null;
 
 	/**
 	 * @param eventHandler
@@ -66,20 +50,6 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection
 	public JGroupsManagerConnection(ISynchAsynchEventHandler eventHandler)
 			throws ECFException {
 		super(eventHandler);
-		final BundleContext context = Activator.getDefault().getContext();
-		eventAdminImpl = new DistributedEventAdmin(context);
-		eventAdminImpl.start();
-
-		// register as EventAdmin service instance
-		Properties props0 = new Properties();
-		props0.put(EventConstants.EVENT_TOPIC, "*");
-		eventAdminRegistration = context.registerService(
-				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
-
-		Properties props1 = new Properties();
-		props1.put(EventConstants.EVENT_TOPIC, "*");
-		eventHandlerRegistration = context.registerService(EventHandler.class
-				.getName(), this, props1);
 		setupJGroups((JGroupsID) getLocalID());
 	}
 
@@ -312,20 +282,4 @@ public class JGroupsManagerConnection extends AbstractJGroupsConnection
 		return (Client) addressClientMap.get(addr);
 	}
 
-	public void handleEvent(Event event) {
-		System.out.println("event received from client: " + event.toString());
-		if (event.getProperty("command").toString().equalsIgnoreCase("evict")) {
-			
-			final JGroupsID sender = (JGroupsID) event.getProperty("ID");
-
-			final DisconnectRequestMessage message = new DisconnectRequestMessage(
-					(JGroupsID) this.getLocalID(), sender, null);
-
-			IContainerManager containerManager = getAdapter(IContainerManager.class);
-			IContainer container = containerManager.getContainer(sender);
-			ISharedObjectContainerGroupManager cgm = (ISharedObjectContainerGroupManager) container
-					.getAdapter(ISharedObjectContainerGroupManager.class);
-			cgm.ejectGroupMember(sender, "evict");
-			}
-		}
 }

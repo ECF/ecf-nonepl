@@ -20,7 +20,6 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -412,11 +411,6 @@ public abstract class AbstractJGroupsConnection implements
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.provider.comm.IConnection#disconnect()
-	 */
 	public synchronized void disconnect() {
 		stop();
 		if (channel != null) {
@@ -429,29 +423,14 @@ public abstract class AbstractJGroupsConnection implements
 		}
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.provider.comm.IConnection#getLocalID()
-	 */
 	public ID getLocalID() {
 		return eventHandler.getEventHandlerID();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.provider.comm.IConnection#getProperties()
-	 */
 	public Map getProperties() {
 		return null;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.provider.comm.IConnection#isConnected()
-	 */
 	public synchronized boolean isConnected() {
 		return (channel != null && channel.isConnected());
 	}
@@ -460,29 +439,14 @@ public abstract class AbstractJGroupsConnection implements
 		return isConnected() && isStarted();
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.provider.comm.IConnection#isStarted()
-	 */
 	public boolean isStarted() {
 		return started;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.provider.comm.IConnection#start()
-	 */
 	public void start() {
 		started = true;
 	}
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.eclipse.ecf.provider.comm.IConnection#stop()
-	 */
 	public void stop() {
 		started = false;
 	}
@@ -494,16 +458,6 @@ public abstract class AbstractJGroupsConnection implements
 		return null;
 	}
 
-	protected ISharedObjectContainerGroupManager getSharedObjectContainerGroupManager() {
-		if (soContainerGroupManagerTracker == null) {
-			soContainerGroupManagerTracker = new ServiceTracker(Activator
-					.getDefault().getContext(),
-					ISharedObjectContainerGroupManager.class.getName(), null);
-			soContainerGroupManagerTracker.open();
-		}
-		return (ISharedObjectContainerGroupManager) soContainerGroupManagerTracker
-				.getService();
-	}
 
 	protected IContainerManager getContainerManager() {
 		if (containerManagerTracker == null) {
@@ -514,14 +468,4 @@ public abstract class AbstractJGroupsConnection implements
 		return (IContainerManager) containerManagerTracker.getService();
 	}
 
-//	protected IContainerManager getRemoteContainerManager(ID IRemote) {
-//		if (remoteContainerManagerTracker == null) {
-//			remoteContainerManagerTracker = new RemoteServiceTracker((IRemoteServiceContainerAdapter) Activator
-//					.getDefault().getContext(), null,
-//					new IRemoteServiceReference(), null);
-//			remoteContainerManagerTracker.open();
-//		}
-//		return (IContainerManager) remoteContainerManagerTracker.getService();
-//
-//	}
 }
