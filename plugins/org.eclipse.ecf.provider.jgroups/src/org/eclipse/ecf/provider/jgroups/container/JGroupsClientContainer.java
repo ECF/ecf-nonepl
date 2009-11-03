@@ -8,35 +8,62 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.jgroups.container;
 
+import java.util.Properties;
+
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectManager;
-import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
+import org.eclipse.ecf.internal.provider.jgroups.Activator;
 import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
-import org.eclipse.ecf.internal.provider.jgroups.connection.DisconnectRequestMessage;
 import org.eclipse.ecf.internal.provider.jgroups.connection.JGroupsClientConnection;
 import org.eclipse.ecf.provider.comm.ConnectionCreateException;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.ClientSOContainer;
 import org.eclipse.ecf.provider.generic.SOContainerConfig;
-import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
+import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.jgroups.Channel;
+import org.osgi.framework.BundleContext;
+import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
-import org.osgi.service.event.EventHandler;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.service.event.EventConstants;
 
 /**
- * Trivial container implementation. Note that container adapter implementations
- * can be provided by the container class to expose appropriate adapters.
+ * Trivial container implementation. that container adapter implementations can
+ * be provided by the container class to expose appropriate adapters.
  */
-public class JGroupsClientContainer extends ClientSOContainer implements EventHandler {
+public class JGroupsClientContainer extends ClientSOContainer implements
+		EventAdmin {
 
-	
+	private final DistributedEventAdmin eventAdminImpl;
+	private ServiceRegistration eventAdminRegistration = null;
+
+	@Override
+	public Object getAdapter(Class adapter) {
+		if (adapter.getName().equals(ISharedObjectContainer.class.getName())) {
+			ID containerID = getConnectedID();
+			
+		}
+		return super.getAdapter(adapter);
+	}
+
 	public JGroupsClientContainer(SOContainerConfig config)
 			throws IDCreateException {
 		super(config);
+		// hook in context for events
+		final BundleContext context = Activator.getDefault().getContext();
+		eventAdminImpl = new DistributedEventAdmin(context);
+		eventAdminImpl.start();
+
+		// register as EventAdmin service instance
+		Properties props0 = new Properties();
+		props0.put(EventConstants.EVENT_TOPIC, "*");
+		eventAdminRegistration = context.registerService(
+				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
+
 	}
 
 	@Override
@@ -47,15 +74,7 @@ public class JGroupsClientContainer extends ClientSOContainer implements EventHa
 	@Override
 	protected ISynchAsynchConnection createConnection(ID remoteSpace,
 			Object data) throws ConnectionCreateException {
-		JGroupsClientConnection jgConnection = null;
-		try {
-			jgConnection = new JGroupsClientConnection(
-					getReceiver());
-		} catch (ECFException e) {
-			// TODO [pierre]
-			e.printStackTrace();
-		}
-		return jgConnection;
+		return new JGroupsClientConnection(getReceiver());
 	}
 
 	public Channel getJChannel() {
@@ -67,17 +86,12 @@ public class JGroupsClientContainer extends ClientSOContainer implements EventHa
 		}
 	}
 
-	public void handleEvent(Event event) {
-		System.out.println("event received by client: " + event.toString());
-		if (event.getProperty("command").toString().equalsIgnoreCase("evict")) {
-			
-			final JGroupsID sender = (JGroupsID)event.getProperty("ID");
-			
-			final DisconnectRequestMessage message = new DisconnectRequestMessage(
-					(JGroupsID) this.getID(), sender, null);
-			
-			ISharedObjectManager som = this.getSharedObjectManager();
-			ISharedObjectManager sgm = (ISharedObjectManager) this.groupManager;
-		}
+	public void postEvent(Event event) {
+		this.eventAdminImpl.postEvent(event);
 	}
+
+	public void sendEvent(Event event) {
+		this.eventAdminImpl.sendEvent(event);
+	}
+
 }

@@ -11,13 +11,9 @@ package org.eclipse.ecf.internal.provider.jgroups.connection;
 import java.io.IOException;
 import java.io.NotSerializableException;
 import java.io.Serializable;
-import java.util.Properties;
 
 import org.eclipse.ecf.core.ContainerConnectException;
-import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -29,7 +25,6 @@ import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.SOContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.eclipse.osgi.util.NLS;
 import org.jgroups.Address;
 import org.jgroups.Message;
@@ -38,45 +33,26 @@ import org.jgroups.TimeoutException;
 import org.jgroups.View;
 import org.jgroups.blocks.GroupRequest;
 import org.jgroups.blocks.MessageDispatcher;
-import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
-import org.osgi.service.event.Event;
-import org.osgi.service.event.EventConstants;
-import org.osgi.service.event.EventHandler;
 
 /**
  *
  */
-public class JGroupsClientConnection extends AbstractJGroupsConnection
-		implements EventHandler {
-
-	private final ServiceRegistration eventHandlerRegistration;
-	private final DistributedEventAdmin eventAdminImpl;
-	private final ServiceRegistration eventAdminRegistration;
+public class JGroupsClientConnection extends AbstractJGroupsConnection {
 
 	/**
 	 * @param eventHandler
-	 * @throws ECFException
 	 */
-	public JGroupsClientConnection(ISynchAsynchEventHandler eventHandler)
-			throws ECFException {
+	public JGroupsClientConnection(ISynchAsynchEventHandler eventHandler) {
 		super(eventHandler);
-		final BundleContext context = Activator.getDefault().getContext();
-		eventAdminImpl = new DistributedEventAdmin(context);
-		eventAdminImpl.start();
-
-		// register as EventAdmin service instance
-		Properties props0 = new Properties();
-		props0.put(EventConstants.EVENT_TOPIC, "*");
-		eventAdminRegistration = context.registerService(
-				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
-
-		Properties props1 = new Properties();
-		props1.put(EventConstants.EVENT_TOPIC, "*");
-		eventHandlerRegistration = context.registerService(EventHandler.class
-				.getName(), this, props1);
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.internal.provider.jgroups.AbstractJGroupsConnection#connect
+	 * (org.eclipse.ecf.core.identity.ID, java.lang.Object, int)
+	 */
 	@Override
 	public synchronized Object connect(ID targetID, Object data, int timeout)
 			throws ECFException {
@@ -166,6 +142,13 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 		return getChannel().getView().getCreator();
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.internal.provider.jgroups.AbstractJGroupsConnection#sendSynch
+	 * (org.eclipse.ecf.core.identity.ID, byte[])
+	 */
 	@Override
 	public synchronized Object sendSynch(ID receiver, byte[] data)
 			throws IOException {
@@ -183,6 +166,13 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 		return result;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection
+	 * #internalHandleSynch(org.jgroups.Message)
+	 */
 	@Override
 	protected Object internalHandleSynch(Message message) {
 		Trace.entering(Activator.PLUGIN_ID,
@@ -210,26 +200,16 @@ public class JGroupsClientConnection extends AbstractJGroupsConnection
 		return null;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * org.eclipse.ecf.provider.jgroups.connection.AbstractJGroupsConnection
+	 * #handleViewAccepted(org.jgroups.View)
+	 */
 	@Override
 	protected void handleViewAccepted(View view) {
 		Trace.trace(Activator.PLUGIN_ID, "viewAccepted(" + view + ")");
 		// TODO [pierre] handle that
-	}
-
-	public void handleEvent(Event event) {
-		System.out.println("event received by client: " + event.toString());
-		if (event.getProperty("command").toString().equalsIgnoreCase("evict")) {
-
-			final JGroupsID sender = (JGroupsID) event.getProperty("ID");
-
-			final DisconnectRequestMessage message = new DisconnectRequestMessage(
-					(JGroupsID) this.getLocalID(), sender, null);
-
-			IContainerManager containerManager = getAdapter(IContainerManager.class);
-			IContainer container = containerManager.getContainer(sender);
-			ISharedObjectContainerGroupManager cgm = (ISharedObjectContainerGroupManager) container
-					.getAdapter(ISharedObjectContainerGroupManager.class);
-			cgm.ejectGroupMember(sender, "evict");
-		}
 	}
 }

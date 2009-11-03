@@ -19,10 +19,13 @@ import java.net.SocketAddress;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.ContainerConnectException;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.events.ContainerConnectedEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.security.IConnectHandlerPolicy;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerConfig;
+import org.eclipse.ecf.core.sharedobject.ISharedObjectContainerGroupManager;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
@@ -39,19 +42,43 @@ import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
+import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.jgroups.Address;
 import org.jgroups.Channel;
 import org.jgroups.stack.IpAddress;
+import org.osgi.framework.ServiceRegistration;
+import org.osgi.service.event.Event;
 
 /**
  *
  */
 public class JGroupsManagerContainer extends ServerSOContainer  {
 
+	public void handleEvent(Event event) {
+		System.out.println("event received from client: " + event.toString());
+		if (event.getProperty("command").toString().equalsIgnoreCase("evict")) {
+
+			final JGroupsID sender = (JGroupsID) event.getProperty("ID");
+
+			IContainerManager containerManager = (IContainerManager) getAdapter(IContainerManager.class);
+			IContainer container = containerManager.getContainer(getID());
+			
+			ISharedObjectContainerGroupManager cgm = (ISharedObjectContainerGroupManager) container
+					.getAdapter(ISharedObjectContainerGroupManager.class);
+			
+			cgm.ejectGroupMember(sender, "evict");
+		}
+	}
 
 	private IConnectHandlerPolicy joinPolicy = null;
 
 	private ISynchAsynchConnection serverConnection;
+
+	private final DistributedEventAdmin eventAdminImpl=null;
+
+	private final ServiceRegistration eventAdminRegistration=null;
+
+	private final ServiceRegistration eventHandlerRegistration=null;
 
 	/**
 	 * @param config
