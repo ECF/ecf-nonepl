@@ -120,6 +120,10 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 		// XXX end need for job
 	}
 
+	protected void log(String method, Throwable e) {
+		super.log(method, e);
+	}
+
 	class RequestHandlerJob extends Job {
 
 		Message jmsMessage;

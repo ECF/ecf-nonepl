@@ -3,18 +3,7 @@ package org.eclipse.ecf.provider.twitter.ui.hub.views;
 import java.util.Observable;
 
 import org.eclipse.ecf.provider.twitter.container.IStatus;
-import org.eclipse.ecf.provider.twitter.ui.Colors;
 import org.eclipse.ecf.provider.twitter.ui.model.Message;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.layout.GridData;
-import org.eclipse.swt.layout.GridLayout;
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Label;
-import org.eclipse.ui.IViewSite;
-import org.eclipse.ui.forms.widgets.Form;
-import org.eclipse.ui.forms.widgets.FormToolkit;
-import org.eclipse.ui.forms.widgets.ScrolledForm;
-import org.eclipse.ui.part.ViewPart;
 
 public class ReplyViewPart extends AbstractMessageViewPart {
 

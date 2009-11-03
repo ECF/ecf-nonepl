@@ -3,10 +3,7 @@ package org.eclipse.ecf.provider.twitter.ui.hub.views;
 import java.util.Observable;
 
 import org.eclipse.ecf.provider.twitter.container.IStatus;
-import org.eclipse.ecf.provider.twitter.ui.hub.preferences.PreferenceConstants;
-import org.eclipse.ecf.provider.twitter.ui.logic.AutoConnector;
 import org.eclipse.ecf.provider.twitter.ui.model.Message;
-import org.eclipse.jface.preference.IPreferenceStore;
 
 
 /**

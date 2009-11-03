@@ -9,8 +9,6 @@ import java.util.Date;
 import java.util.GregorianCalendar;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.SortedMap;
-import java.util.TreeMap;
 
 import org.eclipse.ecf.provider.twitter.container.IStatus;
 import org.eclipse.ecf.provider.twitter.ui.model.Message;
@@ -18,8 +16,6 @@ import org.eclipse.jface.resource.JFaceResources;
 import org.eclipse.jface.window.Window;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Composite;
-import org.eclipse.swt.widgets.Shell;
-import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.forms.IFormColors;

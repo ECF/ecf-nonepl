@@ -11,7 +11,6 @@ import org.eclipse.ecf.provider.twitter.ui.hub.views.MessagesViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.ReplyViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.TrendViewPart;
 import org.eclipse.ecf.provider.twitter.ui.hub.views.TweetViewPart;
-import org.eclipse.ui.IViewReference;
 import org.eclipse.ui.IWorkbench;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
