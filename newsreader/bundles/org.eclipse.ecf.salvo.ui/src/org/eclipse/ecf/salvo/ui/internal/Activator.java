@@ -15,6 +15,7 @@ import java.io.File;
 import java.net.URL;
 import java.util.Enumeration;
 
+import org.eclipse.ecf.protocol.nntp.core.UpdateRunner;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -22,6 +23,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	private static Activator plugin;
+	private UpdateRunner updateRunner;
 
 	public Activator() {
 	}
@@ -39,6 +41,19 @@ public class Activator extends AbstractUIPlugin {
 
 		super.start(context);
 		plugin = this;
+
+		startUpdateThread();
+
+	}
+
+	private void startUpdateThread() {
+
+		if (updateRunner == null) {
+			updateRunner = new UpdateRunner();
+		}
+		
+		updateRunner.start();
+
 
 	}
 
@@ -59,6 +74,8 @@ public class Activator extends AbstractUIPlugin {
 
 		// TODO Auto-generated method stub
 		super.stop(context);
+		
+		updateRunner.stop();
 	}
 
 }

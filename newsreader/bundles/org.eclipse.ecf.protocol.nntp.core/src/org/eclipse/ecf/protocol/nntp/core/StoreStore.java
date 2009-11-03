@@ -16,9 +16,9 @@ import java.util.HashMap;
 import org.eclipse.ecf.protocol.nntp.model.IStore;
 
 
-public class StoreFactory {
+public class StoreStore {
 
-	private static StoreFactory factory;
+	private static StoreStore factory;
 
 	private HashMap stores = new HashMap();
 
@@ -30,9 +30,9 @@ public class StoreFactory {
 		return (IStore[]) stores.values().toArray(new IStore[0]);
 	}
 
-	public static StoreFactory instance() {
+	public static StoreStore instance() {
 		if (factory == null)
-			factory = new StoreFactory();
+			factory = new StoreStore();
 		return factory;
 	}
 }

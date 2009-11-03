@@ -51,7 +51,6 @@ import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
 
-
 /**
  * This implementation of IStore uses the Java file system to store the
  * newsgroup data.
@@ -526,23 +525,35 @@ public class Store implements IStore {
 			String logIn = tizer.nextToken();
 			boolean secure = Boolean.getBoolean(tizer.nextToken());
 
-			ISecurePreferences prefs = SecurePreferencesFactory.getDefault();
-			ISecurePreferences node = prefs.node("/com/weltevree/salvo");
-			String pass;
+			// Do we already have a server initialized?
+			ICredentials credentials = new AbstractCredentials(user, email,
+					logIn, null);
+			IServer server = null;
 			try {
-				pass = node.get(address, "");
-			} catch (Exception e) {
-				Debug.log(this.getClass(), "Storage Exception: "
-						+ e.getMessage());
-				lastException = e;
-				return (IServer[]) storedServers.values().toArray(
-						new IServer[0]);
+				server = ServerFactory.getServer(address, port, credentials,
+						secure);
+			} catch (NNTPException e1) {
+				Debug.log(getClass(), e1);
 			}
 
-			ICredentials credentials = new AbstractCredentials(user, email,
-					logIn, pass);
+			// If not then we must get a password from the secure store
+			if (server == null) {
+				ISecurePreferences prefs = SecurePreferencesFactory
+						.getDefault();
+				ISecurePreferences node = prefs.node("/com/weltevree/salvo");
+				String pass;
+				try {
+					pass = node.get(address, "");
+				} catch (Exception e) {
+					Debug.log(this.getClass(), "Storage Exception: "
+							+ e.getMessage());
+					lastException = e;
+					return (IServer[]) storedServers.values().toArray(
+							new IServer[0]);
+				}
+				credentials = new AbstractCredentials(user, email, logIn, pass);
+			}
 
-			IServer server;
 			try {
 				server = ServerFactory.getServer(address, port, credentials,
 						secure);

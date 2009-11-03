@@ -24,7 +24,7 @@ public class ServerStoreFactory {
 	public IServerStoreFacade getServerStoreFacade() {
 		
 		if (facade == null) {
-			facade = new ServerStoreFacade(StoreFactory.instance().getStores());
+			facade = new ServerStoreFacade(StoreStore.instance().getStores());
 			facade.init();
 		}
 		return facade;

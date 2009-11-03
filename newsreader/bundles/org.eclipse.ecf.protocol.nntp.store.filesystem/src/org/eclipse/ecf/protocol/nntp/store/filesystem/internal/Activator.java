@@ -14,7 +14,7 @@ package org.eclipse.ecf.protocol.nntp.store.filesystem.internal;
 import java.io.File;
 
 import org.eclipse.core.runtime.Plugin;
-import org.eclipse.ecf.protocol.nntp.core.StoreFactory;
+import org.eclipse.ecf.protocol.nntp.core.StoreStore;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.osgi.framework.BundleContext;
 
@@ -48,8 +48,8 @@ public class Activator extends Plugin {
 		File file = new File(SALVO.SALVO_HOME);
 		if (!file.exists())
 			file.mkdir();
-		StoreFactory.instance().addStore(new Store("foxy"));
-		StoreFactory.instance().addStore(new Store(""));
+		StoreStore.instance().addStore(new Store("foxy"));
+		StoreStore.instance().addStore(new Store(""));
 
 	}
 
