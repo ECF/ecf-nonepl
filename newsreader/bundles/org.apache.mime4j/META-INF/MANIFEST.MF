@@ -1,0 +1,14 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Mime4j
+Bundle-SymbolicName: org.apache.mime4j
+Bundle-Version: 0.6.0
+Bundle-Vendor: apache
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Bundle-ClassPath: .,
+ commons-logging-1.1.1.jar
+Export-Package: org.apache.james.mime4j;version="0.6.0",
+ org.apache.james.mime4j.codec;version="0.6.0",
+ org.apache.james.mime4j.descriptor;version="0.6.0",
+ org.apache.james.mime4j.parser;version="0.6.0",
+ org.apache.james.mime4j.util;version="0.6.0"
