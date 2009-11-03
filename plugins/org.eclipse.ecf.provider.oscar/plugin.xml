@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
+            class="org.eclipse.ecf.provider.oscar.identity.OSCARNamespace"
+            description="OSCAR ICQ/AIM Namespace"
+            name="ecf.oscar">
+      </namespace>
+   </extension>
+</plugin>
