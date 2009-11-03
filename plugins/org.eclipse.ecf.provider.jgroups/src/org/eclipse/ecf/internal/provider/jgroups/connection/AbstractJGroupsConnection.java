@@ -18,7 +18,6 @@ import java.util.Map;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
-import org.eclipse.ecf.core.IContainerManager;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.core.util.Trace;
@@ -450,22 +449,13 @@ public abstract class AbstractJGroupsConnection implements
 	public void stop() {
 		started = false;
 	}
-
-	public IContainerManager getAdapter(Class adapter) {
-		if (adapter.getName().equals(IContainerManager.class.getName())) {
-			return getContainerManager();
-		}
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see org.eclipse.core.runtime.IAdaptable#getAdapter(java.lang.Class)
+	 */
+	public Object getAdapter(Class adapter) {
 		return null;
-	}
-
-
-	protected IContainerManager getContainerManager() {
-		if (containerManagerTracker == null) {
-			containerManagerTracker = new ServiceTracker(Activator.getDefault()
-					.getContext(), IContainerManager.class.getName(), null);
-			containerManagerTracker.open();
-		}
-		return (IContainerManager) containerManagerTracker.getService();
 	}
 
 }
