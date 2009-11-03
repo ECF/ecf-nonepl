@@ -2,10 +2,7 @@ package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
 import java.net.MalformedURLException;
 import java.net.URL;
-import java.util.Date;
 
-import org.eclipse.ecf.provider.twitter.container.IStatus;
-import org.eclipse.ecf.provider.twitter.search.ITweetItem;
 import org.eclipse.ecf.provider.twitter.ui.model.Message;
 import org.eclipse.ecf.provider.twitter.ui.utils.ImageUtils;
 import org.eclipse.ecf.provider.twitter.ui.utils.TwitterCache;

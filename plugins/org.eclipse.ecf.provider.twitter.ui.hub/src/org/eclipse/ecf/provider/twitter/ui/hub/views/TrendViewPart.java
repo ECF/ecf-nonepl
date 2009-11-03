@@ -2,9 +2,6 @@ package org.eclipse.ecf.provider.twitter.ui.hub.views;
 
 import java.util.Observable;
 
-import org.eclipse.swt.widgets.Composite;
-import org.eclipse.ui.part.ViewPart;
-
 public class TrendViewPart extends AbstractMessageViewPart {
 
 	/**

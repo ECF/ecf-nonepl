@@ -1,9 +1,8 @@
 package org.eclipse.ecf.provider.twitter.ui.hub.preferences;
 
 import org.eclipse.core.runtime.preferences.AbstractPreferenceInitializer;
-import org.eclipse.jface.preference.IPreferenceStore;
-
 import org.eclipse.ecf.provider.twitter.ui.hub.views.Activator;
+import org.eclipse.jface.preference.IPreferenceStore;
 
 /**
  * Class used to initialize default preference values.
