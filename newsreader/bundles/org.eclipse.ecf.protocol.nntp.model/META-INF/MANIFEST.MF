@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Model Plug-in
 Bundle-SymbolicName: org.eclipse.ecf.protocol.nntp.model
-Bundle-Version: 0.5.0
+Bundle-Version: 0.6.0.qualifier
 Bundle-Vendor: WELTEVREE
 Bundle-RequiredExecutionEnvironment: CDC-1.0/Foundation-1.0,
  CDC-1.1/Foundation-1.1,

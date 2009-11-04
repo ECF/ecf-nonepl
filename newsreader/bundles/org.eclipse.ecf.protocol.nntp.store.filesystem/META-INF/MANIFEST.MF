@@ -2,7 +2,7 @@ Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Salvo Filesystem Store Implementation
 Bundle-SymbolicName: org.eclipse.ecf.protocol.nntp.store.filesystem
-Bundle-Version: 0.5.0
+Bundle-Version: 0.6.0.qualifier
 Bundle-Activator: org.eclipse.ecf.protocol.nntp.store.filesystem.internal.Activator
 Bundle-Vendor: WELTEVREE
 Require-Bundle: org.eclipse.core.runtime

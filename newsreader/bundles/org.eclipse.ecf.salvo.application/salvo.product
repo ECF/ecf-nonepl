@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Salvo Product File" id="org.eclipse.ecf.salvo.application.product" application="org.eclipse.ecf.salvo.application.application" version="0.5.0" useFeatures="false" includeLaunchers="true">
+<product name="Salvo Product File" id="org.eclipse.ecf.salvo.application.product" application="org.eclipse.ecf.salvo.application.application" version="0.6.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
@@ -45,7 +45,6 @@
       <plugin id="org.eclipse.core.runtime.compatibility.registry" fragment="true"/>
       <plugin id="org.eclipse.ecf.protocol.nntp.model"/>
       <plugin id="org.eclipse.ecf.protocol.nntp.model.test" fragment="true"/>
-      <plugin id="org.eclipse.ecf.protocol.nntp.model"/>
       <plugin id="org.eclipse.ecf.protocol.nntp.store.filesystem"/>
       <plugin id="org.eclipse.ecf.salvo.application"/>
       <plugin id="org.eclipse.ecf.salvo.ui"/>
