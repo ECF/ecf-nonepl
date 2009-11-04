@@ -582,7 +582,7 @@ public class ServerConnection implements IServerConnection {
 		// Get all the follow ups with XPAT
 		String reference = article.getMessageId();
 		sendCommand("xpat references " + newsgroup.getLowWaterMark() + "-"
-				+ newsgroup.getHighWaterMark() + " " + reference);
+				+ newsgroup.getHighWaterMark() + " *" + reference);
 
 		String[] rList = getListResponse();
 

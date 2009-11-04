@@ -27,7 +27,7 @@ public final class UpdateRunner implements Runnable {
 
 		IServerStoreFacade facade = ServerStoreFactory.instance()
 				.getServerStoreFacade();
-		while (facade.getStores() == null) {
+		while (facade.getStores() == null && isThreadRunning()) {
 			facade = ServerStoreFactory.instance().getServerStoreFacade();
 			try {
 				Debug.log(getClass(), "Salvo Thread: Waiting for Store");

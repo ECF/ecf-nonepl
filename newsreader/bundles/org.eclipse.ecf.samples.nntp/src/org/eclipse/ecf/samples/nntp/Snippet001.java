@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ecf.samples.nntp;
 
+import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.core.NewsgroupFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
@@ -56,7 +57,7 @@ public class Snippet001 {
 	 */
 	public static void main(String[] args) throws Exception {
 
-		// Debug.debug = false;
+		Debug.debug = false;
 
 		// Create a server
 		IServer server = ServerFactory.getServer("news.eclipse.org", 119,
@@ -74,7 +75,7 @@ public class Snippet001 {
 
 		for (int i = 0; i < articles.length; i++) {
 			if (!articles[i].isReply()) {
-				System.out.println(articles[i].getSubject());
+				System.out.println(articles[i].getSubject()+ "  ("+articles[i].getFullUserName()+")");
 
 				printReplies(articles[i], 1);
 
@@ -103,7 +104,7 @@ public class Snippet001 {
 			for (int t = 0; t < invocation; t++) {
 				System.out.print("..");
 			}
-			System.out.println(replies[j].getSubject());
+			System.out.println(replies[j].getSubject() + "  ("+replies[j].getFullUserName()+")");
 			printReplies(replies[j], (invocation + 1));
 		}
 	}

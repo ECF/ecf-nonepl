@@ -11,14 +11,17 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.core.internal;
 
+import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.mail.internet.MimeUtility;
+
+import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
-
 
 public class Article implements IArticle {
 
@@ -99,11 +102,12 @@ public class Article implements IArticle {
 	}
 
 	public String getSubject() {
-		return getHeaderAttributeValue("Subject:");
-		// FIXME mime4j wanted here. Do clever things like injecting a runtime
-		// decoder
-		// return DecoderUtil
-		// .decodeEncodedWords(getHeaderAttributeValue("Subject:"));
+		try {
+			return MimeUtility.decodeText(getHeaderAttributeValue("Subject:"));
+		} catch (UnsupportedEncodingException e) {
+			Debug.log(getClass(), e);
+			return getHeaderAttributeValue("Subject:");
+		}
 	}
 
 	public String getXRef() {
@@ -182,7 +186,8 @@ public class Article implements IArticle {
 	}
 
 	public boolean isMine() {
-		return getFullUserName().equals(getServer().getServerConnection().getUser());
+		return getFullUserName().equals(
+				getServer().getServerConnection().getUser());
 	}
 
 	public boolean isReplyRead() {

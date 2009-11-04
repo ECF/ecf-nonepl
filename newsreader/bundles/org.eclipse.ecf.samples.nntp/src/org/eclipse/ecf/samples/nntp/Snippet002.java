@@ -71,34 +71,28 @@ public class Snippet002 {
 		// Get the interface between server and store
 		serverStoreFacade = ServerStoreFactory.instance()
 				.getServerStoreFacade();
-		
+
 		// Create a server
 		IServer server = ServerFactory.getServer("news.eclipse.org", 119,
 				credentials, true);
-		
+
 		// Attach a newsgroup to the server
 		INewsgroup group = NewsgroupFactory.createNewsGroup(server,
 				"eclipse.technology.ecf", "Eclipse Test");
 		server.getServerConnection().setWaterMarks(group);
-		
-		// Start an update thread to keep syncing
-		UpdateRunner runner = new UpdateRunner();
-		runner.start();
 
 		// Read messages
-		IArticle[] articles = serverStoreFacade.getArticles(group, 1460, 1486);
+		IArticle[] articles = serverStoreFacade.getArticles(group, 1, 9999);
 
 		for (int i = 0; i < articles.length; i++) {
 			if (!articles[i].isReply()) {
-				System.out.println(articles[i].getSubject());
+				System.out.println(articles[i].getSubject() + "  ("
+						+ articles[i].getFullUserName() + ")");
 
 				printReplies(articles[i], 1);
 
 			}
 		}
-		
-		System.out.println("Einde");
-		runner.stop();
 	}
 
 	/**
@@ -121,7 +115,8 @@ public class Snippet002 {
 			for (int t = 0; t < invocation; t++) {
 				System.out.print("..");
 			}
-			System.out.println(replies[j].getSubject());
+			System.out.println(replies[j].getSubject() + "  ("
+					+ replies[j].getFullUserName() + ")");
 			printReplies(replies[j], (invocation + 1));
 		}
 	}
