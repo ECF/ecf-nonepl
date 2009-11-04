@@ -557,12 +557,13 @@ public class Store implements IStore {
 			try {
 				server = ServerFactory.getServer(address, port, credentials,
 						secure);
-				loadSubscribedGroups(server);
-				storedServers.put(server.getAddress(), server);
-				fireEvent(new StoreEvent(server, SALVO.EVENT_RELOAD));
 			} catch (NNTPException e) {
 				Debug.log(getClass(), e);
 			}
+			
+			loadSubscribedGroups(server);
+			storedServers.put(server.getAddress(), server);
+			fireEvent(new StoreEvent(server, SALVO.EVENT_RELOAD));
 		}
 
 		return (IServer[]) storedServers.values().toArray(new IServer[0]);
