@@ -22,24 +22,32 @@ import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
 
-
 public class ServerFactory {
 
 	private static HashMap servers = new HashMap();
 
-	
-	public static IServer getServer(String address, int port, ICredentials credentials, boolean secure) throws NNTPException {
-	
-		IServer server = (IServer) servers.get(address + "::" + port + "::"
-				+ credentials.getUser() + "::" + credentials.getEmail() + "::" + credentials.getLogin() + "::" + secure);
+	public static IServer getServer(String address, int port,
+			ICredentials credentials, boolean secure) {
 
-		if(server != null)
+		return (IServer) servers.get(address + "::" + port + "::"
+				+ credentials.getUser() + "::" + credentials.getEmail() + "::"
+				+ credentials.getLogin() + "::" + secure);
+	}
+
+	public static IServer getCreateServer(String address, int port,
+			ICredentials credentials, boolean secure) throws NNTPException {
+
+		IServer server = (IServer) servers.get(address + "::" + port + "::"
+				+ credentials.getUser() + "::" + credentials.getEmail() + "::"
+				+ credentials.getLogin() + "::" + secure);
+
+		if (server != null)
 			return server;
-		
+
 		server = new Server(address, port, secure);
 		IServerConnection connection = new ServerConnection(server);
 		connection.setCredentials(credentials);
-		if(servers.get(server.toString()) != null)
+		if (servers.get(server.toString()) != null)
 			return (IServer) servers.get(server.toString());
 
 		server.init();
@@ -47,10 +55,9 @@ public class ServerFactory {
 		return server;
 	}
 
-	public static INewsgroup getGroup(IServer server, String newsGroup, String description) {
+	public static INewsgroup getGroup(IServer server, String newsGroup,
+			String description) {
 		return new Newsgroup(server, newsGroup, description);
 	}
-	
-	
-	
+
 }

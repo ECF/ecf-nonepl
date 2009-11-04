@@ -529,12 +529,8 @@ public class Store implements IStore {
 			ICredentials credentials = new AbstractCredentials(user, email,
 					logIn, null);
 			IServer server = null;
-			try {
-				server = ServerFactory.getServer(address, port, credentials,
-						secure);
-			} catch (NNTPException e1) {
-				Debug.log(getClass(), e1);
-			}
+			server = ServerFactory
+					.getServer(address, port, credentials, secure);
 
 			// If not then we must get a password from the secure store
 			if (server == null) {
@@ -552,15 +548,15 @@ public class Store implements IStore {
 							new IServer[0]);
 				}
 				credentials = new AbstractCredentials(user, email, logIn, pass);
+
+				try {
+					server = ServerFactory.getCreateServer(address, port,
+							credentials, secure);
+				} catch (NNTPException e) {
+					Debug.log(getClass(), e);
+				}
 			}
 
-			try {
-				server = ServerFactory.getServer(address, port, credentials,
-						secure);
-			} catch (NNTPException e) {
-				Debug.log(getClass(), e);
-			}
-			
 			loadSubscribedGroups(server);
 			storedServers.put(server.getAddress(), server);
 			fireEvent(new StoreEvent(server, SALVO.EVENT_RELOAD));

@@ -17,7 +17,6 @@ import org.eclipse.ecf.protocol.nntp.model.AbstractCredentials;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
-import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
@@ -197,7 +196,7 @@ public class NewNewsServerWizardPage extends WizardPage {
 		address.setText(server.getAddress());
 		port.setText(server.getPort() + "");
 		user.setText(server.getServerConnection().getUser());
-		email.setText(server.getServerConnection().getUser());
+		email.setText(server.getServerConnection().getEmail());
 		requiresLogOnButton.setSelection(!server.isAnonymous());
 		setLoginEnabled(!server.isAnonymous());
 		if (!server.isAnonymous()) {
@@ -229,7 +228,7 @@ public class NewNewsServerWizardPage extends WizardPage {
 							getUser(), getEmail(), getLogin(), getPass());
 
 					try {
-						IServer server = ServerFactory.getServer(getAddress(),
+						IServer server = ServerFactory.getCreateServer(getAddress(),
 								getPort(), credentials, isSecure());
 						IServerConnection connection = server
 								.getServerConnection();
