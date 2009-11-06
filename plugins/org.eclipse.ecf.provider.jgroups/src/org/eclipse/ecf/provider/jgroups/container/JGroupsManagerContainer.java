@@ -42,17 +42,16 @@ import org.eclipse.ecf.provider.comm.SynchEvent;
 import org.eclipse.ecf.provider.generic.ContainerMessage;
 import org.eclipse.ecf.provider.generic.ServerSOContainer;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
-import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.jgroups.Address;
 import org.jgroups.Channel;
 import org.jgroups.stack.IpAddress;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
+import org.osgi.service.event.EventHandler;
 
 /**
  *
  */
-public class JGroupsManagerContainer extends ServerSOContainer  {
+public class JGroupsManagerContainer extends ServerSOContainer implements EventHandler {
 
 	public void handleEvent(Event event) {
 		System.out.println("event received from client: " + event.toString());
@@ -73,12 +72,6 @@ public class JGroupsManagerContainer extends ServerSOContainer  {
 	private IConnectHandlerPolicy joinPolicy = null;
 
 	private ISynchAsynchConnection serverConnection;
-
-	private final DistributedEventAdmin eventAdminImpl=null;
-
-	private final ServiceRegistration eventAdminRegistration=null;
-
-	private final ServiceRegistration eventHandlerRegistration=null;
 
 	/**
 	 * @param config
