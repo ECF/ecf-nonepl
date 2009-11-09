@@ -11,13 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.core.internal;
 
-import java.io.UnsupportedEncodingException;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.mail.internet.MimeUtility;
-
-import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
@@ -102,12 +98,7 @@ public class Article implements IArticle {
 	}
 
 	public String getSubject() {
-		try {
-			return MimeUtility.decodeText(getHeaderAttributeValue("Subject:"));
-		} catch (UnsupportedEncodingException e) {
-			Debug.log(getClass(), e);
-			return getHeaderAttributeValue("Subject:");
-		}
+		return getHeaderAttributeValue("Subject:");
 	}
 
 	public String getXRef() {

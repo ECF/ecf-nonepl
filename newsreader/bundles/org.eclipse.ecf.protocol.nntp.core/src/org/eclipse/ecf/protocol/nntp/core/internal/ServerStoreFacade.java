@@ -17,7 +17,6 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
-import org.eclipse.ecf.protocol.nntp.core.UpdateRunner;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
@@ -32,8 +31,6 @@ import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
 
 
 public class ServerStoreFacade implements IServerStoreFacade {
-
-	private UpdateRunner updateRunner;
 
 	private IStore[] stores;
 
