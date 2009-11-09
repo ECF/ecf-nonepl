@@ -57,8 +57,8 @@ public interface IInputOutputSystem {
 			 UnexpectedResponseException;
 	
 	/**
-	 * Gets the newsgroup article id's with the most new article id in element
-	 * 0.
+	 * Gets the newsgroup article array with the most new article id in element
+	 * 0. 
 	 * 
 	 * @param connection
 	 * @return

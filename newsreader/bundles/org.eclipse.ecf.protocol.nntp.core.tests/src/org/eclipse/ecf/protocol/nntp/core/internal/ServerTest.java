@@ -40,7 +40,7 @@ public class ServerTest {
 	public static void setUpBeforeClass() throws Exception {
 
 		ICredentials credentials = new AbstractCredentials(USER,EMAIL,LOGIN,PASSWORD) {};
-		server = ServerFactory.getServer(SERVER, PORT, credentials, true);
+		server = ServerFactory.getCreateServer(SERVER, PORT, credentials, true);
 	}
 
 	@AfterClass

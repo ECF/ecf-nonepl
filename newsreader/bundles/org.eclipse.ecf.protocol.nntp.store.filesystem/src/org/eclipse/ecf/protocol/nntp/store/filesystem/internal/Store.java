@@ -37,6 +37,7 @@ import org.eclipse.ecf.protocol.nntp.model.AbstractCredentials;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
+import org.eclipse.ecf.protocol.nntp.model.ISecureStore;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IStore;
 import org.eclipse.ecf.protocol.nntp.model.IStoreEvent;
@@ -47,9 +48,6 @@ import org.eclipse.ecf.protocol.nntp.model.NNTPIOException;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.StoreEvent;
 import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
-import org.eclipse.equinox.security.storage.ISecurePreferences;
-import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
-import org.eclipse.equinox.security.storage.StorageException;
 
 /**
  * This implementation of IStore uses the Java file system to store the
@@ -82,6 +80,8 @@ public class Store implements IStore {
 	private HashMap firstArticles = new HashMap();
 
 	private String root = "";
+
+	private ISecureStore secureStore;
 
 	public Store(String root) {
 		this.root = root + SEP;
@@ -254,23 +254,39 @@ public class Store implements IStore {
 	}
 
 	public void subscribeServer(final IServer server, final String passWord) {
-
-		ISecurePreferences prefs = SecurePreferencesFactory.getDefault();
-		ISecurePreferences node = prefs.node("/com/weltevree/salvo");
-
-		try {
-			node.put(server.getAddress(), passWord, true);
-		} catch (StorageException e) {
-			Debug.log(getClass(), e);
-			lastException = e;
-		}
-
+		getSubscribedServers();
+		getSecureStore().put(server.getAddress(), passWord, true);
 		storedServers.put(server.getAddress(), server);
-
 		writeSubscribedServers();
-
 		fireEvent(new StoreEvent(server, SALVO.EVENT_ADD_SERVER));
 
+	}
+
+	private ISecureStore getSecureStore() {
+		if (secureStore == null) {
+			secureStore = new ISecureStore() {
+
+				HashMap memory = new HashMap();
+
+				public void remove(String key) {
+					memory.remove(key);
+				}
+
+				public void put(String key, String value, boolean encrypt) {
+					memory.put(key, value);
+				}
+
+				public String get(String key, String def) {
+					return (String) (memory.get(key) == null ? def : memory
+							.get(key));
+				}
+
+				public void clear() {
+					memory.clear();
+				}
+			};
+		}
+		return secureStore;
 	}
 
 	public Exception getLastException() {
@@ -397,11 +413,26 @@ public class Store implements IStore {
 		// remove newsgroup directory from disk
 		if (permanent) {
 			File file = new File(getNewsgroupHome(group));
-			if (file.exists())
-				file.delete();
+			if (file.exists()) {
+				if (file.isDirectory()) {
+					clearDirectory(file);
+					file.delete();
+				}
+			}
 		}
 
 		fireEvent(new StoreEvent(group, SALVO.EVENT_REMOVE_GROUP));
+	}
+
+	private void clearDirectory(File file) {
+		File[] files = file.listFiles();
+		for (int i = 0; i < files.length; i++) {
+			if (files[i].isDirectory()) {
+				clearDirectory(files[i]);
+			}
+			if (!files[i].delete())
+				files[i].deleteOnExit();
+		}
 	}
 
 	public void unsubscribeServer(IServer server, boolean permanent) {
@@ -428,14 +459,7 @@ public class Store implements IStore {
 		}
 
 		// remove this server from the preferences
-		ISecurePreferences prefs = SecurePreferencesFactory.getDefault();
-		ISecurePreferences node = prefs.node("/com/weltevree/salvo");
-		try {
-			node.remove(server.getAddress());
-		} catch (IllegalStateException e) {
-			Debug.log(getClass(), e);
-			lastException = e;
-		}
+		getSecureStore().remove(server.getAddress());
 
 		// Remove the server from the list
 		storedServers.remove(server.getAddress());
@@ -449,6 +473,8 @@ public class Store implements IStore {
 	}
 
 	public void subscribeNewsgroup(INewsgroup group) {
+
+		getSubscribedNewsgroups(group.getServer());
 
 		if (((ArrayList) subscribedGroups.get(group.getServer().getAddress()))
 				.contains(group)) {
@@ -534,21 +560,11 @@ public class Store implements IStore {
 
 			// If not then we must get a password from the secure store
 			if (server == null) {
-				ISecurePreferences prefs = SecurePreferencesFactory
-						.getDefault();
-				ISecurePreferences node = prefs.node("/com/weltevree/salvo");
-				String pass;
-				try {
-					pass = node.get(address, "");
-				} catch (Exception e) {
-					Debug.log(this.getClass(), "Storage Exception: "
-							+ e.getMessage());
-					lastException = e;
+				String pass = getSecureStore().get(address, "");
+				if (pass == null)
 					return (IServer[]) storedServers.values().toArray(
 							new IServer[0]);
-				}
 				credentials = new AbstractCredentials(user, email, logIn, pass);
-
 				try {
 					server = ServerFactory.getCreateServer(address, port,
 							credentials, secure);
@@ -677,7 +693,7 @@ public class Store implements IStore {
 	private String getArticleFilenameById(INewsgroup newsgroup, String id) {
 		String id2 = id.replace('<', ' ');
 		id2 = id2.replace('>', ' ');
-		return getIdsHome(newsgroup) + SEP + id.trim();
+		return getIdsHome(newsgroup) + SEP + id2.trim();
 	}
 
 	/**
@@ -1110,5 +1126,9 @@ public class Store implements IStore {
 	public IArticle fetchArticle(INewsgroup newsgroup, int articleId,
 			int fetchType) throws NNTPIOException, UnexpectedResponseException {
 		return getArticle(newsgroup, articleId);
+	}
+
+	public void setSecureStore(ISecureStore secureStore) {
+		this.secureStore = secureStore;
 	}
 }

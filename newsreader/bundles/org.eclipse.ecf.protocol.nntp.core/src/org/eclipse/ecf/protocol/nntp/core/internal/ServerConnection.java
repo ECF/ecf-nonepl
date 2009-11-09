@@ -448,7 +448,14 @@ public class ServerConnection implements IServerConnection {
 				newsgroup.adjustArticleCount(result.size());
 			}
 		}
-		return (IArticle[]) result.toArray(new IArticle[result.size()]);
+		
+		// Swap the elements according to the contract of the interface
+		ArrayList reversed = new ArrayList(result.size());
+		for (int i = result.size(); i > 0; i--) {
+			reversed.add(result.get(i-1));
+		}
+		
+		return (IArticle[]) reversed.toArray(new IArticle[reversed.size()]);
 	}
 
 	public String[] getOverviewHeaders(IServer server) throws NNTPIOException,

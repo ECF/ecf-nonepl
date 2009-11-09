@@ -16,7 +16,6 @@ import org.eclipse.ecf.protocol.nntp.core.NewsgroupFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerStoreFactory;
 import org.eclipse.ecf.protocol.nntp.core.StoreStore;
-import org.eclipse.ecf.protocol.nntp.core.UpdateRunner;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
@@ -26,7 +25,10 @@ import org.eclipse.ecf.protocol.nntp.store.filesystem.StoreFactory;
 
 /**
  * This snippet demonstrates how to read news from a server with a corresponding
- * store.
+ * store. There is no subscription of the server it is created for one time use.
+ * However, the information retrieved from the server is cached into the store.
+ * The first time you call this program it will has to fetch the information
+ * from the server. The next time the articles are fetched from the local store.
  * 
  * @author Wim Jongman
  * 
@@ -73,7 +75,7 @@ public class Snippet002 {
 				.getServerStoreFacade();
 
 		// Create a server
-		IServer server = ServerFactory.getServer("news.eclipse.org", 119,
+		IServer server = ServerFactory.getCreateServer("news.eclipse.org", 119,
 				credentials, true);
 
 		// Attach a newsgroup to the server
@@ -82,7 +84,8 @@ public class Snippet002 {
 		server.getServerConnection().setWaterMarks(group);
 
 		// Read messages
-		IArticle[] articles = serverStoreFacade.getArticles(group, 1, 9999);
+		IArticle[] articles = serverStoreFacade.getArticles(group, group
+				.getLowWaterMark(), 200);
 
 		for (int i = 0; i < articles.length; i++) {
 			if (!articles[i].isReply()) {
@@ -96,8 +99,7 @@ public class Snippet002 {
 	}
 
 	/**
-	 * Prints replies until exhausted. Could well only print one reference due
-	 * to the xpat newsreader command bogusinity.
+	 * Prints replies recursively until exhausted.
 	 * 
 	 * @param article
 	 * @param invocation

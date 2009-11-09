@@ -16,7 +16,7 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
-import org.eclipse.ecf.salvo.ui.internal.wizards.SubscribeGroupWizard;
+import org.eclipse.ecf.salvo.ui.wizards.SubscribeGroupWizard;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;

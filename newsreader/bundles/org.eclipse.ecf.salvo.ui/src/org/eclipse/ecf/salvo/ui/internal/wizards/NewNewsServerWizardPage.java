@@ -17,6 +17,7 @@ import org.eclipse.ecf.protocol.nntp.model.AbstractCredentials;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
+import org.eclipse.ecf.salvo.ui.wizards.NewNewsServerWizard;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
@@ -62,7 +63,7 @@ public class NewNewsServerWizardPage extends WizardPage {
 
 	private Label passwordLabel;
 
-	protected NewNewsServerWizardPage(String pageName) {
+	public NewNewsServerWizardPage(String pageName) {
 		super(pageName);
 		setTitle("New Server");
 		setDescription("Enter the news server information and press Validate.");
@@ -303,7 +304,7 @@ public class NewNewsServerWizardPage extends WizardPage {
 	public IServer getServer() throws NNTPException {
 		AbstractCredentials credentials = new AbstractCredentials(getUser(),
 				getEmail(), getLogin(), getPass());
-		return ServerFactory.getServer(getAddress(), getPort(), credentials,
+		return ServerFactory.getCreateServer(getAddress(), getPort(), credentials,
 				isSecure());
 	}
 

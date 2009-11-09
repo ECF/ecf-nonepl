@@ -15,7 +15,12 @@ import java.io.File;
 import java.net.URL;
 import java.util.Enumeration;
 
+import org.eclipse.ecf.protocol.nntp.core.StoreStore;
 import org.eclipse.ecf.protocol.nntp.core.UpdateRunner;
+import org.eclipse.ecf.protocol.nntp.model.ISecureStore;
+import org.eclipse.ecf.protocol.nntp.model.IStore;
+import org.eclipse.ecf.protocol.nntp.model.SALVO;
+import org.eclipse.ecf.protocol.nntp.store.filesystem.StoreFactory;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -39,6 +44,21 @@ public class Activator extends AbstractUIPlugin {
 
 		// Debug.addClass(iServerStoreFactory.instance().getServerStoreFacade().getStore().getClass());
 
+		File file = new File(SALVO.SALVO_HOME);
+		if (!file.exists())
+			file.mkdir();
+		ISecureStore prefs = new SalvoSecureStore();
+		{
+			IStore store = StoreFactory.createStore("foxy");
+			store.setSecureStore(prefs);
+			StoreStore.instance().addStore(store);
+		}
+		{
+			IStore store = StoreFactory.createStore("");
+			store.setSecureStore(prefs);
+			StoreStore.instance().addStore(store);
+		}
+
 		super.start(context);
 		plugin = this;
 
@@ -51,9 +71,8 @@ public class Activator extends AbstractUIPlugin {
 		if (updateRunner == null) {
 			updateRunner = new UpdateRunner();
 		}
-		
-		updateRunner.start();
 
+		updateRunner.start();
 
 	}
 
@@ -74,7 +93,7 @@ public class Activator extends AbstractUIPlugin {
 
 		// TODO Auto-generated method stub
 		super.stop(context);
-		
+
 		updateRunner.stop();
 	}
 

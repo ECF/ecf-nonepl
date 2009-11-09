@@ -16,8 +16,8 @@ import org.eclipse.core.commands.ExecutionEvent;
 import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
-import org.eclipse.ecf.salvo.ui.internal.wizards.NewNewsServerWizard;
 import org.eclipse.ecf.salvo.ui.tools.SelectionUtil;
+import org.eclipse.ecf.salvo.ui.wizards.NewNewsServerWizard;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.ui.handlers.HandlerUtil;
 

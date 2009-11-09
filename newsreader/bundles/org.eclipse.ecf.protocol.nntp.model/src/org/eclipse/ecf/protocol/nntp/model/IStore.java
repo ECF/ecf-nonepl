@@ -11,14 +11,21 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.model;
 
-
-public interface IStore extends IStoreEventProvider, IInputOutputSystem, IAdministration {
+public interface IStore extends IStoreEventProvider, IInputOutputSystem,
+		IAdministration {
 
 	/**
 	 * @return The last exception or null if there was none.
 	 */
 	public Exception getLastException();
 
+	/**
+	 * Stores the places where secure information can be stored. This could
+	 * depend on the local implementation of the store.
+	 * 
+	 * @param secureStore
+	 */
+	public void setSecureStore(ISecureStore secureStore);
 
 	/**
 	 * Move the articles to the store.
@@ -63,7 +70,7 @@ public interface IStore extends IStoreEventProvider, IInputOutputSystem, IAdmini
 	 * @return String
 	 */
 	public String getDescription();
-	
+
 	/**
 	 * Updates the article in the store.
 	 * 

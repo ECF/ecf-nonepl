@@ -14,29 +14,30 @@ package org.eclipse.ecf.samples.nntp;
 import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.core.NewsgroupFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
-import org.eclipse.ecf.protocol.nntp.model.IArticle;
+import org.eclipse.ecf.protocol.nntp.core.ServerStoreFactory;
+import org.eclipse.ecf.protocol.nntp.core.StoreStore;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
+import org.eclipse.ecf.protocol.nntp.model.IServerStoreFacade;
+import org.eclipse.ecf.protocol.nntp.model.IStore;
+import org.eclipse.ecf.protocol.nntp.store.filesystem.StoreFactory;
 
 /**
- * This snippet demonstrates how to read news from a server without a
- * corresponding store. This demonstration is slow because it is not smart in
- * it's processing. It first fetches a number of articles from the server and
- * then determines if each article is a main article (i.e. not a
- * follow-up/reply). If it is not, the article is printed and the the server is
- * visited again to get the follow-ups/replies to this article, et cetera.
- * 
+ * This snippet demonstrates how to subscribe a server and a group in a store.
+ * First the store is created and the server is fetched from the store, if it
+ * does not exist it is created and the subscribed in the store together with
+ * the newsgroup.
  * <p>
- * In a smart client, you would have fetched the articles and remembered all the
- * articles. Then, to get a reference from a main article you would first
- * determine if the follow-up was already fetched and if not, fetch it.
+ * Then then the articles are read two times with statistics information. Then
+ * the store is removed emptied by unsubscribing and removing the server and
+ * group.
  * </p>
  * 
  * @author Wim Jongman
  * 
  */
-public class Snippet001 {
+public class Snippet003 {
 
 	// Provide credentials
 	static ICredentials credentials = new ICredentials() {
@@ -58,9 +59,11 @@ public class Snippet001 {
 		}
 
 		public String getEmail() {
-			return "foo.bar@foobar.org";
+			return "foo.bar@eclipse.org";
 		}
 	};
+	private static IServerStoreFacade serverStoreFacade;
+	private static boolean firstTime = true;
 
 	/**
 	 * @param args
@@ -69,6 +72,14 @@ public class Snippet001 {
 
 		Debug.debug = false;
 
+		// Create a store in the store store.
+		IStore store = StoreFactory.createStore("snippet003");
+		StoreStore.instance().addStore(store);
+
+		// Get the interface between server and store
+		serverStoreFacade = ServerStoreFactory.instance()
+				.getServerStoreFacade();
+
 		// Create a server
 		IServer server = ServerFactory.getCreateServer("news.eclipse.org", 119,
 				credentials, true);
@@ -76,48 +87,29 @@ public class Snippet001 {
 		// Attach a newsgroup to the server
 		INewsgroup group = NewsgroupFactory.createNewsGroup(server,
 				"eclipse.technology.ecf", "Eclipse Test");
-
 		server.getServerConnection().setWaterMarks(group);
 
-		// Read messages
-		IArticle[] articles = server.getServerConnection().getArticles(group,
-				group.getLowWaterMark(), 100);
+		// Subscribe the server and the group
+		serverStoreFacade.subscribeServer(server, credentials.getPassword());
+		serverStoreFacade.subscribeNewsgroup(group);
 
-		for (int i = 0; i < articles.length; i++) {
-			if (!articles[i].isReply()) {
-				System.out.println(articles[i].getSubject() + "  ("
-						+ articles[i].getFullUserName() + ")");
+		// Log and fetch
+		long clock = System.currentTimeMillis();
+		serverStoreFacade.getArticles(group, group.getLowWaterMark(), 200);
+		clock = System.currentTimeMillis() - clock;
+		if (firstTime)
+			System.out.print("#1: Getting 200 messages took ");
+		else
+			System.out.print("#2: Getting 200 messages took ");
+		System.out.println(clock + " milliseconds.");
 
-				printReplies(articles[i], 1);
-
-			}
+		// And again
+		if (firstTime) {
+			firstTime = false;
+			Snippet003.main(args);
+			store.unsubscribeServer(server, true);
 		}
+
 	}
 
-	/**
-	 * Prints replies until exhausted. Could well only print one reference due
-	 * to the xpat newsreader command bogusinity.
-	 * 
-	 * @param article
-	 * @param invocation
-	 * @throws Exception
-	 */
-	private static void printReplies(IArticle article, int invocation)
-			throws Exception {
-
-		IArticle[] replies = article.getServer().getServerConnection()
-				.getFollowUps(article);
-
-		if (replies.length == 0)
-			return;
-
-		for (int j = 0; j < replies.length; j++) {
-			for (int t = 0; t < invocation; t++) {
-				System.out.print("..");
-			}
-			System.out.println(replies[j].getSubject() + "  ("
-					+ replies[j].getFullUserName() + ")");
-			printReplies(replies[j], (invocation + 1));
-		}
-	}
 }

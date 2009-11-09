@@ -36,7 +36,7 @@ public class SubscribeGroupWizardPage extends WizardPage {
 	private Tree tree;
 	private CheckboxTreeViewer checkboxTreeViewer;
 
-	protected SubscribeGroupWizardPage(String pageName) {
+	public SubscribeGroupWizardPage(String pageName) {
 		super(pageName);
 		setDescription("Select the groups you want to subscribe to.");
 	}

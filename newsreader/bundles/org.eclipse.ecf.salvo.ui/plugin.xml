@@ -393,7 +393,7 @@
          point="org.eclipse.ui.newWizards">
       <wizard
             category="org.eclipse.ecf.salvo.ui.news"
-            class="org.eclipse.ecf.salvo.ui.internal.wizards.NewNewsServerWizard"
+            class="org.eclipse.ecf.salvo.ui.wizards.NewNewsServerWizard"
             icon="icons/addserver.gif"
             id="org.eclipse.ecf.salvo.ui.newnewsserverwizard"
             name="New News Server">
