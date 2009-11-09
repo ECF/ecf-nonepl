@@ -103,16 +103,9 @@ public class ClientPlugin extends AbstractUIPlugin implements ClientPluginConsta
 		//		this.containerManager = this.getContainerManager();
 		setPreferenceDefaults(); //AFAIRE [pierre] why is it compulsory
 		this.context = ctxt;
-		//		eventAdminImpl = new DistributedEventAdmin(context);
-		//		eventAdminImpl.start();
-
-		// register as EventAdmin service instance
-		//		Properties props = new Properties();
-		//		props.put(EventConstants.EVENT_TOPIC, "*");
-		//		eventAdminRegistration = context.registerService("org.osgi.service.event.EventAdmin", eventAdminImpl, props);
 	}
 
-	protected BundleContext getContext() {
+	public BundleContext getContext() {
 		return context;
 	}
 

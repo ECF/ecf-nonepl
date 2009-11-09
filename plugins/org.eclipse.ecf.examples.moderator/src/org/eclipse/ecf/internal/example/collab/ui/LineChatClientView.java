@@ -40,6 +40,8 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.*;
 import org.eclipse.ui.part.ViewPart;
+import org.osgi.service.event.EventAdmin;
+import org.osgi.util.tracker.ServiceTracker;
 
 public class LineChatClientView implements FileSenderUI {
 	public static final String DEFAULT_UNIX_BROWSER = "mozilla"; //$NON-NLS-1$
@@ -63,6 +65,7 @@ public class LineChatClientView implements FileSenderUI {
 	LineChatView view;
 
 	private final List users;
+	private ServiceTracker eventAdminServiceTracker;
 
 	public LineChatClientView(EclipseCollabSharedObject lch, LineChatView view, String name, String initText, String downloaddir) {
 		super();
@@ -226,7 +229,7 @@ public class LineChatClientView implements FileSenderUI {
 		// parse 'à la' IRC command i.e: '/command=evict&member=memberID
 		if (props != null) {
 			org.osgi.service.event.Event event = new org.osgi.service.event.Event("admin", props);
-
+			getEventAdminService().postEvent(event);
 		}
 
 		if (lch != null) {
@@ -461,4 +464,13 @@ public class LineChatClientView implements FileSenderUI {
 			}
 		}
 	}
+
+	protected EventAdmin getEventAdminService() {
+		if (eventAdminServiceTracker == null) {
+			eventAdminServiceTracker = new ServiceTracker(ClientPlugin.getDefault().getContext(), EventAdmin.class.getName(), null);
+			eventAdminServiceTracker.open();
+		}
+		return (EventAdmin) eventAdminServiceTracker.getService();
+	}
+
 }
