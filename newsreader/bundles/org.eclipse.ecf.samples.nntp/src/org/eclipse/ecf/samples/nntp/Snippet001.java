@@ -11,6 +11,7 @@
  *******************************************************************************/
 package org.eclipse.ecf.samples.nntp;
 
+import org.apache.james.mime4j.codec.DecoderUtil;
 import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.core.NewsgroupFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
@@ -85,7 +86,7 @@ public class Snippet001 {
 
 		for (int i = 0; i < articles.length; i++) {
 			if (!articles[i].isReply()) {
-				System.out.println(articles[i].getSubject() + "  ("
+				System.out.println(getSubject(articles[i]) + "  ("
 						+ articles[i].getFullUserName() + ")");
 
 				printReplies(articles[i], 1);
@@ -115,9 +116,13 @@ public class Snippet001 {
 			for (int t = 0; t < invocation; t++) {
 				System.out.print("..");
 			}
-			System.out.println(replies[j].getSubject() + "  ("
+			System.out.println(getSubject(replies[j]) + "  ("
 					+ replies[j].getFullUserName() + ")");
 			printReplies(replies[j], (invocation + 1));
 		}
+	}
+
+	private static String getSubject(IArticle article) {
+		return DecoderUtil.decodeEncodedWords(article.getSubject());
 	}
 }
