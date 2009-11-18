@@ -18,12 +18,9 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.internal.provider.remoteservice.Messages;
 import org.eclipse.ecf.provider.remoteservice.generic.*;
-import org.eclipse.ecf.remoteservice.IRemoteCall;
-import org.eclipse.ecf.remoteservice.IRemoteServiceRegistration;
+import org.eclipse.ecf.remoteservice.*;
 
 public class LBRegistrySharedObject extends RegistrySharedObject {
-
-	private static final String LBSERVICE_PROP_KEY = "jms.queue.loadbalance"; //$NON-NLS-1$
 
 	private IJMSQueueContainer container;
 
@@ -236,16 +233,13 @@ public class LBRegistrySharedObject extends RegistrySharedObject {
 	}
 
 	public IRemoteServiceRegistration registerRemoteService(String[] clazzes, Object service, Dictionary properties) {
-		if (properties != null && properties.get(LBSERVICE_PROP_KEY) != null) {
+		if (properties != null && properties.get(Constants.SERVICE_REGISTER_PROXY) != null) {
 			return registerLBRemoteService(clazzes, service, properties);
 		}
 		return super.registerRemoteService(clazzes, service, properties);
 	}
 
 	private IRemoteServiceRegistration registerLBRemoteService(String[] clazzes, Object service, Dictionary properties) {
-		if (service == null) {
-			throw new NullPointerException(Messages.RegistrySharedObject_EXCEPTION_SERVICE_CANNOT_BE_NULL);
-		}
 		final int size = clazzes.length;
 		if (size == 0) {
 			throw new IllegalArgumentException(Messages.RegistrySharedObject_EXCEPTION_SERVICE_CLASSES_LIST_EMPTY);
