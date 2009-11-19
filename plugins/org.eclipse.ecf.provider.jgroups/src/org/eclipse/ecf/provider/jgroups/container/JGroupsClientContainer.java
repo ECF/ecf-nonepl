@@ -14,7 +14,6 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
 import org.eclipse.ecf.internal.provider.jgroups.Activator;
 import org.eclipse.ecf.internal.provider.jgroups.connection.AbstractJGroupsConnection;
 import org.eclipse.ecf.internal.provider.jgroups.connection.JGroupsClientConnection;
@@ -26,7 +25,6 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin;
 import org.jgroups.Channel;
 import org.osgi.framework.BundleContext;
-import org.osgi.framework.ServiceRegistration;
 import org.osgi.service.event.Event;
 import org.osgi.service.event.EventAdmin;
 import org.osgi.service.event.EventConstants;
@@ -39,17 +37,7 @@ public class JGroupsClientContainer extends ClientSOContainer implements
 		EventAdmin {
 
 	private final DistributedEventAdmin eventAdminImpl;
-	private ServiceRegistration eventAdminRegistration = null;
-
-	@Override
-	public Object getAdapter(Class adapter) {
-		if (adapter.getName().equals(ISharedObjectContainer.class.getName())) {
-			ID containerID = getConnectedID();
-			
-		}
-		return super.getAdapter(adapter);
-	}
-
+	
 	public JGroupsClientContainer(SOContainerConfig config)
 			throws IDCreateException {
 		super(config);
@@ -61,7 +49,7 @@ public class JGroupsClientContainer extends ClientSOContainer implements
 		// register as EventAdmin service instance
 		Properties props0 = new Properties();
 		props0.put(EventConstants.EVENT_TOPIC, "*");
-		eventAdminRegistration = context.registerService(
+		context.registerService(
 				"org.osgi.service.event.EventAdmin", eventAdminImpl, props0);
 
 	}
