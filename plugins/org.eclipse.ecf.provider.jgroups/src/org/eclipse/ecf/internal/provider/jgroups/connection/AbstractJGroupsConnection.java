@@ -42,7 +42,6 @@ import org.jgroups.ReceiverAdapter;
 import org.jgroups.View;
 import org.jgroups.blocks.MessageDispatcher;
 import org.jgroups.blocks.RequestHandler;
-import org.osgi.util.tracker.ServiceTracker;
 
 public abstract class AbstractJGroupsConnection implements
 		ISynchAsynchConnection {
@@ -326,10 +325,7 @@ public abstract class AbstractJGroupsConnection implements
 
 	protected String oldHost = null;
 	protected int oldPort = -1;
-	private ServiceTracker containerManagerTracker;
-	private ServiceTracker soContainerGroupManagerTracker;
-	private Object remoteContainerManagerTracker;
-
+	
 	protected void setPropertiesForStack(JGroupsID targetID) {
 		final String stackName = targetID.getStackName();
 		if (stackName == null)
