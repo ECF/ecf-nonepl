@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Oldskool Technology Quotes
+Bundle-SymbolicName: org.eclipse.ecf.services.quotes.oldskool
+Bundle-Version: 0.6.0.qualifier
+Bundle-Vendor: eclipse.org
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Service-Component: OSGI-INF/quoteService.xml
+Import-Package: org.eclipse.ecf.services.quotes
