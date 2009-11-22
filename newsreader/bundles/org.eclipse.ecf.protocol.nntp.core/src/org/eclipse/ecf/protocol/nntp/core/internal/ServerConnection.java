@@ -32,7 +32,6 @@ import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.TimeoutException;
 import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
 
-
 public class ServerConnection implements IServerConnection {
 
 	private Socket socket;
@@ -45,7 +44,7 @@ public class ServerConnection implements IServerConnection {
 
 	private IServer server;
 
-	private static final int TIMEOUTSECONDS = 4;
+	private static final int TIMEOUTSECONDS = 10;
 
 	private static final String TIMEOUTLINE = "591 No input received within "
 			+ TIMEOUTSECONDS + " seconds\r\n";
@@ -191,36 +190,29 @@ public class ServerConnection implements IServerConnection {
 	public void sendCommand(String command) throws NNTPIOException,
 			UnexpectedResponseException {
 
-		Debug.log(this.getClass(), command);
+		synchronized (socket) {
 
-		// if (!isConnected()) {
-		// Debug.log(this.getClass(), "sendCommand needed to reconnect");
-		// try {
-		// connect();
-		// } catch (NNTPIOException e) {
-		// Debug.log(this.getClass(), "Error received, reconnecting");
-		// Debug.log(this.getClass(), e);
-		// throw e;
-		// }
-		// }
+			Debug.log(this.getClass(), command);
 
-		try {
-			socket.getOutputStream().write((command + "\r\n").getBytes());
-		} catch (IOException e) {
-			Debug.log(this.getClass(), "Error received, reconnecting");
-			Debug.log(this.getClass(), e);
-			connect();
 			try {
 				socket.getOutputStream().write((command + "\r\n").getBytes());
-			} catch (IOException e1) {
-				Debug.log(this.getClass(), "Could not send command due to "
-						+ e1.getMessage());
-				throw new NNTPIOException("Could not send command due to "
-						+ e1.getMessage(), e1);
+			} catch (IOException e) {
+				Debug.log(this.getClass(), "Error received, reconnecting");
+				Debug.log(this.getClass(), e);
+				connect();
+				try {
+					socket.getOutputStream().write(
+							(command + "\r\n").getBytes());
+				} catch (IOException e1) {
+					Debug.log(this.getClass(), "Could not send command due to "
+							+ e1.getMessage());
+					throw new NNTPIOException("Could not send command due to "
+							+ e1.getMessage(), e1);
+				}
 			}
-		}
 
-		setPossibleResponseAvailable(true);
+			setPossibleResponseAvailable(true);
+		}
 
 	}
 
@@ -303,7 +295,8 @@ public class ServerConnection implements IServerConnection {
 								"Could not send command due to "
 										+ e1.getMessage());
 						throw new NNTPIOException(
-								"Could not send 'authinfo user' command", e1);
+								"Could not send credentials ('authinfo user' command)",
+								e1);
 					}
 				}
 				flush();
@@ -325,7 +318,8 @@ public class ServerConnection implements IServerConnection {
 								"Could not send command due to "
 										+ e1.getMessage());
 						throw new NNTPIOException(
-								"Could not send 'authinfo pass' command", e1);
+								"Could not send passsword. ('authinfo pass' command)",
+								e1);
 					}
 				}
 
@@ -350,7 +344,13 @@ public class ServerConnection implements IServerConnection {
 	public void setModeReader(IServer server) throws NNTPIOException,
 			UnexpectedResponseException {
 		sendCommand("mode reader");
-		getResponse();
+		
+		// Silly hack but some servers are a little deaf
+		if (!getResponse().startsWith("200")) {
+			sendCommand("mode reader");
+			getResponse();
+		}
+
 	}
 
 	public INewsgroup[] listNewsgroups(IServer server) throws NNTPIOException,
@@ -448,26 +448,26 @@ public class ServerConnection implements IServerConnection {
 				newsgroup.adjustArticleCount(result.size());
 			}
 		}
-		
+
 		// Swap the elements according to the contract of the interface
 		ArrayList reversed = new ArrayList(result.size());
 		for (int i = result.size(); i > 0; i--) {
-			reversed.add(result.get(i-1));
+			reversed.add(result.get(i - 1));
 		}
-		
+
 		return (IArticle[]) reversed.toArray(new IArticle[reversed.size()]);
 	}
 
 	public String[] getOverviewHeaders(IServer server) throws NNTPIOException,
 			UnexpectedResponseException {
-		
+
 		/*
 		 * Get from the server if stored
 		 */
-		if(server.getOverviewHeaders() != null){
+		if (server.getOverviewHeaders() != null) {
 			return server.getOverviewHeaders();
 		}
-		
+
 		/*
 		 * Get the format of the overview command
 		 */
@@ -488,7 +488,7 @@ public class ServerConnection implements IServerConnection {
 				result.add(rList[i]);
 			}
 		}
-		
+
 		/*
 		 * Store in the IServer object
 		 */
@@ -679,7 +679,7 @@ public class ServerConnection implements IServerConnection {
 	public void postNewArticle(INewsgroup[] newsgroups, String subject,
 			String body) throws NNTPIOException, UnexpectedResponseException {
 
-		flush();
+	//	flush();
 
 		// Post
 		sendCommand("post ");

@@ -20,13 +20,17 @@ import org.eclipse.ecf.protocol.nntp.model.IStore;
 import org.eclipse.ecf.protocol.nntp.model.IStoreEvent;
 import org.eclipse.ecf.protocol.nntp.model.IStoreEventListener;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
+import org.eclipse.ecf.salvo.ui.internal.editor.ArticlePanel;
+import org.eclipse.ecf.salvo.ui.internal.editor.ArticlePanelInput;
 import org.eclipse.ecf.salvo.ui.internal.provider.SubscribedServerProvider;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
 import org.eclipse.ecf.salvo.ui.internal.resources.SalvoResourceFactory;
+import org.eclipse.ecf.salvo.ui.tools.SelectionUtil;
+import org.eclipse.jface.viewers.DoubleClickEvent;
 import org.eclipse.jface.viewers.TreePath;
 import org.eclipse.swt.widgets.Display;
+import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.navigator.CommonNavigator;
-
 
 public class GroupView extends CommonNavigator implements IStoreEventListener {
 	public static final String ID = "org.eclipse.ui.salvo.application.view";
@@ -38,7 +42,25 @@ public class GroupView extends CommonNavigator implements IStoreEventListener {
 		for (IStore store : ServerStoreFactory.instance()
 				.getServerStoreFacade().getStores())
 			store.addListener(this, SALVO.EVENT_ALL_EVENTS);
+
 		return root;
+	}
+
+	@Override
+	protected void handleDoubleClick(DoubleClickEvent anEvent) {
+
+		ISalvoResource group = (ISalvoResource) SelectionUtil
+				.getFirstObjectFromSelection(anEvent.getSelection(),
+						ISalvoResource.class);
+		if (group != null && group.getObject() instanceof INewsgroup)
+			try {
+				getSite().getPage().openEditor(
+						new ArticlePanelInput((INewsgroup) group.getObject()),
+						ArticlePanel.ID);
+				return;
+			} catch (PartInitException e) {
+			}
+		super.handleDoubleClick(anEvent);
 	}
 
 	public void storeEvent(final IStoreEvent event) {

@@ -25,18 +25,11 @@
    <extension
          point="org.eclipse.ui.perspectives">
       <perspective
-            name="Perspective"
             class="org.eclipse.ecf.salvo.application.internal.Perspective"
-            id="org.eclipse.ecf.salvo.application.perspective">
+            icon="icons/icon_news.gif"
+            id="org.eclipse.ecf.salvo.application.perspective"
+            name="Salvo Newsreader">
       </perspective>
-   </extension>
-   <extension
-         point="org.eclipse.ui.views">
-      <view
-            name="View"
-            class="org.eclipse.ecf.salvo.application.View"
-            id="org.eclipse.ecf.nntp.application.view">
-      </view>
    </extension>
    <extension
          id="product"
@@ -47,7 +40,7 @@
             name="Salvo Product File">
          <property
                name="windowImages"
-               value="icons/alt_window_16.gif,icons/alt_window_32.gif">
+               value="icons/icon_news.gif,icons/news.gif">
          </property>
          <property
                name="appName"

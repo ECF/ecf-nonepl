@@ -12,6 +12,7 @@
 package org.eclipse.ecf.salvo.ui.internal;
 
 import org.eclipse.core.expressions.PropertyTester;
+import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
@@ -22,7 +23,7 @@ public class ResourcePropertyTester extends PropertyTester {
 
 	public boolean test(Object receiver, String property, Object[] args, Object expectedValue) {
 
-		System.out.println(property);
+		Debug.log(getClass(), property);
 
 		if (property.equals("class") && receiver.getClass().getName().endsWith(expectedValue.toString()))
 			return true;

@@ -14,6 +14,9 @@ package org.eclipse.ecf.salvo.ui.internal.preferences;
 import java.net.MalformedURLException;
 import java.net.URL;
 
+import org.eclipse.ecf.protocol.nntp.core.Debug;
+import org.eclipse.ecf.salvo.ui.internal.Activator;
+import org.eclipse.ecf.services.quotes.QuoteService;
 import org.eclipse.jface.preference.PreferencePage;
 import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
@@ -30,14 +33,21 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.browser.IWebBrowser;
+import org.eclipse.swt.widgets.Label;
+import org.eclipse.swt.widgets.Text;
+import org.osgi.framework.InvalidSyntaxException;
+import org.osgi.framework.ServiceReference;
+import org.osgi.util.tracker.ServiceTracker;
+import org.eclipse.swt.widgets.Table;
+import org.eclipse.jface.viewers.TableViewer;
 
 public class SignaturePreferencePage extends PreferencePage implements
 		IWorkbenchPreferencePage {
+	private Text signature;
+	private Table table;
+	private Table table_1;
 	private Button button;
 	private Button button_1;
-	private Button button_2;
-	private Button button_3;
-	private Browser browser;
 
 	public SignaturePreferencePage() {
 		// TODO Auto-generated constructor stub
@@ -59,28 +69,44 @@ public class SignaturePreferencePage extends PreferencePage implements
 	@Override
 	protected Control createContents(Composite parent) {
 		Composite drawing = new Composite(parent, SWT.None);
-		drawing.setLayout(new GridLayout(4, false));
+		drawing.setLayout(new GridLayout(3, false));
 
-		button = new Button(drawing, SWT.NONE);
-		button.addMouseListener(new ButtonMouseListener());
-		button.setText("New Button");
-
+		try {
+			ServiceReference[] x = Activator.getDefault().getBundle()
+					.getBundleContext().getAllServiceReferences(
+							QuoteService.class.getName(), null);
+			for (int i = 0; i < x.length; i++) {
+				Debug.log(getClass(), x[i].getProperty("component.name")
+						.toString());
+			}
+		} catch (InvalidSyntaxException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+				TableViewer tableViewer_2_1 = new TableViewer(drawing, SWT.BORDER
+						| SWT.FULL_SELECTION);
+				table_1 = tableViewer_2_1.getTable();
+				table_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 3));
+		new Label(drawing, SWT.NONE);
+		TableViewer tableViewer_1_1 = new TableViewer(drawing, SWT.BORDER
+				| SWT.FULL_SELECTION);
+		table = tableViewer_1_1.getTable();
+		table.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				3));
+		
 		button_1 = new Button(drawing, SWT.NONE);
-		button_1.setText("New Button");
-		button_1.addMouseListener(new ButtonMouseListener());
+		button_1.setText(">");
+		
+		button = new Button(drawing, SWT.NONE);
+		button.setText("<");
 
-		button_2 = new Button(drawing, SWT.NONE);
-		button_2.setText("New Button");
-		button_2.addMouseListener(new ButtonMouseListener());
+		GridData layoutData3 = new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				1);
+		layoutData3.horizontalSpan = 3;
 
-		button_3 = new Button(drawing, SWT.NONE);
-		button_3.setText("New Button");
-		button_3.addMouseListener(new ButtonMouseListener());
-
-		browser = new Browser(drawing, SWT.NONE);
-		browser
-				.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 4,
-						1));
+		signature = new Text(drawing, SWT.BORDER | SWT.MULTI);
+		signature.setLayoutData(layoutData3);
 
 		return drawing;
 	}
@@ -88,42 +114,5 @@ public class SignaturePreferencePage extends PreferencePage implements
 	public void init(IWorkbench workbench) {
 		// TODO Auto-generated method stub
 
-	}
-
-	private class ButtonMouseListener extends MouseAdapter {
-		private IWebBrowser browser2;
-
-		@Override
-		public void mouseUp(MouseEvent e) {
-
-			if (browser2 == null)
-				try {
-					browser2 = PlatformUI.getWorkbench().getBrowserSupport()
-							.createBrowser("dd");
-				} catch (PartInitException e1) {
-				}
-
-			try {
-				URL url1 = null;
-				if (url1 == null) {
-					url1 = new URL("http://www.remainsoftware.com");
-				}
-				if (e.widget.equals(button))
-					browser2.openURL(url1);
-				if (e.widget.equals(button_1))
-					browser2.openURL(new URL("http://www.industrial-tsi.com"));
-				if (e.widget.equals(button_2))
-					browser2.openURL(new URL("http://www.google.nl"));
-				if (e.widget.equals(button_3))
-					browser2.openURL(new URL("http://www.eclipse.org"));
-			} catch (PartInitException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			} catch (MalformedURLException e1) {
-				// TODO Auto-generated catch block
-				e1.printStackTrace();
-			}
-
-		}
 	}
 }

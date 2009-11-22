@@ -30,8 +30,8 @@ import org.eclipse.ui.IWorkbench;
 
 public class NewNewsServerWizard extends Wizard implements INewWizard {
 
-	private NewNewsServerWizardPage page1;
-	private SubscribeGroupWizardPage page2;
+	protected NewNewsServerWizardPage page1;
+	protected SubscribeGroupWizardPage page2;
 	private IServer server;
 
 	public NewNewsServerWizard() {
