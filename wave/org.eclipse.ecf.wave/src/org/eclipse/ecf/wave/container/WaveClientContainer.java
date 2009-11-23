@@ -15,6 +15,7 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.wave.identity.WaveBackendID;
 import org.eclipse.ecf.wave.identity.WaveBackendNamespace;
 import org.eclipse.osgi.util.NLS;
+import org.waveprotocol.wave.examples.fedone.common.HashedVersion;
 import org.waveprotocol.wave.examples.fedone.waveclient.common.ClientBackend;
 import org.waveprotocol.wave.examples.fedone.waveclient.common.WaveletOperationListener;
 import org.waveprotocol.wave.model.operation.wave.WaveletDocumentOperation;
@@ -59,6 +60,11 @@ public class WaveClientContainer extends AbstractContainer {
 
 		public void waveletDocumentUpdated(String author, WaveletData wavelet,
 				WaveletDocumentOperation docOp) {
+			// TODO Auto-generated method stub
+			
+		}
+
+		public void onCommitNotice(WaveletData wavelet, HashedVersion version) {
 			// TODO Auto-generated method stub
 			
 		}
