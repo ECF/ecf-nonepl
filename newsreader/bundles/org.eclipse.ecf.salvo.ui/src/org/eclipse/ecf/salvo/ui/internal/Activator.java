@@ -28,6 +28,7 @@ import org.osgi.framework.BundleContext;
 public class Activator extends AbstractUIPlugin {
 
 	private static Activator plugin;
+
 	private UpdateRunner updateRunner;
 
 	public Activator() {
@@ -78,13 +79,12 @@ public class Activator extends AbstractUIPlugin {
 
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
-		Enumeration<?> findEntries = getBundle().findEntries("icons", "*.gif",
-				true);
+		Enumeration<?> findEntries = getBundle().findEntries("icons", "*.gif", true);
 		while (findEntries.hasMoreElements()) {
 			File file;
 			file = new File(((URL) findEntries.nextElement()).getFile());
-			reg.put(file.getName(), imageDescriptorFromPlugin(this.getBundle()
-					.getSymbolicName(), "icons/" + file.getName()));
+			reg.put(file.getName(), imageDescriptorFromPlugin(this.getBundle().getSymbolicName(), "icons/"
+					+ file.getName()));
 		}
 	}
 
@@ -96,5 +96,7 @@ public class Activator extends AbstractUIPlugin {
 
 		updateRunner.stop();
 	}
+
+
 
 }

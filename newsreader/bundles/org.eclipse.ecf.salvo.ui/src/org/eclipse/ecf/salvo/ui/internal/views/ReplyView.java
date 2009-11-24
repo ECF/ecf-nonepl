@@ -23,6 +23,7 @@ import org.eclipse.ecf.protocol.nntp.model.IServerStoreFacade;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.salvo.ui.internal.MimeArticleContentHandler;
+import org.eclipse.ecf.salvo.ui.internal.provider.SignatureProvider;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
 import org.eclipse.ecf.salvo.ui.tools.SelectionUtil;
 import org.eclipse.jface.commands.ActionHandler;
@@ -36,7 +37,6 @@ import org.eclipse.ui.ISaveablePart;
 import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.part.ViewPart;
-
 
 public class ReplyView extends ViewPart implements ISaveablePart {
 
@@ -71,8 +71,8 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 			StringBuffer buffer = new StringBuffer();
 			String[] body;
 			try {
-				body = (String[]) ServerStoreFactory.instance()
-						.getServerStoreFacade().getArticleBody(article);
+				body = (String[]) ServerStoreFactory.instance().getServerStoreFacade()
+						.getArticleBody(article);
 			} catch (Exception e1) {
 				body = new String[] { e1.getMessage() };
 			}
@@ -80,14 +80,12 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 				buffer.append(line + SALVO.CRLF);
 			}
 
-			MimeArticleContentHandler handler = new MimeArticleContentHandler(
-					article);
+			MimeArticleContentHandler handler = new MimeArticleContentHandler(article);
 			MimeStreamParser parser = new MimeStreamParser();
 			parser.setContentHandler(handler);
 
 			try {
-				parser.parse(new ByteArrayInputStream(buffer.toString()
-						.getBytes()));
+				parser.parse(new ByteArrayInputStream(buffer.toString().getBytes()));
 			} catch (Exception ex) {
 				ex.printStackTrace();
 			}
@@ -99,6 +97,7 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 			buffer = new StringBuffer();
 			buffer.append(" " + SALVO.CRLF);
 			buffer.append(" " + SALVO.CRLF);
+			buffer.append(SignatureProvider.getSignature(article.getNewsgroup()));
 			buffer.append(" " + SALVO.CRLF);
 			for (String line : handler.getBody().split(SALVO.CRLF)) {
 				if (line.startsWith(">"))
@@ -114,8 +113,7 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 				@Override
 				public void keyReleased(KeyEvent e) {
 					dirty = false;
-					System.out.println(textChangeHash + " - "
-							+ bodyText.getText().hashCode());
+					System.out.println(textChangeHash + " - " + bodyText.getText().hashCode());
 					if (textChangeHash != bodyText.getText().hashCode()) {
 						dirty = true;
 					}
@@ -128,11 +126,9 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 					.getSubject() : "Re: " + article.getSubject()));
 		}
 
-		IHandlerService handlerService = (IHandlerService) getViewSite()
-				.getService(IHandlerService.class);
-		handlerService.activateHandler("org.eclipse.ui.file.save",
-				new ActionHandler(ActionFactory.SAVE.create(getSite()
-						.getWorkbenchWindow())));
+		IHandlerService handlerService = (IHandlerService) getViewSite().getService(IHandlerService.class);
+		handlerService.activateHandler("org.eclipse.ui.file.save", new ActionHandler(ActionFactory.SAVE
+				.create(getSite().getWorkbenchWindow())));
 
 		// getViewSite().getActionBars().setGlobalActionHandler("org.eclipse.ui.file.save",
 		// ActionFactory.SAVE.create(getSite().getWorkbenchWindow()));
@@ -167,21 +163,17 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 			}
 		}
 
-		monitor.subTask("Posting to newsgroup "
-				+ article.getNewsgroup().getNewsgroupName());
+		monitor.subTask("Posting to newsgroup " + article.getNewsgroup().getNewsgroupName());
 		monitor.worked(1);
-		IServerStoreFacade serverStoreFacade = ServerStoreFactory.instance()
-				.getServerStoreFacade();
+		IServerStoreFacade serverStoreFacade = ServerStoreFactory.instance().getServerStoreFacade();
 		monitor.worked(1);
 
 		try {
 			serverStoreFacade.replyToArticle(article, buffer.toString());
 		} catch (NNTPException e) {
 			Debug.log(getClass(), e);
-			MessageDialog.openError(getViewSite().getShell(),
-					"Problem posting message",
-					"The message could not be posted.\r\n" + "Due to "
-							+ e.getMessage());
+			MessageDialog.openError(getViewSite().getShell(), "Problem posting message",
+					"The message could not be posted.\r\n" + "Due to " + e.getMessage());
 		}
 		monitor.done();
 		dirty = false;

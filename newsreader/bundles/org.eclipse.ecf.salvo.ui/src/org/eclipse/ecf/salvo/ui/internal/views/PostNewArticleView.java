@@ -17,6 +17,9 @@ import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServerStoreFacade;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
+import org.eclipse.ecf.protocol.nntp.model.SALVO;
+import org.eclipse.ecf.salvo.ui.internal.preferences.PreferenceModel;
+import org.eclipse.ecf.salvo.ui.internal.provider.SignatureProvider;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
 import org.eclipse.ecf.salvo.ui.tools.SelectionUtil;
 import org.eclipse.jface.commands.ActionHandler;
@@ -36,7 +39,6 @@ import org.eclipse.ui.actions.ActionFactory;
 import org.eclipse.ui.handlers.IHandlerService;
 import org.eclipse.ui.internal.WorkbenchPage;
 import org.eclipse.ui.part.ViewPart;
-
 
 public class PostNewArticleView extends ViewPart implements ISaveablePart {
 
@@ -68,8 +70,7 @@ public class PostNewArticleView extends ViewPart implements ISaveablePart {
 		{
 			Composite group = new Composite(composite, SWT.NONE);
 			group.setLayout(new GridLayout(2, false));
-			group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false,
-					1, 1));
+			group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, false, 1, 1));
 			{
 				Label lblSubject = new Label(group, SWT.NONE);
 				lblSubject.setBounds(0, 0, 55, 15);
@@ -77,8 +78,7 @@ public class PostNewArticleView extends ViewPart implements ISaveablePart {
 			}
 			{
 				subjectText = new Text(group, SWT.BORDER);
-				subjectText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER,
-						true, false, 1, 1));
+				subjectText.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1));
 				subjectText.addKeyListener(new KeyAdapter() {
 
 					@Override
@@ -91,8 +91,7 @@ public class PostNewArticleView extends ViewPart implements ISaveablePart {
 			}
 		}
 		bodyText = new Text(composite, SWT.BORDER | SWT.MULTI | SWT.WRAP);
-		bodyText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
-				1));
+		bodyText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
 		bodyText.addKeyListener(new KeyAdapter() {
 
 			@Override
@@ -109,16 +108,15 @@ public class PostNewArticleView extends ViewPart implements ISaveablePart {
 
 		if (resource != null && resource.getObject() instanceof IArticle) {
 			newsgroup = ((IArticle) resource.getObject()).getNewsgroup();
-		} else if (resource != null
-				&& resource.getObject() instanceof INewsgroup) {
+		} else if (resource != null && resource.getObject() instanceof INewsgroup) {
 			newsgroup = (INewsgroup) resource.getObject();
 		}
 
-		IHandlerService handlerService = (IHandlerService) getViewSite()
-				.getService(IHandlerService.class);
-		handlerService.activateHandler("org.eclipse.ui.file.save",
-				new ActionHandler(ActionFactory.SAVE.create(getSite()
-						.getWorkbenchWindow())));
+		IHandlerService handlerService = (IHandlerService) getViewSite().getService(IHandlerService.class);
+		handlerService.activateHandler("org.eclipse.ui.file.save", new ActionHandler(ActionFactory.SAVE
+				.create(getSite().getWorkbenchWindow())));
+
+		bodyText.setText(SALVO.CRLF + SignatureProvider.getSignature(newsgroup));
 
 	}
 
@@ -127,14 +125,16 @@ public class PostNewArticleView extends ViewPart implements ISaveablePart {
 		if (!once) {
 			once = true;
 			IViewReference ref = getSite().getPage().findViewReference(
-					"org.eclipse.ecf.salvo.ui.internal.views.postNewArticleView",
-					"1");
-			((WorkbenchPage) getSite().getPage()).getActivePerspective()
-					.getPresentation().detachPart(ref);
+					"org.eclipse.ecf.salvo.ui.internal.views.postNewArticleView", "1");
+			if (PreferenceModel.instance.getUseDetachedView()) {
+				((WorkbenchPage) getSite().getPage()).getActivePerspective().getPresentation()
+						.detachPart(ref);
+				getViewSite().getShell().setSize(600, 450);
+				getViewSite().getShell().setLocation(location.x + 100, location.y + 100);
+			} else
+				((WorkbenchPage) getSite().getPage()).getActivePerspective().getPresentation()
+						.attachPart(ref);
 
-			getViewSite().getShell().setSize(600, 450);
-			getViewSite().getShell().setLocation(location.x + 100,
-					location.y + 100);
 		}
 		subjectText.setFocus();
 	}
@@ -163,16 +163,14 @@ public class PostNewArticleView extends ViewPart implements ISaveablePart {
 
 		monitor.subTask("Posting to newsgroup " + newsgroup.getNewsgroupName());
 		monitor.worked(1);
-		IServerStoreFacade serverStoreFacade = ServerStoreFactory.instance()
-				.getServerStoreFacade();
+		IServerStoreFacade serverStoreFacade = ServerStoreFactory.instance().getServerStoreFacade();
 		monitor.worked(1);
 
 		try {
-			serverStoreFacade.postNewArticle(new INewsgroup[] { newsgroup },
-					subjectText.getText(), buffer.toString());
+			serverStoreFacade.postNewArticle(new INewsgroup[] { newsgroup }, subjectText.getText(), buffer
+					.toString());
 		} catch (NNTPException e) {
-			MessageDialog.openError(getViewSite().getShell(),
-					"Problem posting message",
+			MessageDialog.openError(getViewSite().getShell(), "Problem posting message",
 					"The message could not be posted. \n\r" + e.getMessage());
 		}
 		monitor.done();

@@ -30,6 +30,7 @@ public class SalvoPreferencePage extends PreferencePage implements
 	private Button btnMoreArticleViews;
 
 	private PreferenceModel model = PreferenceModel.instance;
+	private Button btnCreateNewArticles;
 
 	public SalvoPreferencePage() {
 	}
@@ -42,7 +43,12 @@ public class SalvoPreferencePage extends PreferencePage implements
 
 		btnMoreArticleViews = new Button(drawing, SWT.CHECK);
 		btnMoreArticleViews.setText("More Article Views");
+		
+		btnCreateNewArticles = new Button(drawing, SWT.CHECK);
+		btnCreateNewArticles.setText("Create new Articles in a Detached View");
+		
 		m_bindingContext = initDataBindings();
+		m_bindingContext.updateTargets();
 
 		return drawing;
 	}
@@ -55,16 +61,16 @@ public class SalvoPreferencePage extends PreferencePage implements
 	public void setMoreArticleViews() {
 
 	}
-
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
-		IObservableValue btnMoreArticleViewsSelectionObserveWidget = SWTObservables
-				.observeSelection(btnMoreArticleViews);
-		IObservableValue modelObs = PojoObservables.observeValue(model,
-				PreferenceModel.VIEW_PER_GROUP);
-		bindingContext.bindValue(btnMoreArticleViewsSelectionObserveWidget,
-				modelObs, null, null);
+		IObservableValue btnMoreArticleViewsObserveSelectionObserveWidget = SWTObservables.observeSelection(btnMoreArticleViews);
+		IObservableValue modelViewPerGroupObserveValue = PojoObservables.observeValue(model, "viewPerGroup");
+		bindingContext.bindValue(btnMoreArticleViewsObserveSelectionObserveWidget, modelViewPerGroupObserveValue, null, null);
+		//
+		IObservableValue btnCreateNewArticlesObserveSelectionObserveWidget = SWTObservables.observeSelection(btnCreateNewArticles);
+		IObservableValue modelUseDetachedViewObserveValue = PojoObservables.observeValue(model, "useDetachedView");
+		bindingContext.bindValue(btnCreateNewArticlesObserveSelectionObserveWidget, modelUseDetachedViewObserveValue, null, null);
 		//
 		return bindingContext;
 	}

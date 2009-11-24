@@ -25,8 +25,9 @@ public class QuoteServiceImpl implements QuoteService {
 			"I think my eyes are getting better. Instead of a big dark blur, I see a big light blur.\n\tHAN SOLO, Star Wars Episode VI: Return of the Jedi",
 			"There's always a bigger fish.\n\tQUI-GON JINN, Star Wars Episode I: The Phantom Menace",
 			"When 900 years old, you reach… Look as good, you will not.\n\t Yoda to Luke Skywalker, Episode VI: Return Of The Jedi",
-			"You don’t know how hard I found it, signing the order to terminate your life\n\tGovernor “Grand Moff” Tarkin to Princess Leia Organa, Episode IV: A New Hope,"
-					+ "You can’t win, Darth. Strike me down, and I will become more powerful than you could possibly imagine\n\tObi wan Kenobi to Darth Vader, Episode IV: A New Hope" };
+			"You don’t know how hard I found it, signing the order to terminate your life\n\tGovernor “Grand Moff” Tarkin to Princess Leia Organa, Episode IV: A New Hope,",
+			"You can’t win, Darth. Strike me down, and I will become more powerful than you could possibly imagine\n\tObi wan Kenobi to Darth Vader, Episode IV: A New Hope" };
+
 	private Random random;
 
 	public QuoteServiceImpl() {
