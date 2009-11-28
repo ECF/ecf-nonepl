@@ -16,7 +16,8 @@ import java.util.Calendar;
 
 public class Debug {
 
-	public static boolean debug = true;
+	public static boolean debug = "true".equals(System
+			.getProperty("salvo.debug"));
 
 	private static long timer;
 
@@ -53,7 +54,8 @@ public class Debug {
 		if (!debug)
 			return;
 		if (classes.isEmpty() || classes.contains(callingClass))
-			System.out.println(getTime() + " - " + callingClass.getName() + "\t\t" + line);
+			System.out.println(getTime() + " - " + callingClass.getName()
+					+ "\t\t" + line);
 	}
 
 	/**
@@ -61,14 +63,16 @@ public class Debug {
 	 * @param line
 	 */
 	public static void log(Class callingClass, Throwable e) {
-		System.out.println(getTime() + " - " + callingClass.getName() + "\t\t" + e.getMessage());
+		System.out.println(getTime() + " - " + callingClass.getName() + "\t\t"
+				+ e.getMessage());
 		e.printStackTrace();
 	}
 
 	private static String getTime() {
 
-		return Calendar.getInstance().get(Calendar.HOUR) + ":" + Calendar.getInstance().get(Calendar.MINUTE)
-				+ ":" + Calendar.getInstance().get(Calendar.SECOND);
+		return Calendar.getInstance().get(Calendar.HOUR) + ":"
+				+ Calendar.getInstance().get(Calendar.MINUTE) + ":"
+				+ Calendar.getInstance().get(Calendar.SECOND);
 	}
 
 	public static void logn(String line) {
@@ -80,7 +84,8 @@ public class Debug {
 	public static int timerStart(Class logger) {
 		if (debug) {
 			timer = Calendar.getInstance().getTimeInMillis();
-			System.out.println(getTime() + " - " + logger.getName() + "\t\t Timer started");
+			System.out.println(getTime() + " - " + logger.getName()
+					+ "\t\t Timer started");
 		}
 		return 0; // insert timer number TODO
 	}
@@ -88,7 +93,8 @@ public class Debug {
 	public static void timerStop(Class logger, int timerNumber) {
 		if (debug) {
 			timer = Calendar.getInstance().getTimeInMillis() - timer;
-			System.out.println(getTime() + " - " + logger.getName() + "\t\t Timer stopped: " + timer);
+			System.out.println(getTime() + " - " + logger.getName()
+					+ "\t\t Timer stopped: " + timer);
 		}
 	}
 

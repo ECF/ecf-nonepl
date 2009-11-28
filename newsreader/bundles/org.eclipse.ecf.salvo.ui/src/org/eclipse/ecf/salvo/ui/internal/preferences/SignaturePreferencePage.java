@@ -26,6 +26,8 @@ import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
+import org.eclipse.swt.events.SelectionAdapter;
+import org.eclipse.swt.events.SelectionEvent;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
@@ -147,9 +149,9 @@ public class SignaturePreferencePage extends PreferencePage implements
 					b.setText(x[i].getProperty("component.name").toString());
 					b.setSelection(model.getQuoteService().equals(b.getText()));
 
-					b.addMouseListener(new MouseAdapter() {
+					b.addSelectionListener(new SelectionAdapter() {
 						@Override
-						public void mouseUp(MouseEvent e) {
+						public void widgetSelected(SelectionEvent e) {
 							if (((Button) e.widget).getSelection())
 								model.setQuoteService(((Button) e.widget)
 										.getText());
