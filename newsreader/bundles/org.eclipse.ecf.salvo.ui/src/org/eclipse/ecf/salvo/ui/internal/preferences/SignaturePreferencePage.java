@@ -39,10 +39,12 @@ import org.eclipse.ui.IWorkbenchPreferencePage;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 
-public class SignaturePreferencePage extends PreferencePage implements IWorkbenchPreferencePage {
+public class SignaturePreferencePage extends PreferencePage implements
+		IWorkbenchPreferencePage {
 	private DataBindingContext m_bindingContext;
 
-	private static class ServicesContentProvider implements IStructuredContentProvider {
+	private static class ServicesContentProvider implements
+			IStructuredContentProvider {
 		private Object[] input;
 
 		public Object[] getElements(Object inputElement) {
@@ -101,7 +103,8 @@ public class SignaturePreferencePage extends PreferencePage implements IWorkbenc
 		drawing.setLayout(gridLayout);
 
 		composite = new Composite(drawing, SWT.NONE);
-		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				1));
 		GridLayout gridLayout_1 = new GridLayout(1, false);
 		gridLayout_1.verticalSpacing = 0;
 		gridLayout_1.marginWidth = 0;
@@ -113,14 +116,16 @@ public class SignaturePreferencePage extends PreferencePage implements IWorkbenc
 		btnUseSignature.setText("Use Signature");
 
 		signature = new Text(composite, SWT.BORDER | SWT.MULTI);
-		signature.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		signature.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1,
+				1));
 
 		grpQuoteServices = new Group(drawing, SWT.NONE);
 		grpQuoteServices.setLayout(new GridLayout(1, false));
-		grpQuoteServices.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		grpQuoteServices.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true,
+				true, 1, 1));
 		grpQuoteServices.setSize(355, 113);
 		grpQuoteServices.setText("Quote Services");
-				
+
 		m_bindingContext = initDataBindings();
 		initTables();
 		m_bindingContext.updateTargets();
@@ -133,23 +138,26 @@ public class SignaturePreferencePage extends PreferencePage implements IWorkbenc
 
 	private void initTables() {
 		try {
-			ServiceReference[] x = Activator.getDefault().getBundle().getBundleContext()
-					.getAllServiceReferences(QuoteService.class.getName(), null);
-			for (int i = 0; i < x.length; i++) {
-				Button b = new Button(grpQuoteServices, SWT.RADIO);
-				b.setText(x[i].getProperty("component.name").toString());
-				b.setSelection(model.getQuoteService().equals(b.getText()));
+			ServiceReference[] x = Activator.getDefault().getBundle()
+					.getBundleContext().getAllServiceReferences(
+							QuoteService.class.getName(), null);
+			if (x != null)
+				for (int i = 0; i < x.length; i++) {
+					Button b = new Button(grpQuoteServices, SWT.RADIO);
+					b.setText(x[i].getProperty("component.name").toString());
+					b.setSelection(model.getQuoteService().equals(b.getText()));
 
-				b.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseUp(MouseEvent e) {
-						if (((Button) e.widget).getSelection())
-							model.setQuoteService(((Button) e.widget).getText());
-						else
-							model.setQuoteService("");
-					}
-				});
-			}
+					b.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mouseUp(MouseEvent e) {
+							if (((Button) e.widget).getSelection())
+								model.setQuoteService(((Button) e.widget)
+										.getText());
+							else
+								model.setQuoteService("");
+						}
+					});
+				}
 
 		} catch (InvalidSyntaxException e) {
 			Debug.log(getClass(), e);
@@ -161,26 +169,31 @@ public class SignaturePreferencePage extends PreferencePage implements IWorkbenc
 
 	}
 
-
 	protected DataBindingContext initDataBindings() {
 		DataBindingContext bindingContext = new DataBindingContext();
 		//
 		IObservableValue signatureObserveTextObserveWidget = SWTObservables
 				.observeText(signature, SWT.Modify);
-		IObservableValue modelSignatureObserveValue = PojoObservables.observeValue(model, "signature");
-		bindingContext.bindValue(signatureObserveTextObserveWidget, modelSignatureObserveValue, null, null);
+		IObservableValue modelSignatureObserveValue = PojoObservables
+				.observeValue(model, "signature");
+		bindingContext.bindValue(signatureObserveTextObserveWidget,
+				modelSignatureObserveValue, null, null);
 		//
 		IObservableValue btnUseSignatureObserveSelectionObserveWidget_7 = SWTObservables
 				.observeSelection(btnUseSignature);
-		IObservableValue signatureEnabledObserveValue = PojoObservables.observeValue(signature, "enabled");
-		bindingContext
-				.bindValue(btnUseSignatureObserveSelectionObserveWidget_7, signatureEnabledObserveValue,
-						null, new UpdateValueStrategy(UpdateValueStrategy.POLICY_NEVER));
+		IObservableValue signatureEnabledObserveValue = PojoObservables
+				.observeValue(signature, "enabled");
+		bindingContext.bindValue(
+				btnUseSignatureObserveSelectionObserveWidget_7,
+				signatureEnabledObserveValue, null, new UpdateValueStrategy(
+						UpdateValueStrategy.POLICY_NEVER));
 		//
 		IObservableValue btnUseSignatureObserveSelectionObserveWidget_1 = SWTObservables
 				.observeSelection(btnUseSignature);
-		IObservableValue modelUseSignatureObserveValue = PojoObservables.observeValue(model, "useSignature");
-		bindingContext.bindValue(btnUseSignatureObserveSelectionObserveWidget_1,
+		IObservableValue modelUseSignatureObserveValue = PojoObservables
+				.observeValue(model, "useSignature");
+		bindingContext.bindValue(
+				btnUseSignatureObserveSelectionObserveWidget_1,
 				modelUseSignatureObserveValue, null, null);
 		//
 		return bindingContext;

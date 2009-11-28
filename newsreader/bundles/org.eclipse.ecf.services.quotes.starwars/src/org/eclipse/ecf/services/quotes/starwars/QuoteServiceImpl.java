@@ -31,7 +31,7 @@ public class QuoteServiceImpl implements QuoteService {
 	private Random random;
 
 	public QuoteServiceImpl() {
-		random = new Random(System.nanoTime());
+		random = new Random(System.currentTimeMillis());
 	}
 
 	public String getRandomQuote() {
@@ -44,6 +44,11 @@ public class QuoteServiceImpl implements QuoteService {
 
 	public String getServiceName() {
 		return "Star Wars Quotes";
+	}
+	
+
+	public String[] getAllQuotes() {
+		return QUOTES;
 	}
 
 }

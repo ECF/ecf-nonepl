@@ -40,4 +40,7 @@ public class QuoteServiceImpl implements QuoteService {
 		return "Old Skool Technology Quotes";
 	}
 
+	public String[] getAllQuotes() {
+		return QUOTES;
+	}
 }

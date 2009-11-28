@@ -18,6 +18,9 @@ public class SignatureProvider {
 		quote = quote.replaceAll("\\$\\{NAME\\}", newsgroup.getServer().getServerConnection().getUser());
 
 		String service = PreferenceModel.instance.getQuoteService();
+		
+		if(service.length() == 0)
+			return "";
 
 		BundleContext bundleContext = Activator.getDefault().getBundle().getBundleContext();
 		ServiceReference[] srvRefs;

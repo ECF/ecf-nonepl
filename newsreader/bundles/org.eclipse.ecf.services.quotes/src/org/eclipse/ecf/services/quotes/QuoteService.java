@@ -43,5 +43,13 @@ public interface QuoteService {
 	 * @return
 	 */
 	public String getRandomQuote();
+ 
+	/**
+	 * Returns all quotes.
+	 * 
+	 * @return
+	 */
+	public String[] getAllQuotes();
 
+	
 }
