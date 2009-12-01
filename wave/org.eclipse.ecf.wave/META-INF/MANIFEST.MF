@@ -16,7 +16,9 @@ Bundle-ActivationPolicy: lazy
 Bundle-Localization: plugin
 Require-Bundle: org.eclipse.equinox.common;bundle-version="3.5.1"
 Bundle-ClassPath: lib/fedone-api-0.2.jar,
- .
+ .,
+ lib/fedone-server-0.2.jar,
+ lib/fedone-client-console-0.2.jar
 Export-Package: org.eclipse.ecf.internal.wave;x-internal:=true,
  org.eclipse.ecf.wave.container,
  org.eclipse.ecf.wave.identity,
