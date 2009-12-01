@@ -9,14 +9,11 @@
  * Contributors:                                                        
  *    Wim Jongman - initial API and implementation
  *******************************************************************************/
-package org.eclipse.ecf.protocol.nntp.core.internal;
+package org.eclipse.ecf.protocol.nntp.core;
 
 import java.util.ArrayList;
 
 public class StringUtils {
-
-	private static String splitLock = "";
-	private static String split2Lock = "";
 
 	/**
 	 * Splits the given string by delimiter.
@@ -26,40 +23,39 @@ public class StringUtils {
 	 * @return the unprocessed array
 	 */
 	public static String[] split(String string, String delimiter) {
-		synchronized (splitLock) {
 
-			String[] result;
+		String[] result;
 
-			if (string == null) {
-				result = new String[0];
-				return result;
-			}
-
-			ArrayList list = new ArrayList();
-
-			do {
-				int location = string.indexOf(delimiter);
-
-				if (location < 0)
-					break;
-				list.add(string.substring(0, location).trim());
-				string = string.substring(location + 1);
-			} while (true);
-
-			string = string.trim();
-
-			if (string.length() > 0)
-				list.add(string);
-
-			result = (String[]) list.toArray(new String[list.size()]);
-
-			// StringTokenizer tizer = new StringTokenizer(string, delimiter);
-			// String[] result = new String[tizer.countTokens()];
-			// for (int i = 0; tizer.hasMoreElements(); i++) {
-			// result[i] = tizer.nextToken();
-			// }
+		if (string == null) {
+			result = new String[0];
 			return result;
 		}
+
+		ArrayList list = new ArrayList();
+
+		do {
+			int location = string.indexOf(delimiter);
+
+			if (location < 0)
+				break;
+			list.add(string.substring(0, location).trim());
+			string = string.substring(location + 1);
+		} while (true);
+
+		string = string.trim();
+
+		if (string.length() > 0)
+			list.add(string);
+
+		result = (String[]) list.toArray(new String[list.size()]);
+
+		// StringTokenizer tizer = new StringTokenizer(string, delimiter);
+		// String[] result = new String[tizer.countTokens()];
+		// for (int i = 0; tizer.hasMoreElements(); i++) {
+		// result[i] = tizer.nextToken();
+		// }
+		return result;
+
 	}
 
 	/**
@@ -73,16 +69,15 @@ public class StringUtils {
 	 * @return the processed array
 	 */
 	public static String[] split2(String string, String delimiter) {
-		synchronized (split2Lock) {
-			String[] result = split(string, delimiter);
-			ArrayList result2 = new ArrayList();
-			for (int i = 0; i < result.length; i++) {
-				String mean = result[i].trim();
-				if (mean.length() > 0 && !mean.equals(delimiter.trim())) {
-					result2.add(mean);
-				}
+
+		String[] result = split(string, delimiter);
+		ArrayList result2 = new ArrayList();
+		for (int i = 0; i < result.length; i++) {
+			String mean = result[i].trim();
+			if (mean.length() > 0 && !mean.equals(delimiter.trim())) {
+				result2.add(mean);
 			}
-			return (String[]) result2.toArray(new String[result2.size()]);
 		}
+		return (String[]) result2.toArray(new String[result2.size()]);
 	}
 }

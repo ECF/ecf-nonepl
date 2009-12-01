@@ -218,7 +218,7 @@ public interface IArticle extends Serializable {
 	 * Indicates if this user is commenting on this thread.
 	 */
 	boolean isCommenting();
-	
+
 	/**
 	 * Indicates if this article is a reply.
 	 */
@@ -233,4 +233,11 @@ public interface IArticle extends Serializable {
 	 * Set if we must follow this thread.
 	 */
 	void setMarked(boolean marked);
+
+	/**
+	 * Gets the URL of this article.
+	 * 
+	 * @return the URL
+	 */
+	String getURL();
 }

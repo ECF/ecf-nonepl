@@ -11,7 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.model;
 
-
 /**
  * This class controls fetching of information from the server or from the
  * store.
@@ -19,7 +18,8 @@ package org.eclipse.ecf.protocol.nntp.model;
  * @author jongw
  * 
  */
-public interface IServerStoreFacade extends IInputOutputSystem, IBasicNNTPInterface, IAdministration {
+public interface IServerStoreFacade extends IInputOutputSystem,
+		IBasicNNTPInterface, IAdministration {
 
 	/**
 	 * If an exception occurred in the store or the sever connection it is
@@ -35,16 +35,25 @@ public interface IServerStoreFacade extends IInputOutputSystem, IBasicNNTPInterf
 	 * 
 	 * @param newsgroup
 	 * @throws NNTPIOException
-	 * @throws UnexpectedResponseException 
+	 * @throws UnexpectedResponseException
 	 */
 	public void catchUp(INewsgroup newsgroup) throws NNTPIOException;
 
 	/**
-	 * Returns the list of 
+	 * Returns the list of newsgroup this user is subscribed to in this server.
+	 * 
 	 * @param server
 	 * @return
 	 */
 	public INewsgroup[] getSubscribedNewsgroups(IServer server);
+
+	/**
+	 * Returns the newsgroup this user is subscribed to in this server.
+	 * 
+	 * @param server
+	 * @return {@link INewsgroup} or null
+	 */
+	public INewsgroup getSubscribedNewsgroup(IServer server, String newsgroup);
 
 	public void init();
 

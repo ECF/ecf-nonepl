@@ -21,12 +21,14 @@ import java.util.StringTokenizer;
 
 import org.eclipse.ecf.protocol.nntp.core.ArticleFactory;
 import org.eclipse.ecf.protocol.nntp.core.Debug;
+import org.eclipse.ecf.protocol.nntp.core.StringUtils;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
 import org.eclipse.ecf.protocol.nntp.model.NNTPConnectException;
+import org.eclipse.ecf.protocol.nntp.model.NNTPException;
 import org.eclipse.ecf.protocol.nntp.model.NNTPIOException;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.TimeoutException;
@@ -344,7 +346,7 @@ public class ServerConnection implements IServerConnection {
 	public void setModeReader(IServer server) throws NNTPIOException,
 			UnexpectedResponseException {
 		sendCommand("mode reader");
-		
+
 		// Silly hack but some servers are a little deaf
 		if (!getResponse().startsWith("200")) {
 			sendCommand("mode reader");
@@ -551,8 +553,8 @@ public class ServerConnection implements IServerConnection {
 
 	}
 
-	public IArticle fetchArticle(INewsgroup newsgroup, int articleId,
-			int fetchType) throws NNTPIOException, UnexpectedResponseException {
+	public IArticle getArticle(INewsgroup newsgroup, int articleId)
+			throws NNTPIOException, UnexpectedResponseException {
 
 		sendCommand("group " + newsgroup.getNewsgroupName());
 		getResponse();
@@ -679,7 +681,7 @@ public class ServerConnection implements IServerConnection {
 	public void postNewArticle(INewsgroup[] newsgroups, String subject,
 			String body) throws NNTPIOException, UnexpectedResponseException {
 
-	//	flush();
+		// flush();
 
 		// Post
 		sendCommand("post ");
@@ -771,5 +773,29 @@ public class ServerConnection implements IServerConnection {
 	public void setBatchSize(int size) {
 		batchSize = size;
 
+	}
+
+	public IArticle getArticle(String URL) throws NNTPIOException,
+			UnexpectedResponseException, NNTPException {
+
+		int articleNumber;
+		String newsgroup;
+
+		try {
+			String[] split = StringUtils.split(URL, "/");
+			split = StringUtils.split(split[split.length - 1], "?");
+			articleNumber = Integer.parseInt(split[1]);
+			newsgroup = split[0];
+		} catch (Exception e) {
+			throw new NNTPException("Error parsing URL " + URL, e);
+		}
+
+		INewsgroup[] groups = getNewsgroups();
+		for (int i = 0; i < groups.length; i++) {
+			if (groups[i].getNewsgroupName().equals(newsgroup))
+				return getArticle(groups[i], articleNumber);
+		}
+
+		return null;
 	}
 }

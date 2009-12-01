@@ -16,7 +16,6 @@ import java.io.FileInputStream;
 import java.io.ObjectInputStream;
 
 import org.eclipse.ecf.protocol.nntp.core.internal.Article;
-import org.eclipse.ecf.protocol.nntp.core.internal.StringUtils;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.NNTPIOException;

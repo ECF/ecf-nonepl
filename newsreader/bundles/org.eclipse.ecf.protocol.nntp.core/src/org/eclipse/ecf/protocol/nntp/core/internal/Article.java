@@ -14,6 +14,7 @@ package org.eclipse.ecf.protocol.nntp.core.internal;
 import java.util.HashMap;
 import java.util.Map;
 
+import org.eclipse.ecf.protocol.nntp.core.StringUtils;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
@@ -244,5 +245,10 @@ public class Article implements IArticle {
 
 	public boolean isReply() {
 		return getReferences().length > 0;
+	}
+
+	public String getURL() {
+		return "news://" + getServer().getAddress() + "/"
+				+ getNewsgroup().getNewsgroupName() + "?" + getArticleNumber();
 	}
 }

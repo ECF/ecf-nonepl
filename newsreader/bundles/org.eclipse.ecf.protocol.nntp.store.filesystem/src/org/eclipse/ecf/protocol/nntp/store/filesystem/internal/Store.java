@@ -33,6 +33,7 @@ import org.eclipse.ecf.protocol.nntp.core.ArticleFactory;
 import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.core.NewsgroupFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
+import org.eclipse.ecf.protocol.nntp.core.StringUtils;
 import org.eclipse.ecf.protocol.nntp.model.AbstractCredentials;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
@@ -662,7 +663,7 @@ public class Store implements IStore {
 	 * @param number
 	 * @return the article or null if it does not exist
 	 */
-	private IArticle getArticle(INewsgroup newsgroup, int number) {
+	public IArticle getArticle(INewsgroup newsgroup, int number) {
 
 		File file = new File(getArticleFilenameByNumber(newsgroup, number));
 		if (!file.exists())
@@ -954,8 +955,9 @@ public class Store implements IStore {
 	 * @return
 	 */
 	private IArticle getArticle(INewsgroup newsgroup, File infoFile) {
+		FileReader reader = null;
 		try {
-			FileReader reader = new FileReader(infoFile);
+			reader = new FileReader(infoFile);
 			int size = Integer.parseInt(infoFile.length() + "");
 			char[] fileNameChar = new char[size];
 			reader.read(fileNameChar);
@@ -971,6 +973,12 @@ public class Store implements IStore {
 		} catch (Exception e) {
 			Debug.log(getClass(), e);
 			lastException = e;
+		} finally {
+			try {
+				if (reader != null)
+					reader.close();
+			} catch (IOException e) {
+			}
 		}
 		return null;
 	}
@@ -1123,12 +1131,39 @@ public class Store implements IStore {
 
 	}
 
-	public IArticle fetchArticle(INewsgroup newsgroup, int articleId,
-			int fetchType) throws NNTPIOException, UnexpectedResponseException {
-		return getArticle(newsgroup, articleId);
-	}
-
 	public void setSecureStore(ISecureStore secureStore) {
 		this.secureStore = secureStore;
+	}
+
+	public IArticle getArticle(String URL) throws NNTPIOException,
+			UnexpectedResponseException, NNTPException {
+		int articleNumber;
+		String newsgroup;
+		String server;
+
+		try {
+			String[] split = StringUtils.split(URL, "/");
+			server = split[3];
+			split = StringUtils.split(split[split.length - 1], "?");
+			articleNumber = Integer.parseInt(split[1]);
+			newsgroup = split[0];
+		} catch (Exception e) {
+			throw new NNTPException("Error parsing URL " + URL, e);
+		}
+
+		IServer[] servers = getSubscribedServers();
+		for (int i = 0; i < servers.length; i++) {
+			if (servers[i].getAddress().equals(server)) {
+				INewsgroup[] groups = getSubscribedNewsgroups(servers[i]);
+				for (int j = 0; j < groups.length; j++) {
+					if (groups[j].getNewsgroupName().equals(newsgroup))
+						return getArticle(groups[j], articleNumber);
+				}
+				return null;
+			}
+		}
+
+		return null;
+
 	}
 }

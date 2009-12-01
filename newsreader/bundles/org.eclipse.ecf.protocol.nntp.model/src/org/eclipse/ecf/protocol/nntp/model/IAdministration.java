@@ -11,6 +11,13 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.model;
 
+/**
+ * This interface is responsible for maintaining the subscribe and unsubscribe
+ * administration. It is mainly part of the {@link IStore} functions.
+ * 
+ * @author Wim Jongman
+ * 
+ */
 public interface IAdministration {
 
 	/**
@@ -24,9 +31,10 @@ public interface IAdministration {
 	 * @param group
 	 *            may not be null
 	 * @throws NNTPIOException
-	 * @throws UnexpectedResponseException 
+	 * @throws UnexpectedResponseException
 	 */
-	public void subscribeNewsgroup(INewsgroup group) throws NNTPIOException, UnexpectedResponseException;
+	public void subscribeNewsgroup(INewsgroup group) throws NNTPIOException,
+			UnexpectedResponseException;
 
 	/**
 	 * Subscribes to this server. The back end is responsible of storing the
@@ -34,8 +42,6 @@ public interface IAdministration {
 	 * 
 	 * @param server
 	 * @param passWord
-	 * @return true if the server could be stored and false if this could not be
-	 *         done. In the latter case, see {@link #getLastException()}
 	 */
 	public void subscribeServer(IServer server, String passWord);
 
@@ -48,8 +54,6 @@ public interface IAdministration {
 	 *            may not be null
 	 * @param permanent
 	 *            you may clear irreversible
-	 * @return true if the group could be unsubscribed and false if this could
-	 *         not be done. In the latter case, see {@link #getLastException()}
 	 */
 	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent);
 
@@ -61,8 +65,6 @@ public interface IAdministration {
 	 * @param permanent
 	 *            true to permanently remove the server or false to keep the
 	 *            historical data from which this server can be resurrected.
-	 * @return true if the group could be stored and false if this could not be
-	 *         done. In the latter case, see {@link #getLastException()}
 	 */
 	public void unsubscribeServer(IServer server, boolean permanent);
 

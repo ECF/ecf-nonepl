@@ -14,7 +14,8 @@ package org.eclipse.ecf.protocol.nntp.model;
 import java.util.Date;
 
 /**
- * This class provides methods that are used for data transfer with the NNTP server. 
+ * This class provides methods that are used for data transfer with the NNTP
+ * server.
  * 
  * @author wimj@weltevree.com
  * 
@@ -57,7 +58,7 @@ public interface IBasicNNTPInterface {
 	 * @param article
 	 * @return
 	 * @throws NNTPIOException
-	 * @throws StoreException 
+	 * @throws StoreException
 	 */
 	public IArticle[] getAllFollowUps(IArticle article) throws NNTPIOException,
 			UnexpectedResponseException, StoreException;
@@ -77,7 +78,7 @@ public interface IBasicNNTPInterface {
 	 * flush the response afterwards.
 	 * 
 	 * @throws NNTPIOException
-	 * @throws UnexpectedResponseException 
+	 * @throws UnexpectedResponseException
 	 * 
 	 * @see <a href="hhttp://tools.ietf.org/html/rfc3977#section-5.3">RFC3977
 	 *      Section 5.3</a>
@@ -85,7 +86,8 @@ public interface IBasicNNTPInterface {
 	 * @see #flush()
 	 * 
 	 */
-	public void setModeReader(IServer server) throws NNTPIOException, UnexpectedResponseException;
+	public void setModeReader(IServer server) throws NNTPIOException,
+			UnexpectedResponseException;
 
 	/**
 	 * Gets a list of newsgroups.
@@ -104,8 +106,8 @@ public interface IBasicNNTPInterface {
 	 * @throws NNTPConnectException
 	 * @throws NNTPIOException
 	 */
-	public INewsgroup[] listNewsgroups(IServer server, Date since) throws NNTPIOException,
-			UnexpectedResponseException;
+	public INewsgroup[] listNewsgroups(IServer server, Date since)
+			throws NNTPIOException, UnexpectedResponseException;
 
 	/**
 	 * Posts an article
@@ -131,16 +133,12 @@ public interface IBasicNNTPInterface {
 	 * @param articleId
 	 *            the group article id which is used in combination with the
 	 *            fetchType.
-	 * @param fetchType
-	 *            which is one of the fetch types: {@link SALVO#FETCH_NEWEST},
-	 *            {@link SALVO#FETCH_NEXT_NEWER}, {@link SALVO#FETCH_NEXT_OLDER}
-	 *            , {@link SALVO#FETCH_OLDEST}, {@link SALVO#FETCH_THIS}
 	 * @return the article or null if it was not found. Get the last
 	 * @throws NNTPConnectException
 	 * @throws NNTPIOException
 	 */
-	public IArticle fetchArticle(INewsgroup newsgroup, int articleId,
-			int fetchType) throws NNTPIOException, UnexpectedResponseException;
+	public IArticle getArticle(INewsgroup newsgroup, int articleId)
+			throws NNTPIOException, UnexpectedResponseException;
 
 	/**
 	 * Gets the overview headers from the server.

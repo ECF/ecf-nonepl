@@ -11,8 +11,6 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.model;
 
-
-
 /**
  * This class provides methods that both the server side and the store side
  * need. The server side needs to fetch the information and the store side needs
@@ -29,9 +27,10 @@ public interface IInputOutputSystem {
 	 * store.
 	 * 
 	 * @throws NNTPIOException
-	 * @throws UnexpectedResponseException 
+	 * @throws UnexpectedResponseException
 	 */
-	public void updateAttributes(INewsgroup newsgroup) throws NNTPIOException, UnexpectedResponseException;
+	public void updateAttributes(INewsgroup newsgroup) throws NNTPIOException,
+			UnexpectedResponseException;
 
 	/**
 	 * Retrieves the body of this article.
@@ -51,35 +50,35 @@ public interface IInputOutputSystem {
 	 * @param server
 	 * @param newsgroup
 	 * @throws NNTPIOException
-	 * @throws UnexpectedResponseException 
+	 * @throws UnexpectedResponseException
 	 */
 	public void setWaterMarks(INewsgroup newsgroup) throws NNTPIOException,
-			 UnexpectedResponseException;
-	
+			UnexpectedResponseException;
+
 	/**
 	 * Gets the newsgroup article array with the most new article id in element
-	 * 0. 
+	 * 0.
 	 * 
 	 * @param connection
 	 * @return
 	 * @throws NNTPIOException
-	 * @throws UnexpectedResponseException 
-	 * @throws StoreException 
+	 * @throws UnexpectedResponseException
+	 * @throws StoreException
 	 */
-	public IArticle[] getArticles(INewsgroup newsgroup, int from,
-			int to) throws NNTPIOException, UnexpectedResponseException, StoreException;
-	
+	public IArticle[] getArticles(INewsgroup newsgroup, int from, int to)
+			throws NNTPIOException, UnexpectedResponseException, StoreException;
+
 	/**
 	 * Fetch the followups of this article.
 	 * 
 	 * @param article
 	 * @return the follow ups
 	 * @throws NNTPIOException
-	 * @throws UnexpectedResponseException 
-	 * @throws StoreException 
+	 * @throws UnexpectedResponseException
+	 * @throws StoreException
 	 */
-	public IArticle[] getFollowUps(IArticle article)
-			throws NNTPIOException, UnexpectedResponseException, StoreException;
+	public IArticle[] getFollowUps(IArticle article) throws NNTPIOException,
+			UnexpectedResponseException, StoreException;
 
 	/**
 	 * Gets the article from the newsgroup or the store based on the passed
@@ -89,14 +88,25 @@ public interface IInputOutputSystem {
 	 * @param articleId
 	 *            the group article id which is used in combination with the
 	 *            fetchType.
-	 * @param fetchType
-	 *            which is one of the fetch types: {@link SALVO#FETCH_NEWEST},
-	 *            {@link SALVO#FETCH_NEXT_NEWER}, {@link SALVO#FETCH_NEXT_OLDER}
-	 *            , {@link SALVO#FETCH_OLDEST}, {@link SALVO#FETCH_THIS}
 	 * @return the article or null if it was not found.
 	 * @throws NNTPConnectException
 	 * @throws NNTPIOException
 	 */
-	public IArticle fetchArticle(INewsgroup newsgroup, int articleId,
-			int fetchType) throws NNTPIOException, UnexpectedResponseException;	
+	public IArticle getArticle(INewsgroup newsgroup, int articleId)
+			throws NNTPIOException, UnexpectedResponseException;
+
+	/**
+	 * Gets the article by URL from the newsgroup or the store based on the
+	 * passed articleId and the fetchType.
+	 * 
+	 * @param URL
+	 *            - news://server/newsgroup?articleInteger
+	 * @return the article or null if it was not found.
+	 * @throws NNTPConnectException
+	 * @throws NNTPIOException
+	 * @throws NNTPException 
+	 */
+	public IArticle getArticle(String URL) throws NNTPIOException,
+			UnexpectedResponseException, NNTPException;
+
 }

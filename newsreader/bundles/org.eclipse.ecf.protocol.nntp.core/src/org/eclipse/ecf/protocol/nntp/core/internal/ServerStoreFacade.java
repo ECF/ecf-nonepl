@@ -17,6 +17,7 @@ import java.util.Collection;
 import java.util.Date;
 import java.util.Iterator;
 
+import org.eclipse.ecf.protocol.nntp.core.StringUtils;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
@@ -24,11 +25,11 @@ import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
 import org.eclipse.ecf.protocol.nntp.model.IServerStoreFacade;
 import org.eclipse.ecf.protocol.nntp.model.IStore;
 import org.eclipse.ecf.protocol.nntp.model.NNTPConnectException;
+import org.eclipse.ecf.protocol.nntp.model.NNTPException;
 import org.eclipse.ecf.protocol.nntp.model.NNTPIOException;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.StoreException;
 import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
-
 
 public class ServerStoreFacade implements IServerStoreFacade {
 
@@ -39,7 +40,7 @@ public class ServerStoreFacade implements IServerStoreFacade {
 	}
 
 	public void init() {
-//		startUpdateThread();
+		// startUpdateThread();
 	}
 
 	public IStore[] getStores() {
@@ -50,28 +51,30 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		return false;
 	}
 
-	public IArticle fetchArticle(INewsgroup newsgroup, int articleId,
-			int fetchType) throws NNTPIOException, UnexpectedResponseException {
+	public IArticle getArticle(INewsgroup newsgroup, int articleId)
+			throws NNTPIOException, UnexpectedResponseException {
 
 		IArticle article = null;
 		for (int i = 0; i < stores.length;) {
-			article = stores[i].fetchArticle(newsgroup, articleId, fetchType);
+			article = stores[i].getArticle(newsgroup, articleId);
 			break;
 		}
 
 		if (article == null) {
-			return newsgroup.getServer().getServerConnection().fetchArticle(
-					newsgroup, articleId, fetchType);
+			return newsgroup.getServer().getServerConnection().getArticle(
+					newsgroup, articleId);
 		}
 		return article;
 	}
 
 	public Exception getLastException() {
-		return null;
+		// FIXME remove
+		throw new RuntimeException("not implemented");
 	}
 
 	public void catchUp(INewsgroup newsgroup) throws NNTPIOException {
-		// FIXME Implement
+		// FIXME implement
+		throw new RuntimeException("not yet implemented");
 	}
 
 	public void unsubscribeNewsgroup(INewsgroup newsGroup, boolean permanent) {
@@ -85,7 +88,8 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		return false;
 	}
 
-	public void subscribeNewsgroup(INewsgroup group) throws NNTPIOException, UnexpectedResponseException {
+	public void subscribeNewsgroup(INewsgroup group) throws NNTPIOException,
+			UnexpectedResponseException {
 		for (int i = 0; i < stores.length; i++) {
 			stores[i].subscribeNewsgroup(group);
 		}
@@ -104,7 +108,8 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		}
 	}
 
-	public void updateAttributes(INewsgroup newsgroup) throws NNTPIOException, UnexpectedResponseException {
+	public void updateAttributes(INewsgroup newsgroup) throws NNTPIOException,
+			UnexpectedResponseException {
 		try {
 			newsgroup.getServer().getServerConnection()
 					.setWaterMarks(newsgroup);
@@ -220,8 +225,8 @@ public class ServerStoreFacade implements IServerStoreFacade {
 			int firstArticleInStore = 0;
 			if (firstStore != null
 					&& firstStore.getFirstArticle(newsgroup) != null)
-				firstArticleInStore = getFirstStore().getFirstArticle(newsgroup)
-						.getArticleNumber();
+				firstArticleInStore = getFirstStore()
+						.getFirstArticle(newsgroup).getArticleNumber();
 
 			// Fetch from the server what is not in store
 			if (firstArticleInStore > 0 && firstArticleInStore > from) {
@@ -295,42 +300,43 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		return null;
 	}
 
-//	public String[] getBody(IArticle article) throws NNTPIOException,
-//			UnexpectedResponseException {
-//
-//		// FIXME Decide thru preference if article bodies should be stored in
-//		// the store or always fetched from server?
-//
-//		// Get From Store
-//		String[] body = null;
-//		if (getFirstStore() != null)
-//			try {
-//				body = getFirstStore().getArticleBody(article);
-//			} catch (NNTPConnectException e) {
-//				Debug.log(getClass(), e);
-//				throw new NNTPIOException(e.getMessage(), e);
-//			}
-//
-//		// Not in store get from server
-//		if (body == null) {
-//			try {
-//				body = article.getServer().getServerConnection()
-//						.getArticleBody(article);
-//			} catch (UnexpectedResponseException e) {
-//				Debug.log(getClass(), e);
-//				throw e;
-//			}
-//
-//			if (!(body == null)) {
-//				for (int i = 0; i < stores.length; i++) {
-//					stores[i].storeArticleBody(article, body);
-//				}
-//			}
-//		}
-//		return body;
-//	}
+	// public String[] getBody(IArticle article) throws NNTPIOException,
+	// UnexpectedResponseException {
+	//
+	// // FIXME Decide thru preference if article bodies should be stored in
+	// // the store or always fetched from server?
+	//
+	// // Get From Store
+	// String[] body = null;
+	// if (getFirstStore() != null)
+	// try {
+	// body = getFirstStore().getArticleBody(article);
+	// } catch (NNTPConnectException e) {
+	// Debug.log(getClass(), e);
+	// throw new NNTPIOException(e.getMessage(), e);
+	// }
+	//
+	// // Not in store get from server
+	// if (body == null) {
+	// try {
+	// body = article.getServer().getServerConnection()
+	// .getArticleBody(article);
+	// } catch (UnexpectedResponseException e) {
+	// Debug.log(getClass(), e);
+	// throw e;
+	// }
+	//
+	// if (!(body == null)) {
+	// for (int i = 0; i < stores.length; i++) {
+	// stores[i].storeArticleBody(article, body);
+	// }
+	// }
+	// }
+	// return body;
+	// }
 
-	public IArticle[] getFollowUps(IArticle article) throws NNTPIOException, UnexpectedResponseException, StoreException {
+	public IArticle[] getFollowUps(IArticle article) throws NNTPIOException,
+			UnexpectedResponseException, StoreException {
 
 		// FIXME Decide if article bodies should be stored in the store or
 		// always fetched from server.
@@ -366,13 +372,14 @@ public class ServerStoreFacade implements IServerStoreFacade {
 	// return result2;
 	// }
 
-	public IArticle[] getAllFollowUps(IArticle article) throws NNTPIOException, UnexpectedResponseException, StoreException {
+	public IArticle[] getAllFollowUps(IArticle article) throws NNTPIOException,
+			UnexpectedResponseException, StoreException {
 
 		// FIXME Decide if article bodies should be stored in the store or
 		// always fetched from server.
 		ArrayList result2 = new ArrayList();
 		result2.addAll(Arrays.asList(getFollowUps(article)));
-		
+
 		Collection result = new ArrayList(result2);
 		for (Iterator iterator = result.iterator(); iterator.hasNext();) {
 			IArticle reply = (IArticle) iterator.next();
@@ -419,7 +426,8 @@ public class ServerStoreFacade implements IServerStoreFacade {
 			throws NNTPIOException, UnexpectedResponseException {
 
 		// FIXME implement
-		return listNewsgroups(server);
+		throw new RuntimeException("not yet implemented");
+		// return listNewsgroups(server);
 	}
 
 	public String[] getArticleBody(IArticle article) throws NNTPIOException,
@@ -454,11 +462,49 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		return server.getServerConnection().getOverviewHeaders(server);
 	}
 
-	public void setModeReader(IServer server) throws NNTPIOException, UnexpectedResponseException {
-setModeReader(server);
+	public void setModeReader(IServer server) throws NNTPIOException,
+			UnexpectedResponseException {
+		setModeReader(server);
 	}
 
 	public IServer[] getSubscribedServers() {
 		return stores[0].getSubscribedServers();
+	}
+
+	public INewsgroup getSubscribedNewsgroup(IServer server, String newsgroup) {
+		// FIXME implement
+		throw new RuntimeException("not yet implemented");
+	}
+
+	public IArticle getArticle(String URL) throws NNTPIOException,
+			UnexpectedResponseException, NNTPException {
+
+		int articleNumber;
+		String newsgroup;
+		String server;
+
+		try {
+			String[] split = StringUtils.split(URL, "/");
+			server = split[2];
+			split = StringUtils.split(split[split.length - 1], "?");
+			articleNumber = Integer.parseInt(split[1]);
+			newsgroup = split[0];
+		} catch (Exception e) {
+			throw new NNTPException("Error parsing URL " + URL, e);
+		}
+
+		IServer[] servers = getSubscribedServers();
+		for (int i = 0; i < servers.length; i++) {
+			if (servers[i].getAddress().equals(server)) {
+				INewsgroup[] groups = getSubscribedNewsgroups(servers[i]);
+				for (int j = 0; j < groups.length; j++) {
+					if (groups[j].getNewsgroupName().equals(newsgroup))
+						return getArticle(groups[j], articleNumber);
+				}
+				return null;
+			}
+		}
+
+		return null;
 	}
 }

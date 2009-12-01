@@ -109,6 +109,17 @@ public class SALVO {
 
 	public static final String TAB = "\t";
 
-	public static final String SALVO_ORGANIZATION = "IndustrialTSI.com";
+	public static String SALVO_ORGANIZATION = "IndustrialTSI.com";
+
+	public static final String SEPARATOR = System.getProperty("file.separator");
+
+	/**
+	 * Sets the home variable
+	 * 
+	 * @param newHome
+	 */
+	public final static void setHome(String newHome) {
+		SALVO_HOME = newHome + "";
+	}
 
 }

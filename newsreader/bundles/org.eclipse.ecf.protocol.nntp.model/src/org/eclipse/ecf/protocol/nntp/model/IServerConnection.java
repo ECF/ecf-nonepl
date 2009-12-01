@@ -61,7 +61,7 @@ public interface IServerConnection extends IBasicNNTPInterface,
 
 
 	/**
-	 * @return the {@link Collection} of {@link INewsgroup} found on this
+	 * @return the array of all {@link INewsgroup}s found on this
 	 *         server.
 	 * @throws NNTPIOException
 	 * @throws UnexpectedResponseException
