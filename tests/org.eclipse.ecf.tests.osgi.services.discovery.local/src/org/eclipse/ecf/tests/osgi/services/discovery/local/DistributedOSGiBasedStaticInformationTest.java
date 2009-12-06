@@ -33,11 +33,11 @@ import java.util.Map;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.FileLocator;
+import org.eclipse.ecf.osgi.services.discovery.DiscoveredServiceTracker;
+import org.eclipse.ecf.osgi.services.discovery.ServiceEndpointDescription;
 import org.osgi.framework.Bundle;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
-import org.osgi.service.discovery.DiscoveredServiceTracker;
-import org.osgi.service.discovery.ServiceEndpointDescription;
 
 /**
  * @author Thomas Kiesslich
