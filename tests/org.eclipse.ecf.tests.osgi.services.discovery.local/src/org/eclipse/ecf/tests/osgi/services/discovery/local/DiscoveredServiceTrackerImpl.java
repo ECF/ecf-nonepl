@@ -19,8 +19,8 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashSet;
 
-import org.osgi.service.discovery.DiscoveredServiceNotification;
-import org.osgi.service.discovery.DiscoveredServiceTracker;
+import org.eclipse.ecf.osgi.services.discovery.DiscoveredServiceNotification;
+import org.eclipse.ecf.osgi.services.discovery.DiscoveredServiceTracker;
 
 public class DiscoveredServiceTrackerImpl implements DiscoveredServiceTracker {
 
