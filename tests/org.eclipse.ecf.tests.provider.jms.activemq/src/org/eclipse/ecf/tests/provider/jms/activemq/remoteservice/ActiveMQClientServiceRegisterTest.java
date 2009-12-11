@@ -80,7 +80,7 @@ public class ActiveMQClientServiceRegisterTest extends AbstractServiceRegisterLi
 		props.put(Constants.SERVICE_CONTAINER_ID, clientContainer.getID());
 		
 		// Set OSGI property that identifies this service as a service to be remoted
-		props.put(REMOTE_INTERFACES, new String[] {REMOTE_INTERFACES_WILDCARD});
+		props.put(SERVICE_EXPORTED_INTERFACES, new String[] {SERVICE_EXPORTED_INTERFACES_WILDCARD});
 		// Actually register with default service (IConcatService)
 		ServiceRegistration registration = registerDefaultService(props);
 		// Wait a while
@@ -103,7 +103,7 @@ public class ActiveMQClientServiceRegisterTest extends AbstractServiceRegisterLi
 		IContainer clientContainer = getClient(1);
 		props.put(Constants.SERVICE_CONTAINER_ID, clientContainer.getID());
 		// Set required OSGI property that identifies this service as a service to be remoted
-		props.put(REMOTE_INTERFACES, new String[] {REMOTE_INTERFACES_WILDCARD});
+		props.put(SERVICE_EXPORTED_INTERFACES, new String[] {SERVICE_EXPORTED_INTERFACES_WILDCARD});
 		// Put property foo with value bar into published properties
 		String testPropKey = "foo";
 		String testPropVal = "bar";
@@ -146,7 +146,7 @@ public class ActiveMQClientServiceRegisterTest extends AbstractServiceRegisterLi
 		IContainer clientContainer = getClient(0);
 		props.put(Constants.SERVICE_CONTAINER_ID, clientContainer.getID());
 		// Set required OSGI property that identifies this service as a service to be remoted
-		props.put(REMOTE_INTERFACES, new String[] {REMOTE_INTERFACES_WILDCARD});
+		props.put(SERVICE_EXPORTED_INTERFACES, new String[] {SERVICE_EXPORTED_INTERFACES_WILDCARD});
 		// Actually register and wait a while
 		ServiceRegistration registration = registerService(classname, new TestService1(),props);
 		Thread.sleep(REGISTER_WAIT);
@@ -185,7 +185,7 @@ public class ActiveMQClientServiceRegisterTest extends AbstractServiceRegisterLi
 		IContainer clientContainer = getClient(1);
 		props.put(Constants.SERVICE_CONTAINER_ID, clientContainer.getID());
 		// Set required OSGI property that identifies this service as a service to be remoted
-		props.put(REMOTE_INTERFACES, new String[] {REMOTE_INTERFACES_WILDCARD});
+		props.put(SERVICE_EXPORTED_INTERFACES, new String[] {SERVICE_EXPORTED_INTERFACES_WILDCARD});
 		// Actually register and wait a while
 		ServiceRegistration registration = registerService(classname, new TestService1(),props);
 		Thread.sleep(REGISTER_WAIT);
@@ -196,7 +196,7 @@ public class ActiveMQClientServiceRegisterTest extends AbstractServiceRegisterLi
 		assertTrue(remoteReferences.length > 0);
 		
 		for(int i=0; i < remoteReferences.length; i++) {
-			Object o = remoteReferences[i].getProperty(REMOTE);
+			Object o = remoteReferences[i].getProperty(SERVICE_IMPORTED);
 			assertNotNull(o);
 			assertTrue(o instanceof IRemoteService);
 			IRemoteService rs = (IRemoteService) o;
