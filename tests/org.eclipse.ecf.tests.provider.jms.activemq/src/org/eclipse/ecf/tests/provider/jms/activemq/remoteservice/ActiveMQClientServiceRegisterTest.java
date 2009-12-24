@@ -201,7 +201,7 @@ public class ActiveMQClientServiceRegisterTest extends AbstractServiceRegisterLi
 			assertTrue(o instanceof IRemoteService);
 			IRemoteService rs = (IRemoteService) o;
 			// Now call rs methods
-			IRemoteCall call = createRemoteCall(TestServiceInterface1.class);
+			IRemoteCall call = createRemoteCall();
 			if (call != null) {
 				// Call synchronously
 				Object result = rs.callSync(call);
