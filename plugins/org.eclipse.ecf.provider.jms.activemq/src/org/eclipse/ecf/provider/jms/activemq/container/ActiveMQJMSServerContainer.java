@@ -20,6 +20,8 @@ public class ActiveMQJMSServerContainer extends AbstractJMSServer {
 	public static final String DEFAULT_PASSWORD = "defaultPassword";
 	public static final String DEFAULT_USERNAME = "defaultUsername";
 
+	public static final String DEFAULT_SERVER_ID = "tcp://localhost:61616/exampleTopic";
+	
 	public ActiveMQJMSServerContainer(JMSContainerConfig config) {
 		super(config);
 	}

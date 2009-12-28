@@ -9,6 +9,7 @@
 package org.eclipse.ecf.internal.provider.jms.activemq;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ecf.core.ContainerCreateException;
@@ -22,6 +23,7 @@ public class ActiveMQJMSClientContainerInstantiator extends
 		GenericContainerInstantiator {
 
 	protected static final String[] jmsIntents = { "JMS" };
+	protected static final String JMS_CLIENT_NAME = "ecf.jms.activemq.tcp.client";
 
 	public ActiveMQJMSClientContainerInstantiator() {
 
@@ -76,4 +78,23 @@ public class ActiveMQJMSClientContainerInstantiator extends
 		}
 		return (String[]) results.toArray(new String[] {});
 	}
+
+	public String[] getImportedConfigs(ContainerTypeDescription description,
+			String[] exporterSupportedConfigs) {
+		List results = new ArrayList();
+		List supportedConfigs = Arrays.asList(exporterSupportedConfigs);
+		if (JMS_CLIENT_NAME.equals(description.getName())) {
+			if (supportedConfigs
+					.contains(ActiveMQJMSServerContainerInstantiator.JMS_MANAGER_NAME)
+					|| supportedConfigs.contains(JMS_CLIENT_NAME)) {
+				results.add(JMS_CLIENT_NAME);
+				results
+						.add(ActiveMQJMSServerContainerInstantiator.JMS_MANAGER_NAME);
+			}
+		}
+		if (results.size() == 0)
+			return null;
+		return (String[]) results.toArray(new String[] {});
+	}
+
 }

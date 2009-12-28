@@ -9,6 +9,7 @@
 package org.eclipse.ecf.internal.provider.jms.activemq;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ecf.core.ContainerCreateException;
@@ -26,10 +27,22 @@ public class ActiveMQJMSServerContainerInstantiator extends
 
 	protected static final String[] jmsIntents = { "JMS" };
 
+	protected static final String JMS_MANAGER_NAME = "ecf.jms.activemq.tcp.manager";
+	
 	public ActiveMQJMSServerContainerInstantiator() {
 
 	}
 
+	private JMSID getJMSIDFromParameter(Object p) {
+		if (p instanceof String) {
+			return (JMSID) IDFactory.getDefault().createID(
+					JMSNamespace.NAME, (String) p);
+		} else if (p instanceof JMSID) { 
+			return (JMSID) p;
+		} else return (JMSID) IDFactory.getDefault().createID(
+				JMSNamespace.NAME, ActiveMQJMSServerContainer.DEFAULT_SERVER_ID);
+	}
+	
 	/*
 	 * (non-Javadoc)
 	 * 
@@ -40,16 +53,9 @@ public class ActiveMQJMSServerContainerInstantiator extends
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] args) throws ContainerCreateException {
 		try {
-			Integer ka = new Integer(
-					ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
-			String name = null;
-			if (args.length == 0)
-				throw new ContainerCreateException(
-						"no server id provided for creation");
-			name = (String) args[0];
-			JMSID serverID = (JMSID) IDFactory.getDefault().createID(
-					JMSNamespace.NAME, name);
-			if (args.length > 1)
+			Integer ka = null;
+			JMSID serverID = (args == null || args.length < 1)?getJMSIDFromParameter((String) ActiveMQJMSServerContainer.DEFAULT_SERVER_ID):getJMSIDFromParameter(args[0]);
+			if (args != null && args.length > 1)
 				ka = getIntegerFromArg(args[1]);
 			if (ka == null)
 				ka = new Integer(ActiveMQJMSServerContainer.DEFAULT_KEEPALIVE);
@@ -71,6 +77,19 @@ public class ActiveMQJMSServerContainerInstantiator extends
 		for (int i = 0; i < jmsIntents.length; i++) {
 			results.add(jmsIntents[i]);
 		}
+		return (String[]) results.toArray(new String[] {});
+	}
+
+	public String[] getImportedConfigs(ContainerTypeDescription description, String[] exporterSupportedConfigs) {
+		List results = new ArrayList();
+		List supportedConfigs = Arrays.asList(exporterSupportedConfigs);
+		// For a manager, if a client is exporter then we are an importer
+		if (JMS_MANAGER_NAME.equals(description.getName())) {
+			if (supportedConfigs.contains(ActiveMQJMSClientContainerInstantiator.JMS_CLIENT_NAME))
+				results.add(JMS_MANAGER_NAME);
+		}
+		if (results.size() == 0)
+			return null;
 		return (String[]) results.toArray(new String[] {});
 	}
 
