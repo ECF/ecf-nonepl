@@ -18,7 +18,7 @@ import org.eclipse.ecf.tests.osgi.services.distribution.AbstractServiceRegisterL
 import org.eclipse.ecf.tests.provider.jms.activemq.ActiveMQ;
 
 
-public class ActiveMQServiceRegisterTest extends AbstractServiceRegisterListenerTest {
+public class ActiveMQServiceRegisterListenerTest extends AbstractServiceRegisterListenerTest {
 
 	/*
 	 * (non-Javadoc)
