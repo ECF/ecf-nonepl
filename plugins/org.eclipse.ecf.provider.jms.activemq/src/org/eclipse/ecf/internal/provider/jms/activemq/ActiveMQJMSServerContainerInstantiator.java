@@ -93,4 +93,9 @@ public class ActiveMQJMSServerContainerInstantiator extends
 		return (String[]) results.toArray(new String[] {});
 	}
 
+	public String[] getSupportedConfigs(ContainerTypeDescription description) {
+		return new String[] { JMS_MANAGER_NAME };
+	}
+
+
 }

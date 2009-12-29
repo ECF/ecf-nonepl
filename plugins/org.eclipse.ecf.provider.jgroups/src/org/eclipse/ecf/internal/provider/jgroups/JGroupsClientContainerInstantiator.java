@@ -8,6 +8,10 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.jgroups;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
+
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
@@ -25,6 +29,30 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
  */
 public class JGroupsClientContainerInstantiator extends
 		GenericContainerInstantiator {
+
+	protected static final String JGROUPS_CLIENT_NAME = "ecf.jms.activemq.tcp.client";
+
+	public String[] getImportedConfigs(ContainerTypeDescription description,
+			String[] exporterSupportedConfigs) {
+		List results = new ArrayList();
+		List supportedConfigs = Arrays.asList(exporterSupportedConfigs);
+		if (JGROUPS_CLIENT_NAME.equals(description.getName())) {
+			if (supportedConfigs
+					.contains(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME)
+					|| supportedConfigs.contains(JGROUPS_CLIENT_NAME)) {
+				results.add(JGROUPS_CLIENT_NAME);
+				results
+						.add(JGroupsManagerContainerInstantiator.JGROUPS_MANAGER_NAME);
+			}
+		}
+		if (results.size() == 0)
+			return null;
+		return (String[]) results.toArray(new String[] {});
+	}
+
+	public String[] getSupportedConfigs(ContainerTypeDescription description) {
+		return new String[] { JGROUPS_CLIENT_NAME };
+	}
 
 	/*
 	 * (non-Javadoc)
