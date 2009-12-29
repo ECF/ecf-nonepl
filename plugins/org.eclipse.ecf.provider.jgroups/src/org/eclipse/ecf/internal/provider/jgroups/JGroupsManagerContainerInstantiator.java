@@ -29,7 +29,7 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 public class JGroupsManagerContainerInstantiator extends
 		GenericContainerInstantiator {
 
-	protected static final String JGROUPS_MANAGER_NAME = "ecf.jms.activemq.tcp.manager";
+	protected static final String JGROUPS_MANAGER_NAME = "ecf.jgroups.manager";
 	
 
 	/*

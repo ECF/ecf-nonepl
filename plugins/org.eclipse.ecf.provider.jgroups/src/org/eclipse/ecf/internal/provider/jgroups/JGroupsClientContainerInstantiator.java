@@ -30,7 +30,7 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 public class JGroupsClientContainerInstantiator extends
 		GenericContainerInstantiator {
 
-	protected static final String JGROUPS_CLIENT_NAME = "ecf.jms.activemq.tcp.client";
+	protected static final String JGROUPS_CLIENT_NAME = "ecf.jgroups.client";
 
 	public String[] getImportedConfigs(ContainerTypeDescription description,
 			String[] exporterSupportedConfigs) {
