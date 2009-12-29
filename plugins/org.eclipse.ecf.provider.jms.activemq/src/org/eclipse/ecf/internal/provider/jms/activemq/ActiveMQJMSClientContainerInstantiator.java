@@ -97,4 +97,8 @@ public class ActiveMQJMSClientContainerInstantiator extends
 		return (String[]) results.toArray(new String[] {});
 	}
 
+	public String[] getSupportedConfigs(ContainerTypeDescription description) {
+		return new String[] { JMS_CLIENT_NAME };
+	}
+
 }
