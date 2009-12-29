@@ -417,8 +417,8 @@ public class ServerConnection implements IServerConnection {
 		for (int i = 1; i < rList.length; i++) {
 			String overviewResult = rList[i];
 			if (!overviewResult.startsWith(".")) {
-				IArticle article = ArticleFactory.createArticle(overviewResult,
-						newsgroup);
+				IArticle article = ArticleFactory.createArticle(
+						getOverviewHeaders(server), overviewResult, newsgroup);
 				if (article != null)
 					result.add(article);
 			}
@@ -521,6 +521,13 @@ public class ServerConnection implements IServerConnection {
 			return;
 		}
 
+		if (!response.startsWith("211"))
+			throw new UnexpectedResponseException(
+					"The group command for newsgroup "
+							+ newsgroup.getNewsgroupName() + " in server "
+							+ newsgroup.getServer().getAddress() + " returned "
+							+ response);
+
 		String[] elements = StringUtils.split(response, SALVO.SPACE);
 		if (elements.length == 5) {
 			newsgroup.setAttributes(Integer.parseInt(elements[1]), Integer
@@ -570,7 +577,8 @@ public class ServerConnection implements IServerConnection {
 
 		// Load the article contents
 		if (!rList[1].startsWith(".")) {
-			return ArticleFactory.createArticle(rList[1], newsgroup);
+			return ArticleFactory.createArticle(getOverviewHeaders(server),
+					rList[1], newsgroup);
 		}
 
 		return null;

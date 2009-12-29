@@ -34,9 +34,10 @@ public interface IBasicNNTPInterface {
 	 * @param buffer
 	 * @throws NNTPIOException
 	 * @throws UnexpectedResponseException
+	 * @throws StoreException
 	 */
 	public void replyToArticle(IArticle article, String buffer)
-			throws NNTPIOException, UnexpectedResponseException;
+			throws NNTPIOException, UnexpectedResponseException, StoreException;
 
 	/**
 	 * Posts the article in the given newsgroup with the given subject and the
@@ -45,11 +46,13 @@ public interface IBasicNNTPInterface {
 	 * @param newsgroups
 	 * @param subject
 	 * @param body
+	 * @throws StoreException
 	 * @throws {@link NNTPIOException}
 	 * @throws {@link UnexpectedResponseException}
 	 */
 	public void postNewArticle(INewsgroup[] newsgroups, String subject,
-			String body) throws NNTPIOException, UnexpectedResponseException;
+			String body) throws NNTPIOException, UnexpectedResponseException,
+			StoreException;
 
 	/**
 	 * Gets the complete follow up tree. This includes the responses to
@@ -69,9 +72,10 @@ public interface IBasicNNTPInterface {
 	 * @param article
 	 * @throws UnexpectedResponseException
 	 * @throws NNTPIOException
+	 * @throws StoreException
 	 */
 	public String[] getArticleBody(IArticle article) throws NNTPIOException,
-			UnexpectedResponseException;
+			UnexpectedResponseException, StoreException;
 
 	/**
 	 * This method sets the NNTP server in reader mode. Make sure to get or
@@ -136,9 +140,10 @@ public interface IBasicNNTPInterface {
 	 * @return the article or null if it was not found. Get the last
 	 * @throws NNTPConnectException
 	 * @throws NNTPIOException
+	 * @throws StoreException
 	 */
 	public IArticle getArticle(INewsgroup newsgroup, int articleId)
-			throws NNTPIOException, UnexpectedResponseException;
+			throws NNTPIOException, UnexpectedResponseException, StoreException;
 
 	/**
 	 * Gets the overview headers from the server.

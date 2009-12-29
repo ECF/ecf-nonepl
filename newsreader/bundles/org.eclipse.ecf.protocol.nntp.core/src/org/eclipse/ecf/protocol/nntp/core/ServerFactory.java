@@ -41,8 +41,11 @@ public class ServerFactory {
 				+ credentials.getUser() + "::" + credentials.getEmail() + "::"
 				+ credentials.getLogin() + "::" + secure);
 
-		if (server != null)
+		if (server != null) {
+			server.getServerConnection().setCredentials(credentials);
+			server.setDirty(true);
 			return server;
+		}
 
 		server = new Server(address, port, secure);
 		IServerConnection connection = new ServerConnection(server);
@@ -50,7 +53,12 @@ public class ServerFactory {
 		if (servers.get(server.toString()) != null)
 			return (IServer) servers.get(server.toString());
 
-		server.init();
+		try {
+			server.init();
+		} catch (Exception e) {
+			// Swallow
+		}
+
 		servers.put(server.toString(), server);
 		return server;
 	}

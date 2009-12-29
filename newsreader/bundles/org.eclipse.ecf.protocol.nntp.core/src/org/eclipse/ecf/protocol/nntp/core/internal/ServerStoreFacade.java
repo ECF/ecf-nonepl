@@ -52,7 +52,7 @@ public class ServerStoreFacade implements IServerStoreFacade {
 	}
 
 	public IArticle getArticle(INewsgroup newsgroup, int articleId)
-			throws NNTPIOException, UnexpectedResponseException {
+			throws NNTPIOException, UnexpectedResponseException, StoreException {
 
 		IArticle article = null;
 		for (int i = 0; i < stores.length;) {
@@ -77,7 +77,7 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		throw new RuntimeException("not yet implemented");
 	}
 
-	public void unsubscribeNewsgroup(INewsgroup newsGroup, boolean permanent) {
+	public void unsubscribeNewsgroup(INewsgroup newsGroup, boolean permanent) throws StoreException {
 		for (int i = 0; i < stores.length; i++) {
 			stores[i].unsubscribeNewsgroup(newsGroup, permanent);
 		}
@@ -89,27 +89,27 @@ public class ServerStoreFacade implements IServerStoreFacade {
 	}
 
 	public void subscribeNewsgroup(INewsgroup group) throws NNTPIOException,
-			UnexpectedResponseException {
+			UnexpectedResponseException, StoreException {
 		for (int i = 0; i < stores.length; i++) {
 			stores[i].subscribeNewsgroup(group);
 		}
 		updateAttributes(group);
 	}
 
-	public void subscribeServer(IServer server, String passWord) {
+	public void subscribeServer(IServer server, String passWord) throws StoreException {
 		for (int i = 0; i < stores.length; i++) {
 			stores[i].subscribeServer(server, passWord);
 		}
 	}
 
-	public void unsubscribeServer(IServer server, boolean permanent) {
+	public void unsubscribeServer(IServer server, boolean permanent) throws StoreException {
 		for (int i = 0; i < stores.length; i++) {
 			stores[i].unsubscribeServer(server, permanent);
 		}
 	}
 
 	public void updateAttributes(INewsgroup newsgroup) throws NNTPIOException,
-			UnexpectedResponseException {
+			UnexpectedResponseException, StoreException {
 		try {
 			newsgroup.getServer().getServerConnection()
 					.setWaterMarks(newsgroup);
@@ -121,7 +121,7 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		}
 	}
 
-	public INewsgroup[] getSubscribedNewsgroups(IServer server) {
+	public INewsgroup[] getSubscribedNewsgroups(IServer server) throws StoreException {
 		for (int i = 0; i < stores.length;) {
 			return stores[i].getSubscribedNewsgroups(server);
 		}
@@ -389,20 +389,20 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		return (IArticle[]) result2.toArray(new IArticle[0]);
 	}
 
-	public void updateArticle(IArticle article) {
+	public void updateArticle(IArticle article) throws StoreException {
 		for (int i = 0; i < stores.length; i++) {
 			stores[i].updateArticle(article);
 		}
 	}
 
 	public void replyToArticle(IArticle article, String body)
-			throws NNTPIOException, UnexpectedResponseException {
+			throws NNTPIOException, UnexpectedResponseException, StoreException {
 		article.getServer().getServerConnection().replyToArticle(article, body);
 		updateAttributes(article.getNewsgroup());
 	}
 
 	public void postNewArticle(INewsgroup[] newsgroups, String subject,
-			String body) throws NNTPIOException {
+			String body) throws NNTPIOException, StoreException {
 
 		try {
 			IServerConnection connection = newsgroups[0].getServer()
@@ -431,7 +431,7 @@ public class ServerStoreFacade implements IServerStoreFacade {
 	}
 
 	public String[] getArticleBody(IArticle article) throws NNTPIOException,
-			UnexpectedResponseException {
+			UnexpectedResponseException, StoreException {
 		try {
 			String[] articleBody = stores[0].getArticleBody(article);
 			if (articleBody.length > 0)
@@ -450,7 +450,7 @@ public class ServerStoreFacade implements IServerStoreFacade {
 	}
 
 	public void setWaterMarks(INewsgroup newsgroup) throws NNTPIOException,
-			UnexpectedResponseException {
+			UnexpectedResponseException, StoreException {
 		newsgroup.getServer().getServerConnection().setWaterMarks(newsgroup);
 		for (int i = 0; i < stores.length; i++) {
 			stores[i].setWaterMarks(newsgroup);
@@ -467,7 +467,7 @@ public class ServerStoreFacade implements IServerStoreFacade {
 		setModeReader(server);
 	}
 
-	public IServer[] getSubscribedServers() {
+	public IServer[] getSubscribedServers() throws NNTPException {
 		return stores[0].getSubscribedServers();
 	}
 

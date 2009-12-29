@@ -12,7 +12,6 @@
 package org.eclipse.ecf.protocol.nntp.model;
 
 import java.io.Serializable;
-import java.util.Map;
 
 /**
  * This class contains the article meta data. The actual contents must be
@@ -20,7 +19,7 @@ import java.util.Map;
  * 
  * @author Wim Jongman
  */
-public interface IArticle extends Serializable {
+public interface IArticle extends Serializable, IProperties {
 
 	/**
 	 * @param attribute
@@ -48,7 +47,7 @@ public interface IArticle extends Serializable {
 	public IArticle getParent();
 
 	/**
-	 * @return The long number of this article in this newsgroup
+	 * @return The number of this article in this newsgroup
 	 * 
 	 */
 	public int getArticleNumber();
@@ -176,27 +175,6 @@ public interface IArticle extends Serializable {
 	 */
 	public boolean isMine();
 
-	/**
-	 * Sets an arbitrary property, an already existing property will be replaced
-	 * and a null for the value removes the property.
-	 * 
-	 * @param key
-	 * @param value
-	 */
-	public void setProperty(String key, String value);
-
-	/**
-	 * Gets a previously set property.
-	 * 
-	 * @param key
-	 * @return null if the property key does not exist
-	 */
-	public String getProperty(String key);
-
-	/**
-	 * @return all the specified properties in a map.
-	 */
-	public Map getProperties();
 
 	/**
 	 * Called to add information to the article that can be queried at display

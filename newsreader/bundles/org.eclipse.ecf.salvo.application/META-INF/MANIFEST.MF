@@ -12,3 +12,4 @@ Bundle-RequiredExecutionEnvironment: J2SE-1.5,
  JavaSE-1.6
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.ecf.protocol.nntp.model
+Export-Package: org.eclipse.ecf.salvo.application.internal;x-internal:=true

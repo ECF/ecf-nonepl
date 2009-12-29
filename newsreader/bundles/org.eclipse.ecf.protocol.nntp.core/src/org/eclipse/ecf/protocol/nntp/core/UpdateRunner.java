@@ -15,8 +15,8 @@ import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IServerStoreFacade;
 import org.eclipse.ecf.protocol.nntp.model.IStore;
-import org.eclipse.ecf.protocol.nntp.model.NNTPIOException;
-import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
+import org.eclipse.ecf.protocol.nntp.model.NNTPException;
+import org.eclipse.ecf.protocol.nntp.model.StoreException;
 
 public final class UpdateRunner implements Runnable {
 	private boolean threadRunning;
@@ -42,36 +42,60 @@ public final class UpdateRunner implements Runnable {
 			IStore[] stores = facade.getStores();
 			for (int i = 0; i < stores.length; i++) {
 				IStore store = stores[i];
-				IServer[] subscribedServers = store.getSubscribedServers();
+				IServer[] subscribedServers = getSubscribedServers(store);
 				for (int j = 0; j < subscribedServers.length; j++) {
 					IServer server = subscribedServers[j];
-					INewsgroup[] subscribedNewsgroups = facade
-							.getSubscribedNewsgroups(server);
-					for (int k = 0; k < subscribedNewsgroups.length; k++) {
-						INewsgroup group = subscribedNewsgroups[k];
-						try {
-							facade.updateAttributes(group);
-						} catch (NNTPIOException e) {
-							Debug.log(this.getClass(), e);
-							// FIXME do some clever notifying
-						} catch (UnexpectedResponseException e) {
-							// FIXME do some clever notifying
-							Debug.log(this.getClass(), e);
+					INewsgroup[] subscribedNewsgroups;
+					try {
+						subscribedNewsgroups = facade
+								.getSubscribedNewsgroups(server);
+						for (int k = 0; k < subscribedNewsgroups.length; k++) {
+							INewsgroup group = subscribedNewsgroups[k];
+							try {
+								facade.updateAttributes(group);
+							} catch (Exception e) {
+								Debug.log(this.getClass(), e);
+							}
 						}
+					} catch (StoreException e1) {
+						Debug.log(this.getClass(), e1);
 					}
+					server.setDirty(false);
 				}
 			}
 			try {
 				Debug.log(getClass(),
 						"Salvo Thread: Update finished sleeping 600 seconds");
 				for (int i = 0; i < 600; i++)
-					if (isThreadRunning())
+					if (isThreadRunning() && serversClean(facade.getStores()))
 						Thread.sleep(1000);
 			} catch (InterruptedException e) {
 				setThreadRunning(false);
 				break;
 			}
 		}
+	}
+
+	private IServer[] getSubscribedServers(IStore store) {
+		try {
+			return store.getSubscribedServers();
+		} catch (NNTPException e) {
+			return new IServer[0];
+		}
+	}
+
+	private boolean serversClean(IStore[] stores) {
+		for (int i = 0; i < stores.length; i++) {
+			IStore store = stores[i];
+
+			IServer[] subscribedServers = getSubscribedServers(store);
+			for (int j = 0; j < subscribedServers.length; j++) {
+				IServer server = subscribedServers[j];
+				if (server.isDirty())
+					return false;
+			}
+		}
+		return true;
 	}
 
 	private void setThreadRunning(boolean threadRunning) {

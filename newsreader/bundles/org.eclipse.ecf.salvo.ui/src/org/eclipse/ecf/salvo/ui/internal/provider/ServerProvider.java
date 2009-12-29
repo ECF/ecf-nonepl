@@ -16,9 +16,9 @@ import java.util.Collection;
 
 import org.eclipse.ecf.protocol.nntp.core.ServerStoreFactory;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
+import org.eclipse.ecf.protocol.nntp.model.NNTPException;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
 import org.eclipse.ecf.salvo.ui.internal.resources.SalvoResourceFactory;
-
 
 public class ServerProvider implements IChildProvider {
 
@@ -26,14 +26,19 @@ public class ServerProvider implements IChildProvider {
 
 		ArrayList<ISalvoResource> result = new ArrayList<ISalvoResource>();
 
-		for (IServer server : ServerStoreFactory.instance()
-				.getServerStoreFacade().getFirstStore().getSubscribedServers()) {
-			ISalvoResource s1 = SalvoResourceFactory.getResource(server
-					.getAddress(), server);
-			s1.setChildProvider(new NewsGroupProvider(s1));
-			result.add(s1);
+		try {
+			for (IServer server : ServerStoreFactory.instance()
+					.getServerStoreFacade().getFirstStore()
+					.getSubscribedServers()) {
+				ISalvoResource s1 = SalvoResourceFactory.getResource(server
+						.getAddress(), server);
+				s1.setChildProvider(new NewsGroupProvider(s1));
+				result.add(s1);
+			}
+			return result;
+		} catch (NNTPException e) {
+			return new ArrayList<ISalvoResource>();
 		}
-		return result;
 	}
 
 	public ISalvoResource getParent() {

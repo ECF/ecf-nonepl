@@ -6,4 +6,5 @@ Bundle-Version: 0.6.0.qualifier
 Bundle-Vendor: eclipse.org
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/quoteService.xml
+Export-Package: org.eclipse.ecf.services.quotes.oldskool
 Import-Package: org.eclipse.ecf.services.quotes

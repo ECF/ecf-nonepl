@@ -248,7 +248,6 @@ public class Article implements IArticle {
 	}
 
 	public String getURL() {
-		return "news://" + getServer().getAddress() + "/"
-				+ getNewsgroup().getNewsgroupName() + "?" + getArticleNumber();
+		return getNewsgroup().getURL() + "&article=" + getArticleNumber();
 	}
 }

@@ -44,8 +44,9 @@ public interface IServerStoreFacade extends IInputOutputSystem,
 	 * 
 	 * @param server
 	 * @return
+	 * @throws StoreException 
 	 */
-	public INewsgroup[] getSubscribedNewsgroups(IServer server);
+	public INewsgroup[] getSubscribedNewsgroups(IServer server) throws StoreException;
 
 	/**
 	 * Returns the newsgroup this user is subscribed to in this server.
@@ -71,6 +72,6 @@ public interface IServerStoreFacade extends IInputOutputSystem,
 	 */
 	public IStore[] getStores();
 
-	public void updateArticle(IArticle article);
+	public void updateArticle(IArticle article) throws StoreException;
 
 }

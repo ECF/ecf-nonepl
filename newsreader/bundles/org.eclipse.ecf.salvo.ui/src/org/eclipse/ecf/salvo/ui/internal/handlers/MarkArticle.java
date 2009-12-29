@@ -17,9 +17,9 @@ import org.eclipse.core.commands.ExecutionException;
 import org.eclipse.ecf.protocol.nntp.core.ServerStoreFactory;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.IServerStoreFacade;
+import org.eclipse.ecf.protocol.nntp.model.StoreException;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
 import org.eclipse.ecf.salvo.ui.tools.SelectionUtil;
-
 
 public class MarkArticle extends AbstractHandler {
 
@@ -33,7 +33,11 @@ public class MarkArticle extends AbstractHandler {
 				article.setMarked(!article.isMarked());
 				IServerStoreFacade serverStoreFacade = ServerStoreFactory
 						.instance().getServerStoreFacade();
-				serverStoreFacade.updateArticle(article);
+				try {
+					serverStoreFacade.updateArticle(article);
+				} catch (StoreException e) {
+					return new ExecutionException(e.getMessage(), e);
+				}
 			}
 		return null;
 	}

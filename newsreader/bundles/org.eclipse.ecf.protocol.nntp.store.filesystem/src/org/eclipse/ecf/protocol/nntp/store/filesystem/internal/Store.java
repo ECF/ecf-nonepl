@@ -255,6 +255,7 @@ public class Store implements IStore {
 	}
 
 	public void subscribeServer(final IServer server, final String passWord) {
+		server.setSubscribed(true);
 		getSubscribedServers();
 		getSecureStore().put(server.getAddress(), passWord, true);
 		storedServers.put(server.getAddress(), server);
@@ -408,6 +409,7 @@ public class Store implements IStore {
 
 	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent) {
 
+		group.setSubscribed(false);
 		unsubscribeNewsgroup(group);
 		writeSubscribedGroups(group.getServer());
 
@@ -438,6 +440,7 @@ public class Store implements IStore {
 
 	public void unsubscribeServer(IServer server, boolean permanent) {
 		// Disconnect first
+		server.setSubscribed(false);
 		try {
 			server.getServerConnection().disconnect();
 		} catch (NNTPConnectException e1) {
@@ -474,6 +477,8 @@ public class Store implements IStore {
 	}
 
 	public void subscribeNewsgroup(INewsgroup group) {
+
+		group.setSubscribed(true);
 
 		getSubscribedNewsgroups(group.getServer());
 
@@ -543,6 +548,7 @@ public class Store implements IStore {
 		ArrayList serversOnDisk = getServersFromDisk();
 
 		for (Iterator iterator = serversOnDisk.iterator(); iterator.hasNext();) {
+
 			String line = (String) iterator.next();
 			StringTokenizer tizer = new StringTokenizer(line, "::");
 			String address = tizer.nextToken();
@@ -838,19 +844,17 @@ public class Store implements IStore {
 	private void setFirstOrLastArticle(IArticle article) {
 
 		IArticle oldArticle = (IArticle) firstArticles.get(article
-				.getNewsgroup().getUniqueNewsgroupName());
+				.getNewsgroup().getURL());
 		if (oldArticle == null
 				|| oldArticle.getArticleNumber() > article.getArticleNumber()) {
-			firstArticles.put(article.getNewsgroup().getUniqueNewsgroupName(),
-					article);
+			firstArticles.put(article.getNewsgroup().getURL(), article);
 		}
 
 		oldArticle = (IArticle) lastArticles.get(article.getNewsgroup()
-				.getUniqueNewsgroupName());
+				.getURL());
 		if (oldArticle == null
 				|| oldArticle.getArticleNumber() < article.getArticleNumber()) {
-			lastArticles.put(article.getNewsgroup().getUniqueNewsgroupName(),
-					article);
+			lastArticles.put(article.getNewsgroup().getURL(), article);
 		}
 
 	}
@@ -918,9 +922,8 @@ public class Store implements IStore {
 
 	public IArticle getFirstArticle(INewsgroup newsgroup) {
 
-		if (firstArticles.get(newsgroup.getUniqueNewsgroupName()) != null) {
-			return (IArticle) firstArticles.get(newsgroup
-					.getUniqueNewsgroupName());
+		if (firstArticles.get(newsgroup.getURL()) != null) {
+			return (IArticle) firstArticles.get(newsgroup.getURL());
 		}
 
 		File infoDir = new File(getNumbersHome(newsgroup));
@@ -944,7 +947,7 @@ public class Store implements IStore {
 		}
 
 		IArticle firstArticle = getArticle(newsgroup, first);
-		firstArticles.put(newsgroup.getUniqueNewsgroupName(), firstArticle);
+		firstArticles.put(newsgroup.getURL(), firstArticle);
 		return firstArticle;
 	}
 
@@ -985,9 +988,8 @@ public class Store implements IStore {
 
 	public IArticle getLastArticle(INewsgroup newsgroup) {
 
-		if (lastArticles.get(newsgroup.getUniqueNewsgroupName()) != null) {
-			return (IArticle) lastArticles.get(newsgroup
-					.getUniqueNewsgroupName());
+		if (lastArticles.get(newsgroup.getURL()) != null) {
+			return (IArticle) lastArticles.get(newsgroup.getURL());
 		}
 
 		File infoDir = new File(getNumbersHome(newsgroup));
@@ -1011,7 +1013,7 @@ public class Store implements IStore {
 		}
 
 		IArticle lastArticle = getArticle(newsgroup, last);
-		lastArticles.put(newsgroup.getUniqueNewsgroupName(), lastArticle);
+		lastArticles.put(newsgroup.getURL(), lastArticle);
 		return lastArticle;
 	}
 
@@ -1038,7 +1040,7 @@ public class Store implements IStore {
 		return new String[0];
 	}
 
-	public boolean storeArticleBody(IArticle article, String[] body) {
+	public void storeArticleBody(IArticle article, String[] body) {
 
 		try {
 			File file = new File(getArticleDirectory(article.getNewsgroup(),
@@ -1049,7 +1051,7 @@ public class Store implements IStore {
 
 			// FIXME Should we assume that bodies are immutable?
 			if (file.exists())
-				return true;
+				return;
 
 			// Serialize this article body
 			FileOutputStream f_out = new FileOutputStream(file);
@@ -1058,12 +1060,7 @@ public class Store implements IStore {
 			obj_out.close();
 		} catch (Exception e) {
 			Debug.log(getClass(), e);
-			lastException = e;
-			return false;
 		}
-
-		return true;
-
 	}
 
 	public IArticle[] getFollowUps(IArticle article) {
@@ -1103,18 +1100,15 @@ public class Store implements IStore {
 	}
 
 	public void updateArticle(IArticle article) {
-		boolean result = storeArticles(new IArticle[] { article });
-
-		// Send store event
-		if (result)
-			fireEvent(new StoreEvent(article, SALVO.EVENT_CHANGE_GROUP));
+		storeArticles(new IArticle[] { article });
+		fireEvent(new StoreEvent(article, SALVO.EVENT_CHANGE_GROUP));
 	}
 
 	public String getDescription() {
 		return "Local Filesystem Storage";
 	}
 
-	public boolean storeArticles(IArticle[] articles) {
+	public void storeArticles(IArticle[] articles) {
 
 		boolean result = internalStoreArticles(Arrays.asList(articles));
 
@@ -1122,7 +1116,6 @@ public class Store implements IStore {
 		if (result)
 			fireEvent(new StoreEvent(articles, SALVO.EVENT_CHANGE_GROUP));
 
-		return result;
 	}
 
 	public void setWaterMarks(INewsgroup newsgroup) throws NNTPIOException,

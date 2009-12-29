@@ -12,11 +12,12 @@
 package org.eclipse.ecf.protocol.nntp.core.internal;
 
 import java.util.Calendar;
+import java.util.HashMap;
+import java.util.Map;
 
 import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
-
 
 public class Newsgroup implements INewsgroup {
 
@@ -38,6 +39,10 @@ public class Newsgroup implements INewsgroup {
 	private int highWaterMark;
 
 	private Calendar lastUpdateDate;
+
+	private HashMap properties;
+
+	private boolean subscribed;
 
 	public Newsgroup(IServer server2, String newsgroup, String description) {
 		this.server = server2;
@@ -75,15 +80,15 @@ public class Newsgroup implements INewsgroup {
 		return newsgroupName;
 	}
 
-	public String getUniqueNewsgroupName() {
-		return toString();
+	public String getURL() {
+		return server.getURL() + "/?group=" + getNewsgroupName();
 	}
 
 	public IServer getServer() {
 		return server;
 	}
 
-		public String toString() {
+	public String toString() {
 		return getServer().toString() + "::" + getNewsgroupName();
 	}
 
@@ -130,4 +135,31 @@ public class Newsgroup implements INewsgroup {
 		this.lowWaterMark = newLowestNumber;
 	}
 
+	public void setProperty(String key, String value) {
+		if (value == null) {
+			getProperties().remove(key);
+			return;
+		}
+		getProperties().put(key, value);
+	}
+
+	public Map getProperties() {
+		if (properties == null) {
+			properties = new HashMap();
+		}
+		return properties;
+	}
+
+	public String getProperty(String key) {
+		return (String) getProperties().get(key);
+	}
+
+	public boolean isSubscribed() {
+		return subscribed;
+	}
+
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
+
+	}
 }

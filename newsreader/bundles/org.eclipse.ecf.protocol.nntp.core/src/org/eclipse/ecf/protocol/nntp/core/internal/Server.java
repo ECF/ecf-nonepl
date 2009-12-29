@@ -11,6 +11,9 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.core.internal;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
@@ -30,6 +33,14 @@ public class Server implements IServer {
 	private String organization;
 
 	private String[] overviewHeaders;
+
+	private boolean dirty;
+
+	private boolean subscribed;
+
+	private HashMap properties;
+
+	private boolean initialized;
 
 	/**
 	 * Note that this is an internal class. A server factory cannot be far away.
@@ -63,6 +74,10 @@ public class Server implements IServer {
 				+ getServerConnection().getLogin() + "::" + isSecure();
 	}
 
+	public String getID() {
+		return toString();
+	}
+
 	public boolean equals(Object obj) {
 		if (obj instanceof IServer)
 			return toString().equals(obj.toString());
@@ -88,6 +103,7 @@ public class Server implements IServer {
 	public void init() throws NNTPException {
 		connection.connect();
 		connection.setModeReader(this);
+		setInitialized(true);
 
 	}
 
@@ -105,5 +121,51 @@ public class Server implements IServer {
 
 	public void setOverviewHeaders(String[] headers) {
 		overviewHeaders = headers;
+	}
+
+	public boolean isDirty() {
+		return dirty;
+	}
+
+	public void setDirty(boolean dirty) {
+		this.dirty = dirty;
+	}
+
+	public String getURL() {
+		return "nntp://" + getAddress().trim() + ":" + getPort();
+	}
+	
+	public boolean isSubscribed() {
+		return subscribed;
+	}
+
+	public void setSubscribed(boolean subscribed) {
+		this.subscribed = subscribed;
+	}
+	public void setProperty(String key, String value) {
+		if (value == null) {
+			getProperties().remove(key);
+			return;
+		}
+		getProperties().put(key, value);
+	}
+
+	public Map getProperties() {
+		if (properties == null) {
+			properties = new HashMap();
+		}
+		return properties;
+	}
+
+	public String getProperty(String key) {
+		return (String) getProperties().get(key);
+	}
+
+	private void setInitialized(boolean initialized) {
+		this.initialized = initialized;
+	}
+
+	public boolean isInitialized() {
+		return initialized;
 	}
 }

@@ -15,7 +15,7 @@ package org.eclipse.ecf.protocol.nntp.model;
  * @author jongw
  * 
  */
-public interface IServer {
+public interface IServer extends IProperties, ISubscribable {
 
 	/**
 	 * Returns the port.
@@ -52,7 +52,9 @@ public interface IServer {
 	 * Initializes the server. You can setup the connection here but note that
 	 * news servers are very impatient and close the connection as soon as they
 	 * can. You could do other one time setup here like getting the overview
-	 * headers, query for capabilities etcetera.
+	 * headers, query for capabilities et cetera. This method must set the
+	 * initialized flag, if {@link #isInitialized()} returns false, no
+	 * initialization whatsoever may be assumed to have occurred.
 	 * 
 	 * @throws NNTPException
 	 */
@@ -95,4 +97,41 @@ public interface IServer {
 	 */
 	public void setOverviewHeaders(String[] headers);
 
+	/**
+	 * @return the unique id of this server
+	 */
+	String getID();
+
+	/**
+	 * Asynchronous flag to indicate that the server should be visited again to
+	 * make sure everything is still in sync with the database. This is a
+	 * convenience flag, no operation of the server may be blocked by the server
+	 * being dirty.
+	 * 
+	 * @param dirty
+	 */
+	public void setDirty(boolean dirty);
+
+	/**
+	 * Asynchronous flag to indicate that the server should be visited again to
+	 * make sure everything is still in sync with the database. This is a
+	 * convenience flag, no operation of the server may be blocked by the server
+	 * being dirty.
+	 * 
+	 */
+	public boolean isDirty();
+
+	/**
+	 * Composes a server url like this: nntp://address:port
+	 * 
+	 * @return the url for this server
+	 */
+	public String getURL();
+
+	/**
+	 * Indicates if the initialize method has run successfully.
+	 * 
+	 * @return
+	 */
+	public boolean isInitialized();
 }

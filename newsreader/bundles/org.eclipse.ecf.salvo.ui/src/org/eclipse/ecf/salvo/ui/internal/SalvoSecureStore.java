@@ -2,6 +2,7 @@ package org.eclipse.ecf.salvo.ui.internal;
 
 import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.model.ISecureStore;
+import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
@@ -12,7 +13,7 @@ public class SalvoSecureStore implements ISecureStore {
 
 	public SalvoSecureStore() {
 		ISecurePreferences prefs = SecurePreferencesFactory.getDefault();
-		node = prefs.node("/com/weltevree/salvo");
+		node = prefs.node(SALVO.SECURE_PREFS_NODE);
 	}
 
 	public void clear() {
@@ -38,4 +39,5 @@ public class SalvoSecureStore implements ISecureStore {
 	public void remove(String key) {
 		node.remove(key);
 	}
-}
+
+	}

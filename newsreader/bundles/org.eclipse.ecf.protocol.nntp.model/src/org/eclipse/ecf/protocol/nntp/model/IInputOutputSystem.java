@@ -28,9 +28,10 @@ public interface IInputOutputSystem {
 	 * 
 	 * @throws NNTPIOException
 	 * @throws UnexpectedResponseException
+	 * @throws StoreException 
 	 */
 	public void updateAttributes(INewsgroup newsgroup) throws NNTPIOException,
-			UnexpectedResponseException;
+			UnexpectedResponseException, StoreException;
 
 	/**
 	 * Retrieves the body of this article.
@@ -39,9 +40,10 @@ public interface IInputOutputSystem {
 	 * @return the body, may not be null
 	 * @throws UnexpectedResponseException
 	 * @throws NNTPIOException
+	 * @throws StoreException 
 	 */
 	public String[] getArticleBody(IArticle article) throws NNTPIOException,
-			UnexpectedResponseException;
+			UnexpectedResponseException, StoreException;
 
 	/**
 	 * This method goes to the server and asks for the active newsgroup
@@ -51,9 +53,10 @@ public interface IInputOutputSystem {
 	 * @param newsgroup
 	 * @throws NNTPIOException
 	 * @throws UnexpectedResponseException
+	 * @throws StoreException 
 	 */
 	public void setWaterMarks(INewsgroup newsgroup) throws NNTPIOException,
-			UnexpectedResponseException;
+			UnexpectedResponseException, StoreException;
 
 	/**
 	 * Gets the newsgroup article array with the most new article id in element
@@ -91,9 +94,10 @@ public interface IInputOutputSystem {
 	 * @return the article or null if it was not found.
 	 * @throws NNTPConnectException
 	 * @throws NNTPIOException
+	 * @throws StoreException
 	 */
 	public IArticle getArticle(INewsgroup newsgroup, int articleId)
-			throws NNTPIOException, UnexpectedResponseException;
+			throws NNTPIOException, UnexpectedResponseException, StoreException;
 
 	/**
 	 * Gets the article by URL from the newsgroup or the store based on the

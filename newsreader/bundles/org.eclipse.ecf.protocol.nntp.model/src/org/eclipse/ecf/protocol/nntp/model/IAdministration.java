@@ -32,9 +32,10 @@ public interface IAdministration {
 	 *            may not be null
 	 * @throws NNTPIOException
 	 * @throws UnexpectedResponseException
+	 * @throws StoreException
 	 */
 	public void subscribeNewsgroup(INewsgroup group) throws NNTPIOException,
-			UnexpectedResponseException;
+			UnexpectedResponseException, StoreException;
 
 	/**
 	 * Subscribes to this server. The back end is responsible of storing the
@@ -42,8 +43,11 @@ public interface IAdministration {
 	 * 
 	 * @param server
 	 * @param passWord
+	 * @throws StoreException
+	 *             if the subscription could not be stored
 	 */
-	public void subscribeServer(IServer server, String passWord);
+	public void subscribeServer(IServer server, String passWord)
+			throws StoreException;
 
 	/**
 	 * Removes this newsgroup from the list of groups this user subscribes to in
@@ -54,8 +58,10 @@ public interface IAdministration {
 	 *            may not be null
 	 * @param permanent
 	 *            you may clear irreversible
+	 * @throws StoreException
 	 */
-	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent);
+	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent)
+			throws StoreException;
 
 	/**
 	 * Removes this server from the list of servers this user subscribes to.
@@ -65,8 +71,10 @@ public interface IAdministration {
 	 * @param permanent
 	 *            true to permanently remove the server or false to keep the
 	 *            historical data from which this server can be resurrected.
+	 * @throws StoreException
 	 */
-	public void unsubscribeServer(IServer server, boolean permanent);
+	public void unsubscribeServer(IServer server, boolean permanent)
+			throws StoreException;
 
 	/**
 	 * Retrieves the list of newsgroups this user is subscribed of the passed
@@ -74,15 +82,18 @@ public interface IAdministration {
 	 * 
 	 * @param server
 	 * @return a Collection of newsgroups, can be empty may not be null.
+	 * @throws StoreException
 	 */
-	public INewsgroup[] getSubscribedNewsgroups(IServer server);
+	public INewsgroup[] getSubscribedNewsgroups(IServer server)
+			throws StoreException;
 
 	/**
 	 * Retrieves a list with all the servers this client subscribes to. This is
 	 * store only.
 	 * 
 	 * @return
+	 * @throws NNTPException
 	 */
-	public IServer[] getSubscribedServers();
+	public IServer[] getSubscribedServers() throws NNTPException;
 
 }

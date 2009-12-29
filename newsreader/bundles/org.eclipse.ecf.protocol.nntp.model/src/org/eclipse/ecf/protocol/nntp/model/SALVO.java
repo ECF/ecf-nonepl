@@ -37,11 +37,25 @@ public class SALVO {
 
 	public static final int EVENT_RELOAD = 64;
 
+	public static final int EVENT_UNSUBSCRIBE_GROUP = 128;
+
+	public static final int EVENT_UNSUBSCRIBE_SERVER = 256;
+
+	public static final int EVENT_UNSUBSCRIBE = EVENT_UNSUBSCRIBE_GROUP
+			| EVENT_UNSUBSCRIBE_SERVER;
+
+	public static final int EVENT_SUBSCRIBE_GROUP = 512;
+
+	public static final int EVENT_SUBSCRIBE_SERVER = 1024;
+
+	public static final int EVENT_SUBSCRIBE = EVENT_SUBSCRIBE_GROUP
+			| EVENT_SUBSCRIBE_SERVER;
+
 	public static final int EVENT_CHANGE = EVENT_CHANGE_GROUP
 			| EVENT_CHANGE_SERVER;
 
 	public static final int EVENT_ALL_EVENTS = EVENT_CHANGE | EVENT_REMOVE
-			| EVENT_ADD | EVENT_RELOAD;
+			| EVENT_ADD | EVENT_RELOAD | EVENT_UNSUBSCRIBE | EVENT_SUBSCRIBE;
 
 	/**
 	 * The home of Salvo. Could be used by IStore objects to save stuff.
@@ -112,6 +126,8 @@ public class SALVO {
 	public static String SALVO_ORGANIZATION = "IndustrialTSI.com";
 
 	public static final String SEPARATOR = System.getProperty("file.separator");
+
+	public static final String SECURE_PREFS_NODE = "/org/eclipse/ecf/salvo";
 
 	/**
 	 * Sets the home variable

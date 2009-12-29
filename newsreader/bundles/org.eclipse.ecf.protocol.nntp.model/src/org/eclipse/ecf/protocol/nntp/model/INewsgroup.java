@@ -18,7 +18,7 @@ import java.util.Calendar;
  * @author jongw
  * 
  */
-public interface INewsgroup extends Serializable {
+public interface INewsgroup extends Serializable, IProperties, ISubscribable {
 
 	public final String POSTING_PERMITTED = "Y";
 
@@ -82,7 +82,8 @@ public interface INewsgroup extends Serializable {
 	 * @param lowWaterMark
 	 * @param highWaterMark
 	 */
-	public void setAttributes(int articleCount, int lowWaterMark, int highWaterMark);
+	public void setAttributes(int articleCount, int lowWaterMark,
+			int highWaterMark);
 
 	public Calendar getLastChangeDate();
 
@@ -123,6 +124,7 @@ public interface INewsgroup extends Serializable {
 	 * 
 	 * @return the string that makes this newsgroup unique
 	 */
-	String getUniqueNewsgroupName();
+	String getURL();
+
 
 }

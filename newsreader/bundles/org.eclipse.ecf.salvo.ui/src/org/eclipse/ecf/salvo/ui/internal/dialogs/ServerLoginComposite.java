@@ -1,31 +1,12 @@
-/*******************************************************************************
- * Copyright (c) 2009 Weltevree Beheer BV, Nederland (34187613)                   
- *                                                                      
- * All rights reserved. This program and the accompanying materials     
- * are made available under the terms of the Eclipse Public License v1.0
- * which accompanies this distribution, and is available at             
- * http://www.eclipse.org/legal/epl-v10.html                            
- *                                                                      
- * Contributors:                                                        
- *    Wim Jongman - initial API and implementation
- *******************************************************************************/
-package org.eclipse.ecf.salvo.ui.internal.wizards;
+package org.eclipse.ecf.salvo.ui.internal.dialogs;
 
 import org.eclipse.ecf.protocol.nntp.core.Debug;
-import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
-import org.eclipse.ecf.protocol.nntp.model.AbstractCredentials;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
-import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
-import org.eclipse.ecf.protocol.nntp.model.NNTPException;
-import org.eclipse.ecf.protocol.nntp.model.SALVO;
-import org.eclipse.ecf.salvo.ui.wizards.NewNewsServerWizard;
 import org.eclipse.equinox.security.storage.ISecurePreferences;
 import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
 import org.eclipse.equinox.security.storage.StorageException;
-import org.eclipse.jface.wizard.WizardPage;
+import org.eclipse.jface.resource.ImageDescriptor;
 import org.eclipse.swt.SWT;
-import org.eclipse.swt.custom.BusyIndicator;
-import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
 import org.eclipse.swt.events.SelectionAdapter;
@@ -35,43 +16,41 @@ import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
+import org.eclipse.ui.forms.widgets.FormToolkit;
 
-public class NewNewsServerWizardPage extends WizardPage {
+public class ServerLoginComposite extends Composite   {
 
-	private Text pass;
-
-	private Text user;
-
-	private Text login;
-
-	private Text email;
-
+	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private Text address;
-
 	private Text port;
-
-	// private boolean isPageComplete = false;
+	private Text user;
+	private Text email;
 	private Button requiresLogOnButton;
-
-	private Button validateButton;
-
-	private boolean serverValidated;
-
 	private Label logInLabel;
-
+	private Text login;
 	private Label passwordLabel;
+	private Text pass;
+	private Button validateButton;
+	private final IServer server;
 
-	public NewNewsServerWizardPage(String pageName) {
-		super(pageName);
-		setTitle("New Server");
-		setDescription("Enter the news server information and press Validate.");
-	}
+	/**
+	 * Create the composite.
+	 * 
+	 * @param parent
+	 * @param style
+	 */
+	public ServerLoginComposite(Composite parent, int style, IServer server) {
 
-	public void createControl(Composite parent) {
+		super(parent, style);
+		this.server = server;
 
-		ModifyListener editor = new NewNewsServerWizardPageEditor(this);
+		toolkit.adapt(this);
+		toolkit.paintBordersFor(this);
+
+//		ModifyListener editor = new NewNewsServerWizardPageEditor(this);
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -112,8 +91,6 @@ public class NewNewsServerWizardPage extends WizardPage {
 		email = new Text(composite, SWT.SINGLE | SWT.LEAD | SWT.BORDER);
 		email.setLayoutData(new GridData(SWT.FILL, SWT.CENTER, true, false));
 		email.setText("your email");
-
-		setControl(composite);
 
 		requiresLogOnButton = new Button(composite, SWT.CHECK);
 		requiresLogOnButton.setSelection(false);
@@ -162,8 +139,6 @@ public class NewNewsServerWizardPage extends WizardPage {
 			@Override
 			public void mouseUp(final MouseEvent e) {
 
-				validateServer();
-
 			}
 		});
 		validateButton.setLayoutData(new GridData());
@@ -173,24 +148,17 @@ public class NewNewsServerWizardPage extends WizardPage {
 
 		fillDialog();
 
-		address.addModifyListener(editor);
-		port.addModifyListener(editor);
-		user.addModifyListener(editor);
-		email.addModifyListener(editor);
-		login.addModifyListener(editor);
-		pass.addModifyListener(editor);
-	}
-
-	protected void setLoginEnabled(boolean selection) {
-		logInLabel.setEnabled(selection);
-		login.setEnabled(selection);
-		passwordLabel.setEnabled(selection);
-		pass.setEnabled(selection);
+//		address.addModifyListener(editor);
+//		port.addModifyListener(editor);
+//		user.addModifyListener(editor);
+//		email.addModifyListener(editor);
+//		login.addModifyListener(editor);
+//		pass.addModifyListener(editor);
 
 	}
 
 	private void fillDialog() {
-		IServer server = ((NewNewsServerWizard) getWizard()).getServer();
+
 		if (server == null) {
 			return;
 		}
@@ -203,7 +171,7 @@ public class NewNewsServerWizardPage extends WizardPage {
 		if (!server.isAnonymous()) {
 			login.setText(server.getServerConnection().getLogin());
 			ISecurePreferences prefs = SecurePreferencesFactory.getDefault();
-			ISecurePreferences node = prefs.node(SALVO.SECURE_PREFS_NODE);
+			ISecurePreferences node = prefs.node("/com/weltevree/salvo");
 			try {
 				pass.setText(node.get(address.getText(), ""));
 			} catch (StorageException e) {
@@ -214,96 +182,22 @@ public class NewNewsServerWizardPage extends WizardPage {
 		}
 	}
 
-	protected void validateServer() {
-		// If everything is ok then try to connect to the server if this
-		// is required.
-
-		BusyIndicator.showWhile(null, new Runnable() {
-
-			public void run() {
-				setErrorMessage(null);
-
-				AbstractCredentials credentials = new AbstractCredentials(
-						getUser(), getEmail(), getLogin(), getPass());
-
-				try {
-					IServer server = ServerFactory.getCreateServer(
-							getAddress(), getPort(), credentials, isSecure());
-					IServerConnection connection = server.getServerConnection();
-					connection.disconnect();
-					connection.connect();
-					connection.setModeReader(server);
-					connection.getOverviewHeaders(server);
-				} catch (NNTPException e) {
-					setErrorMessage(e.getMessage());
-					Debug.log(getClass(), e);
-				}
-
-				setServerValidated(true);
-
-				return;
-
-			}
-		});
-	}
-
-	public String getEmail() {
-		return email.getText();
-	}
-
-	public void setServerValidated(boolean b) {
-		serverValidated = b;
-		getWizard().getContainer().updateButtons();
-	}
-
-	@Override
-	public boolean isPageComplete() {
-		return serverValidated;
-	}
-
-	public String getAddress() {
-		return address.getText();
-	}
-
-	public int getPort() {
-		return Integer.valueOf(port.getText());
-	}
-
-	public String getUser() {
-		return user.getText();
-	}
-
-	public String getLogin() {
-		if (requiresLogOnButton.getSelection()) {
-			return login.getText();
-		}
-		return null;
-	}
-
-	public boolean isLogonRequired() {
-		return requiresLogOnButton.getSelection();
-	}
-
-	public boolean isValidateRequired() {
-		return validateButton.getSelection();
-	}
-
-	public String getPass() {
-		if (requiresLogOnButton.getSelection()) {
-			return pass.getText();
-		}
-		return null;
-	}
-
-	public IServer getServer() throws NNTPException {
-		AbstractCredentials credentials = new AbstractCredentials(getUser(),
-				getEmail(), getLogin(), getPass());
-		return ServerFactory.getCreateServer(getAddress(), getPort(),
-				credentials, isSecure());
-	}
-
-	public boolean isSecure() {
+	public void createControl(Composite parent) {
 		// TODO Auto-generated method stub
-		return false;
+
 	}
+
+	public void setTitle(String title) {
+		// TODO Auto-generated method stub
+
+	}
+
+	protected void setLoginEnabled(boolean selection) {
+		logInLabel.setEnabled(selection);
+		login.setEnabled(selection);
+		passwordLabel.setEnabled(selection);
+		pass.setEnabled(selection);
+
+	}
+
 }
