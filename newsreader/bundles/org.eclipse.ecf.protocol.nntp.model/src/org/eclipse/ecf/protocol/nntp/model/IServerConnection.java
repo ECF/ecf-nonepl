@@ -12,7 +12,6 @@
 package org.eclipse.ecf.protocol.nntp.model;
 
 import java.net.Socket;
-import java.util.Collection;
 
 public interface IServerConnection extends IBasicNNTPInterface,
 		IInputOutputSystem {
