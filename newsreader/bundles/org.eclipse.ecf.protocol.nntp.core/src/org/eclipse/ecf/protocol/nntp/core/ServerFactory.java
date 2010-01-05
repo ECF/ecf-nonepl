@@ -43,7 +43,7 @@ public class ServerFactory {
 
 		if (server != null) {
 			server.getServerConnection().setCredentials(credentials);
-			server.setDirty(true);
+			server.setDirty(false);
 			return server;
 		}
 

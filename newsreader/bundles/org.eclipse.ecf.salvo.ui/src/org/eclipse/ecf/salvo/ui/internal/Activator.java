@@ -20,7 +20,7 @@ import org.eclipse.ecf.protocol.nntp.core.UpdateRunner;
 import org.eclipse.ecf.protocol.nntp.model.ISecureStore;
 import org.eclipse.ecf.protocol.nntp.model.IStore;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
-import org.eclipse.ecf.protocol.nntp.store.filesystem.StoreFactory;
+import org.eclipse.ecf.protocol.nntp.store.derby.StoreFactory;
 import org.eclipse.jface.resource.ImageRegistry;
 import org.eclipse.ui.plugin.AbstractUIPlugin;
 import org.osgi.framework.BundleContext;
@@ -50,15 +50,16 @@ public class Activator extends AbstractUIPlugin {
 			file.mkdir();
 		ISecureStore prefs = new SalvoSecureStore();
 		{
-			IStore store = StoreFactory.createStore("foxy");
+			IStore store = StoreFactory.createStore(SALVO.SALVO_HOME
+					+ SALVO.SEPARATOR + "DerbyStore");
 			store.setSecureStore(prefs);
 			StoreStore.instance().addStore(store);
 		}
-		{
-			IStore store = StoreFactory.createStore("");
-			store.setSecureStore(prefs);
-			StoreStore.instance().addStore(store);
-		}
+//		{
+//			IStore store = StoreFactory.createStore("");
+//			store.setSecureStore(prefs);
+//			StoreStore.instance().addStore(store);
+//		}
 
 		super.start(context);
 		plugin = this;
@@ -79,12 +80,13 @@ public class Activator extends AbstractUIPlugin {
 
 	@Override
 	protected void initializeImageRegistry(ImageRegistry reg) {
-		Enumeration<?> findEntries = getBundle().findEntries("icons", "*.gif", true);
+		Enumeration<?> findEntries = getBundle().findEntries("icons", "*.gif",
+				true);
 		while (findEntries.hasMoreElements()) {
 			File file;
 			file = new File(((URL) findEntries.nextElement()).getFile());
-			reg.put(file.getName(), imageDescriptorFromPlugin(this.getBundle().getSymbolicName(), "icons/"
-					+ file.getName()));
+			reg.put(file.getName(), imageDescriptorFromPlugin(this.getBundle()
+					.getSymbolicName(), "icons/" + file.getName()));
 		}
 	}
 
@@ -96,7 +98,5 @@ public class Activator extends AbstractUIPlugin {
 
 		updateRunner.stop();
 	}
-
-
 
 }

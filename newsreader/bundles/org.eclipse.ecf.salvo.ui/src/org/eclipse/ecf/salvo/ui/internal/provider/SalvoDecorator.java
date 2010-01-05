@@ -24,8 +24,8 @@ import org.eclipse.jface.viewers.ILightweightLabelDecorator;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 
-
-public class SalvoDecorator implements ILightweightLabelDecorator, IStoreEventListener {
+public class SalvoDecorator implements ILightweightLabelDecorator,
+		IStoreEventListener {
 
 	public void decorate(Object element, IDecoration decoration) {
 
@@ -51,14 +51,12 @@ public class SalvoDecorator implements ILightweightLabelDecorator, IStoreEventLi
 
 		if (resource.getObject() instanceof IArticle)
 			Debug.log(getClass(), "ja hoor een article");
-
-	//	ServerStoreFactory.instance().getServerStoreFacade().getStore().addListener(this,
-	//			SALVO.EVENT_ALL_EVENTS);
-
 	}
 
 	private void decorate(INewsgroup newsgroup, IDecoration decoration) {
-		Debug.log(this.getClass(), "Decorating newsgroup: " + newsgroup.getNewsgroupName()+ " - " + newsgroup.getArticleCount());
+		Debug.log(this.getClass(), "Decorating newsgroup: "
+				+ newsgroup.getNewsgroupName() + " - "
+				+ newsgroup.getArticleCount());
 		decoration.addSuffix(" (" + newsgroup.getArticleCount() + ")");
 	}
 
@@ -85,8 +83,10 @@ public class SalvoDecorator implements ILightweightLabelDecorator, IStoreEventLi
 	public void storeEvent(IStoreEvent event) {
 		Display.getDefault().asyncExec(new Runnable() {
 			public void run() {
-				Debug.log(this.getClass(), "Caught store event, firing a decorator event");
-				PlatformUI.getWorkbench().getDecoratorManager().update("org.eclipse.ecf.salvo.ui.decorator1");
+				Debug.log(this.getClass(),
+						"Caught store event, firing a decorator event");
+				PlatformUI.getWorkbench().getDecoratorManager().update(
+						"org.eclipse.ecf.salvo.ui.decorator1");
 			}
 		});
 

@@ -39,10 +39,11 @@ public final class UpdateRunner implements Runnable {
 		}
 
 		while (isThreadRunning()) {
+			IServer[] subscribedServers = new IServer[0];
 			IStore[] stores = facade.getStores();
 			for (int i = 0; i < stores.length; i++) {
 				IStore store = stores[i];
-				IServer[] subscribedServers = getSubscribedServers(store);
+				subscribedServers = getSubscribedServers(store);
 				for (int j = 0; j < subscribedServers.length; j++) {
 					IServer server = subscribedServers[j];
 					INewsgroup[] subscribedNewsgroups;
@@ -67,8 +68,10 @@ public final class UpdateRunner implements Runnable {
 				Debug.log(getClass(),
 						"Salvo Thread: Update finished sleeping 600 seconds");
 				for (int i = 0; i < 600; i++)
-					if (isThreadRunning() && serversClean(facade.getStores()))
+					if (isThreadRunning() && serversClean(subscribedServers))
 						Thread.sleep(1000);
+					else
+						break;
 			} catch (InterruptedException e) {
 				setThreadRunning(false);
 				break;
@@ -84,16 +87,12 @@ public final class UpdateRunner implements Runnable {
 		}
 	}
 
-	private boolean serversClean(IStore[] stores) {
-		for (int i = 0; i < stores.length; i++) {
-			IStore store = stores[i];
+	private boolean serversClean(IServer[] subscribedServers) {
 
-			IServer[] subscribedServers = getSubscribedServers(store);
-			for (int j = 0; j < subscribedServers.length; j++) {
-				IServer server = subscribedServers[j];
-				if (server.isDirty())
-					return false;
-			}
+		for (int j = 0; j < subscribedServers.length; j++) {
+			IServer server = subscribedServers[j];
+			if (server.isDirty())
+				return false;
 		}
 		return true;
 	}

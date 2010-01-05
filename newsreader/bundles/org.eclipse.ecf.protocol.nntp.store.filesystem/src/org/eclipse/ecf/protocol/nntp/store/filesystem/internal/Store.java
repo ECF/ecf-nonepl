@@ -48,6 +48,7 @@ import org.eclipse.ecf.protocol.nntp.model.NNTPException;
 import org.eclipse.ecf.protocol.nntp.model.NNTPIOException;
 import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.StoreEvent;
+import org.eclipse.ecf.protocol.nntp.model.StoreException;
 import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
 
 /**
@@ -90,7 +91,7 @@ public class Store implements IStore {
 
 	private ArrayList getServersFromDisk() {
 
-		File file = new File(SALVO.SALVO_HOME + SEP + "servers.txt");
+		File file = new File(getStoreHome() + "servers.txt");
 		if (!file.exists()) {
 			try {
 				file.createNewFile();
@@ -140,7 +141,7 @@ public class Store implements IStore {
 
 	private void loadSubscribedGroups(IServer server) {
 
-		File file = new File(SALVO.SALVO_HOME + SEP + server.getAddress() + SEP
+		File file = new File(getStoreHome() + server.getAddress() + SEP
 				+ "groups.txt");
 		if (!file.exists()) {
 			try {
@@ -191,8 +192,9 @@ public class Store implements IStore {
 	 * directory. If the server directory does not exist it is created.
 	 * 
 	 * @param server
+	 * @throws StoreException
 	 */
-	private void writeSubscribedGroups(IServer server) {
+	private void writeSubscribedGroups(IServer server) throws StoreException {
 
 		// Create the server in this database and create a reference to the
 		// newsgroups in groups.txt
@@ -202,7 +204,7 @@ public class Store implements IStore {
 				file.createNewFile();
 			} catch (IOException e) {
 				Debug.log(getClass(), e);
-				lastException = e;
+				throw new StoreException(e.getMessage(), e);
 			}
 		}
 
@@ -225,7 +227,7 @@ public class Store implements IStore {
 
 	private void writeSubscribedServers() {
 
-		File file = new File(SALVO.SALVO_HOME + SEP + "servers.txt");
+		File file = new File(getStoreHome() + "servers.txt");
 		if (file.exists())
 			file.delete();
 
@@ -368,12 +370,21 @@ public class Store implements IStore {
 	 */
 	private String getServerHome(IServer server) {
 
-		File file = new File(SALVO.SALVO_HOME + SEP + root
-				+ server.getAddress());
+		File file = new File(getStoreHome() + server.getAddress());
 		if (!file.exists())
 			file.mkdirs();
 		return file.getAbsolutePath();
 
+	}
+
+	/**
+	 * Returns the home directory of this store.
+	 * 
+	 * @param server
+	 * @return
+	 */
+	private String getStoreHome() {
+		return (SALVO.SALVO_HOME + SEP + root);
 	}
 
 	/**
@@ -407,7 +418,8 @@ public class Store implements IStore {
 
 	}
 
-	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent) {
+	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent)
+			throws StoreException {
 
 		group.setSubscribed(false);
 		unsubscribeNewsgroup(group);
@@ -438,7 +450,8 @@ public class Store implements IStore {
 		}
 	}
 
-	public void unsubscribeServer(IServer server, boolean permanent) {
+	public void unsubscribeServer(IServer server, boolean permanent)
+			throws StoreException {
 		// Disconnect first
 		server.setSubscribed(false);
 		try {
@@ -476,7 +489,7 @@ public class Store implements IStore {
 
 	}
 
-	public void subscribeNewsgroup(INewsgroup group) {
+	public void subscribeNewsgroup(INewsgroup group) throws StoreException {
 
 		group.setSubscribed(true);
 
@@ -1135,18 +1148,17 @@ public class Store implements IStore {
 		String server;
 
 		try {
-			String[] split = StringUtils.split(URL, "/");
-			server = split[3];
-			split = StringUtils.split(split[split.length - 1], "?");
-			articleNumber = Integer.parseInt(split[1]);
-			newsgroup = split[0];
+			newsgroup = StringUtils.split(
+					StringUtils.split(URL, "&article")[0], "=")[1];
+			server = StringUtils.split(URL, "/?group")[0];
+			articleNumber = Integer.parseInt(StringUtils.split(URL, "=")[2]);
 		} catch (Exception e) {
 			throw new NNTPException("Error parsing URL " + URL, e);
 		}
 
 		IServer[] servers = getSubscribedServers();
 		for (int i = 0; i < servers.length; i++) {
-			if (servers[i].getAddress().equals(server)) {
+			if (servers[i].getURL().equals(server)) {
 				INewsgroup[] groups = getSubscribedNewsgroups(servers[i]);
 				for (int j = 0; j < groups.length; j++) {
 					if (groups[j].getNewsgroupName().equals(newsgroup))

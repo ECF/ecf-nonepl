@@ -247,7 +247,7 @@ public class ArticlePanelContentProvider implements ILazyTreeContentProvider {
 							articles = storeFacade.getArticles(newsgroup, newsgroup
 									.getLowWaterMark(), lastArticle - 1);
 						} catch (NNTPException e) {
-							// FIXME do some notification
+						Debug.log(getClass(), e);
 						}
 					}
 				};
