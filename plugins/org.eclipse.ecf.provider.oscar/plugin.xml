@@ -1,12 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?eclipse version="3.4"?>
 <plugin>
-   <extension
-         point="org.eclipse.ecf.identity.namespace">
-      <namespace
+    <extension
+            point="org.eclipse.ecf.identity.namespace">
+        <namespace
             class="org.eclipse.ecf.provider.oscar.identity.OSCARNamespace"
             description="OSCAR ICQ/AIM Namespace"
-            name="ecf.oscar">
-      </namespace>
-   </extension>
+            name="ecf.oscar.icqlib">
+        </namespace>
+    </extension>
+    <extension
+             point="org.eclipse.ecf.containerFactory">
+        <containerFactory
+            class="org.eclipse.ecf.internal.provider.oscar.OSCARContainerInstantiator"
+            description="OSCAR (ICQ)"
+            name="ecf.oscar.icqlib">
+        </containerFactory>
+    </extension>
+    <extension
+             point="org.eclipse.core.runtime.adapters">
+        <factory
+            adaptableType="org.eclipse.ecf.provider.oscar.OSCARContainer"
+            class="org.eclipse.ecf.provider.datashare.DatashareContainerAdapterFactory">
+            <adapter type="org.eclipse.ecf.datashare.IChannelContainerAdapter"/>
+        </factory>
+    </extension>
+    <extension
+            point="org.eclipse.core.runtime.adapters">
+        <factory
+            adaptableType="org.eclipse.ecf.provider.oscar.OSCARContainer"
+            class="org.eclipse.ecf.internal.provider.oscar.OSCARRemoteServiceAdapterFactory">
+            <adapter type="org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter"/>
+        </factory>
+    </extension>
 </plugin>
