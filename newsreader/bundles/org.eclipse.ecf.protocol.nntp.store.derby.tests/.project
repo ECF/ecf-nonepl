@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <projectDescription>
-	<name>org.eclipse.ecf.protocol.nntp.store.derby.tests</name>
+	<name>org.eclipse.ecf.tests.protocol.nntp.store.derby.tests</name>
 	<comment></comment>
 	<projects>
 	</projects>
