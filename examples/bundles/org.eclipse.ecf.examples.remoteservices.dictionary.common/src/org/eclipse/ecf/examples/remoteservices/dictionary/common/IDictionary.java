@@ -9,10 +9,9 @@
 ******************************************************************************/
 package org.eclipse.ecf.examples.remoteservices.dictionary.common;
 
-import java.rmi.RemoteException;
 
 public interface IDictionary {
 
-	public WordDefinition define(String word) throws RemoteException;
+	public WordDefinition define(String word);
 	
 }
