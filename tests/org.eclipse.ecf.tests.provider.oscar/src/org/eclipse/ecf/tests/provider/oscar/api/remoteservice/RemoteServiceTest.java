@@ -12,7 +12,7 @@
 
 package org.eclipse.ecf.tests.provider.oscar.api.remoteservice;
 
-import java.util.Dictionary;
+import java.util.*;
 import org.eclipse.ecf.core.identity.*;
 import org.eclipse.ecf.remoteservice.*;
 import org.eclipse.ecf.tests.provider.oscar.OSCAR;
@@ -39,16 +39,6 @@ public class RemoteServiceTest extends AbstractRemoteServiceTest {
 		}
 	}
 
-	protected IRemoteServiceRegistration registerService(IRemoteServiceContainerAdapter adapter,
-			String serviceInterface, Object service, Dictionary serviceProperties, int sleepTime) {
-		//final Dictionary props = new Hashtable();
-		//props.put(Constants.SERVICE_REGISTRATION_TARGETS, getClient(1).getConnectedID());
-		final IRemoteServiceRegistration result = adapter.registerRemoteService(new String[] {serviceInterface},
-			service, serviceProperties);
-		sleep(sleepTime);
-		return result;
-	}
-
 	protected IRemoteServiceReference[] getRemoteServiceReferences(IRemoteServiceContainerAdapter adapter,
 			String clazz, String filter) {
 		try {
@@ -68,7 +58,10 @@ public class RemoteServiceTest extends AbstractRemoteServiceTest {
 		super.setUp();
 		setClientCount(2);
 		clients = createClients();
-		connectClients();
+		for (int i = 0; i < clientCount; i++) {
+			connectClient(i);
+			sleep(3000);
+		}
 		setupRemoteServiceAdapters();
 		addRemoteServiceListeners();
 	}
@@ -81,5 +74,22 @@ public class RemoteServiceTest extends AbstractRemoteServiceTest {
 	protected void tearDown() throws Exception {
 		cleanUpClients();
 		super.tearDown();
+	}
+
+	/**
+	 * Customize properties - add recepient (<code>getClient(1)</code>). We can send messages
+	 * via OSCAR only for specific recepient.
+	 */
+	protected Dictionary customizeProperties(Dictionary props) {
+		Dictionary result = new Hashtable();
+		if (props != null) {
+			for (Enumeration en = props.keys(); en.hasMoreElements();) {
+				Object key = en.nextElement();
+				result.put(key, props.get(key));
+			}
+		}
+
+		result.put(Constants.SERVICE_REGISTRATION_TARGETS, getClient(1).getConnectedID());
+		return result;
 	}
 }
