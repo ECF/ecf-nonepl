@@ -9,7 +9,8 @@
 package org.eclipse.ecf.internal.provider.oscar.icqlib;
 
 import java.io.IOException;
-import java.util.*;
+import java.util.HashMap;
+import java.util.Map;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.*;
@@ -22,11 +23,12 @@ import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.oscar.identity.OSCARID;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
+import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.*;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
-public class OSCARConnection implements ISynchAsynchConnection, Observer, LoginLogoutListener {
+public class OSCARConnection implements ISynchAsynchConnection, OurStatusListener {
 
 	private static final String ICQ_DEFAULT_HOST = "login.icq.com"; //$NON-NLS-1$
 
@@ -100,10 +102,9 @@ public class OSCARConnection implements ISynchAsynchConnection, Observer, LoginL
 			connection = new OscarConnection(host, port, uin, (String) data);
 			connection.getPacketAnalyser().setDebug(DEBUG);
 			connection.getPacketAnalyser().setDump(DUMP);
+			connection.addOurStatusListener(this);
 
-			connection.addObserver(this);
-			connection.addLoginLogoutListener(this);
-
+			connection.connect();
 			// Wait while connecting
 			synchronized (getSyncObject()) {
 				getSyncObject().wait();
@@ -127,16 +128,11 @@ public class OSCARConnection implements ISynchAsynchConnection, Observer, LoginL
 		if (isStarted())
 			stop();
 
-		try {
-			if (connection != null) {
-				connection.deleteObserver(this);
-				connection.removeLoginLogoutListener(this);
-				connection.close();
-				isConnected = false;
-				connection = null;
-			}
-		} catch (IOException e) {
-			OSCARPlugin.log(Messages.OSCAR_CONNECTION_EXCEPTION_DISCONNECT_FAILED, e);
+		if (connection != null) {
+			connection.removeOurStatusListener(this);
+			connection.close();
+			isConnected = false;
+			connection = null;
 		}
 	}
 
@@ -201,18 +197,6 @@ public class OSCARConnection implements ISynchAsynchConnection, Observer, LoginL
 		// XXX
 	}
 
-	public void update(Observable obs, Object obj) {
-		// Connecting - continue main thread
-		synchronized (getSyncObject()) {
-			isConnectError = false;
-			getSyncObject().notifyAll();
-		}
-
-		// TODO for testing
-		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
-		//ContactList.sendContatListRequest(connection);
-	}
-
 	public void setConnectionFor(IOSCARConnectable connectable) {
 		connectable.setConnection(connection);
 	}
@@ -221,8 +205,12 @@ public class OSCARConnection implements ISynchAsynchConnection, Observer, LoginL
 		connection.addMessagingListener(listener);
 	}
 
-	public void addStatusListener(StatusListener listener) {
-		connection.addStatusListener(listener);
+	public void addUserStatusListener(UserStatusListener listener) {
+		connection.addUserStatusListener(listener);
+	}
+
+	public void addOurStatusListener(OurStatusListener listener) {
+		connection.addOurStatusListener(listener);
 	}
 
 	public void addXStatusListener(XStatusListener listener) {
@@ -241,6 +229,18 @@ public class OSCARConnection implements ISynchAsynchConnection, Observer, LoginL
 		connection.addContactListListener(listener);
 	}
 
+	public void onLogin() {
+		// Connecting - continue main thread
+		synchronized (getSyncObject()) {
+			isConnectError = false;
+			getSyncObject().notifyAll();
+		}
+
+		// TODO for testing
+		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
+		//ContactList.sendContatListRequest(connection);
+	}
+
 	public void onAuthorizationFailed(LoginErrorEvent e) {
 		// Connecting abort - continue main thread
 		synchronized (getSyncObject()) {
@@ -249,8 +249,12 @@ public class OSCARConnection implements ISynchAsynchConnection, Observer, LoginL
 		}
 	}
 
-	public void onLogout() {
+	public void onLogout(Exception e) {
 		disconnect();
+	}
+
+	public void onStatusResponse(StatusEvent e) {
+		// XXX
 	}
 
 	private SyncObject getSyncObject() {
