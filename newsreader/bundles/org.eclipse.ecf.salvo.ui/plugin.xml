@@ -158,6 +158,10 @@
                </iterate>
             </visibleWhen>
          </command>
+         <command
+               commandId="org.eclipse.ecf.salvo.ui.dirty"
+               style="push">
+         </command>
       </menuContribution>
       <menuContribution
             locationURI="toolbar:org.eclipse.ecf.salvo.ui.navigator.internal.views.newsserverview">
@@ -313,6 +317,11 @@
             description="Mark this Article"
             id="org.eclipse.ecf.salvo.mark"
             name="mark">
+      </command>
+      <command
+            defaultHandler="org.eclipse.ecf.salvo.ui.DirtyHandler"
+            id="org.eclipse.ecf.salvo.ui.dirty"
+            name="Dirty">
       </command>
    </extension>
    <extension
