@@ -17,7 +17,7 @@ public class QuoteServiceImpl implements QuoteService {
 			"Who's General Failure & why is he reading my disk?",
 			"RAM disk is not an installation procedure.", "All computers wait at the same speed.",
 			"Smash forehead on keyboard to continue.....", "Enter any 11-digit prime number to continue...",
-			"ASCII stupid question, get a stupid ANSI!", "All wiyht. Rho sritched mg kegtops awound?",
+			"ASCII question, get an ANSI!", "All wiyht. Rho sritched mg kegtops awound?",
 			"Error: Keyboard not attached. Press F1 to continue.",
 			"\"640K ought to be enough for anybody.\" - Bill Gates, 1981",
 			"Press any key to continue or any other key to quit...", "Press CTRL-ALT-DEL to continue ..." };

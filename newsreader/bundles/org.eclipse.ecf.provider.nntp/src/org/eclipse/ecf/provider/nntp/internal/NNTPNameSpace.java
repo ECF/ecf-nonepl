@@ -18,8 +18,8 @@ public class NNTPNameSpace extends Namespace {
 		try {
 			final String init = getInitFromExternalForm(parameters);
 			if (init != null)
-				return new NNTPUserID(this, init);
-			return new NNTPUserID(this, (String) parameters[0]);
+				return new NNTPHostID(this, init);
+			return new NNTPHostID(this, parameters[0].toString());
 		} catch (final Exception e) {
 			throw new IDCreateException("Cannot create NNTP ID");
 		}
