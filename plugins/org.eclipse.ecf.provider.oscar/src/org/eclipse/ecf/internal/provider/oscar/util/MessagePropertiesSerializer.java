@@ -27,7 +27,7 @@ public class MessagePropertiesSerializer {
 	public static final String EMPTY = ""; //$NON-NLS-1$
 
 	public static String serialize(String message, Map properties) {
-		StringBuilder result = new StringBuilder(message == null ? EMPTY : message);
+		StringBuffer result = new StringBuffer(message == null ? EMPTY : message);
 		if (properties != null) {
 			for (Iterator iter = properties.entrySet().iterator(); iter.hasNext();) {
 				Entry entry = (Entry) iter.next();

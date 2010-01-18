@@ -22,7 +22,7 @@ import org.eclipse.ecf.presence.im.*;
 import org.eclipse.ecf.presence.search.message.IMessageSearchManager;
 import org.eclipse.ecf.provider.oscar.identity.OSCARID;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.tool.OscarInterface;
+import ru.caffeineim.protocols.icq.integration.OscarInterface;
 
 public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 
@@ -53,7 +53,7 @@ public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 
 			try {
 				OscarInterface.sendBasicMessage(OSCARChatManager.this.connection, getUIN(toID),
-						MessagePropertiesSerializer.serialize(body, properties));
+					MessagePropertiesSerializer.serialize(body, properties));
 			} catch (final Exception e) {
 				throw new ECFException(Messages.OSCAR_CHAT_EXCEPTION_SEND_FAILED, e);
 			}
