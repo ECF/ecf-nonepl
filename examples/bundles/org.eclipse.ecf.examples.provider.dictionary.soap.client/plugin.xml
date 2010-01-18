@@ -5,7 +5,7 @@
          point="org.eclipse.ecf.containerFactory">
       <containerFactory
             class="org.eclipse.ecf.examples.internal.provider.dictionary.soap.client.DictionarySoapClientContainerInstantiator"
-            name="ecf.dictionary.soap.client">
+            name="ecf.examples.dictionary.soap.client">
       </containerFactory>
    </extension>
 

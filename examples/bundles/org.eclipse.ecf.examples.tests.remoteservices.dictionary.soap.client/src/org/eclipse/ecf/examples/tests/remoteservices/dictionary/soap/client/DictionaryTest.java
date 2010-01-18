@@ -20,7 +20,7 @@ import org.eclipse.ecf.tests.ECFAbstractTestCase;
 
 public class DictionaryTest extends ECFAbstractTestCase {
 
-	private static final String DICTIONARY_PROVIDER = "ecf.dictionary.soap.client";
+	private static final String DICTIONARY_PROVIDER = "ecf.examples.dictionary.soap.client";
 
 	IContainer container;
 	IRemoteServiceContainerAdapter containerAdapter;
