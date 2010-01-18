@@ -50,10 +50,10 @@ public class DictionaryTest extends ECFAbstractTestCase {
  		WordDefinition def = dictionary.define("abstruse");
  		
  		assertNotNull(def);
- 		printWordDefinitions(def);
+ 		printWordDefinition(def);
  	}
 
-	private void printWordDefinitions(WordDefinition def) {
+	private void printWordDefinition(WordDefinition def) {
 		System.out.println("word='"+def.getWord()+"'");
 		String[] defs = def.getDefinitions();
 		for(int i=0; i < defs.length; i++) {
