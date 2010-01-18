@@ -26,7 +26,7 @@ public class DictionarySoapClientContainerInstantiator extends
 
 	protected static final String[] intents = {"passByValue", "exactlyOnce", "ordered",}; //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
-	private static final String CONFIG_TYPE = "ecf.rest.client"; //$NON-NLS-1$
+	private static final String CONFIG_TYPE = "ecf.dictionary.soap.client"; //$NON-NLS-1$
 
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] parameters) throws ContainerCreateException {
