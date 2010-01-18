@@ -22,21 +22,17 @@ import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.oscar.identity.OSCARID;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
 import ru.caffeineim.protocols.icq.integration.listeners.*;
 import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
-import ru.caffeineim.protocols.icq.tool.OscarInterface;
 
 public class OSCARConnection implements ISynchAsynchConnection, OurStatusListener {
 
 	private static final String ICQ_DEFAULT_HOST = "login.icq.com"; //$NON-NLS-1$
 
 	private static final int ICQ_DEFAULT_PORT = 5190;
-
-	public static final boolean DEBUG = Boolean.getBoolean("icqlib.debug"); //$NON-NLS-1$
-
-	public static final boolean DUMP = Boolean.getBoolean("icqlib.dump"); //$NON-NLS-1$
 
 	public static final String OBJECT_PROPERTY_NAME = OSCARConnection.class.getName() + ".object"; //$NON-NLS-1$
 
@@ -100,8 +96,6 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 
 		try {
 			connection = new OscarConnection(host, port, uin, (String) data);
-			connection.getPacketAnalyser().setDebug(DEBUG);
-			connection.getPacketAnalyser().setDump(DUMP);
 			connection.addOurStatusListener(this);
 
 			connection.connect();
