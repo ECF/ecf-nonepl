@@ -20,14 +20,12 @@ import org.eclipse.ecf.tests.ECFAbstractTestCase;
 
 public class DictionaryTest extends ECFAbstractTestCase {
 
-	private static final String DICTIONARY_PROVIDER = "ecf.examples.dictionary.soap.client";
-
 	IContainer container;
 	IRemoteServiceContainerAdapter containerAdapter;
 	
  	protected void setUp() throws Exception {
 		super.setUp();
- 		container = getContainerFactory().createContainer(DICTIONARY_PROVIDER);
+ 		container = getContainerFactory().createContainer("ecf.examples.dictionary.soap.client");
  		containerAdapter = (IRemoteServiceContainerAdapter) container.getAdapter(IRemoteServiceContainerAdapter.class);
 	}
  	
