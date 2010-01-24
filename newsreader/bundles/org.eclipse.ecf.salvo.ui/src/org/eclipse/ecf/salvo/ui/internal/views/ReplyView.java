@@ -57,7 +57,7 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 	@Override
 	public void createPartControl(Composite parent) {
 
-		bodyText = new Text(parent, SWT.BORDER | SWT.MULTI | SWT.WRAP);
+		bodyText = new Text(parent, SWT.BORDER | SWT.WRAP | SWT.V_SCROLL | SWT.MULTI);
 
 		ISalvoResource resource = (ISalvoResource) SelectionUtil
 				.getFirstObjectFromCurrentSelection(ISalvoResource.class);
@@ -174,6 +174,8 @@ public class ReplyView extends ViewPart implements ISaveablePart {
 			Debug.log(getClass(), e);
 			MessageDialog.openError(getViewSite().getShell(), "Problem posting message",
 					"The message could not be posted.\r\n" + "Due to " + e.getMessage());
+			monitor.setCanceled(true);
+			return;
 		}
 		monitor.done();
 		dirty = false;

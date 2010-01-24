@@ -18,6 +18,7 @@ import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
 
+import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.model.StoreException;
 
 public class Database {
@@ -94,7 +95,7 @@ public class Database {
 			String articleHeader = "CREATE TABLE ArticleHeader  "
 					+ "( "
 					+ "articleid INTEGER constraint article_fk references article on delete cascade on update restrict, "
-					+ " attribute varchar(256)," + " value VARCHAR(256),"
+					+ " attribute varchar(256)," + " value VARCHAR(1024),"
 					+ "primary key (articleid, attribute))";
 
 			String articleBody = "CREATE TABLE ArticleBody  "
@@ -215,7 +216,8 @@ public class Database {
 			}
 
 			if (throwMe)
-				throw new StoreException(eMe.getMessage(), eMe);
+				Debug.log(getClass(), eMe);
+//				throw new StoreException(eMe.getMessage(), eMe);
 		}
 	}
 
