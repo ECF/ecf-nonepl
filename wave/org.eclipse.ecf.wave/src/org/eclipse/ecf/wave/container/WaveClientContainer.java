@@ -21,7 +21,6 @@ import org.eclipse.osgi.util.NLS;
 import org.waveprotocol.wave.examples.fedone.common.HashedVersion;
 import org.waveprotocol.wave.examples.fedone.rpc.ClientRpcChannel;
 import org.waveprotocol.wave.examples.fedone.util.URLEncoderDecoderBasedPercentEncoderDecoder;
-import org.waveprotocol.wave.examples.fedone.waveclient.common.ClientBackend;
 import org.waveprotocol.wave.examples.fedone.waveclient.common.ClientWaveView;
 import org.waveprotocol.wave.examples.fedone.waveclient.common.RandomIdGenerator;
 import org.waveprotocol.wave.examples.fedone.waveclient.common.WaveletOperationListener;
@@ -53,8 +52,8 @@ public class WaveClientContainer extends AbstractContainer {
 	private Map<WaveId, RpcController> waveControllers = Maps.newHashMap();
 
 	/** Listeners waiting on wave updates. */
-	private List<WaveletOperationListener> waveletOperationListeners = Lists
-			.newArrayList();
+	//private List<WaveletOperationListener> waveletOperationListeners = Lists
+	//		.newArrayList();
 
 	/** Id generator used for this (server, user) pair. */
 	private IdGenerator idGenerator;
@@ -68,47 +67,47 @@ public class WaveClientContainer extends AbstractContainer {
 	/** RPC channel for communicating with server. */
 	private ClientRpcChannel rpcChannel;
 
-	private WaveletOperationListener waveletOperationListener = new WaveletOperationListener() {
-
-		public void noOp(String author, WaveletData wavelet) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void onDeltaSequenceEnd(WaveletData wavelet) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void onDeltaSequenceStart(WaveletData wavelet) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void participantAdded(String author, WaveletData wavelet,
-				ParticipantId participantId) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void participantRemoved(String author, WaveletData wavelet,
-				ParticipantId participantId) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void waveletDocumentUpdated(String author, WaveletData wavelet,
-				WaveletDocumentOperation docOp) {
-			// TODO Auto-generated method stub
-
-		}
-
-		public void onCommitNotice(WaveletData wavelet, HashedVersion version) {
-			// TODO Auto-generated method stub
-
-		}
-
-	};
+//	private WaveletOperationListener waveletOperationListener = new WaveletOperationListener() {
+//
+//		public void noOp(String author, WaveletData wavelet) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//		public void onDeltaSequenceEnd(WaveletData wavelet) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//		public void onDeltaSequenceStart(WaveletData wavelet) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//		public void participantAdded(String author, WaveletData wavelet,
+//				ParticipantId participantId) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//		public void participantRemoved(String author, WaveletData wavelet,
+//				ParticipantId participantId) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//		public void waveletDocumentUpdated(String author, WaveletData wavelet,
+//				WaveletDocumentOperation docOp) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//		public void onCommitNotice(WaveletData wavelet, HashedVersion version) {
+//			// TODO Auto-generated method stub
+//
+//		}
+//
+//	};
 
 	public void connect(ID targetID, IConnectContext connectContext)
 			throws ContainerConnectException {
