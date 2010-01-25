@@ -16,7 +16,7 @@
             class="org.eclipse.ecf.provider.nntp.NNTPServerContainerFactory"
             description="NNTP Server Factory"
             hidden="false"
-            name="org.eclipse.ecf.provider.nntp.servercontainerfactory"
+            name="ecf.provider.nntp"
             server="true">
       </containerFactory>
    </extension>

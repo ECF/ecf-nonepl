@@ -29,13 +29,14 @@ public class NNTPNameSpace extends Namespace {
 		if (args == null || args.length < 1 || args[0] == null)
 			return null;
 		if (args[0] instanceof String) {
-			final String arg = (String) args[0];
-			if (arg.startsWith(getScheme() + Namespace.SCHEME_SEPARATOR)) {
-				final int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
-				if (index >= arg.length())
-					return null;
-				return arg.substring(index + 1);
-			}
+			return (String) args[0];
+//			final String arg = (String) args[0];
+//			if (arg.startsWith(getScheme() + Namespace.SCHEME_SEPARATOR)) {
+//				final int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
+//				if (index >= arg.length())
+//					return null;
+//				return arg.substring(index + 3);
+//			}
 		}
 		return null;
 	}

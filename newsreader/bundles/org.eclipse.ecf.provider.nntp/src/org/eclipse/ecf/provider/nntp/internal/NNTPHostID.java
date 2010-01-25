@@ -19,7 +19,7 @@ public class NNTPHostID extends BaseID {
 			throws URISyntaxException {
 
 		super(namespace);
-		this.URI = URI;
+		this.URI = URI; 
 
 		// valid URI is nntp://host.net:123[/]
 		if (!URI.startsWith("nntp://"))

@@ -16,7 +16,7 @@
          point="org.eclipse.ecf.ui.connectWizards">
       <wizard
             class="org.eclipse.ecf.provider.ui.wizards.NewNewsServerConnectWizard"
-            containerFactoryName="org.eclipse.ecf.provider.nntp.servercontainerfactory"
+            containerFactoryName="ecf.provider.nntp"
             icon="icons/icon_news.gif"
             id="org.eclipse.ecf.provider.ui.wizards.newNewsServerConnectWizard"
             name="News">

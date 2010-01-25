@@ -11,6 +11,7 @@ import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
+import org.eclipse.ecf.provider.nntp.NNTPServerContainer;
 import org.eclipse.ecf.salvo.ui.wizards.NewNewsServerWizard;
 import org.eclipse.ecf.ui.IConnectWizard;
 import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
@@ -57,7 +58,8 @@ public class NewNewsServerConnectWizard extends NewNewsServerWizard implements
 		super.performFinish();
 
 		try {
-			connectID = page1.getServer().toString();
+			connectID = page1.getServer().getURL();
+			((NNTPServerContainer) container).setServer(page1.getServer());
 		} catch (NNTPException e1) {
 			new IDCreateErrorDialog(null, connectID, new IDCreateException(e1))
 					.open();
@@ -65,7 +67,7 @@ public class NewNewsServerConnectWizard extends NewNewsServerWizard implements
 		}
 		connectContext = ConnectContextFactory
 				.createPasswordConnectContext(page1.getPass());
-
+		final String pass = page1.getPass();
 		try {
 			targetID = IDFactory.getDefault().createID(
 					container.getConnectNamespace(), connectID);
@@ -89,7 +91,7 @@ public class NewNewsServerConnectWizard extends NewNewsServerWizard implements
 		new AsynchContainerConnectAction(container, targetID, connectContext,
 				null, new Runnable() {
 					public void run() {
-						cachePassword(connectID, page1.getPass());
+						cachePassword(connectID, pass);
 					}
 				}).run();
 
