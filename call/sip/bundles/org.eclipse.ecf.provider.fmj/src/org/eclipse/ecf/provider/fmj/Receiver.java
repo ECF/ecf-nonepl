@@ -10,50 +10,30 @@
 ************************************************************************************/
 package org.eclipse.ecf.provider.fmj;
 
-import java.awt.BorderLayout;
-import java.awt.Component;
-import java.awt.Dimension;
-import java.awt.Frame;
-import java.awt.Panel;
+import java.awt.*;
 import java.util.Vector;
-
-import javax.media.ControllerErrorEvent;
-import javax.media.ControllerEvent;
-import javax.media.ControllerListener;
-import javax.media.Player;
-import javax.media.RealizeCompleteEvent;
+import javax.media.*;
 import javax.media.control.BufferControl;
 import javax.media.protocol.DataSource;
-import javax.media.rtp.Participant;
-import javax.media.rtp.RTPControl;
-import javax.media.rtp.RTPManager;
-import javax.media.rtp.ReceiveStream;
-import javax.media.rtp.event.ByeEvent;
-import javax.media.rtp.event.NewReceiveStreamEvent;
-import javax.media.rtp.event.ReceiveStreamEvent;
-import javax.media.rtp.event.RemotePayloadChangeEvent;
-import javax.media.rtp.event.StreamMappedEvent;
+import javax.media.rtp.*;
+import javax.media.rtp.event.*;
 
+public class Receiver implements Runnable, ControllerListener {
+	RTPManager manager;
+	Object dataSync = new Object();
+	boolean dataReceived = false;
+	Vector playerWindows = new Vector();
+	PlayerWindow pw;
 
-
-public class Receiver implements Runnable, ControllerListener{
-RTPManager manager;
-Object dataSync = new Object();
-boolean dataReceived = false;
-Vector playerWindows = new Vector();
-PlayerWindow pw;
-	
-	
 	/* (non-Javadoc)
 	 * @see java.lang.Runnable#run()
 	 */
-	@Override
 	public void run() {
-		
+
 		BufferControl bc = (BufferControl) manager.getControl("javax.media.control.BufferControl");
 		if (bc != null)
 			bc.setBufferLength(10);
-		
+
 		// Wait for data to arrive before moving on.
 
 		long then = System.currentTimeMillis();
@@ -61,11 +41,9 @@ PlayerWindow pw;
 
 		try {
 			synchronized (dataSync) {
-				while (!dataReceived
-						&& System.currentTimeMillis() - then < waitingPeriod) {
+				while (!dataReceived && System.currentTimeMillis() - then < waitingPeriod) {
 					if (!dataReceived)
-						System.err
-								.println("  - Waiting for RTP data to arrive...");
+						System.err.println("  - Waiting for RTP data to arrive...");
 					dataSync.wait(10000);
 				}
 			}
@@ -77,9 +55,11 @@ PlayerWindow pw;
 			close();
 		}
 	}
+
 	public boolean isDone() {
 		return playerWindows.size() == 0;
 	}
+
 	protected void close() {
 
 		for (int i = 0; i < playerWindows.size(); i++) {
@@ -92,24 +72,24 @@ PlayerWindow pw;
 		playerWindows.removeAllElements();
 
 		// close the RTP session.
-//		for (int i = 0; i < mgrs.length; i++) {
-			if (manager != null) {
-				manager.removeTargets("Closing session from AVReceive2");
-				manager.dispose();
-				manager = null;
-			}
-//		}
+		//		for (int i = 0; i < mgrs.length; i++) {
+		if (manager != null) {
+			manager.removeTargets("Closing session from AVReceive2");
+			manager.dispose();
+			manager = null;
+		}
+		//		}
 	}
-	
-	public  void update(ReceiveStreamEvent evt) {
+
+	public void update(ReceiveStreamEvent evt) {
 
 		RTPManager mgr = (RTPManager) evt.getSource();
-		Participant participant=null;
-		ReceiveStream stream=null;
-		
+		Participant participant = null;
+		ReceiveStream stream = null;
+
 		try {
-			 participant = evt.getParticipant(); // could be null.
-			 stream = evt.getReceiveStream(); // could be null.
+			participant = evt.getParticipant(); // could be null.
+			stream = evt.getReceiveStream(); // could be null.
 		} catch (Exception e) {
 			// TODO: handle exception
 		}
@@ -129,20 +109,16 @@ PlayerWindow pw;
 				DataSource ds = stream.getDataSource();
 
 				// Find out the formats.
-				RTPControl ctl = (RTPControl) ds
-						.getControl("javax.media.rtp.RTPControl");
+				RTPControl ctl = (RTPControl) ds.getControl("javax.media.rtp.RTPControl");
 				if (ctl != null) {
-					System.err.println("  - Recevied new RTP stream: "
-							+ ctl.getFormat());
+					System.err.println("  - Recevied new RTP stream: " + ctl.getFormat());
 				} else
 					System.err.println("  - Recevied new RTP stream");
 
 				if (participant == null)
-					System.err
-							.println("      The sender of this stream had yet to be identified.");
+					System.err.println("      The sender of this stream had yet to be identified.");
 				else {
-					System.err.println("      The stream comes from: "
-							+ participant.getCNAME());
+					System.err.println("      The stream comes from: " + participant.getCNAME());
 				}
 
 				// create a player by passing datasource to the Media Manager
@@ -162,8 +138,7 @@ PlayerWindow pw;
 				}
 
 			} catch (Exception e) {
-				System.err.println("NewReceiveStreamEvent exception "
-						+ e.getMessage());
+				System.err.println("NewReceiveStreamEvent exception " + e.getMessage());
 				return;
 			}
 
@@ -174,20 +149,17 @@ PlayerWindow pw;
 			if (stream != null && stream.getDataSource() != null) {
 				DataSource ds = stream.getDataSource();
 				// Find out the formats.
-				RTPControl ctl = (RTPControl) ds
-						.getControl("javax.media.rtp.RTPControl");
+				RTPControl ctl = (RTPControl) ds.getControl("javax.media.rtp.RTPControl");
 				System.err.println("  - The previously unidentified stream ");
 				if (ctl != null)
 					System.err.println("      " + ctl.getFormat());
-				System.err.println("      had now been identified as sent by: "
-						+ participant.getCNAME());
+				System.err.println("      had now been identified as sent by: " + participant.getCNAME());
 			}
 		}
 
 		else if (evt instanceof ByeEvent) {
 
-			System.err.println("  - Got \"bye\" from: "
-					+ participant.getCNAME());
+			System.err.println("  - Got \"bye\" from: " + participant.getCNAME());
 			PlayerWindow pw = find(stream);
 			if (pw != null) {
 				pw.close();
@@ -196,7 +168,7 @@ PlayerWindow pw;
 		}
 
 	}
-	
+
 	/**
 	 * ControllerListener for the Players.
 	 */
@@ -231,7 +203,6 @@ PlayerWindow pw;
 		}
 
 	}
-
 
 	PlayerWindow find(Player p) {
 		for (int i = 0; i < playerWindows.size(); i++) {
@@ -317,21 +288,19 @@ PlayerWindow pw;
 		}
 	}
 
-
 	public RTPManager getManager() {
 		return manager;
 	}
 
-
 	public void setManager(RTPManager manager) {
 		this.manager = manager;
 	}
-	
-	public void disposePlayerWindow(){
-		if(pw!=null){
+
+	public void disposePlayerWindow() {
+		if (pw != null) {
 			pw.close();
 			playerWindows.removeElement(pw);
-			pw=null;
+			pw = null;
 		}
 	}
 

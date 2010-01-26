@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.eclipse.ecf.internal.provider.call.sip.Activator
 Bundle-Vendor: %providerName
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.apache.log4j,
+Import-Package: org.apache.log4j;resolution:=optional,
  org.eclipse.ecf.provider.fmj,
  org.eclipse.equinox.app,
  org.eclipse.osgi.util;version="1.1.0",
@@ -23,4 +23,5 @@ Export-Package: org.eclipse.ecf.provider.call.sip,
  org.eclipse.ecf.provider.call.sip.container,
  org.eclipse.ecf.provider.call.sip.identity
 Bundle-ClassPath: lib/fmj.jar,
- lib/jain-sip-sdp-1.2.102.jar
+ lib/jain-sip-sdp-1.2.102.jar,
+ lib/org.apache.log4j_1.2.13.v200903072027 (1).jar
