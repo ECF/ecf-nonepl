@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: &bundleName
-Bundle-SymbolicName: org.eclipse.ecf.examples.remoteservices.dictionary.common
-Bundle-Version: 1.0.0.qualifier
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Export-Package: org.eclipse.ecf.examples.remoteservices.dictionary.common
-Bundle-Localization: bundle
-Bundle-Vendor: %bundleProvider

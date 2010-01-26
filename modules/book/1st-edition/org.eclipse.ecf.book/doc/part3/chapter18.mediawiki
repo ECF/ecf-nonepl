@@ -1,7 +1,0 @@
-=Voice over IP=
-
-Voice over IP in ECF
-
-==Summary==
-
-TODO
