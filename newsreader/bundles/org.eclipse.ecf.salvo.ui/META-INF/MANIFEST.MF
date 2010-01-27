@@ -25,8 +25,8 @@ Import-Package: org.apache.james.mime4j,
  org.eclipse.ecf.protocol.nntp.core;version="0.5.0",
  org.eclipse.ecf.protocol.nntp.model;version="0.6.0",
  org.eclipse.ecf.protocol.nntp.store.derby,
- org.eclipse.ecf.services.quotes,
- org.eclipse.equinox.security.storage;version="1.0.0"
+ org.eclipse.ecf.provider.nntp.security,
+ org.eclipse.ecf.services.quotes
 Bundle-ActivationPolicy: lazy
 Export-Package: org.eclipse.ecf.salvo.ui.internal;x-internal:=true,
  org.eclipse.ecf.salvo.ui.internal.adapters;x-internal:=true,

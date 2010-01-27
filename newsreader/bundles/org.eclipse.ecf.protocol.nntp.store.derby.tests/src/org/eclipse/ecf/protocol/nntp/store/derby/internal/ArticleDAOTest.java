@@ -15,16 +15,23 @@ package org.eclipse.ecf.protocol.nntp.store.derby.internal;
 
 import static org.junit.Assert.*;
 
+import java.util.HashMap;
+
 import org.eclipse.ecf.protocol.nntp.core.ArticleFactory;
 import org.eclipse.ecf.protocol.nntp.core.NewsgroupFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
+import org.eclipse.ecf.protocol.nntp.model.ISecureStore;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
+import org.eclipse.ecf.protocol.nntp.model.IStore;
 import org.eclipse.ecf.protocol.nntp.model.NNTPIOException;
+import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.StoreException;
 import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
+import org.eclipse.ecf.protocol.nntp.store.derby.StoreFactory;
+import org.eclipse.ecf.provider.nntp.security.SalvoSecureStore;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -66,6 +73,8 @@ public class ArticleDAOTest {
 
 	private INewsgroup newsgroup;
 
+	private IStore store;
+
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
 
@@ -77,6 +86,34 @@ public class ArticleDAOTest {
 
 	@Before
 	public void setUp() throws Exception {
+		
+		store = StoreFactory.createStore(SALVO.SALVO_HOME + SALVO.SEPARATOR
+				+ "StoreTestDerby");
+		store.setSecureStore(new ISecureStore() {
+			HashMap<String, String> mappie = new HashMap<String, String>();
+
+			@Override
+			public void remove(String key) {
+				mappie.remove(key);
+			}
+
+			@Override
+			public void put(String key, String value, boolean encrypt) {
+				mappie.put(key, value);
+			}
+
+			@Override
+			public String get(String key, String def) {
+				return mappie.get(key).equals(null) ? def : mappie.get(key);
+			}
+
+			@Override
+			public void clear() {
+				mappie.clear();
+			}
+		});
+		
+		
 		DatabaseTest.setUpBeforeClass();
 		ICredentials iCredentials = new ICredentials() {
 
@@ -103,7 +140,8 @@ public class ArticleDAOTest {
 
 		server = ServerFactory.getCreateServer("news.eclipse.org", 119,
 				iCredentials, true);
-		new ServerDAO(DatabaseTest.db.getConnection()).insertServer(server);
+		new ServerDAO(DatabaseTest.db.getConnection(),store)
+				.insertServer(server);
 
 		NewsgroupDAO DAO = new NewsgroupDAO(DatabaseTest.db.getConnection());
 		newsgroup = NewsgroupFactory.createNewsGroup(server, "eclipse.birt",
@@ -143,7 +181,8 @@ public class ArticleDAOTest {
 	}
 
 	@Test
-	public void testGetArticle() throws StoreException, NNTPIOException, UnexpectedResponseException {
+	public void testGetArticle() throws StoreException, NNTPIOException,
+			UnexpectedResponseException {
 
 		testInsertArticle();
 		IArticle[] articles = new ArticleDAO(DatabaseTest.db.getConnection())
@@ -168,7 +207,8 @@ public class ArticleDAOTest {
 	}
 
 	@Test
-	public void testGetNewstArticle() throws StoreException, NNTPIOException, UnexpectedResponseException {
+	public void testGetNewstArticle() throws StoreException, NNTPIOException,
+			UnexpectedResponseException {
 
 		testInsertArticle();
 		IArticle article = new ArticleDAO(DatabaseTest.db.getConnection())
@@ -179,7 +219,8 @@ public class ArticleDAOTest {
 	}
 
 	@Test
-	public void testGetOldestArticle() throws StoreException, NNTPIOException, UnexpectedResponseException {
+	public void testGetOldestArticle() throws StoreException, NNTPIOException,
+			UnexpectedResponseException {
 		testInsertArticle();
 
 		IArticle article = new ArticleDAO(DatabaseTest.db.getConnection())

@@ -1,11 +1,7 @@
 package org.eclipse.ecf.salvo.ui.internal.dialogs;
 
-import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
-import org.eclipse.equinox.security.storage.ISecurePreferences;
-import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
-import org.eclipse.equinox.security.storage.StorageException;
-import org.eclipse.jface.resource.ImageDescriptor;
+import org.eclipse.ecf.provider.nntp.security.SalvoUtil;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.MouseAdapter;
 import org.eclipse.swt.events.MouseEvent;
@@ -21,7 +17,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 import org.eclipse.ui.forms.widgets.FormToolkit;
 
-public class ServerLoginComposite extends Composite   {
+public class ServerLoginComposite extends Composite {
 
 	private final FormToolkit toolkit = new FormToolkit(Display.getCurrent());
 	private Text address;
@@ -50,7 +46,7 @@ public class ServerLoginComposite extends Composite   {
 		toolkit.adapt(this);
 		toolkit.paintBordersFor(this);
 
-//		ModifyListener editor = new NewNewsServerWizardPageEditor(this);
+		// ModifyListener editor = new NewNewsServerWizardPageEditor(this);
 
 		Composite composite = new Composite(parent, SWT.NONE);
 		composite.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true));
@@ -148,12 +144,12 @@ public class ServerLoginComposite extends Composite   {
 
 		fillDialog();
 
-//		address.addModifyListener(editor);
-//		port.addModifyListener(editor);
-//		user.addModifyListener(editor);
-//		email.addModifyListener(editor);
-//		login.addModifyListener(editor);
-//		pass.addModifyListener(editor);
+		// address.addModifyListener(editor);
+		// port.addModifyListener(editor);
+		// user.addModifyListener(editor);
+		// email.addModifyListener(editor);
+		// login.addModifyListener(editor);
+		// pass.addModifyListener(editor);
 
 	}
 
@@ -170,15 +166,7 @@ public class ServerLoginComposite extends Composite   {
 		setLoginEnabled(!server.isAnonymous());
 		if (!server.isAnonymous()) {
 			login.setText(server.getServerConnection().getLogin());
-			ISecurePreferences prefs = SecurePreferencesFactory.getDefault();
-			ISecurePreferences node = prefs.node("/com/weltevree/salvo");
-			try {
-				pass.setText(node.get(address.getText(), ""));
-			} catch (StorageException e) {
-				Debug.log(this.getClass(), "Storage Exception: "
-						+ e.getMessage());
-				pass.setText("");
-			}
+			pass.setText(SalvoUtil.getPassword(address.getText()));
 		}
 	}
 

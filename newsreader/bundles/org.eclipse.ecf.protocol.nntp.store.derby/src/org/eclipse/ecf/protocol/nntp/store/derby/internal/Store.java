@@ -65,7 +65,8 @@ public class Store implements IStore {
 	public Store(String root) throws StoreException {
 		if (!root.endsWith(SALVO.SEPARATOR))
 			this.root = root + SALVO.SEPARATOR;
-		boolean init = System.getProperty("org.eclipse.ecf.protocol.nntp.store.derby.init") != null;
+		boolean init = System
+				.getProperty("org.eclipse.ecf.protocol.nntp.store.derby.init") != null;
 		initDB(this.root, init);
 
 	}
@@ -83,7 +84,7 @@ public class Store implements IStore {
 
 		try {
 			database = Database.createDatabase(root, initialize);
-			serverDOA = new ServerDAO(database.getConnection());
+			serverDOA = new ServerDAO(database.getConnection(), this);
 			groupDOA = new NewsgroupDAO(database.getConnection());
 			articleDOA = new ArticleDAO(database.getConnection());
 		} catch (Exception e) {
@@ -91,14 +92,15 @@ public class Store implements IStore {
 		}
 	}
 
-	public void subscribeServer(final IServer server, final String passWord) throws StoreException {
+	public void subscribeServer(final IServer server, final String passWord)
+			throws StoreException {
 		getSecureStore().put(server.getAddress(), passWord, true);
 		server.setSubscribed(true);
 		serverDOA.insertServer(server);
 		fireEvent(new StoreEvent(server, SALVO.EVENT_ADD_SERVER));
 	}
 
-	private ISecureStore getSecureStore() {
+	public ISecureStore getSecureStore() {
 		if (secureStore == null) {
 			secureStore = new ISecureStore() {
 
@@ -113,7 +115,8 @@ public class Store implements IStore {
 				}
 
 				public String get(String key, String def) {
-					return (String) (memory.get(key) == null ? def : memory.get(key));
+					return (String) (memory.get(key) == null ? def : memory
+							.get(key));
 				}
 
 				public void clear() {
@@ -156,13 +159,17 @@ public class Store implements IStore {
 			for (Iterator iterator = keys.iterator(); iterator.hasNext();) {
 				Integer key = (Integer) iterator.next();
 				if ((event.getEventType() | key.intValue()) == key.intValue()) {
-					Debug.log(getClass(), "Listeners found for event type " + key.intValue() + " ("
-							+ event.getEventType() + "): ");
+					Debug.log(getClass(), "Listeners found for event type "
+							+ key.intValue() + " (" + event.getEventType()
+							+ "): ");
 
 					ArrayList list = (ArrayList) listeners.get(key);
-					for (Iterator iterator2 = list.iterator(); iterator2.hasNext();) {
-						IStoreEventListener listener = (IStoreEventListener) iterator2.next();
-						Debug.log(getClass(), "Calling Listener " + listener.getClass().getName());
+					for (Iterator iterator2 = list.iterator(); iterator2
+							.hasNext();) {
+						IStoreEventListener listener = (IStoreEventListener) iterator2
+								.next();
+						Debug.log(getClass(), "Calling Listener "
+								+ listener.getClass().getName());
 						listener.storeEvent(event);
 					}
 				}
@@ -188,7 +195,8 @@ public class Store implements IStore {
 		}
 	}
 
-	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent) throws StoreException {
+	public void unsubscribeNewsgroup(INewsgroup group, boolean permanent)
+			throws StoreException {
 		if (permanent) {
 			groupDOA.deleteNewsgroup(group);
 			fireEvent(new StoreEvent(group, SALVO.EVENT_REMOVE_GROUP));
@@ -199,7 +207,8 @@ public class Store implements IStore {
 		}
 	}
 
-	public void unsubscribeServer(IServer server, boolean permanent) throws StoreException {
+	public void unsubscribeServer(IServer server, boolean permanent)
+			throws StoreException {
 		if (permanent) {
 			serverDOA.deleteServer(server);
 			fireEvent(new StoreEvent(server, SALVO.EVENT_REMOVE_SERVER));
@@ -225,7 +234,8 @@ public class Store implements IStore {
 		}
 	}
 
-	public INewsgroup[] getSubscribedNewsgroups(IServer server) throws StoreException {
+	public INewsgroup[] getSubscribedNewsgroups(IServer server)
+			throws StoreException {
 		return groupDOA.getSubscribedNewsgroups(server, true);
 	}
 
@@ -239,8 +249,10 @@ public class Store implements IStore {
 		return serverDOA.getServers(true);
 	}
 
-	public IArticle[] getArticles(INewsgroup newsgroup, int from, int to) throws StoreException {
-		if (getLastArticle(newsgroup) == null || getLastArticle(newsgroup).getArticleNumber() < to)
+	public IArticle[] getArticles(INewsgroup newsgroup, int from, int to)
+			throws StoreException {
+		if (getLastArticle(newsgroup) == null
+				|| getLastArticle(newsgroup).getArticleNumber() < to)
 			return null;
 		return articleDOA.getArticles(newsgroup, from, to);
 	}
@@ -253,7 +265,8 @@ public class Store implements IStore {
 	 * @return the article or null if it does not exist
 	 * @throws StoreException
 	 */
-	public IArticle getArticle(INewsgroup newsgroup, int number) throws StoreException {
+	public IArticle getArticle(INewsgroup newsgroup, int number)
+			throws StoreException {
 
 		IArticle[] article = articleDOA.getArticles(newsgroup, number, number);
 		if (article.length == 1)
@@ -270,7 +283,8 @@ public class Store implements IStore {
 	 * @return false if not success else true
 	 * @throws StoreException
 	 */
-	private void internalStoreArticles(Collection articles) throws StoreException {
+	private void internalStoreArticles(Collection articles)
+			throws StoreException {
 
 		for (Iterator iterator = articles.iterator(); iterator.hasNext();) {
 			IArticle article = (IArticle) iterator.next();
@@ -293,7 +307,8 @@ public class Store implements IStore {
 		return articleDOA.getArticleBody(article);
 	}
 
-	public void storeArticleBody(IArticle article, String[] body) throws StoreException {
+	public void storeArticleBody(IArticle article, String[] body)
+			throws StoreException {
 		articleDOA.deleteArticleBody(article);
 		articleDOA.insertArticleBody(article, body);
 	}
@@ -318,8 +333,8 @@ public class Store implements IStore {
 		fireEvent(new StoreEvent(articles, SALVO.EVENT_CHANGE_GROUP));
 	}
 
-	public void setWaterMarks(INewsgroup newsgroup) throws NNTPIOException, NNTPConnectException,
-			StoreException {
+	public void setWaterMarks(INewsgroup newsgroup) throws NNTPIOException,
+			NNTPConnectException, StoreException {
 		groupDOA.updateNewsgroup(newsgroup);
 		fireEvent(new StoreEvent(newsgroup, SALVO.EVENT_CHANGE_GROUP));
 
@@ -330,7 +345,8 @@ public class Store implements IStore {
 	}
 
 	public IArticle getArticle(String URL) throws NNTPException {
-		String groupName = StringUtils.split(StringUtils.split(URL, "&article")[0], "=")[1];
+		String groupName = StringUtils.split(
+				StringUtils.split(URL, "&article")[0], "=")[1];
 		String serverURL = StringUtils.split(URL, "/?group")[0];
 		IServer server = serverDOA.getServer(serverURL)[0];
 		INewsgroup group = groupDOA.getNewsgroup(server, groupName)[0];

@@ -24,6 +24,7 @@ import java.util.Calendar;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
+import org.eclipse.ecf.protocol.nntp.model.IStore;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
 import org.eclipse.ecf.protocol.nntp.model.StoreException;
 
@@ -35,9 +36,11 @@ public class ServerDAO {
 	private final Connection connection;
 	private PreparedStatement deleteServer;
 	private PreparedStatement getSubscribedServer;
+	private final IStore store;
 
-	public ServerDAO(Connection connection) throws StoreException {
+	public ServerDAO(Connection connection, IStore store) throws StoreException {
 		this.connection = connection;
+		this.store = store;
 		prepareStatements();
 	}
 
@@ -112,6 +115,7 @@ public class ServerDAO {
 		final String user = r.getString(3);
 		final String login = r.getString(5);
 		final String email = r.getString(4);
+		final String address = getAddress(r);
 
 		return new ICredentials() {
 
@@ -120,7 +124,7 @@ public class ServerDAO {
 			}
 
 			public String getPassword() {
-				return "flinder1f7";
+				return store.getSecureStore().get(address, "");
 			}
 
 			public String getOrganization() {

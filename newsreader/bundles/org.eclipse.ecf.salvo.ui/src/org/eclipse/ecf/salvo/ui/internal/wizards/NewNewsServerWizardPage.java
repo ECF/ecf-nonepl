@@ -17,11 +17,8 @@ import org.eclipse.ecf.protocol.nntp.model.AbstractCredentials;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
 import org.eclipse.ecf.protocol.nntp.model.IServerConnection;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
-import org.eclipse.ecf.protocol.nntp.model.SALVO;
+import org.eclipse.ecf.provider.nntp.security.SalvoUtil;
 import org.eclipse.ecf.salvo.ui.wizards.NewNewsServerWizard;
-import org.eclipse.equinox.security.storage.ISecurePreferences;
-import org.eclipse.equinox.security.storage.SecurePreferencesFactory;
-import org.eclipse.equinox.security.storage.StorageException;
 import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.BusyIndicator;
@@ -202,15 +199,7 @@ public class NewNewsServerWizardPage extends WizardPage {
 		setLoginEnabled(!server.isAnonymous());
 		if (!server.isAnonymous()) {
 			login.setText(server.getServerConnection().getLogin());
-			ISecurePreferences prefs = SecurePreferencesFactory.getDefault();
-			ISecurePreferences node = prefs.node(SALVO.SECURE_PREFS_NODE);
-			try {
-				pass.setText(node.get(address.getText(), ""));
-			} catch (StorageException e) {
-				Debug.log(this.getClass(), "Storage Exception: "
-						+ e.getMessage());
-				pass.setText("");
-			}
+			pass.setText(SalvoUtil.getPassword(server.getAddress()));
 		}
 	}
 

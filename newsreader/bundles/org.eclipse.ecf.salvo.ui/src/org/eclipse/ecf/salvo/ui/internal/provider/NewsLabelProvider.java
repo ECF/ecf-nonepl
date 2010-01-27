@@ -11,7 +11,10 @@
  *******************************************************************************/
 package org.eclipse.ecf.salvo.ui.internal.provider;
 
+import java.util.HashSet;
+
 import org.eclipse.ecf.protocol.nntp.core.Debug;
+import org.eclipse.ecf.salvo.ui.internal.Activator;
 import org.eclipse.ecf.salvo.ui.internal.resources.ISalvoResource;
 import org.eclipse.jface.viewers.ILabelProviderListener;
 import org.eclipse.jface.viewers.StyledString;
@@ -22,11 +25,23 @@ import org.eclipse.ui.navigator.ICommonContentExtensionSite;
 import org.eclipse.ui.navigator.ICommonLabelProvider;
 import org.eclipse.ui.navigator.IDescriptionProvider;
 
+public class NewsLabelProvider implements IDescriptionProvider,
+		IStyledLabelProvider, ICommonLabelProvider {
 
-public class NewsLabelProvider implements IDescriptionProvider, IStyledLabelProvider, ICommonLabelProvider {
+	private final HashSet<Object> checkedItems;
+
+	public NewsLabelProvider(HashSet<Object> checkedItems) {
+		this.checkedItems = checkedItems;
+	}
+
+	public NewsLabelProvider() {
+		checkedItems = null;
+	}
 
 	public Image getImage(Object element) {
-		// TODO Auto-generated method stub
+		if(checkedItems != null && checkedItems.contains(element))
+			return Activator.getDefault().getImageRegistry().get(
+			"follow.gif");
 		return null;
 	}
 
@@ -34,6 +49,7 @@ public class NewsLabelProvider implements IDescriptionProvider, IStyledLabelProv
 
 		ISalvoResource res = (ISalvoResource) element;
 		Debug.log(this.getClass(), res.getName());
+
 		StyledString ss = new StyledString(res.getName(), StyledString.QUALIFIER_STYLER);
 
 		return ss;

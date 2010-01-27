@@ -93,4 +93,11 @@ public interface IStore extends IStoreEventProvider, IInputOutputSystem,
 	 */
 	public void updateArticle(IArticle article) throws StoreException;
 
+	/**
+	 * Gets the secure store which was previously set with
+	 * {@link #setSecureStore(ISecureStore)}.
+	 * 
+	 */
+	public ISecureStore getSecureStore();
+
 }

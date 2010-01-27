@@ -16,14 +16,20 @@ package org.eclipse.ecf.protocol.nntp.store.derby.internal;
 import static org.junit.Assert.assertTrue;
 
 import java.sql.SQLException;
+import java.util.HashMap;
 
 import org.eclipse.ecf.protocol.nntp.core.NewsgroupFactory;
 import org.eclipse.ecf.protocol.nntp.core.ServerFactory;
 import org.eclipse.ecf.protocol.nntp.model.ICredentials;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
+import org.eclipse.ecf.protocol.nntp.model.ISecureStore;
 import org.eclipse.ecf.protocol.nntp.model.IServer;
+import org.eclipse.ecf.protocol.nntp.model.IStore;
 import org.eclipse.ecf.protocol.nntp.model.NNTPException;
+import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.StoreException;
+import org.eclipse.ecf.protocol.nntp.store.derby.StoreFactory;
+import org.eclipse.ecf.provider.nntp.security.SalvoSecureStore;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -35,9 +41,37 @@ public class NewsgroupDAOTest {
 	private static final String[] groups = new String[] { "eclipse.newcomer",
 			"eclipse.platform.pde", "eclipse.platform.rcp",
 			"eclipse.technology.ecf", "eclipse.test" };
+	private static IStore store;
 
 	@BeforeClass
 	public static void setUpBeforeClass() throws Exception {
+
+		store = StoreFactory.createStore(SALVO.SALVO_HOME + SALVO.SEPARATOR
+				+ "StoreTestDerby");
+		store.setSecureStore(new ISecureStore() {
+			HashMap<String, String> mappie = new HashMap<String, String>();
+
+			@Override
+			public void remove(String key) {
+				mappie.remove(key);
+			}
+
+			@Override
+			public void put(String key, String value, boolean encrypt) {
+				mappie.put(key, value);
+			}
+
+			@Override
+			public String get(String key, String def) {
+				return mappie.get(key).equals(null) ? def : mappie.get(key);
+			}
+
+			@Override
+			public void clear() {
+				mappie.clear();
+			}
+		});
+
 		DatabaseTest.setUpBeforeClass();
 		ICredentials iCredentials = new ICredentials() {
 
@@ -64,7 +98,8 @@ public class NewsgroupDAOTest {
 
 		server = ServerFactory.getCreateServer("news.eclipse.org", 119,
 				iCredentials, true);
-		new ServerDAO(DatabaseTest.db.getConnection()).insertServer(server); 
+		new ServerDAO(DatabaseTest.db.getConnection(), store)
+				.insertServer(server);
 
 	}
 
@@ -134,25 +169,25 @@ public class NewsgroupDAOTest {
 
 	@Test
 	public void testUpdateNewsgroup() throws StoreException {
-		
+
 		NewsgroupDAO DAO = new NewsgroupDAO(DatabaseTest.db.getConnection());
-		INewsgroup[] fetched = DAO.getNewsgroup(server,"%");
+		INewsgroup[] fetched = DAO.getNewsgroup(server, "%");
 		for (INewsgroup grp : fetched) {
-		grp.setSubscribed(true );
-		DAO.updateNewsgroup(grp);
+			grp.setSubscribed(true);
+			DAO.updateNewsgroup(grp);
 		}
 		assertTrue(DAO.getSubscribedNewsgroups(server, true).length == groups.length);
 		assertTrue(DAO.getSubscribedNewsgroups(server, false).length == 0);
 
 		fetched = DAO.getNewsgroup(server, "%");
 		for (INewsgroup grp : fetched) {
-		grp.setSubscribed(false );
-		DAO.updateNewsgroup(grp);
+			grp.setSubscribed(false);
+			DAO.updateNewsgroup(grp);
 		}
-		assertTrue(DAO.getSubscribedNewsgroups(server, true).length+"",DAO.getSubscribedNewsgroups(server, true).length == 0);
+		assertTrue(DAO.getSubscribedNewsgroups(server, true).length + "", DAO
+				.getSubscribedNewsgroups(server, true).length == 0);
 		assertTrue(DAO.getSubscribedNewsgroups(server, false).length == groups.length);
 
-		
 	}
 
 	@Test

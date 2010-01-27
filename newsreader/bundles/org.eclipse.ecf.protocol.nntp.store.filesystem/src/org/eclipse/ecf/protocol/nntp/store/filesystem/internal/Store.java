@@ -266,7 +266,7 @@ public class Store implements IStore {
 
 	}
 
-	private ISecureStore getSecureStore() {
+	public ISecureStore getSecureStore() {
 		if (secureStore == null) {
 			secureStore = new ISecureStore() {
 
