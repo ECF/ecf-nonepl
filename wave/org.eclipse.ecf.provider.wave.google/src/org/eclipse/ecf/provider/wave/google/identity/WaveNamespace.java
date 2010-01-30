@@ -1,13 +1,12 @@
-package org.eclipse.ecf.wave.identity;
+package org.eclipse.ecf.provider.wave.google.identity;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.waveprotocol.wave.model.id.LongIdSerialiser;
 
 public class WaveNamespace extends Namespace {
 
-	public static final String NAME = "ecf.googlewave.wave.ns";
+	public static final String NAME = "ecf.namespace.googlewave.wave";
 	public static final String SCHEME = "wave";
 	
 	private static final long serialVersionUID = 2615028840514406159L;
@@ -34,14 +33,9 @@ public class WaveNamespace extends Namespace {
 
 	public ID createInstance(Object[] parameters) throws IDCreateException {
 		try {
+			@SuppressWarnings("unused")
 			String init = getInitFromExternalForm(parameters);
-			if (init != null)
-				return new WaveID(this, LongIdSerialiser.INSTANCE.deserialiseWaveId(init));
-			if (parameters.length == 1) {
-				if (parameters[0] instanceof String) {
-					return new WaveID(this, LongIdSerialiser.INSTANCE.deserialiseWaveId((String) parameters[0]));
-				}
-			}
+			
 			throw new IllegalArgumentException("Invalid WaveId creation arguments");
 		} catch (Exception e) {
 			throw new IDCreateException("WaveID creation failed", e);

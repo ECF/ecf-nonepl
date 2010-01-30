@@ -8,9 +8,8 @@
  * Contributors:
  *    Scott Lewis <slewis@composent.com> - initial API and implementation
  *****************************************************************************/
-package org.eclipse.ecf.wave.identity;
+package org.eclipse.ecf.provider.wave.google.identity;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.BaseID;
 import org.waveprotocol.wave.model.id.WaveId;
 
@@ -20,14 +19,6 @@ public class WaveID extends BaseID {
 
 	private WaveId waveId;
 	private int hashCode;
-	
-	protected WaveID(WaveNamespace ns, WaveId waveId) {
-		super(ns);
-		Assert.isNotNull(waveId);
-		this.waveId = waveId;
-		hashCode = 7;
-		hashCode = 31 * hashCode + waveId.hashCode();
-	}
 	
 	protected WaveID(WaveNamespace ns, String waveDomain, String waveId) {
 		super(ns);

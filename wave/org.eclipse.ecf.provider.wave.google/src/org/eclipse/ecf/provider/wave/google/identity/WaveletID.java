@@ -8,7 +8,7 @@
  * Contributors:
  *    Scott Lewis <slewis@composent.com> - initial API and implementation
  *****************************************************************************/
-package org.eclipse.ecf.wave.identity;
+package org.eclipse.ecf.provider.wave.google.identity;
 
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.BaseID;

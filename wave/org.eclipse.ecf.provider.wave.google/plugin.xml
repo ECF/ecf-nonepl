@@ -4,7 +4,7 @@
    <extension
          point="org.eclipse.ecf.identity.namespace">
       <namespace
-            class="org.eclipse.ecf.wave.identity.WaveNamespace"
+            class="org.eclipse.ecf.provider.wave.google.identity.WaveNamespace"
             description="Google Wave Namespace"
             name="ecf.namespace.googlewave.wave">
       </namespace>
@@ -12,7 +12,7 @@
    <extension
          point="org.eclipse.ecf.identity.namespace">
       <namespace
-            class="org.eclipse.ecf.wave.identity.WaveletNamespace"
+            class="org.eclipse.ecf.provider.wave.google.identity.WaveletNamespace"
             description="Google Wavelet Namespace"
             name="ecf.namespace.googlewave.wavelet">
       </namespace>
@@ -20,7 +20,7 @@
    <extension
          point="org.eclipse.ecf.identity.namespace">
       <namespace
-            class="org.eclipse.ecf.wave.identity.WaveletNamespace"
+            class="org.eclipse.ecf.provider.wave.google.identity.WaveletNamespace"
             description="Google WaveBackend Namespace"
             name="ecf.namespace.googlewave.wavebackend">
       </namespace>

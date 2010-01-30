@@ -1,4 +1,4 @@
-package org.eclipse.ecf.wave.container;
+package org.eclipse.ecf.provider.wave.google.container;
 
 import org.eclipse.ecf.core.AbstractContainer;
 import org.eclipse.ecf.core.ContainerConnectException;

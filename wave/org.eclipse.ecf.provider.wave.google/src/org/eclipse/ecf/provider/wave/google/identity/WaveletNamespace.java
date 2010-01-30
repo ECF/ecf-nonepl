@@ -1,4 +1,4 @@
-package org.eclipse.ecf.wave.identity;
+package org.eclipse.ecf.provider.wave.google.identity;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;

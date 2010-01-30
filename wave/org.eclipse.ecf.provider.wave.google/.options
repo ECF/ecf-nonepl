@@ -1,0 +1,21 @@
+# Debugging options for the org.eclipse.ecf.provider.wave.google plug-in
+
+# Turn on general debugging for the org.eclipse.ecf.provider.wave.google plug-in
+org.eclipse.ecf.provider.wave.google/debug=false
+org.eclipse.ecf.provider.wave.google/debug/filter = *
+org.eclipse.ecf.provider.wave.google/debug/flag = false
+
+# Trace when exceptions are caught
+org.eclipse.ecf.provider.wave.google/debug/exceptions/catching=false
+# Trace when exceptions are thrown
+org.eclipse.ecf.provider.wave.google/debug/exceptions/throwing=false
+
+# Trace when methods are entered
+org.eclipse.ecf.provider.wave.google/debug/methods/entering=false
+# Trace when methods are exited
+org.eclipse.ecf.provider.wave.google/debug/methods/exiting=false
+
+org.eclipse.ecf.provider.wave.google/trace=false
+org.eclipse.ecf.provider.wave.google/trace/filter = *
+org.eclipse.ecf.provider.wave.google/trace/flag = false
+
