@@ -9,6 +9,7 @@ Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.ecf.core;version="3.0.0",
  org.eclipse.ecf.core.events,
  org.eclipse.ecf.core.identity,
+ org.eclipse.ecf.core.provider,
  org.eclipse.ecf.core.security,
  org.eclipse.ecf.core.util,
  org.eclipse.ecf.wave,

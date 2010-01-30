@@ -25,4 +25,17 @@
             name="ecf.namespace.googlewave.wavebackend">
       </namespace>
    </extension>
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.provider.internal.wave.google.WaveClientContainerInstantiator">
+      </containerFactory>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.provider.internal.wave.google.WaveClientContainerInstantiator"
+            name="ecf.googlewave.client">
+      </containerFactory>
+   </extension>
 </plugin>
