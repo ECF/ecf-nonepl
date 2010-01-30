@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
+            class="org.eclipse.ecf.wave.identity.WaveNamespace"
+            description="Google Wave Namespace"
+            name="ecf.namespace.googlewave.wave">
+      </namespace>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
+            class="org.eclipse.ecf.wave.identity.WaveletNamespace"
+            description="Google Wavelet Namespace"
+            name="ecf.namespace.googlewave.wavelet">
+      </namespace>
+   </extension>
+   <extension
+         point="org.eclipse.ecf.identity.namespace">
+      <namespace
+            class="org.eclipse.ecf.wave.identity.WaveletNamespace"
+            description="Google WaveBackend Namespace"
+            name="ecf.namespace.googlewave.wavebackend">
+      </namespace>
+   </extension>
+</plugin>
