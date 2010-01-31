@@ -21,7 +21,7 @@ public interface IWavelet {
 	public ID[] getParticipants();
 	
 	public boolean addParticipant(ID participantID);
-	public boolean removeParticipant(ID paricipantID);
+	public boolean removeParticipant(ID participantID);
 	
 	public boolean modifyDocument(ID documentID, IBufferedDocumentOperation operation) throws DocumentOperationException;
 	
