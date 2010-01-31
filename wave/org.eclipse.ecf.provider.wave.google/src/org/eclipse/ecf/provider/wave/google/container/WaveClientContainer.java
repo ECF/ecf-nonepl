@@ -28,7 +28,10 @@ import org.eclipse.ecf.provider.internal.wave.google.Activator;
 import org.eclipse.ecf.provider.internal.wave.google.DebugOptions;
 import org.eclipse.ecf.provider.wave.google.identity.WaveBackendID;
 import org.eclipse.ecf.provider.wave.google.identity.WaveBackendNamespace;
+import org.eclipse.ecf.provider.wave.google.identity.WaveNamespace;
+import org.eclipse.ecf.provider.wave.google.identity.WaveletNamespace;
 import org.eclipse.ecf.wave.IWaveClientContainerAdapter;
+import org.eclipse.ecf.wave.IWaveClientView;
 import org.eclipse.osgi.util.NLS;
 import org.waveprotocol.wave.examples.fedone.common.CommonConstants;
 import org.waveprotocol.wave.examples.fedone.common.HashedVersion;
@@ -472,6 +475,29 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 	  public ClientIdGenerator getIdGenerator() {
 	    return idGenerator;
 	  }
+
+	public Namespace getWaveNamespace() {
+		return IDFactory.getDefault().getNamespaceByName(WaveNamespace.NAME);
+	}
+
+	public IWaveClientView getIndexWaveClientView() {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public Namespace getDocumentNamespace() {
+		// XXX todo
+		return null;
+	}
+
+	public Namespace getParticipantNamespace() {
+		// XXX todo
+		return null;
+	}
+
+	public Namespace getWaveletNamespace() {
+		return IDFactory.getDefault().getNamespaceByName(WaveletNamespace.NAME);
+	}
 
 
 }

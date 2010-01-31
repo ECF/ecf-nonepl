@@ -8,13 +8,10 @@
  ******************************************************************************/
 package org.eclipse.ecf.wave;
 
-import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.core.identity.IIdentifiable;
 
-public interface IWaveClientContainerAdapter {
+public interface IWaveClientView extends IIdentifiable {
 
-	public IWaveClientView getIndexWaveClientView();
-	public Namespace getWaveNamespace();
-	public Namespace getWaveletNamespace();
-	public Namespace getParticipantNamespace();
-	public Namespace getDocumentNamespace();
+	public IWavelet[] getWavelets();
+
 }

@@ -8,13 +8,21 @@
  ******************************************************************************/
 package org.eclipse.ecf.wave;
 
-import org.eclipse.ecf.core.identity.Namespace;
+import java.util.Map;
 
-public interface IWaveClientContainerAdapter {
+import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.sync.ModelUpdateException;
+import org.eclipse.ecf.wave.document.IBufferedDocumentOperation;
 
-	public IWaveClientView getIndexWaveClientView();
-	public Namespace getWaveNamespace();
-	public Namespace getWaveletNamespace();
-	public Namespace getParticipantNamespace();
-	public Namespace getDocumentNamespace();
+public interface IWavelet {
+
+	public Map<ID,IBufferedDocumentOperation> getDocuments();
+	
+	public ID[] getParticipants();
+	
+	public boolean addParticipant(ID participantID);
+	public boolean removeParticipant(ID paricipantID);
+	
+	public boolean modifyDocument(ID documentID, IBufferedDocumentOperation operation) throws ModelUpdateException;
+	
 }

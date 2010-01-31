@@ -6,15 +6,8 @@
  * 
  * Contributors: Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.wave;
+package org.eclipse.ecf.wave.document;
 
-import org.eclipse.ecf.core.identity.Namespace;
+public interface IBufferedDocumentOperation {
 
-public interface IWaveClientContainerAdapter {
-
-	public IWaveClientView getIndexWaveClientView();
-	public Namespace getWaveNamespace();
-	public Namespace getWaveletNamespace();
-	public Namespace getParticipantNamespace();
-	public Namespace getDocumentNamespace();
 }
