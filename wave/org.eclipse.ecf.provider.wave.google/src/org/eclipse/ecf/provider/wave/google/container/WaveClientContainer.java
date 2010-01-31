@@ -378,7 +378,7 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 						// ignore failed ops. In any case,
 						// this should never happen if our server is behaving
 						// correctly.
-						logException("OperationException when applying " + op
+						logException("DocumentOperationException when applying " + op
 								+ " to " + wavelet, e);
 					}
 				}

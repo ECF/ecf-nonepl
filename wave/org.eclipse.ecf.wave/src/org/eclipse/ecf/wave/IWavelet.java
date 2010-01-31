@@ -11,8 +11,8 @@ package org.eclipse.ecf.wave;
 import java.util.Map;
 
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.sync.ModelUpdateException;
 import org.eclipse.ecf.wave.document.IBufferedDocumentOperation;
+import org.eclipse.ecf.wave.document.DocumentOperationException;
 
 public interface IWavelet {
 
@@ -23,6 +23,6 @@ public interface IWavelet {
 	public boolean addParticipant(ID participantID);
 	public boolean removeParticipant(ID paricipantID);
 	
-	public boolean modifyDocument(ID documentID, IBufferedDocumentOperation operation) throws ModelUpdateException;
+	public boolean modifyDocument(ID documentID, IBufferedDocumentOperation operation) throws DocumentOperationException;
 	
 }
