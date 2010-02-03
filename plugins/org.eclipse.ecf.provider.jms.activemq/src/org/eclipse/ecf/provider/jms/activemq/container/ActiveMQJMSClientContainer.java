@@ -39,18 +39,18 @@ public class ActiveMQJMSClientContainer extends AbstractJMSClient {
 
 		protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
 				throws IOException {
-			return new ActiveMQConnectionFactory(getActiveMQUsername(targetID),
-					getActiveMQPassword(targetID), targetID.getName());
+			return new ActiveMQConnectionFactory(getUsername(),
+					getPassword(), targetID.getName());
 		}
 
-		private String getActiveMQPassword(JMSID targetID) {
+		private String getPassword() {
 			String pw = (String) getConfig().getProperties().get(
 					ActiveMQJMSServerContainer.PASSWORD_PROPERTY);
 			return (pw == null) ? ActiveMQJMSServerContainer.DEFAULT_PASSWORD
 					: pw;
 		}
 
-		private String getActiveMQUsername(JMSID targetID) {
+		private String getUsername() {
 			String username = (String) getConfig().getProperties().get(
 					ActiveMQJMSServerContainer.USERNAME_PROPERTY);
 			return (username == null) ? ActiveMQJMSServerContainer.DEFAULT_USERNAME

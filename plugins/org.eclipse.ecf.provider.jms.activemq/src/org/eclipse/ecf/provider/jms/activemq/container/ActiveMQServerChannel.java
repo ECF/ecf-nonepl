@@ -29,16 +29,8 @@ class ActiveMQServerChannel extends AbstractJMSServerChannel {
 
 	protected ConnectionFactory createJMSConnectionFactory(JMSID targetID)
 			throws IOException {
-		return new ActiveMQConnectionFactory(getActiveMQUsername(targetID),
-				getActiveMQPassword(targetID), targetID.getName());
-	}
-
-	private String getActiveMQPassword(JMSID targetID) {
-		return (password == null) ? "defaultPassword" : password;
-	}
-
-	private String getActiveMQUsername(JMSID targetID) {
-		return (username == null) ? "defaultUsername" : username;
+		return new ActiveMQConnectionFactory((username == null) ? "defaultUsername" : username,
+				(password == null) ? "defaultPassword" : password, targetID.getName());
 	}
 
 }
