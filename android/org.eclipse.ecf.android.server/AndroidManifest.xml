@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+	android:versionCode="1" android:versionName="1.0" android:sharedUserId="@string/ecftcp_shared_id"
+	package="org.eclipse.ecf.android.server">
+	<uses-permission android:name="android.permission.INTERNET" />
+
+	<application android:icon="@drawable/icon" android:label="@string/app_name"
+		android:debuggable="true"
+		android:allowTaskReparenting="false">
+
+
+		<service android:process=":remote" android:name="org.eclipse.ecf.android.server.SOService"
+			android:exported="false" android:enabled="true">
+			<intent-filter>
+				<!--
+					These are the interfaces supported by the service, which you can
+					bind to.
+				-->
+				<data android:port="3282" android:scheme="ecftcp" android:path="/soladhoc" android:host="localhost"/>
+				<action android:name="org.eclipse.ecf.android.server.REMOTE_SERVICE_SERVER" />
+				<!--
+					This is an action code you can use to select the service without
+					explicitly supplying the implementation class.
+				-->
+
+
+
+				<action android:name="org.eclipse.ecf.android.server.IRemoteECFService"></action>
+			</intent-filter>
+
+		</service>
+
+		<activity android:name="org.eclipse.ecf.android.server.ServerContainer">
+			<intent-filter>
+
+				<action android:name="org.eclipse.ecf.android.server.SOService"/>
+				<action android:name="org.eclipse.ecf.android.server.REMOTE_SERVICE_SERVER" />
+				<data android:port="3282" android:scheme="ecftcp" android:path="/soladhoc"
+					android:host="localhost"></data>
+
+
+
+
+			</intent-filter>
+		</activity>
+
+
+		
+	</application>
+
+	<uses-sdk android:minSdkVersion="4" />
+
+
+
+	<permission android:name="ACCESS_NETWORK_STATE"
+		android:protectionLevel="normal" android:permissionGroup="ECFTCP"
+		android:label="@string/group_name"></permission>
+	<permission-group android:name="ECFTCP"></permission-group>
+</manifest> 

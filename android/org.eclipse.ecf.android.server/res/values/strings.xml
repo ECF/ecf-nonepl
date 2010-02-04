@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="ecftcp_shared_id">777</string>
+    <string name="affinity_permission_groups">affinity</string>
+    <string name="hello">AffinityGroup</string>
+    <string name="app_name">SolADHoC</string>
+    
+	<string name="container_service_started">Service ContainerManager démarré</string>
+	<string name="remote_service_label">Remote Container</string>
+
+    <string name="local_service_started">Local service has started</string>
+    <string name="local_service_stopped">Local service has stopped</string>
+    <string name="local_service_label">Sample Local Service</string>
+    
+    <string name="ecf_client_connected">ECF client connected</string>
+    <string name="ecf_container_started">ECF container started</string>
+
+    <string name="activity_local_service_controller">App/Service/Local Service Controller</string>
+    <string name="local_service_controller">OSGi controller.</string>
+    <string name="start_service">Start OSGi Service</string>
+    <string name="stop_service">Stop OSGi Service</string>
+
+    <string name="activity_local_service_binding">App/Service/Local Service Binding</string>
+    <string name="local_service_binding">This demonstrates how you can connect with a persistent
+        service.  Notice how it automatically starts for you, and play around with the
+        interaction between this and Local Service Controller.</string>
+    <string name="bind_service">Bind Service</string>
+    <string name="unbind_service">Unbind Service</string>
+    <string name="local_service_connected">Connected to local service</string>
+    <string name="local_service_disconnected">Disconnected from local service</string>
+
+    <string name="remote_service_stopped">Remote service has stopped</string>
+
+    <string name="activity_remote_service_controller">App/Service/Remote Service Controller</string>
+    <string name="remote_service_controller">Starting OSGi service</string>
+
+    <string name="activity_remote_service_binding">App/Service/Remote Service Binding</string>
+    <string name="remote_service_binding">This demonstrates how you can connect with a persistent
+        service running in another process.  Use the kill button to see what happens when
+        the process crashes.</string>
+        
+    <string name="kill_process">Kill Process</string>
+    <string name="remote_service_connected">Connected to remote service</string>
+    <string name="remote_service_disconnected">Disconnected from remote service</string>
+    <string name="remote_call_failed">Failure calling remote service</string>
+
+    <string name="service_start_arguments_label">Sample Service Start Arguments
+    </string>
+
+    <string name="activity_service_start_arguments_controller">App/Service/Service
+        Start Arguments Controller
+    </string>
+    <string name="service_start_arguments_controller">This demonstrates how
+        service can be started with arguments, and run until all arguments are
+        processed.
+    </string>
+    <string name="start1_service">Start \"One\" no redeliver</string>
+    <string name="start2_service">Start \"Two\" no redeliver</string>
+    <string name="start3_service">Start \"Three\" w/redeliver</string>
+    <string name="startfail_service">Start failed delivery</string>
+    <string name="service_created">Service created.</string>
+    <string name="service_destroyed">Service destroyed.</string>
+    
+<string name="remote_service_running">Remote Container running</string>
+<string name="group_name">affinity</string>
+<string name="affinity_scheme">affinity://topic</string>
+<string name="affinity_group_description">Groups affine</string>
+<string name="connect_container">Connect to container</string>
+<string name="container_service">this launch ecf tcp container</string>
+</resources>
