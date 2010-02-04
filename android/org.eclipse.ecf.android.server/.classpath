@@ -2,7 +2,6 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="src" path="gen"/>
-	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
-	<classpathentry kind="lib" path="/home/pierre/Desktop/ecf_android.jar" sourcepath="/org.eclipse.ecf.android/src"/>
+	<classpathentry combineaccessrules="false" kind="src" path="/org.eclipse.ecf.android"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
