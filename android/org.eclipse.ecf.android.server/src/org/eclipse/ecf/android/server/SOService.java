@@ -133,7 +133,7 @@ public class SOService extends Service {
 		public boolean start() throws RemoteException {
 			data = intent.getData();
 			Log.i(TAG, "intent data="+data);
-			if ("com.soladhoc.affinity.ecf.REMOTE_SERVICE_SERVER".equals(intent.getAction())) {
+			if ("org.eclipse.ecf.android.server.REMOTE_SERVICE_SERVER".equals(intent.getAction())) {
 				// create ECF TCP Server
 				connector = new Connector(data.getAuthority(), data.getHost(), data
 						.getPort(), 5000);
