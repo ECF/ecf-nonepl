@@ -176,10 +176,6 @@ public class ServerContainer extends Activity {
 	     * NOT be running in our main thread like most other things -- so,
 	     * to update the UI, we need to use a Handler to hop over there.
 	     */
-	    public void valueChanged(int value) {
-	        mHandler.sendMessage(mHandler.obtainMessage(BUMP_MSG, value, 0));
-	    }
-
 		@Override
 		public void clientConnected(String client) throws RemoteException {
 			Log.i("ServerContainer", "client connected");
