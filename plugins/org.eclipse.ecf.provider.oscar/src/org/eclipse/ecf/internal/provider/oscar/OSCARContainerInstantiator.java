@@ -20,7 +20,8 @@ public class OSCARContainerInstantiator extends GenericContainerInstantiator {
 	 *
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(ContainerDescription, java.lang.Object[])
 	 */
-	public IContainer createInstance(ContainerTypeDescription description, Object[] args) throws ContainerCreateException {
+	public IContainer createInstance(ContainerTypeDescription description, Object[] args)
+			throws ContainerCreateException {
 		try {
 			String name = null;
 			String host = null;
@@ -36,18 +37,18 @@ public class OSCARContainerInstantiator extends GenericContainerInstantiator {
 				}
 			}
 
-			if (name == null) {
+			if (name == null)
 				return new OSCARContainer();
-			} else {
-				if (host == null)
-					return new OSCARContainer(name);
-				else if (port == null)
-					return new OSCARContainer(name, host);
-				else
-					return new OSCARContainer(name, host, port.intValue());
-			}
+
+			if (host == null)
+				return new OSCARContainer(name);
+
+			if (port == null)
+				return new OSCARContainer(name, host);
+
+			return new OSCARContainer(name, host, port.intValue());
 		} catch (Exception e) {
-			throw new ContainerCreateException("Exception creating OSCAR container", e);
+			throw new ContainerCreateException(Messages.OSCAR_CONTAINER_EXCEPTION_CREATE, e);
 		}
 	}
 

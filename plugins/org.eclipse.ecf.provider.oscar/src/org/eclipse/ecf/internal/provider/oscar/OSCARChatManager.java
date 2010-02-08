@@ -26,7 +26,7 @@ import ru.caffeineim.protocols.icq.integration.OscarInterface;
 
 public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 
-	private OscarConnection connection;
+	OscarConnection connection;
 
 	private final Vector messageListeners = new Vector();
 
@@ -52,8 +52,8 @@ public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 				throw new ECFException(Messages.OSCAR_CHAT_EXCEPTION_ID_IS_NOT_OSCARID);
 
 			try {
-				OscarInterface.sendBasicMessage(OSCARChatManager.this.connection, getUIN(toID),
-					MessagePropertiesSerializer.serialize(body, properties));
+				OscarInterface.sendBasicMessage(connection, getUIN(toID), MessagePropertiesSerializer.serialize(body,
+					properties));
 			} catch (final Exception e) {
 				throw new ECFException(Messages.OSCAR_CHAT_EXCEPTION_SEND_FAILED, e);
 			}
@@ -131,7 +131,7 @@ public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 		messageListeners.remove(listener);
 	}
 
-	public IChat createChat(ID targetUser, IIMMessageListener messageListener) throws ECFException {
+	public IChat createChat(ID targetUser, IIMMessageListener messageListener) {
 		// TODO Auto-generated method stub
 		return null;
 	}
