@@ -21,7 +21,9 @@ import org.eclipse.ecf.internal.provider.oscar.util.MessagePropertiesSerializer;
 import org.eclipse.ecf.provider.comm.IConnectionListener;
 import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.oscar.identity.OSCARID;
+import ru.caffeineim.protocols.icq.contacts.IContactList;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
+import ru.caffeineim.protocols.icq.exceptions.ContactListOperationException;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
@@ -167,10 +169,10 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 	}
 
 	private Map serializeData(byte[] data) {
-		Map properties = new HashMap();
-		properties.put(OBJECT_PROPERTY_NAME, data);
+		Map props = new HashMap();
+		props.put(OBJECT_PROPERTY_NAME, data);
 
-		return properties;
+		return props;
 	}
 
 	public synchronized Object sendSynch(ID receiver, byte[] data) throws IOException {
@@ -193,6 +195,30 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 
 	public void setConnectionFor(IOSCARConnectable connectable) {
 		connectable.setConnection(connection);
+	}
+
+	public void sendRosterAdd(String userId, String group) throws ECFException {
+		IContactList roster = connection.getContactList();
+		if (roster == null)
+			throw new ECFException(Messages.OSCAR_CONNECTION_EXCEPTION_ROSTER_NULL);
+
+		try {
+			roster.addContact(userId, group);
+		} catch (ContactListOperationException e) {
+			throw new ECFException(e);
+		}
+	}
+
+	public void sendRosterRemove(String userId) throws ECFException {
+		IContactList roster = connection.getContactList();
+		if (roster == null)
+			throw new ECFException(Messages.OSCAR_CONNECTION_EXCEPTION_ROSTER_NULL);
+
+		try {
+			roster.removeContact(userId);
+		} catch (ContactListOperationException e) {
+			throw new ECFException(e);
+		}
 	}
 
 	public void addMessagingListener(MessagingListener listener) {
@@ -224,15 +250,18 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 	}
 
 	public void onLogin() {
-		// Connecting - continue main thread
+		// Connected - continue main thread
 		synchronized (getSyncObject()) {
 			isConnectError = false;
 			getSyncObject().notifyAll();
 		}
 
+		// TODO may be we should add synchronization on receive contact list.
+		// now we can access to contact list before this one has received
+		OscarInterface.sendContatListRequest(connection);
+
 		// TODO for testing
 		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
-		//ContactList.sendContatListRequest(connection);
 	}
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {
@@ -255,7 +284,7 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 		return sync;
 	}
 
-	private static class SyncObject {
+	static class SyncObject {
 		// Empty object - for synchronization only
 	}
 }

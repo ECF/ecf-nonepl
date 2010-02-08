@@ -6,7 +6,7 @@
  *
  * Contributors: Pavel Samolisov - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.internal.provider.oscar.icqlib;
+package org.eclipse.ecf.internal.provider.oscar.icqlib.listener;
 
 import java.net.URISyntaxException;
 import java.util.HashMap;

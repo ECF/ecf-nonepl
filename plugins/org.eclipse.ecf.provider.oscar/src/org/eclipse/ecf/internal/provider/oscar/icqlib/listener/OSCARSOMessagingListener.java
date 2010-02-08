@@ -6,7 +6,9 @@
  *
  * Contributors: Pavel Samolisov - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.internal.provider.oscar.icqlib;
+package org.eclipse.ecf.internal.provider.oscar.icqlib.listener;
+
+import org.eclipse.ecf.internal.provider.oscar.icqlib.OSCARConnection;
 
 import java.io.IOException;
 import org.eclipse.ecf.internal.provider.oscar.Messages;

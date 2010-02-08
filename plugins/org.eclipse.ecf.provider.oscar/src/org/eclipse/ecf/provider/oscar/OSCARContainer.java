@@ -17,17 +17,20 @@ import org.eclipse.ecf.core.identity.*;
 import org.eclipse.ecf.core.security.*;
 import org.eclipse.ecf.internal.provider.oscar.*;
 import org.eclipse.ecf.internal.provider.oscar.Messages;
-import org.eclipse.ecf.internal.provider.oscar.icqlib.*;
+import org.eclipse.ecf.internal.provider.oscar.icqlib.OSCARConnection;
 import org.eclipse.ecf.internal.provider.oscar.icqlib.event.OSCARIncomingMessageEvent;
 import org.eclipse.ecf.internal.provider.oscar.icqlib.event.OSCARIncomingObjectEvent;
+import org.eclipse.ecf.internal.provider.oscar.icqlib.listener.*;
 import org.eclipse.ecf.presence.IAccountManager;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
 import org.eclipse.ecf.presence.chatroom.IChatRoomManager;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.presence.roster.Roster;
 import org.eclipse.ecf.presence.search.IUserSearchManager;
 import org.eclipse.ecf.presence.service.IPresenceService;
-import org.eclipse.ecf.provider.comm.*;
+import org.eclipse.ecf.provider.comm.AsynchEvent;
+import org.eclipse.ecf.provider.comm.ISynchAsynchConnection;
 import org.eclipse.ecf.provider.generic.*;
 import org.eclipse.osgi.util.NLS;
 
@@ -39,10 +42,16 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 
 	private OSCARChatManager chatManager = null;
 
+	private Roster roster;
+
+	private OSCARRosterManager rosterManager;
+
 	protected OSCARContainer(SOContainerConfig config) throws Exception {
 		super(config);
 
 		chatManager = new OSCARChatManager();
+		roster = new Roster(this);
+		rosterManager = new OSCARRosterManager(roster, this);
 	}
 
 	public OSCARContainer() throws Exception {
@@ -64,7 +73,7 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 		this.host = host;
 	}
 
-	protected ISynchAsynchConnection createConnection(ID targetID, Object data) throws ConnectionCreateException {
+	protected ISynchAsynchConnection createConnection(ID targetID, Object data) {
 		return new OSCARConnection(getConnectNamespace(), host, port);
 	}
 
@@ -82,14 +91,13 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 		return null;
 	}
 
-	public IRosterManager getRosterManager() {
+	public IUserSearchManager getUserSearchManager() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
-	public IUserSearchManager getUserSearchManager() {
-		// TODO Auto-generated method stub
-		return null;
+	public IRosterManager getRosterManager() {
+		return rosterManager;
 	}
 
 	/*
@@ -142,6 +150,7 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 			// add listeners to connection
 			conn.addMessagingListener(new OSCARChatMessagingListener(chatManager, getConnectNamespace()));
 			conn.addMessagingListener(new OSCARSOMessagingListener(receiver, getOSCARConnection()));
+			conn.addContactListListener(new OSCARRosterListener());
 
 			// setting connection to managers
 			conn.setConnectionFor(chatManager);
@@ -162,8 +171,8 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 			return this;
 		//if (clazz.equals(ISendFileTransferContainerAdapter.class))
 		//	return outgoingFileTransferContainerAdapter;
-		else
-			return super.getAdapter(clazz);
+
+		return super.getAdapter(clazz);
 	}
 
 	/*
@@ -200,6 +209,9 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 
 			// remove connection from managers
 			chatManager.setConnection(null);
+
+			// disconnect roster manager
+			rosterManager.disconnect();
 		}
 
 		// notify listeners
