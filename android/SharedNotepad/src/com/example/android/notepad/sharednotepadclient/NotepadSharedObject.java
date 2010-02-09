@@ -1,4 +1,4 @@
-package com.example.android.genericclient;
+package com.example.android.notepad.sharednotepadclient;
 
 import java.io.IOException;
 
@@ -6,7 +6,7 @@ import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.sharedobject.BaseSharedObject;
 import org.eclipse.ecf.core.sharedobject.SharedObjectMsg;
 
-public class NotepadSharedObject extends BaseSharedObject implements ISharedNotepadClient {
+public class NotepadSharedObject extends BaseSharedObject {
 
 	private static final String HANDLE_UPDATE_MSG = "handleUpdateMsg";
 
@@ -45,5 +45,8 @@ public class NotepadSharedObject extends BaseSharedObject implements ISharedNote
 		return getLocalContainerID();
 	}
 	
-	
+	@SuppressWarnings("unchecked")
+	public Object getAdapter(Class adapter) {
+		return null;
+	}
 }

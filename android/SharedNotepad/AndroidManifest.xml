@@ -107,7 +107,7 @@
                 <category android:name="android.intent.category.DEFAULT" />
             </intent-filter>
         </activity>
-        <service android:name="com.example.android.genericclient.SharedNotepadService" android:label="Shared Notepad Service" ></service>
+        <service android:name="com.example.android.sharedobjectservice.SharedObjectContainerService" android:label="Shared Object Container Service" ></service>
     </application>
 
 

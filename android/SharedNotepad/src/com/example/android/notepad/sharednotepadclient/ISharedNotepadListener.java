@@ -1,4 +1,4 @@
-package com.example.android.genericclient;
+package com.example.android.notepad.sharednotepadclient;
 
 import org.eclipse.ecf.core.identity.ID;
 

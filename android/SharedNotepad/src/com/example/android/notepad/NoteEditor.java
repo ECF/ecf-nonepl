@@ -16,6 +16,7 @@
 
 package com.example.android.notepad;
 
+import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
 
 import android.app.Activity;
@@ -37,10 +38,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.widget.EditText;
 
-import com.example.android.genericclient.ISharedNotepadBinder;
-import com.example.android.genericclient.ISharedNotepadClient;
-import com.example.android.genericclient.ISharedNotepadListener;
 import com.example.android.notepad.NotePad.Notes;
+import com.example.android.notepad.sharednotepadclient.ISharedNotepadClient;
+import com.example.android.notepad.sharednotepadclient.ISharedNotepadListener;
+import com.example.android.notepad.sharednotepadclient.SharedNotepadClient;
+import com.example.android.sharedobjectservice.ISharedObjectContainerService;
 
 /**
  * A generic activity for editing a note in a database.  This can be used
@@ -71,6 +73,8 @@ public class NoteEditor extends Activity {
     // The different distinct states the activity can be run in.
     private static final int STATE_EDIT = 0;
     private static final int STATE_INSERT = 1;
+
+	private static final String CONNECT_TARGET = "ecftcp://192.168.2.17:3282/server";
 
     private int mState;
     private boolean mNoteOnly = false;
@@ -186,15 +190,19 @@ public class NoteEditor extends Activity {
     	
     	Context context = getApplicationContext();
     	Intent sharedNotepadIntent = new Intent();
-    	sharedNotepadIntent.setComponent(new ComponentName(context, "com.example.android.genericclient.SharedNotepadService"));
+    	sharedNotepadIntent.setComponent(new ComponentName(context, "com.example.android.sharedobjectservice.SharedObjectContainerService"));
     	ServiceConnection serviceConnection = new ServiceConnection() {
 
 			@Override
 			public void onServiceConnected(ComponentName name, IBinder service) {
 				System.out.println("onServiceConnected name="+name+",service="+service);
+				// Create shared notepad client
+				sharedNotepadClient = new SharedNotepadClient((ISharedObjectContainerService) service,"android.slewis",mOriginalContent,sharedNotepadListener);
+				// And connect
 				try {
-					sharedNotepadClient = ((ISharedNotepadBinder) service).getSharedNotepadService().createAndConnectClient("ecftcp://192.168.2.17:3282/server", "slewis.android", mOriginalContent, sharedNotepadListener);
-				} catch (Exception e) {
+					sharedNotepadClient.connect(CONNECT_TARGET);
+				} catch (ContainerConnectException e) {
+					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
 			}
@@ -202,13 +210,14 @@ public class NoteEditor extends Activity {
 			@Override
 			public void onServiceDisconnected(ComponentName name) {
 				System.out.println("onServiceDisconnected name="+name);
+				sharedNotepadClient.close();
 				sharedNotepadClient = null;
 			}};
     	
 			// Use Android OS to bind to shared notepad service.  When the binding is complete, 
 			// the onServiceConnected method is executed
     	boolean bindResult = context.bindService(sharedNotepadIntent, serviceConnection, BIND_AUTO_CREATE);
-    	if (!bindResult) System.err.println("binding to SharedNotepadService failed");
+    	if (!bindResult) System.err.println("binding to SharedObjectContainerService failed");
     	
     }
     

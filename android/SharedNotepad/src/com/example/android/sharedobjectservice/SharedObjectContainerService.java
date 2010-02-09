@@ -18,7 +18,12 @@ public class SharedObjectContainerService extends Service {
 
 		public ISharedObjectContainer createClientContainer()
 				throws ContainerCreateException {
-			return createClientContainer();
+			return createClientContainer(IDFactory.getDefault().createGUID().getName());
+		}
+
+		public ISharedObjectContainer createClientContainer(String clientId)
+				throws ContainerCreateException {
+			return new TCPClientSOContainer(new SOContainerConfig(IDFactory.getDefault().createStringID(clientId)));
 		}
 
 	}
@@ -33,8 +38,4 @@ public class SharedObjectContainerService extends Service {
 		return null;
 	}
 
-	ISharedObjectContainer createClientContainer() {
-		String guid = IDFactory.getDefault().createGUID().getName();
-		return new TCPClientSOContainer(new SOContainerConfig(IDFactory.getDefault().createStringID(guid)));
-	}
 }
