@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" enabled="true" immediate="true" name="Star Wars Quotes Service">
-   <implementation class="org.eclipse.ecf.services.quotes.starwars.QuoteServiceImpl"/>
-   <service>
-      <provide interface="org.eclipse.ecf.services.quotes.QuoteService"/>
-   </service>
-</scr:component>
