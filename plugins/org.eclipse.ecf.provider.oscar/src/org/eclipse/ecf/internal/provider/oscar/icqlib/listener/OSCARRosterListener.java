@@ -8,10 +8,17 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.oscar.icqlib.listener;
 
+import org.eclipse.ecf.provider.oscar.OSCARRosterManager;
 import ru.caffeineim.protocols.icq.integration.events.*;
 import ru.caffeineim.protocols.icq.integration.listeners.ContactListListener;
 
 public class OSCARRosterListener implements ContactListListener {
+
+	private OSCARRosterManager manager;
+
+	public OSCARRosterListener(OSCARRosterManager manager) {
+		this.manager = manager;
+	}
 
 	public void onSsiAuthReply(SsiAuthReplyEvent e) {
 		// XXX
@@ -30,6 +37,7 @@ public class OSCARRosterListener implements ContactListListener {
 	}
 
 	public void onUpdateContactList(ContactListEvent e) {
-		// XXX
+		// make roster and fill it
+		manager.makeRoster(e.getRoot());
 	}
 }
