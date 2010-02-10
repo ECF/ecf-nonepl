@@ -9,4 +9,13 @@
 </message_arguments>
 </filter>
 </resource>
+<resource path="src/org/eclipse/ecf/provider/oscar/OSCARRosterManager.java" type="org.eclipse.ecf.provider.oscar.OSCARRosterManager">
+<filter id="643846161">
+<message_arguments>
+<message_argument value="Group"/>
+<message_argument value="OSCARRosterManager"/>
+<message_argument value="makeRoster(Group)"/>
+</message_arguments>
+</filter>
+</resource>
 </component>

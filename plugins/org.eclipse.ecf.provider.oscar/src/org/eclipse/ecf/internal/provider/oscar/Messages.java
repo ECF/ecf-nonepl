@@ -37,6 +37,8 @@ public class Messages extends NLS {
 	public static String OSCAR_ROSTER_EXCEPTION_SEND_ADD;
 	public static String OSCAR_ROSTER_EXCEPTION_SEND_REMOVE;
 	public static String OSCAR_ROSTER_EXCEPTION_GROUP_NULL;
+	public static String OSCAR_ROSTER_EXCEPTION_ROOT_GROUP_NULL;
+	public static String OSCAR_ROSTER_EXCEPTION_ID_CREATE;
 
 	static {
 		// initialize resource bundle

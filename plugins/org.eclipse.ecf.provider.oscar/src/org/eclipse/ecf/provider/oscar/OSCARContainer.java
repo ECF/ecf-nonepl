@@ -150,7 +150,7 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 			// add listeners to connection
 			conn.addMessagingListener(new OSCARChatMessagingListener(chatManager, getConnectNamespace()));
 			conn.addMessagingListener(new OSCARSOMessagingListener(receiver, getOSCARConnection()));
-			conn.addContactListListener(new OSCARRosterListener());
+			conn.addContactListListener(new OSCARRosterListener(rosterManager));
 
 			// setting connection to managers
 			conn.setConnectionFor(chatManager);
