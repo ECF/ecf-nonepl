@@ -76,7 +76,8 @@ public class NoteEditor extends Activity {
     private static final int STATE_EDIT = 0;
     private static final int STATE_INSERT = 1;
 
-	private static final String CONNECT_TARGET = "ecftcp://192.168.1.102:3282/server";
+    // The Android simulator client work on the special localhost address: 10.0.2.2
+	private static final String CONNECT_TARGET = "ecftcp://10.0.2.2:3282/server";
 
     private int mState;
     private boolean mNoteOnly = false;
