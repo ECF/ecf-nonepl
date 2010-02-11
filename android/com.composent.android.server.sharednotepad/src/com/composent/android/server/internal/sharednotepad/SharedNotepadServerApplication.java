@@ -11,23 +11,22 @@ public class SharedNotepadServerApplication implements IApplication {
 
 	private final ID notepadSharedObjectID = IDFactory.getDefault().createStringID("com.composent.android.sharednotepad.sharedobject");
 	
+	private String serverContainerId = "ecftcp://localhost:3282/server";
 	private ISharedObjectContainer container;
 	private final Object appLock = new Object();
 	private boolean done = false;
 
 	public Object start(IApplicationContext context) throws Exception {
 		IContainerManager containerManager = Activator.getDefault().getContainerManager();
-		container = (ISharedObjectContainer) containerManager.getContainerFactory().createContainer("ecf.generic.server", getContainerId());
+		container = (ISharedObjectContainer) containerManager.getContainerFactory().createContainer("ecf.generic.server", serverContainerId);
 		// add shared object with name that is constant
 		container.getSharedObjectManager().addSharedObject(notepadSharedObjectID, new ServerNotepadSharedObject(), null);
+		
+		System.out.println("SharedNotepad server id="+serverContainerId+" listening for client connections ");
 		// wait until stopped
 		waitForDone();
 
 		return IApplication.EXIT_OK;
-	}
-
-	private String getContainerId() {
-		return "ecftcp://localhost:3282/server";
 	}
 
 	public void stop() {
