@@ -21,6 +21,15 @@ public class NotepadSharedObject extends BaseSharedObject {
 		this.listener = listener;
 	}
 
+	protected boolean handleSharedObjectMsg(SharedObjectMsg msg) {
+		try {
+			msg.invoke(this);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+		return false;
+	}
+
 	public String getUsername() {
 		return username;
 	}
@@ -37,10 +46,6 @@ public class NotepadSharedObject extends BaseSharedObject {
 		return super.getConnectedID();
 	}
 	
-	public void sendUpdate(String content) throws IOException {
-		sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(HANDLE_UPDATE_MSG, new Object[] { getLocalContainerID(), username, content }));
-	}
-
 	public ID getClientID() {
 		return getLocalContainerID();
 	}
@@ -49,4 +54,17 @@ public class NotepadSharedObject extends BaseSharedObject {
 	public Object getAdapter(Class adapter) {
 		return null;
 	}
+
+	// Message sender
+	public void sendUpdate(String content) throws IOException {
+		sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(HANDLE_UPDATE_MSG, new Object[] { getLocalContainerID(), username, content }));
+	}
+
+	// Message receiver
+	protected void handleUpdateMsg(ID senderID, String username, String content) {
+		if (listener != null) {
+			listener.receiveUpdate(senderID, username, content);
+		}
+	}
+
 }

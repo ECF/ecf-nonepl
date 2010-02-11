@@ -13,6 +13,7 @@ import com.example.android.sharedobjectservice.ISharedObjectContainerService;
 
 public class SharedNotepadClient implements ISharedNotepadClient {
 
+	private final ID notepadSharedObjectID = IDFactory.getDefault().createStringID("com.composent.android.sharednotepad.sharedobject");
 	private ISharedObjectContainer clientContainer;
 	private NotepadSharedObject notepadSharedObject;
 	
@@ -25,7 +26,7 @@ public class SharedNotepadClient implements ISharedNotepadClient {
     	//  Then create/add NotepadSharedObject
     	notepadSharedObject = new NotepadSharedObject(username, originalContent, listener);
     	try {
-			clientContainer.getSharedObjectManager().addSharedObject(IDFactory.getDefault().createStringID("com.composent.genericclient.notepad.sharedobject"),notepadSharedObject,null);
+			clientContainer.getSharedObjectManager().addSharedObject(notepadSharedObjectID,notepadSharedObject,null);
 		} catch (SharedObjectAddException e) {
 			e.printStackTrace();
 		}
