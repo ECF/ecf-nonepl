@@ -16,6 +16,8 @@
 
 package com.example.android.notepad;
 
+import java.io.IOException;
+
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
 
@@ -74,7 +76,7 @@ public class NoteEditor extends Activity {
     private static final int STATE_EDIT = 0;
     private static final int STATE_INSERT = 1;
 
-	private static final String CONNECT_TARGET = "ecftcp://192.168.2.17:3282/server";
+	private static final String CONNECT_TARGET = "ecftcp://192.168.1.102:3282/server";
 
     private int mState;
     private boolean mNoteOnly = false;
@@ -205,6 +207,13 @@ public class NoteEditor extends Activity {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
+				// XXX test by sending an update
+				try {
+					sharedNotepadClient.sendUpdate("original note content: "+mOriginalContent);
+				} catch (IOException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
 			}
 
 			@Override
@@ -222,7 +231,9 @@ public class NoteEditor extends Activity {
     }
     
     protected void onStop() {
-    	super.onStart();
+    	super.onStop();
+		sharedNotepadClient.close();
+		sharedNotepadClient = null;
     }
     
     @Override
