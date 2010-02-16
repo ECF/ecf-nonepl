@@ -24,6 +24,7 @@ import org.eclipse.ecf.provider.oscar.identity.OSCARID;
 import ru.caffeineim.protocols.icq.contacts.IContactList;
 import ru.caffeineim.protocols.icq.core.OscarConnection;
 import ru.caffeineim.protocols.icq.exceptions.ContactListOperationException;
+import ru.caffeineim.protocols.icq.exceptions.ConvertStringException;
 import ru.caffeineim.protocols.icq.integration.OscarInterface;
 import ru.caffeineim.protocols.icq.integration.events.LoginErrorEvent;
 import ru.caffeineim.protocols.icq.integration.events.StatusEvent;
@@ -193,8 +194,12 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 		// XXX
 	}
 
-	public void setConnectionFor(IOSCARConnectable connectable) {
-		connectable.setConnection(connection);
+	public void sendBasicChatMessage(String toUserId, String message) throws ECFException {
+		try {
+			OscarInterface.sendBasicMessage(connection, toUserId, message);
+		} catch (ConvertStringException e) {
+			throw new ECFException(e);
+		}
 	}
 
 	public void sendRosterAdd(String userId, String group) throws ECFException {
@@ -219,6 +224,10 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 		} catch (ContactListOperationException e) {
 			throw new ECFException(e);
 		}
+	}
+
+	public void sendPresenceStatus(StatusModeEnum status) {
+		OscarInterface.changeStatus(connection, status);
 	}
 
 	public void addMessagingListener(MessagingListener listener) {
@@ -259,9 +268,6 @@ public class OSCARConnection implements ISynchAsynchConnection, OurStatusListene
 		// TODO may be we should add synchronization on receive contact list.
 		// now we can access to contact list before this one has received
 		OscarInterface.sendContatListRequest(connection);
-
-		// TODO for testing
-		OscarInterface.changeStatus(connection, new StatusModeEnum(StatusModeEnum.ONLINE));
 	}
 
 	public void onAuthorizationFailed(LoginErrorEvent e) {

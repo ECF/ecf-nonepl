@@ -22,14 +22,26 @@ import org.eclipse.ecf.presence.roster.*;
 import org.eclipse.ecf.provider.oscar.identity.OSCARID;
 import ru.caffeineim.protocols.icq.contacts.Contact;
 import ru.caffeineim.protocols.icq.contacts.Group;
+import ru.caffeineim.protocols.icq.setting.enumerations.StatusModeEnum;
 
 public class OSCARRosterManager extends AbstractRosterManager {
+
+	private static final Map presences = new HashMap();
 
 	public static final String EMPTY = ""; //$NON-NLS-1$
 
 	private final List presenceListeners = new ArrayList();
 
 	private OSCARContainer container = null;
+
+	static {
+		presences.put(IPresence.Mode.AVAILABLE, new StatusModeEnum(StatusModeEnum.ONLINE));
+		presences.put(IPresence.Mode.AWAY, new StatusModeEnum(StatusModeEnum.AWAY));
+		presences.put(IPresence.Mode.CHAT, new StatusModeEnum(StatusModeEnum.FREE_FOR_CHAT));
+		presences.put(IPresence.Mode.DND, new StatusModeEnum(StatusModeEnum.DND));
+		presences.put(IPresence.Mode.EXTENDED_AWAY, new StatusModeEnum(StatusModeEnum.WORK));
+		presences.put(IPresence.Mode.INVISIBLE, new StatusModeEnum(StatusModeEnum.INVISIBLE));
+	}
 
 	public OSCARRosterManager(Roster roster, OSCARContainer container) {
 		super(roster);
@@ -222,14 +234,18 @@ public class OSCARRosterManager extends AbstractRosterManager {
 		 * 			org.eclipse.ecf.presence.IPresence)
 		 */
 		public void sendPresenceUpdate(ID toID, IPresence presence) throws ECFException {
-			// TODO
-			/*try {
-				getConnectionOrThrowIfNull().sendPresenceUpdate(toID, createPresence(presence));
+			try {
+				getConnectionOrThrowIfNull().sendPresenceStatus(getStatus(presence));
 			} catch (final IOException e) {
 				traceAndThrowECFException(Messages.OSCAR_ROSTER_EXCEPTION_SEND_PRESENCE_UPDATE, e);
-			}*/
+			}
 		}
 
+		private StatusModeEnum getStatus(IPresence presence) {
+			if (presence.getMode() == null || !presences.containsKey(presence.getMode()))
+				return new StatusModeEnum(StatusModeEnum.ONLINE);
+			return (StatusModeEnum) presences.get(presence.getMode());
+		}
 	};
 
 	/*
