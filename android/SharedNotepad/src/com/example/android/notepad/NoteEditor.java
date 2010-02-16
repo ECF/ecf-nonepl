@@ -17,6 +17,7 @@
 package com.example.android.notepad;
 
 import java.io.IOException;
+import java.util.List;
 
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
@@ -31,6 +32,11 @@ import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.location.Location;
+import android.location.LocationListener;
+import android.location.LocationManager;
+import android.location.LocationProvider;
+import android.location.GpsStatus.Listener;
 import android.net.Uri;
 import android.os.Bundle;
 import android.os.IBinder;
@@ -192,6 +198,7 @@ public class NoteEditor extends Activity {
     	super.onStart();
     	
     	Context context = getApplicationContext();
+    	final LocationManager locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
     	Intent sharedNotepadIntent = new Intent();
     	sharedNotepadIntent.setComponent(new ComponentName(context, "com.example.android.sharedobjectservice.SharedObjectContainerService"));
     	ServiceConnection serviceConnection = new ServiceConnection() {
@@ -200,7 +207,7 @@ public class NoteEditor extends Activity {
 			public void onServiceConnected(ComponentName name, IBinder service) {
 				System.out.println("onServiceConnected name="+name+",service="+service);
 				// Create shared notepad client
-				sharedNotepadClient = new SharedNotepadClient((ISharedObjectContainerService) service,"android.slewis",mOriginalContent,sharedNotepadListener);
+				sharedNotepadClient = new SharedNotepadClient((ISharedObjectContainerService) service,"android.slewis",mOriginalContent,sharedNotepadListener,locationManager);
 				// And connect
 				try {
 					sharedNotepadClient.connect(CONNECT_TARGET);

@@ -49,4 +49,8 @@ public class ServerNotepadSharedObject extends BaseSharedObject {
 		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" content="+content);
 	}
 
+	protected void handleLocationMsg(ID senderID, String username, Double latitude, Double longitude, Double altitude) {
+		System.out.println("handleLocationMsg senderID="+senderID+" username="+username+" lat="+latitude+" lon="+longitude+" alt="+altitude);
+	}
+
 }

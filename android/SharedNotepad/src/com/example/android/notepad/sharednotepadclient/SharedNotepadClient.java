@@ -9,6 +9,8 @@ import org.eclipse.ecf.core.identity.IDFactory;
 import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
 import org.eclipse.ecf.core.sharedobject.SharedObjectAddException;
 
+import android.location.LocationManager;
+
 import com.example.android.sharedobjectservice.ISharedObjectContainerService;
 
 public class SharedNotepadClient implements ISharedNotepadClient {
@@ -17,14 +19,14 @@ public class SharedNotepadClient implements ISharedNotepadClient {
 	private ISharedObjectContainer clientContainer;
 	private NotepadSharedObject notepadSharedObject;
 	
-	public SharedNotepadClient(ISharedObjectContainerService containerService, String username, String originalContent, ISharedNotepadListener listener) {
+	public SharedNotepadClient(ISharedObjectContainerService containerService, String username, String originalContent, ISharedNotepadListener listener, LocationManager locationManager) {
     	try {
     		clientContainer = containerService.createClientContainer();
     	} catch (ContainerCreateException e) {
     		e.printStackTrace();
     	}
     	//  Then create/add NotepadSharedObject
-    	notepadSharedObject = new NotepadSharedObject(username, originalContent, listener);
+    	notepadSharedObject = new NotepadSharedObject(username, originalContent, listener, locationManager);
     	try {
 			clientContainer.getSharedObjectManager().addSharedObject(notepadSharedObjectID,notepadSharedObject,null);
 		} catch (SharedObjectAddException e) {
