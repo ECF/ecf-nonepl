@@ -20,6 +20,8 @@ public class Messages extends NLS {
 	public static String OSCAR_CONNECT_WIZARD_PAGE_WIZARD_DESCRIPTION;
 	public static String OSCAR_CONNECT_WIZARD_PAGE_LABEL_USERID;
 	public static String OSCAR_CONNECT_WIZARD_PAGE_LABEL_PASSWORD;
+	public static String OSCAR_CONNECT_WIZARD_PAGE_STATUS_UIN_NULL;
+	public static String OSCAR_CONNECT_WIZARD_PAGE_STATUS_UIN_NOT_VALID;
 
 	private Messages() {
 		// Empty constructor
