@@ -75,8 +75,7 @@ public class OSCARConnectWizard extends Wizard implements IConnectWizard, INewWi
 		this.workbench = workbench;
 		this.container = null;
 		try {
-			this.container = ContainerFactory.getDefault().createContainer("ecf.oscar.icqlib", //$NON-NLS-1$
-				new Object[] {"samolisov"}); //$NON-NLS-1$
+			this.container = ContainerFactory.getDefault().createContainer("ecf.oscar.icqlib"); //$NON-NLS-1$
 		} catch (final ContainerCreateException e) {
 			// None
 		}
