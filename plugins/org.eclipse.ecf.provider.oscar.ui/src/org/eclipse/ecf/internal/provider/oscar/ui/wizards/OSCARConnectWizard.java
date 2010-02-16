@@ -32,6 +32,8 @@ import org.eclipse.ui.progress.IWorkbenchSiteProgressService;
 
 public class OSCARConnectWizard extends Wizard implements IConnectWizard, INewWizard {
 
+	public static final String EMPTY = ""; //$NON-NLS-1$
+
 	OSCARConnectWizardPage page;
 
 	protected IContainer container;
@@ -73,7 +75,8 @@ public class OSCARConnectWizard extends Wizard implements IConnectWizard, INewWi
 		this.workbench = workbench;
 		this.container = null;
 		try {
-			this.container = ContainerFactory.getDefault().createContainer("ecf.oscar.icqlib"); //$NON-NLS-1$
+			this.container = ContainerFactory.getDefault().createContainer("ecf.oscar.icqlib", //$NON-NLS-1$
+				new Object[] {"samolisov"}); //$NON-NLS-1$
 		} catch (final ContainerCreateException e) {
 			// None
 		}
@@ -207,7 +210,7 @@ public class OSCARConnectWizard extends Wizard implements IConnectWizard, INewWi
 	}
 
 	protected void cachePassword(final String connectID, String password) {
-		if (password != null && !password.equals("")) { //$NON-NLS-1$
+		if (password != null && !password.equals(EMPTY)) {
 			final PasswordCacheHelper pwStorage = new PasswordCacheHelper(connectID);
 			pwStorage.savePassword(password);
 		}

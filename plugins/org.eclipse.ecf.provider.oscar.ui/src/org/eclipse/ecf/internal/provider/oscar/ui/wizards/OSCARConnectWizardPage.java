@@ -25,6 +25,8 @@ import org.eclipse.swt.widgets.*;
 
 public class OSCARConnectWizardPage extends WizardPage {
 
+	public static final String EMPTY = ""; //$NON-NLS-1$
+
 	Combo connectText;
 
 	Text passwordText;
@@ -32,12 +34,11 @@ public class OSCARConnectWizardPage extends WizardPage {
 	String uin;
 
 	OSCARConnectWizardPage() {
-		super(""); //$NON-NLS-1$
+		super(EMPTY);
 		setTitle(Messages.OSCAR_CONNECT_WIZARD_PAGE_WIZARD_TITLE);
 		setDescription(Messages.OSCAR_CONNECT_WIZARD_PAGE_WIZARD_DESCRIPTION);
 		setImageDescriptor(SharedImages.getImageDescriptor(SharedImages.IMG_CHAT_WIZARD));
-		// TODO
-		setPageComplete(true);
+		setPageComplete(false);
 	}
 
 	OSCARConnectWizardPage(String uin) {
@@ -46,22 +47,27 @@ public class OSCARConnectWizardPage extends WizardPage {
 	}
 
 	private void verify() {
-		/*final String text = connectText.getText();
-		if (text.equals("")) { //$NON-NLS-1$
-			updateStatus(Messages.XMPPConnectWizardPage_WIZARD_STATUS);
+		final String text = connectText.getText();
+		if (text.equals(EMPTY)) {
+			updateStatus(Messages.OSCAR_CONNECT_WIZARD_PAGE_STATUS_UIN_NULL);
+		} else if (!isUinValid(text)) {
+			updateStatus(Messages.OSCAR_CONNECT_WIZARD_PAGE_STATUS_UIN_NOT_VALID);
 		} else {
-			final Matcher matcher = emailPattern.matcher(text);
-			final Matcher hostMatcher = serverPattern.matcher(serverText
-					.getText());
-			if (!matcher.matches()) {
-				updateStatus(Messages.XMPPConnectWizardPage_WIZARD_STATUS_INCOMPLETE);
-			} else if (!hostMatcher.matches()) {
-				updateStatus(Messages.XMPPConnectWizardPage_WIZARD_ALT_SERVER_INCOMPLETE);
-			} else {
-				restorePassword(text);
-				updateStatus(null);
-			}
-		}*/
+			restorePassword(text);
+			updateStatus(null);
+		}
+	}
+
+	private boolean isUinValid(String uin) {
+		if (uin.length() < 5)
+			return false;
+
+		final char[] chars = uin.toCharArray();
+		for (int i = 0; i < chars.length; i++)
+			if (chars[i] < '0' || chars[i] > '9')
+				return false;
+
+		return true;
 	}
 
 	public void createControl(Composite parent) {
@@ -133,7 +139,7 @@ public class OSCARConnectWizardPage extends WizardPage {
 
 	protected void updateStatus(String message) {
 		setErrorMessage(message);
-		//setPageComplete(message == null);
+		setPageComplete(message == null);
 	}
 
 	private static final String PAGE_SETTINGS = OSCARConnectWizardPage.class.getName();
