@@ -8,11 +8,12 @@
  ******************************************************************************/
 package org.eclipse.ecf.internal.provider.oscar;
 
+import java.io.IOException;
 import java.util.*;
 import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.internal.provider.oscar.icqlib.IOSCARConnectable;
+import org.eclipse.ecf.internal.provider.oscar.icqlib.OSCARConnection;
 import org.eclipse.ecf.internal.provider.oscar.util.MessagePropertiesSerializer;
 import org.eclipse.ecf.presence.IIMMessageEvent;
 import org.eclipse.ecf.presence.IIMMessageListener;
@@ -20,15 +21,18 @@ import org.eclipse.ecf.presence.history.IHistory;
 import org.eclipse.ecf.presence.history.IHistoryManager;
 import org.eclipse.ecf.presence.im.*;
 import org.eclipse.ecf.presence.search.message.IMessageSearchManager;
+import org.eclipse.ecf.provider.oscar.OSCARContainer;
 import org.eclipse.ecf.provider.oscar.identity.OSCARID;
-import ru.caffeineim.protocols.icq.core.OscarConnection;
-import ru.caffeineim.protocols.icq.integration.OscarInterface;
 
-public class OSCARChatManager implements IChatManager, IOSCARConnectable {
-
-	OscarConnection connection;
+public class OSCARChatManager implements IChatManager {
 
 	private final Vector messageListeners = new Vector();
+
+	private OSCARContainer container = null;
+
+	public OSCARChatManager(OSCARContainer container) {
+		this.container = container;
+	}
 
 	private final IChatMessageSender chatMessageSender = new IChatMessageSender() {
 
@@ -52,8 +56,8 @@ public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 				throw new ECFException(Messages.OSCAR_CHAT_EXCEPTION_ID_IS_NOT_OSCARID);
 
 			try {
-				OscarInterface.sendBasicMessage(connection, getUIN(toID), MessagePropertiesSerializer.serialize(body,
-					properties));
+				getConnectionOrThrowIfNull().sendBasicChatMessage(getUIN(toID),
+					MessagePropertiesSerializer.serialize(body, properties));
 			} catch (final Exception e) {
 				throw new ECFException(Messages.OSCAR_CHAT_EXCEPTION_SEND_FAILED, e);
 			}
@@ -153,10 +157,6 @@ public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 		return typingMessageSender;
 	}
 
-	public void setConnection(OscarConnection connection) {
-		this.connection = connection;
-	}
-
 	private void fireMessageEvent(IIMMessageEvent event) {
 		for (final Iterator i = messageListeners.iterator(); i.hasNext();) {
 			final IIMMessageListener l = (IIMMessageListener) i.next();
@@ -171,5 +171,12 @@ public class OSCARChatManager implements IChatManager, IOSCARConnectable {
 
 	public void fireTypingMessage(ID fromID, ITypingMessage typingMessage) {
 		fireMessageEvent(new TypingMessageEvent(fromID, typingMessage));
+	}
+
+	private OSCARConnection getConnectionOrThrowIfNull() throws IOException {
+		final OSCARConnection conn = container.getOSCARConnection();
+		if (conn == null)
+			throw new IOException(Messages.OSCAR_CONNECTION_EXCEPTION_NO_CONNECTED);
+		return conn;
 	}
 }

@@ -15,6 +15,7 @@ import org.eclipse.ecf.core.events.ContainerDisconnectedEvent;
 import org.eclipse.ecf.core.events.ContainerDisconnectingEvent;
 import org.eclipse.ecf.core.identity.*;
 import org.eclipse.ecf.core.security.*;
+import org.eclipse.ecf.core.user.User;
 import org.eclipse.ecf.internal.provider.oscar.*;
 import org.eclipse.ecf.internal.provider.oscar.Messages;
 import org.eclipse.ecf.internal.provider.oscar.icqlib.OSCARConnection;
@@ -38,6 +39,8 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 
 	private String host;
 
+	private String nick;
+
 	private int port;
 
 	private OSCARChatManager chatManager = null;
@@ -49,28 +52,29 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 	protected OSCARContainer(SOContainerConfig config) throws Exception {
 		super(config);
 
-		chatManager = new OSCARChatManager();
+		chatManager = new OSCARChatManager(this);
 		roster = new Roster(this);
 		rosterManager = new OSCARRosterManager(roster, this);
 	}
 
 	public OSCARContainer() throws Exception {
 		this(new SOContainerConfig(IDFactory.getDefault().createGUID()));
+		nick = null;
 	}
 
 	public OSCARContainer(String name) throws Exception {
 		this(new SOContainerConfig(IDFactory.getDefault().createStringID(name)));
+		nick = name;
 	}
 
 	public OSCARContainer(String name, String host) throws Exception {
-		this(new SOContainerConfig(IDFactory.getDefault().createStringID(name)));
+		this(name);
 		this.host = host;
 	}
 
 	public OSCARContainer(String name, String host, int port) throws Exception {
-		this(new SOContainerConfig(IDFactory.getDefault().createStringID(name)));
+		this(name, host);
 		this.port = port;
-		this.host = host;
 	}
 
 	protected ISynchAsynchConnection createConnection(ID targetID, Object data) {
@@ -152,8 +156,8 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 			conn.addMessagingListener(new OSCARSOMessagingListener(receiver, getOSCARConnection()));
 			conn.addContactListListener(new OSCARRosterListener(rosterManager));
 
-			// setting connection to managers
-			conn.setConnectionFor(chatManager);
+			// setting params for roster
+			rosterManager.setUser(nick == null ? new User(originalTarget) : new User(originalTarget, nick));
 
 			return originalTarget;
 		}
@@ -207,15 +211,16 @@ public class OSCARContainer extends ClientSOContainer implements IPresenceServic
 			this.connection = null;
 			this.remoteServerID = null;
 
-			// remove connection from managers
-			chatManager.setConnection(null);
-
 			// disconnect roster manager
 			rosterManager.disconnect();
 		}
 
 		// notify listeners
 		fireContainerEvent(new ContainerDisconnectedEvent(this.getID(), groupID));
+	}
+
+	public void setNick(String nick) {
+		this.nick = nick;
 	}
 
 	/*
