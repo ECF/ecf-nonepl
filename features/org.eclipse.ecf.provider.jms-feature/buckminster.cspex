@@ -4,8 +4,7 @@
 	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
 	xmlns="http://www.eclipse.org/buckminster/CSpec-1.0">
 	<dependencies>
-		<dependency name="org.osgi.service.log" componentType="osgi.bundle"/>
-		<dependency name="org.eclipse.osgi.service" componentType="osgi.bundle"/>
+		<dependency name="org.eclipse.platform" componentType="eclipse.feature"/>
 		<dependency name="org.eclipse.equinox.concurrent" componentType="osgi.bundle"/>
 	</dependencies>
 	<generators>
