@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rmap
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns="http://www.eclipse.org/buckminster/RMap-1.0"
+	xmlns:bc="http://www.eclipse.org/buckminster/Common-1.0"
+	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
+	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
+
+	
+	<!-- ecf -->
+	<searchPath name="org.eclipse.ecf.osu">
+		<provider readerType="local" componentTypes="osgi.bundle,eclipse.feature" mutable="true" source="true">
+            <uri format="file:{0}/{1}/">
+                <bc:propertyRef key="projectsPath" />
+                <bc:propertyRef key="buckminster.component" />
+            </uri>
+        </provider>
+	</searchPath>
+	
+	<!-- below order does matter!!! -->
+
+	<!-- ECF OSU -->
+	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf(\..+)?" />
+
+	<!--  everything else is redirected to ecf.rmap at dev.eclipse.org -->
+	<rm:redirect 
+		href="http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.ecf/releng/org.eclipse.ecf.releng.bm/ecf.rmap?root=RT_Project&view=co"
+		pattern=".*" />
+	
+</rmap>
