@@ -94,22 +94,18 @@ public class StoreTest {
 		store.setSecureStore(new ISecureStore() {
 			HashMap<String, String> mappie = new HashMap<String, String>();
 
-			@Override
 			public void remove(String key) {
 				mappie.remove(key);
 			}
 
-			@Override
 			public void put(String key, String value, boolean encrypt) {
 				mappie.put(key, value);
 			}
 
-			@Override
 			public String get(String key, String def) {
 				return mappie.get(key).equals(null) ? def : mappie.get(key);
 			}
 
-			@Override
 			public void clear() {
 				mappie.clear();
 			}
@@ -131,7 +127,6 @@ public class StoreTest {
 		final ArrayList<String> boolie = new ArrayList<String>();
 		store.addListener(new IStoreEventListener() {
 
-			@Override
 			public void storeEvent(IStoreEvent event) {
 				boolie.clear();
 				boolie.add(event.getEventObject().toString());
@@ -139,12 +134,10 @@ public class StoreTest {
 		}, SALVO.EVENT_ALL_EVENTS);
 
 		store.fireEvent(new IStoreEvent() {
-			@Override
 			public int getEventType() {
 				return SALVO.EVENT_ADD;
 			}
 
-			@Override
 			public Object getEventObject() {
 				return "add";
 			}
@@ -152,12 +145,10 @@ public class StoreTest {
 		assertTrue(boolie.get(0).equals("add"));
 
 		store.fireEvent(new IStoreEvent() {
-			@Override
 			public int getEventType() {
 				return SALVO.EVENT_ADD_GROUP;
 			}
 
-			@Override
 			public Object getEventObject() {
 				return "add_group";
 			}
@@ -165,12 +156,10 @@ public class StoreTest {
 		assertTrue(boolie.get(0).equals("add_group"));
 
 		store.fireEvent(new IStoreEvent() {
-			@Override
 			public int getEventType() {
 				return SALVO.EVENT_ADD_SERVER;
 			}
 
-			@Override
 			public Object getEventObject() {
 				return "add_server";
 			}
@@ -178,12 +167,10 @@ public class StoreTest {
 		assertTrue(boolie.get(0).equals("add_server"));
 
 		store.fireEvent(new IStoreEvent() {
-			@Override
 			public int getEventType() {
 				return SALVO.EVENT_CHANGE;
 			}
 
-			@Override
 			public Object getEventObject() {
 				return "change";
 			}
@@ -191,12 +178,10 @@ public class StoreTest {
 		assertTrue(boolie.get(0).equals("change"));
 
 		store.fireEvent(new IStoreEvent() {
-			@Override
 			public int getEventType() {
 				return SALVO.EVENT_CHANGE_GROUP;
 			}
 
-			@Override
 			public Object getEventObject() {
 				return "change_group";
 			}
@@ -204,12 +189,10 @@ public class StoreTest {
 		assertTrue(boolie.get(0).equals("change_group"));
 
 		store.fireEvent(new IStoreEvent() {
-			@Override
 			public int getEventType() {
 				return SALVO.EVENT_CHANGE_SERVER;
 			}
 
-			@Override
 			public Object getEventObject() {
 				return "change_server";
 			}
@@ -225,7 +208,6 @@ public class StoreTest {
 
 		listener = new IStoreEventListener() {
 
-			@Override
 			public void storeEvent(IStoreEvent event) {
 				Integer counter = listenerCounter.get(event);
 				if (counter == null) {
@@ -243,27 +225,22 @@ public class StoreTest {
 	public void testSubscribeServer() throws NNTPException {
 		ICredentials credentials = new ICredentials() {
 
-			@Override
 			public String getUser() {
 				return "Wim Jongman";
 			}
 
-			@Override
 			public String getPassword() {
 				return "flinder1f7";
 			}
 
-			@Override
 			public String getOrganization() {
 				return "weltevree beheer";
 			}
 
-			@Override
 			public String getLogin() {
 				return "exquisitus";
 			}
 
-			@Override
 			public String getEmail() {
 				return "wim.jongman@gmail.com";
 			}

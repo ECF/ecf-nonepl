@@ -13,7 +13,7 @@
  *******************************************************************************/
 package org.eclipse.ecf.protocol.nntp.store.derby.internal;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertTrue;
 
 import java.util.HashMap;
 
@@ -31,7 +31,6 @@ import org.eclipse.ecf.protocol.nntp.model.SALVO;
 import org.eclipse.ecf.protocol.nntp.model.StoreException;
 import org.eclipse.ecf.protocol.nntp.model.UnexpectedResponseException;
 import org.eclipse.ecf.protocol.nntp.store.derby.StoreFactory;
-import org.eclipse.ecf.provider.nntp.security.SalvoSecureStore;
 import org.junit.After;
 import org.junit.AfterClass;
 import org.junit.Before;
@@ -92,22 +91,18 @@ public class ArticleDAOTest {
 		store.setSecureStore(new ISecureStore() {
 			HashMap<String, String> mappie = new HashMap<String, String>();
 
-			@Override
 			public void remove(String key) {
 				mappie.remove(key);
 			}
 
-			@Override
 			public void put(String key, String value, boolean encrypt) {
 				mappie.put(key, value);
 			}
 
-			@Override
 			public String get(String key, String def) {
 				return mappie.get(key).equals(null) ? def : mappie.get(key);
 			}
 
-			@Override
 			public void clear() {
 				mappie.clear();
 			}

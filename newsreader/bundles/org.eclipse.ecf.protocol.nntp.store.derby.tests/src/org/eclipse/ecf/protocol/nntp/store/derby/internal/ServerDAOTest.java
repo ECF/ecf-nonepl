@@ -58,22 +58,18 @@ public class ServerDAOTest {
 		store.setSecureStore(new ISecureStore() {
 			HashMap<String, String> mappie = new HashMap<String, String>();
 
-			@Override
 			public void remove(String key) {
 				mappie.remove(key);
 			}
 
-			@Override
 			public void put(String key, String value, boolean encrypt) {
 				mappie.put(key, value);
 			}
 
-			@Override
 			public String get(String key, String def) {
 				return mappie.get(key).equals(null) ? def : mappie.get(key);
 			}
 
-			@Override
 			public void clear() {
 				mappie.clear();
 			}
