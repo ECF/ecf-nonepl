@@ -24,5 +24,5 @@ Bundle-ClassPath: lib/axis.jar,
  lib/saaj.jar,
  lib/wsdl4j-1.5.1.jar,
  .
-Require-Bundle: org.eclipse.equinox.common;bundle-version="3.5.1"
+Require-Bundle: org.eclipse.equinox.common
 Bundle-Vendor: bundle
