@@ -47,7 +47,6 @@ public class NewNewsServerConnectWizard extends NewNewsServerWizard implements
 				descriptor);
 	}
 
-	@Override
 	public void init(IWorkbench workbench, IContainer container) {
 		this.workbench = workbench;
 		this.container = container;

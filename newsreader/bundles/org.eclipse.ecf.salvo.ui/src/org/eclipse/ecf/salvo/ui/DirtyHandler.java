@@ -10,7 +10,6 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class DirtyHandler extends AbstractHandler {
 
-	@Override
 	public Object execute(ExecutionEvent event) throws ExecutionException {
 
 		ISalvoResource resource = (ISalvoResource) SelectionUtil
