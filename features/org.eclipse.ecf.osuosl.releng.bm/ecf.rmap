@@ -23,8 +23,8 @@
 	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf(\..+)?" />
 
 	<!--  everything else is redirected to ecf.rmap at dev.eclipse.org -->
-	<rm:redirect 
-		href="http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.ecf/releng/org.eclipse.ecf.releng.bm/ecf.rmap?root=RT_Project&view=co"
+	<redirect 
+		href="http://dev.eclipse.org/viewcvs/index.cgi/org.eclipse.ecf/releng/org.eclipse.ecf.releng.bm/ecf.rmap?root=RT_Project&amp;view=co"
 		pattern=".*" />
 	
 </rmap>
