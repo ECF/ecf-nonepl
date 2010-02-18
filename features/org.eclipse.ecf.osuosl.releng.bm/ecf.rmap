@@ -20,12 +20,7 @@
 	<!-- below order does matter!!! -->
 
 	<!-- ECF OSU -->
-	<!-- 
-	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf(\..+)?" />
-	 -->
-	<!--  limited to *jms* due to http://www.eclipse.org/forums/index.php?t=msg&goto=515049 -->
-	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf\.provider\.jms(\..+)?" />
-	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf\.provider\.jms-feature?" />
+	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf(\..+)?" failOnError="false"/>
 
 	<!--  everything else is redirected to ecf.rmap at dev.eclipse.org -->
 	<redirect 
