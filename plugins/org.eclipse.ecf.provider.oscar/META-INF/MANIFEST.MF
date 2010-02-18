@@ -11,7 +11,9 @@ Require-Bundle: org.eclipse.core.runtime,
  org.eclipse.ecf.provider;bundle-version="2.0.0",
  org.eclipse.ecf.sharedobject;bundle-version="2.0.0",
  org.eclipse.ecf.presence;bundle-version="2.0.0",
- org.apache.commons.logging;bundle-version="1.0.4"
+ org.apache.commons.logging;bundle-version="1.0.4",
+ org.eclipse.ecf.provider.datashare;bundle-version="1.4.0",
+ org.eclipse.ecf.datashare;bundle-version="2.0.0"
 Eclipse-ExtensibleAPI: true
 Eclipse-BuddyPolicy: global
 Bundle-RequiredExecutionEnvironment: CDC-1.1/Foundation-1.1,
