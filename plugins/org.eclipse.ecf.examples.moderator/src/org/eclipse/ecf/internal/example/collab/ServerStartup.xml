@@ -1,5 +1,0 @@
-<server>
-	<connector protocol="jgroups"  hostname="localhost" port="3282" timeout="5000">
-		<group name="server"/>
-	</connector>
-</server>
