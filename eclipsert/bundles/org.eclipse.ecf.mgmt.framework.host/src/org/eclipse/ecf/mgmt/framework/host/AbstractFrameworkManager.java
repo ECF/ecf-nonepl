@@ -52,6 +52,7 @@ public abstract class AbstractFrameworkManager implements IAdaptable {
 				platformAdminServiceTracker = null;
 			}
 			context = null;
+			log = null;
 		}
 	}
 

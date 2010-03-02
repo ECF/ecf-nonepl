@@ -181,6 +181,7 @@ public class ScrManager implements IAdaptable, IScrManager {
 				platformAdminServiceTracker = null;
 			}
 			context = null;
+			log = null;
 		}
 	}
 
