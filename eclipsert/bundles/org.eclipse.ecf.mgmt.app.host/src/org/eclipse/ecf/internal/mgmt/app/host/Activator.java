@@ -7,7 +7,7 @@ import org.osgi.util.tracker.ServiceTracker;
 
 public class Activator implements BundleActivator {
 
-	public static String PLUGIN_ID = "org.eclipse.ecf.mgmt.framework.host"; //$NON-NLS-1$
+	public static String PLUGIN_ID = "org.eclipse.ecf.mgmt.app.host"; //$NON-NLS-1$
 
 	private static Activator instance;
 	
