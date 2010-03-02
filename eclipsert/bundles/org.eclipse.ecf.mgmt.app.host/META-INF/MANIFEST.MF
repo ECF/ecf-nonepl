@@ -1,0 +1,21 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: %bundle.name
+Bundle-Vendor: %bundle.provider
+Bundle-SymbolicName: org.eclipse.ecf.mgmt.app.host
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.ecf.internal.mgmt.app.host.Activator
+Bundle-ActivationPolicy: lazy
+Bundle-RequiredExecutionEnvironment: CDC-1.1/Foundation-1.1,
+ J2SE-1.4
+Import-Package: org.eclipse.ecf.core.status,
+ org.eclipse.ecf.mgmt.app,
+ org.osgi.framework,
+ org.osgi.service.application,
+ org.osgi.service.log,
+ org.osgi.util.tracker
+Require-Bundle: org.eclipse.equinox.common
+Bundle-Localization: bundle
+Export-Package: org.eclipse.ecf.internal.mgmt.app.host,
+ org.eclipse.ecf.mgmt.app.host
+
