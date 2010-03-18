@@ -16,7 +16,7 @@ Import-Package: org.eclipse.ecf.core.status;version="1.0.0",
  org.osgi.service.log,
  org.osgi.util.tracker
 Bundle-Localization: bundle
-Require-Bundle: org.eclipse.equinox.common;bundle-version="3.6.0"
+Require-Bundle: org.eclipse.equinox.common
 Bundle-Vendor: %bundle.provider
 Export-Package: org.eclipse.ecf.internal.mgmt.framework.host,
  org.eclipse.ecf.mgmt.framework.host
