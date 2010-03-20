@@ -6,7 +6,6 @@
 	xmlns:mp="http://www.eclipse.org/buckminster/MavenProvider-1.0"
 	xmlns:pmp="http://www.eclipse.org/buckminster/PDEMapProvider-1.0">
 
-	
 	<!-- ecf -->
 	<searchPath name="org.eclipse.ecf.osu">
 		<provider readerType="local" componentTypes="osgi.bundle,eclipse.feature" mutable="true" source="true">
