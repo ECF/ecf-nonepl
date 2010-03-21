@@ -107,6 +107,13 @@ public class NotepadSharedObject extends BaseSharedObject {
 				HANDLE_INTENT_MSG, new Object[] { getLocalContainerID(),
 						username, uri, data }));
 	}
+	
+	// Message receiver
+	public void receiveUpdate(ID senderID, String username, String uri, String data){
+		if( listener!=null ){
+			listener.receiveUpdate(senderID, username, uri, data);
+		}
+	}
 
 	// Message receiver
 	protected void handleUpdateMsg(ID senderID, String username, String uri, String data) {
