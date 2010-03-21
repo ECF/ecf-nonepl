@@ -104,6 +104,7 @@ public class NotesList extends ListActivity {
 			public void receiveUpdate(ID clientID, String username, String uri) {
 				System.out.println("receiveUpdate clientID=" + clientID	+ " username=" + username + " uri= "+uri );
 				// XXX handling of asynchronous updates should be here
+				startActivity(new Intent(Intent.ACTION_EDIT, Uri.parse(uri)));
 			}
 
 		};
