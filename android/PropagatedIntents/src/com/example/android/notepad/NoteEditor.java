@@ -17,7 +17,6 @@
 package com.example.android.notepad;
 
 import android.app.Activity;
-import android.app.PendingIntent;
 import android.content.ComponentName;
 import android.content.ContentValues;
 import android.content.Context;
@@ -26,7 +25,6 @@ import android.database.Cursor;
 import android.graphics.Canvas;
 import android.graphics.Paint;
 import android.graphics.Rect;
-import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Bundle;
 import android.util.AttributeSet;

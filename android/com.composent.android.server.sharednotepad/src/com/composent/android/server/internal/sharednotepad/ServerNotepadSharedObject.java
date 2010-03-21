@@ -9,11 +9,13 @@ import org.eclipse.ecf.core.sharedobject.SharedObjectInitException;
 import org.eclipse.ecf.core.sharedobject.SharedObjectMsg;
 import org.eclipse.ecf.core.util.Event;
 import org.eclipse.ecf.core.util.IEventProcessor;
+import org.osgi.framework.Bundle;
 
 public class ServerNotepadSharedObject extends BaseSharedObject {
 
 	private static final String HANDLE_UPDATE_MSG = "handleUpdateMsg";
-
+	private static final String HANDLE_UPDATE_MSG1 = "handleUpdateMsg1";
+	
 	protected void initialize() throws SharedObjectInitException {
 		super.initialize();
 		addEventProcessor(new IEventProcessor() {
@@ -29,13 +31,13 @@ public class ServerNotepadSharedObject extends BaseSharedObject {
 	protected void handleConnected(ID targetID) {
 		// XXX testing...this sends a message to the newly connected client
 		try {
-			sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(HANDLE_UPDATE_MSG, new Object[] { getLocalContainerID(), "server", "server says hello" }));
+			sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(HANDLE_UPDATE_MSG, new Object[] { getLocalContainerID(), "server", "startup", "ecftcp://10.0.2.2:3282" }));
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
 		}
 	}
-
+	
 	protected boolean handleSharedObjectMsg(SharedObjectMsg msg) {
 		try {
 			msg.invoke(this);
@@ -45,8 +47,12 @@ public class ServerNotepadSharedObject extends BaseSharedObject {
 		return false;
 	}
 	
-	protected void handleUpdateMsg(ID senderID, String username, String content) {
-		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" content="+content);
+	protected void handleUpdateMsg(ID senderID, String username, String uri) {
+		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" uri="+uri);
+	}
+
+	protected void handleUpdateMsg1(ID senderID, String username, String uri, Bundle extra) {
+		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" uri="+uri +" extra="+extra.getResource("values"));
 	}
 
 	protected void handleLocationMsg(ID senderID, String username, Double latitude, Double longitude, Double altitude) {
