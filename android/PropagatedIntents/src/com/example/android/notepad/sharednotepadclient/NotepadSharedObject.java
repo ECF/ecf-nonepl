@@ -109,9 +109,9 @@ public class NotepadSharedObject extends BaseSharedObject {
 	}
 
 	// Message receiver
-	protected void handleUpdateMsg(ID senderID, String username, String uri) {
+	protected void handleUpdateMsg(ID senderID, String username, String uri, String data) {
 		if (listener != null) {
-			listener.receiveUpdate(senderID, username, uri );
+			listener.receiveUpdate(senderID, username, uri, data);
 		}
 	}
 	
