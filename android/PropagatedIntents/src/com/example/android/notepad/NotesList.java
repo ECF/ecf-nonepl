@@ -104,8 +104,9 @@ public class NotesList extends ListActivity {
 				System.out.println("receiveUpdate clientID=" + clientID	+ " username=" + username + " uri= "+uri + " data=" + data );
 				// XXX handling of asynchronous updates should be here
 				try {
-					final Uri uri_ = Uri.parse(uri);
-					startActivity(new Intent(Intent.ACTION_EDIT, uri_ ));
+					final Intent intent = new Intent(Intent.ACTION_EDIT, Uri.parse(uri));
+					intent.putExtra(NoteEditor.keyData, data);
+					startActivity( intent );
 					
 				} catch(Exception e){
 					return;
@@ -126,7 +127,7 @@ public class NotesList extends ListActivity {
 				Log.i(TAG, "onServiceConnected name=" + name + ",service=" + service);
 				soService = (ISharedObjectContainerService) service;
 				// Create shared notepad client
-				sharedNotepadClient = new SharedNotepadClient(soService, "pierre",	mOriginalContent, sharedNotepadListener, locationManager);
+				sharedNotepadClient = new SharedNotepadClient(soService, "Luca", mOriginalContent, sharedNotepadListener, locationManager);
 				// And connect
 				try {
 					sharedNotepadClient.connect(CONNECT_TARGET);

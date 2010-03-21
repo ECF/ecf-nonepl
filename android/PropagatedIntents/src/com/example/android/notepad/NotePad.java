@@ -16,9 +16,6 @@
 
 package com.example.android.notepad;
 
-import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.core.identity.IDFactory;
-
 import android.net.Uri;
 import android.provider.BaseColumns;
 
