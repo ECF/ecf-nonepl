@@ -150,8 +150,9 @@ public class NoteEditor extends Activity {
 	            }
 	            mUri = getContentResolver().insert(intent.getData(), values);
 
+            } else {
+            	mUri = getContentResolver().insert(intent.getData(), null);
             }
-            mUri = getContentResolver().insert(intent.getData(), null);
 
             // If we were unable to create a new note, then just finish
             // this activity.  A RESULT_CANCELED will be sent back to the
