@@ -52,6 +52,12 @@ public class ServerNotepadSharedObject extends BaseSharedObject {
 
 	protected void handleIntentMsg(ID senderID, String username, String uri, String data) {
 		System.out.println("handleIntentMsg senderID="+senderID+" username="+username +" uri="+uri +" extra="+data);
+		try {
+			sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(HANDLE_INTENT_MSG, new Object[] { getLocalContainerID(), username, uri, data }));
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 	protected void handleLocationMsg(ID senderID, String username, Double latitude, Double longitude, Double altitude) {
