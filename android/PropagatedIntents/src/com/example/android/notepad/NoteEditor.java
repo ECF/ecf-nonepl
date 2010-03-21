@@ -123,6 +123,34 @@ public class NoteEditor extends Activity {
             // Requested to insert: set that state, and create a new entry
             // in the container.
             mState = STATE_INSERT;
+
+            if( intent.getStringExtra(NoteEditor.keyData)!=null) {
+	            ContentValues values = new ContentValues();
+	            mText = (EditText) findViewById(R.id.note);
+	            String text = mText.getText().toString();
+	            int length = text.length();
+	
+	            // This stuff is only done when working with a full-fledged note.
+	            if (!mNoteOnly) {
+	                // Bump the modification time to now.
+	                values.put(Notes.MODIFIED_DATE, System.currentTimeMillis());
+	
+	                // If we are creating a new note, then we want to also create
+	                // an initial title for it.
+	                if (mState == STATE_INSERT) {
+	                    String title = text.substring(0, Math.min(30, length));
+	                    if (length > 30) {
+	                        int lastSpace = title.lastIndexOf(' ');
+	                        if (lastSpace > 0) {
+	                            title = title.substring(0, lastSpace);
+	                        }
+	                    }
+	                    values.put(Notes.TITLE, title);
+	                }
+	            }
+	            mUri = getContentResolver().insert(intent.getData(), values);
+
+            }
             mUri = getContentResolver().insert(intent.getData(), null);
 
             // If we were unable to create a new note, then just finish
