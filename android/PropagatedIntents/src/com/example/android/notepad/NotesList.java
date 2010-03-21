@@ -60,7 +60,7 @@ public class NotesList extends ListActivity {
 	public static final int MENU_ITEM_DELETE = Menu.FIRST;
 	public static final int MENU_ITEM_INSERT = Menu.FIRST + 1;
 	// The Android simulator client works on the special localhost address: 10.0.2.2
-	private static final String CONNECT_TARGET = "ecftcp://10.0.2.2:3282/server";
+	private static final String CONNECT_TARGET = "ecftcp://192.168.0.14:3282/server";
 	private String mOriginalContent;
 	private LocationManager locationManager;
 	private static final String serviceClass = "com.example.android.sharedobjectservice.SharedObjectContainerService";
@@ -104,7 +104,13 @@ public class NotesList extends ListActivity {
 			public void receiveUpdate(ID clientID, String username, String uri) {
 				System.out.println("receiveUpdate clientID=" + clientID	+ " username=" + username + " uri= "+uri );
 				// XXX handling of asynchronous updates should be here
-				startActivity(new Intent(Intent.ACTION_EDIT, Uri.parse(uri)));
+				try {
+					final Uri uri_ = Uri.parse(uri);
+					startActivity(new Intent(Intent.ACTION_EDIT, uri_ ));
+					
+				} catch(Exception e){
+					return;
+				}
 			}
 
 		};
