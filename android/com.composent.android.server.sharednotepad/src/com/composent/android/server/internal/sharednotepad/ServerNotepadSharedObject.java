@@ -9,7 +9,6 @@ import org.eclipse.ecf.core.sharedobject.SharedObjectInitException;
 import org.eclipse.ecf.core.sharedobject.SharedObjectMsg;
 import org.eclipse.ecf.core.util.Event;
 import org.eclipse.ecf.core.util.IEventProcessor;
-import org.osgi.framework.Bundle;
 
 public class ServerNotepadSharedObject extends BaseSharedObject {
 
@@ -51,8 +50,8 @@ public class ServerNotepadSharedObject extends BaseSharedObject {
 		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" uri="+uri);
 	}
 
-	protected void handleUpdateMsg1(ID senderID, String username, String uri, Bundle extra) {
-		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" uri="+uri +" extra="+extra.getResource("values"));
+	protected void handleUpdateMsg1(ID senderID, String username, String uri, String data) {
+		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" uri="+uri +" extra="+data);
 	}
 
 	protected void handleLocationMsg(ID senderID, String username, Double latitude, Double longitude, Double altitude) {
