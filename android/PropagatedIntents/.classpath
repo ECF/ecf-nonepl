@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<classpath>
+	<classpathentry kind="src" path="src"/>
+	<classpathentry kind="src" path="gen"/>
+	<classpathentry kind="con" path="com.android.ide.eclipse.adt.ANDROID_FRAMEWORK"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.ecf_3.1.0.v20100219-1253.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.ecf.identity_3.1.0.v20100219-1253.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.ecf.provider_3.0.0.v20100219-1253.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.ecf.sharedobject_2.1.0.v20100219-1253.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.common_3.6.0.v20100125.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.equinox.registry_3.5.0.v20091203.jar"/>
+	<classpathentry kind="lib" path="lib/org.eclipse.osgi_3.6.0.v20100128-1430_NLSONLY.jar"/>
+	<classpathentry kind="output" path="bin"/>
+</classpath>
