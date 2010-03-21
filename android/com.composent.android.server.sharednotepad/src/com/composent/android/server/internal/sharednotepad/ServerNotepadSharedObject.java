@@ -13,7 +13,7 @@ import org.eclipse.ecf.core.util.IEventProcessor;
 public class ServerNotepadSharedObject extends BaseSharedObject {
 
 	private static final String HANDLE_UPDATE_MSG = "handleUpdateMsg";
-	private static final String HANDLE_UPDATE_MSG1 = "handleUpdateMsg1";
+	private static final String HANDLE_INTENT_MSG = "handleIntentMsg";
 	
 	protected void initialize() throws SharedObjectInitException {
 		super.initialize();
@@ -50,8 +50,8 @@ public class ServerNotepadSharedObject extends BaseSharedObject {
 		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" uri="+uri);
 	}
 
-	protected void handleUpdateMsg1(ID senderID, String username, String uri, String data) {
-		System.out.println("handleUpdateMsg senderID="+senderID+" username="+username +" uri="+uri +" extra="+data);
+	protected void handleIntentMsg(ID senderID, String username, String uri, String data) {
+		System.out.println("handleIntentMsg senderID="+senderID+" username="+username +" uri="+uri +" extra="+data);
 	}
 
 	protected void handleLocationMsg(ID senderID, String username, Double latitude, Double longitude, Double altitude) {

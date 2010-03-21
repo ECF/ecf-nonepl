@@ -11,7 +11,7 @@ public class SharedNotepadServerApplication implements IApplication {
 
 	private final ID notepadSharedObjectID = IDFactory.getDefault().createStringID("com.composent.android.sharednotepad.sharedobject");
 	
-	private String serverContainerId = "ecftcp://localhost:3282/server";
+	private String serverContainerId = "ecftcp://10.0.2.2:3282/server";
 	private ISharedObjectContainer container;
 	private final Object appLock = new Object();
 	private boolean done = false;

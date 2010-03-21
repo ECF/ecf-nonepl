@@ -14,6 +14,7 @@ import android.os.Bundle;
 public class NotepadSharedObject extends BaseSharedObject {
 
 	private static final String HANDLE_UPDATE_MSG = "handleUpdateMsg";
+	private static final String HANDLE_INTENT_MSG = "handleIntentMsg";
 	private static final String HANDLE_LOCATION_MSG = "handleLocationMsg";
 	
 	private ISharedNotepadListener listener;
@@ -103,13 +104,19 @@ public class NotepadSharedObject extends BaseSharedObject {
 	// Message sender
 	public void sendUpdate(String uri, Bundle data) throws IOException {
 		sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(
-				HANDLE_UPDATE_MSG, new Object[] { getLocalContainerID(),
+				HANDLE_INTENT_MSG, new Object[] { getLocalContainerID(),
 						username, uri, data }));
 	}
 
 	// Message receiver
-	protected void handleUpdateMsg(ID senderID, String username, String uri, Bundle data) {
+	protected void handleUpdateMsg(ID senderID, String username, String uri) {
 		if (listener != null) {
+			listener.receiveUpdate(senderID, username, uri );
+		}
+	}
+	
+	protected void handleIntentMsg(ID senderID, String username, String uri, String data){
+		if(listener!=null){
 			listener.receiveUpdate(senderID, username, uri, data);
 		}
 	}

@@ -100,8 +100,8 @@ public class NotesList extends ListActivity {
 		// XXX sharedNotepadListener...this is passed into the shared notepad connect...see
 		// onServiceConnected below...this is for handling asynchronous updates from remotes
 		final ISharedNotepadListener sharedNotepadListener = new ISharedNotepadListener() {
-			public void receiveUpdate(ID clientID, String username, String uri, Bundle data) {
-				System.out.println("receiveUpdate clientID=" + clientID	+ " username=" + username + " uri= "+uri + " data=" + data.getString(NoteEditor.keyData) );
+			public void receiveUpdate(ID clientID, String username, String uri, String data) {
+				System.out.println("receiveUpdate clientID=" + clientID	+ " username=" + username + " uri= "+uri + " data=" + data );
 				// XXX handling of asynchronous updates should be here
 				try {
 					final Uri uri_ = Uri.parse(uri);
@@ -110,6 +110,12 @@ public class NotesList extends ListActivity {
 				} catch(Exception e){
 					return;
 				}
+			}
+
+			@Override
+			public void receiveUpdate(ID clientID, String username, String uri) {
+				// TODO Auto-generated method stub
+				
 			}
 
 		};
