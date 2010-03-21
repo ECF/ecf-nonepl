@@ -130,7 +130,7 @@ public class NotesList extends ListActivity {
 				}
 				// XXX test by sending an update
 				try {
-					sharedNotepadClient.sendUpdate("original note content: " + getIntent().getDataString());
+					sharedNotepadClient.sendUpdate("original note content: " + getIntent().getDataString(), null);
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -320,7 +320,7 @@ public class NotesList extends ListActivity {
 			if( resultCode==RESULT_OK){
 				Log.i(TAG, "action="+data.getAction());
 				try {
-					this.sharedNotepadClient.sendUpdate(data.getAction());
+					this.sharedNotepadClient.sendUpdate(data.getAction(), data.getBundleExtra(NoteEditor.keyData));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

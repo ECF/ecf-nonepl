@@ -5,6 +5,8 @@ import java.io.IOException;
 import org.eclipse.ecf.core.ContainerConnectException;
 import org.eclipse.ecf.core.identity.ID;
 
+import android.os.Bundle;
+
 public interface ISharedNotepadClient {
 
 	public void connect(String targetId) throws ContainerConnectException;
@@ -16,6 +18,6 @@ public interface ISharedNotepadClient {
 	public ID getConnectedID();
 	public void close();
 
-	public void sendUpdate(String uri) throws IOException;
+	public void sendUpdate(String uri, Bundle bundle) throws IOException;
 	
 }

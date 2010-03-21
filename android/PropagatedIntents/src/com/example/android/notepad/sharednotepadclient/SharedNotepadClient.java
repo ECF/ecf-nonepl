@@ -10,7 +10,7 @@ import org.eclipse.ecf.core.sharedobject.ISharedObjectContainer;
 import org.eclipse.ecf.core.sharedobject.SharedObjectAddException;
 
 import android.location.LocationManager;
-import android.net.Uri;
+import android.os.Bundle;
 
 import com.example.android.sharedobjectservice.ISharedObjectContainerService;
 
@@ -73,7 +73,7 @@ public class SharedNotepadClient implements ISharedNotepadClient {
 		return notepadSharedObject.getUsername();
 	}
 
-	public void sendUpdate(String uri) throws IOException {
-		notepadSharedObject.sendUpdate(uri);
+	public void sendUpdate(String uri, Bundle data) throws IOException {
+		notepadSharedObject.sendUpdate(uri, data);
 	}
 }

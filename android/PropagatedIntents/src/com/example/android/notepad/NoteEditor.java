@@ -44,6 +44,7 @@ import com.example.android.notepad.NotePad.Notes;
  */
 public class NoteEditor extends Activity {
     private static final String TAG = "Notes";
+    protected static final String keyData = "com.example.android.notepad.values";
   
     /**
      * Standard projection for the interesting columns of a normal note.
@@ -269,7 +270,7 @@ public class NoteEditor extends Activity {
                 
                 Intent data = new Intent();
                 data.setAction(mUri.toString());
-                data.putExtra("com.example.android.notepad.values", values);
+                data.putExtra(keyData, values);
                 setResult(RESULT_OK, data);
             }
         }
