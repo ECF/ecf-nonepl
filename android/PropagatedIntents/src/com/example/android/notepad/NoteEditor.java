@@ -137,7 +137,7 @@ public class NoteEditor extends Activity {
 
             // The new entry was created, so assume all will end well and
             // set the result to be returned.
-            setResult(RESULT_OK, (new Intent()).setAction(mUri.toString()));
+            setResult(RESULT_OK, intent);
 
         } else {
             // Whoops, unknown action!  Bail.

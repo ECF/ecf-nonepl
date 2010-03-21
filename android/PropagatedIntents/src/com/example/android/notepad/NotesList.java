@@ -310,7 +310,7 @@ public class NotesList extends ListActivity {
 		} else {
 			// Launch activity to view/edit the currently selected item
 			Log.i(TAG, "start for Result");
-			startActivityForResult(new Intent(Intent.ACTION_EDIT, uri), EDIT_NOTE_REQUEST);
+			startActivityForResult(getIntent(), EDIT_NOTE_REQUEST);
 		}
 	}
 
