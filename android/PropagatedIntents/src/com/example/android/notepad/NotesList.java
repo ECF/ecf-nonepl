@@ -94,8 +94,14 @@ public class NotesList extends ListActivity {
 		super.onCreate(savedInstanceState);
 		context = getApplicationContext();
 		locationManager = (LocationManager) context.getSystemService(Context.LOCATION_SERVICE);
-		Intent sharedNotepadIntent = new Intent();
-		sharedNotepadIntent.setComponent(new ComponentName(context,	serviceClass));
+		Intent sharedNotepadIntent;
+		try {
+			sharedNotepadIntent = new Intent(context, Class.forName(serviceClass, true, context.getClassLoader()));
+		} catch (ClassNotFoundException e1) {
+			sharedNotepadIntent=new Intent();
+			sharedNotepadIntent.setComponent(new ComponentName(context,	serviceClass));
+			Log.e(TAG, e1.getMessage());
+		}
 
 		// XXX sharedNotepadListener...this is passed into the shared notepad connect...see
 		// onServiceConnected below...this is for handling asynchronous updates from remotes
@@ -127,7 +133,7 @@ public class NotesList extends ListActivity {
 				Log.i(TAG, "onServiceConnected name=" + name + ",service=" + service);
 				soService = (ISharedObjectContainerService) service;
 				// Create shared notepad client
-				sharedNotepadClient = new SharedNotepadClient(soService, "Luca", mOriginalContent, sharedNotepadListener, locationManager);
+				sharedNotepadClient = new SharedNotepadClient(soService, "pierre",	mOriginalContent, sharedNotepadListener, locationManager);
 				// And connect
 				try {
 					sharedNotepadClient.connect(CONNECT_TARGET);
@@ -136,7 +142,7 @@ public class NotesList extends ListActivity {
 				}
 				// XXX test by sending an update
 				try {
-					sharedNotepadClient.sendUpdate("original note content: " + getIntent().getDataString(), null);
+					sharedNotepadClient.sendUpdate(sharedNotepadClient.getClientID(), "pierre", "startcontainer", getIntent().getDataString());
 				} catch (IOException e) {
 					e.printStackTrace();
 				}
@@ -153,7 +159,7 @@ public class NotesList extends ListActivity {
 		// Use Android OS to bind to shared notepad service. When the binding is
 		// complete,
 		// the onServiceConnected method is executed
-		boolean bindResult = context.bindService(sharedNotepadIntent, serviceConnection, BIND_AUTO_CREATE);
+		boolean bindResult = context.bindService( sharedNotepadIntent, serviceConnection, BIND_AUTO_CREATE);
 		if (!bindResult) Log.e(TAG, "binding to SharedObjectContainerService failed");
 
 		setDefaultKeyMode(DEFAULT_KEYS_SHORTCUT);
@@ -326,7 +332,7 @@ public class NotesList extends ListActivity {
 			if( resultCode==RESULT_OK){
 				Log.i(TAG, "action="+data.getAction());
 				try {
-					this.sharedNotepadClient.sendUpdate(data.getAction(), data.getBundleExtra(NoteEditor.keyData));
+					this.sharedNotepadClient.sendUpdate(sharedNotepadClient.getClientID(), "pierre", data.getAction(), data.getStringExtra(NoteEditor.keyData));
 				} catch (IOException e) {
 					e.printStackTrace();
 				}

@@ -73,7 +73,7 @@ public class SharedNotepadClient implements ISharedNotepadClient {
 		return notepadSharedObject.getUsername();
 	}
 
-	public void sendUpdate(String uri, Bundle data) throws IOException {
-		notepadSharedObject.sendUpdate(uri, data);
+	public void sendUpdate(ID senderID, String username, String uri, String data) throws IOException {
+		notepadSharedObject.sendUpdate(senderID, username, uri, data);
 	}
 }

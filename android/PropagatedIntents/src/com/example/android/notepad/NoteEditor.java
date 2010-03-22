@@ -149,6 +149,8 @@ public class NoteEditor extends Activity {
 	                }
 	            }
 	            mUri = getContentResolver().insert(intent.getData(), values);
+	            intent.putExtra(keyData, values);
+
 
             } else {
             	mUri = getContentResolver().insert(intent.getData(), null);
@@ -162,7 +164,6 @@ public class NoteEditor extends Activity {
                 finish();
                 return;
             }
-
             // The new entry was created, so assume all will end well and
             // set the result to be returned.
             setResult(RESULT_OK, intent);

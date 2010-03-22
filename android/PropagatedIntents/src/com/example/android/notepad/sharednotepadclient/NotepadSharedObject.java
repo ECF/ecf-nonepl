@@ -102,7 +102,7 @@ public class NotepadSharedObject extends BaseSharedObject {
 	}
 
 	// Message sender
-	public void sendUpdate(String uri, Bundle data) throws IOException {
+	public void sendUpdate(ID senderID, String username, String uri, String data) throws IOException {
 		sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(
 				HANDLE_INTENT_MSG, new Object[] { getLocalContainerID(),
 						username, uri, data }));

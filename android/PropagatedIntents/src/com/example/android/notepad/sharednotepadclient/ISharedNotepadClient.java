@@ -18,6 +18,6 @@ public interface ISharedNotepadClient {
 	public ID getConnectedID();
 	public void close();
 
-	public void sendUpdate(String uri, Bundle bundle) throws IOException;
+	public void sendUpdate(ID senderID, String username, String uri, String data) throws IOException;
 	
 }
