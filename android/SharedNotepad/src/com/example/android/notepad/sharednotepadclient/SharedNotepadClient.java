@@ -15,7 +15,7 @@ import com.example.android.sharedobjectservice.ISharedObjectContainerService;
 
 public class SharedNotepadClient implements ISharedNotepadClient {
 
-	private final ID notepadSharedObjectID = IDFactory.getDefault().createStringID("com.composent.android.sharednotepad.sharedobject");
+	private final ID notepadSharedObjectID = IDFactory.getDefault().createStringID("com.composent.ecf.server.generic.sharednotepad.SharedNotepadSharedObject");
 	private ISharedObjectContainer clientContainer;
 	private NotepadSharedObject notepadSharedObject;
 	
