@@ -4,7 +4,11 @@ import java.io.IOException;
 
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.sharedobject.BaseSharedObject;
+import org.eclipse.ecf.core.sharedobject.SharedObjectInitException;
 import org.eclipse.ecf.core.sharedobject.SharedObjectMsg;
+import org.eclipse.ecf.core.sharedobject.events.ISharedObjectActivatedEvent;
+import org.eclipse.ecf.core.util.Event;
+import org.eclipse.ecf.core.util.IEventProcessor;
 
 import android.location.Location;
 import android.location.LocationListener;
@@ -15,17 +19,16 @@ public class NotepadSharedObject extends BaseSharedObject {
 
 	private static final String HANDLE_UPDATE_MSG = "handleUpdateMsg";
 	private static final String HANDLE_LOCATION_MSG = "handleLocationMsg";
-	
+
 	private ISharedNotepadListener listener;
 
 	private String username;
 	private String localOriginalContent;
-	
+
 	private LocationManager locationManager;
 	private LocationListener locationListener = new LocationListener() {
 
 		public void onLocationChanged(Location location) {
-			System.out.println("onLocationChanged location="+location);
 			sendLocationChanged(location);
 		}
 
@@ -50,6 +53,17 @@ public class NotepadSharedObject extends BaseSharedObject {
 				locationListener);
 	}
 
+	protected void initialize() throws SharedObjectInitException {
+		super.initialize();
+		addEventProcessor(new IEventProcessor() {
+			public boolean processEvent(Event event) {
+				if (event instanceof ISharedObjectActivatedEvent) {
+					sendLocationChanged(locationManager.getLastKnownLocation("gps"));
+				}
+				return false;
+			}});
+	}
+	
 	public void dispose(ID containerID) {
 		super.dispose(containerID);
 		if (this.locationManager != null) {
@@ -59,8 +73,14 @@ public class NotepadSharedObject extends BaseSharedObject {
 	}
 
 	protected void sendLocationChanged(Location location) {
+		System.out.println("onLocationChanged location=" + location);
+		if (location == null) location = new Location("gps");
 		try {
-			sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(HANDLE_LOCATION_MSG,new Object[]{ getLocalContainerID(), username, new Double(location.getLatitude()), new Double(location.getLongitude()), new Double(location.getAltitude()) }));
+			sendSharedObjectMsgTo(null, SharedObjectMsg.createMsg(
+					HANDLE_LOCATION_MSG, new Object[] { getLocalContainerID(),
+							username, new Double(location.getLatitude()),
+							new Double(location.getLongitude()),
+							new Double(location.getAltitude()) }));
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
@@ -114,7 +134,10 @@ public class NotepadSharedObject extends BaseSharedObject {
 		}
 	}
 
-	protected void handleLocationMsg(ID senderID, String username, Double latitude, Double longitude, Double altitude) {
-		System.out.println("handleLocationMsg senderID="+senderID+" username="+username+" lat="+latitude+" lon="+longitude+" alt="+altitude);
+	protected void handleLocationMsg(ID senderID, String username,
+			Double latitude, Double longitude, Double altitude) {
+		System.out.println("handleLocationMsg senderID=" + senderID
+				+ " username=" + username + " lat=" + latitude + " lon="
+				+ longitude + " alt=" + altitude);
 	}
 }
