@@ -19,9 +19,9 @@ public class SharedNotepadClient implements ISharedNotepadClient {
 	private ISharedObjectContainer clientContainer;
 	private NotepadSharedObject notepadSharedObject;
 	
-	public SharedNotepadClient(ISharedObjectContainerService containerService, String username, String originalContent, ISharedNotepadListener listener, LocationManager locationManager) {
+	public SharedNotepadClient(ISharedObjectContainerService containerService, String clientId, String username, String originalContent, ISharedNotepadListener listener, LocationManager locationManager) {
     	try {
-    		clientContainer = containerService.createClientContainer();
+    		clientContainer = containerService.createClientContainer(clientId);
     	} catch (ContainerCreateException e) {
     		e.printStackTrace();
     	}
