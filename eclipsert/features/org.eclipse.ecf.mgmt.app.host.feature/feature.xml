@@ -21,9 +21,6 @@
          id="org.eclipse.ecf.mgmt.app.feature"
          version="0.0.0"/>
 
-   <requires>
-   </requires>
-
    <plugin
          id="org.eclipse.ecf.mgmt.app.host"
          download-size="0"
