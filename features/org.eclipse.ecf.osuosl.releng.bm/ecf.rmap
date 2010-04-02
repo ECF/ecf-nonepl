@@ -18,8 +18,8 @@
 	
 	<!-- skype -->
 	<searchPath name="com.skype">
-		<provider xsi:type="pmp:PDEMapProvider" readerType="cvs" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="true">
-			<uri format=":pserver:anonymous@cvs.sourceforge.jp:/cvsroot/skype,eclipse/plugins/">
+		<provider readerType="cvs" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="true">
+			<uri format=":pserver:anonymous@cvs.sourceforge.jp:/cvsroot/skype,eclipse/plugins/{0}">
 				<bc:propertyRef key="buckminster.component" />
 			</uri>
 		</provider>
