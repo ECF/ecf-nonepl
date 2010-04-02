@@ -16,9 +16,19 @@
         </provider>
 	</searchPath>
 	
+	<!-- skype -->
+	<searchPath name="com.skype">
+		<provider xsi:type="pmp:PDEMapProvider" readerType="cvs" componentTypes="osgi.bundle,eclipse.feature" mutable="false" source="true">
+			<uri format=":pserver:anonymous@cvs.sourceforge.jp:/cvsroot/skype,eclipse/plugins/">
+				<bc:propertyRef key="buckminster.component" />
+			</uri>
+		</provider>
+	</searchPath>
+
 	<!-- below order does matter!!! -->
 
 	<!-- ECF OSU -->
+	<locator searchPathRef="com.skype" pattern="^com\.skype(\..+)?" failOnError="false"/>
 	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf(\..+)?" failOnError="false"/>
 
 	<!--  everything else is redirected to ecf.rmap at dev.eclipse.org -->
