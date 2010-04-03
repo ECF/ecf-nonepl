@@ -46,13 +46,13 @@ public class Transmitter implements Runnable {
 		try {
 
 			SendStream stream = manager.createSendStream(dataOutput, 0);
-			System.out.println("Processor = " + processor);
-			System.out.println("Stream = " + stream);
+			System.out.println("Processor = " + processor); //$NON-NLS-1$
+			System.out.println("Stream = " + stream); //$NON-NLS-1$
 			stream.start();
 
 			processor.start();
 
-			System.err.println("Transmitter Transmitting..");
+			System.err.println("Transmitter Transmitting.."); //$NON-NLS-1$
 
 		} catch (Exception e) {
 			// TODO: handle exception

@@ -50,13 +50,13 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 		new net.sf.fmj.media.cdp.javasound.CaptureDevicePlugger().addCaptureDevices();
 
 		//Media Locator 
-		locator = new MediaLocator("javasound://0");
+		locator = new MediaLocator("javasound://0"); //$NON-NLS-1$
 
 	}
 
 	public void initiateMediaSession() {
 		String result = createProcessor();
-		System.out.println("Result after creating processor= " + result);
+		System.out.println("Result after creating processor= " + result); //$NON-NLS-1$
 		initiateRTPManager();
 
 		for (int i = 0; i < managers.length; i++) {
@@ -69,11 +69,11 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 			///Init Transmitter
 			result = initiateTransmitter();
 
-			System.out.println("Result after Init Transmitter= " + result);
+			System.out.println("Result after Init Transmitter= " + result); //$NON-NLS-1$
 
 			// Init Receiver
 			result = initiateReceiver();
-			System.out.println("Result after Init Receiver= " + result);
+			System.out.println("Result after Init Receiver= " + result); //$NON-NLS-1$
 
 		}
 
@@ -96,7 +96,7 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 		dataOutput = null;
 
 		managers = null;
-		manager.removeTargets("All the targets removed");
+		manager.removeTargets("All the targets removed"); //$NON-NLS-1$
 		manager.dispose();
 		manager = null;
 
@@ -129,12 +129,12 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 			Thread t = new Thread(transmitter);
 			t.start();
 
-			System.out.println("Start transmission after send stream creation");
+			System.out.println("Start transmission after send stream creation"); //$NON-NLS-1$
 			//			processor.start();
 
 			//TODO Remove
 			Vector receivingStream = manager.getReceiveStreams();
-			System.out.println("receivingStream=" + receivingStream);
+			System.out.println("receivingStream=" + receivingStream); //$NON-NLS-1$
 
 			return null;
 		} catch (Exception e) {
@@ -164,7 +164,7 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 
 			//TODO Remove
 			Vector receivingStream = manager.getReceiveStreams();
-			System.out.println("receivingStream=" + receivingStream);
+			System.out.println("receivingStream=" + receivingStream); //$NON-NLS-1$
 
 			return null;
 
@@ -177,7 +177,7 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 
 	private String createProcessor() {
 		if (locator == null)
-			return "Locator is null";
+			return "Locator is null"; //$NON-NLS-1$
 
 		DataSource ds;
 		//		DataSource clone;
@@ -185,29 +185,29 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 		try {
 			ds = javax.media.Manager.createDataSource(locator);
 		} catch (Exception e) {
-			return "Couldn't create DataSource";
+			return "Couldn't create DataSource"; //$NON-NLS-1$
 		}
 
 		// Try to create a processor to handle the input media locator
 		try {
 			processor = javax.media.Manager.createProcessor(ds);
 		} catch (NoProcessorException npe) {
-			return "Couldn't create processor";
+			return "Couldn't create processor"; //$NON-NLS-1$
 		} catch (IOException ioe) {
-			return "IOException creating processor";
+			return "IOException creating processor"; //$NON-NLS-1$
 		}
 
 		// Wait for it to configure
 		boolean result = waitForState(processor, Processor.Configured);
 		if (result == false)
-			return "Couldn't configure processor";
+			return "Couldn't configure processor"; //$NON-NLS-1$
 
 		// Get the tracks from the processor
 		TrackControl[] tracks = processor.getTrackControls();
 
 		// Do we have atleast one track?
 		if (tracks == null || tracks.length < 1)
-			return "Couldn't find tracks in processor";
+			return "Couldn't find tracks in processor"; //$NON-NLS-1$
 
 		// Set the output content descriptor to RAW_RTP
 		// This will limit the supported formats reported from
@@ -240,8 +240,8 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 						chosen = new AudioFormat(AudioFormat.ULAW_RTP, 8000, 8, 1);//supported[0];
 					}
 					tracks[i].setFormat(chosen);
-					System.err.println("Track " + i + " is set to transmit as:");
-					System.err.println("  " + chosen);
+					System.err.println("Track " + i + " is set to transmit as:"); //$NON-NLS-1$ //$NON-NLS-2$
+					System.err.println("  " + chosen); //$NON-NLS-1$
 					atLeastOneTrack = true;
 				} else
 					tracks[i].setEnabled(false);
@@ -250,14 +250,14 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 		}
 
 		if (!atLeastOneTrack)
-			return "Couldn't set any of the tracks to a valid RTP format";
+			return "Couldn't set any of the tracks to a valid RTP format"; //$NON-NLS-1$
 
 		// Realize the processor. This will internally create a flow
 		// graph and attempt to create an output datasource for JPEG/RTP
 		// audio frames.
 		result = waitForState(processor, Controller.Realized);
 		if (result == false)
-			return "Couldn't realize processor";
+			return "Couldn't realize processor"; //$NON-NLS-1$
 
 		// Set the JPEG quality to .5.
 		setJPEGQuality(processor, 0.5f);
@@ -330,7 +330,7 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 						if (fmts[j].matches(jpegFmt)) {
 							qc = (QualityControl) cs[i];
 							qc.setQuality(val);
-							System.err.println("- Setting quality to " + val + " on " + qc);
+							System.err.println("- Setting quality to " + val + " on " + qc); //$NON-NLS-1$ //$NON-NLS-2$
 							break;
 						}
 					}
@@ -416,7 +416,7 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 	public void update(SessionEvent evt) {
 		if (evt instanceof NewParticipantEvent) {
 			Participant p = ((NewParticipantEvent) evt).getParticipant();
-			System.err.println("  - A new participant had just joined: " + p.getCNAME());
+			System.err.println("  - A new participant had just joined: " + p.getCNAME()); //$NON-NLS-1$
 		}
 	}
 
@@ -424,16 +424,16 @@ public class Transceiver implements ReceiveStreamListener, SessionListener, Remo
 	 * @see javax.media.rtp.RemoteListener#update(javax.media.rtp.event.RemoteEvent)
 	 */
 	public void update(RemoteEvent evt) {
-		System.out.println("New Report ....");
+		System.out.println("New Report ...."); //$NON-NLS-1$
 		if (evt instanceof ReceiverReportEvent) {
-			System.out.println("Receiver Report Recieved.");
+			System.out.println("Receiver Report Recieved."); //$NON-NLS-1$
 		} else if (evt instanceof SenderReportEvent) {
-			System.out.println("Sender Report Received.");
+			System.out.println("Sender Report Received."); //$NON-NLS-1$
 		}
 	}
 
 	public static void Main(String[] args) {
-		Transceiver t = new Transceiver("192.168.1.5", "52000");
+		Transceiver t = new Transceiver("192.168.1.5", "52000"); //$NON-NLS-1$ //$NON-NLS-2$
 		t.initiateMediaSession();
 	}
 
