@@ -30,7 +30,7 @@ public class Receiver implements Runnable, ControllerListener {
 	 */
 	public void run() {
 
-		BufferControl bc = (BufferControl) manager.getControl("javax.media.control.BufferControl");
+		BufferControl bc = (BufferControl) manager.getControl("javax.media.control.BufferControl"); //$NON-NLS-1$
 		if (bc != null)
 			bc.setBufferLength(10);
 
@@ -43,7 +43,7 @@ public class Receiver implements Runnable, ControllerListener {
 			synchronized (dataSync) {
 				while (!dataReceived && System.currentTimeMillis() - then < waitingPeriod) {
 					if (!dataReceived)
-						System.err.println("  - Waiting for RTP data to arrive...");
+						System.err.println("  - Waiting for RTP data to arrive..."); //$NON-NLS-1$
 					dataSync.wait(10000);
 				}
 			}
@@ -51,7 +51,7 @@ public class Receiver implements Runnable, ControllerListener {
 		}
 
 		if (!dataReceived) {
-			System.err.println("No RTP data was received.");
+			System.err.println("No RTP data was received."); //$NON-NLS-1$
 			close();
 		}
 	}
@@ -74,7 +74,7 @@ public class Receiver implements Runnable, ControllerListener {
 		// close the RTP session.
 		//		for (int i = 0; i < mgrs.length; i++) {
 		if (manager != null) {
-			manager.removeTargets("Closing session from AVReceive2");
+			manager.removeTargets("Closing session from AVReceive2"); //$NON-NLS-1$
 			manager.dispose();
 			manager = null;
 		}
@@ -96,8 +96,8 @@ public class Receiver implements Runnable, ControllerListener {
 
 		if (evt instanceof RemotePayloadChangeEvent) {
 
-			System.err.println("  - Received an RTP PayloadChangeEvent.");
-			System.err.println("Sorry, cannot handle payload change.");
+			System.err.println("  - Received an RTP PayloadChangeEvent."); //$NON-NLS-1$
+			System.err.println("Sorry, cannot handle payload change."); //$NON-NLS-1$
 			System.exit(0);
 
 		}
@@ -109,16 +109,16 @@ public class Receiver implements Runnable, ControllerListener {
 				DataSource ds = stream.getDataSource();
 
 				// Find out the formats.
-				RTPControl ctl = (RTPControl) ds.getControl("javax.media.rtp.RTPControl");
+				RTPControl ctl = (RTPControl) ds.getControl("javax.media.rtp.RTPControl"); //$NON-NLS-1$
 				if (ctl != null) {
-					System.err.println("  - Recevied new RTP stream: " + ctl.getFormat());
+					System.err.println("  - Recevied new RTP stream: " + ctl.getFormat()); //$NON-NLS-1$
 				} else
-					System.err.println("  - Recevied new RTP stream");
+					System.err.println("  - Recevied new RTP stream"); //$NON-NLS-1$
 
 				if (participant == null)
-					System.err.println("      The sender of this stream had yet to be identified.");
+					System.err.println("      The sender of this stream had yet to be identified."); //$NON-NLS-1$
 				else {
-					System.err.println("      The stream comes from: " + participant.getCNAME());
+					System.err.println("      The stream comes from: " + participant.getCNAME()); //$NON-NLS-1$
 				}
 
 				// create a player by passing datasource to the Media Manager
@@ -138,7 +138,7 @@ public class Receiver implements Runnable, ControllerListener {
 				}
 
 			} catch (Exception e) {
-				System.err.println("NewReceiveStreamEvent exception " + e.getMessage());
+				System.err.println("NewReceiveStreamEvent exception " + e.getMessage()); //$NON-NLS-1$
 				return;
 			}
 
@@ -149,17 +149,17 @@ public class Receiver implements Runnable, ControllerListener {
 			if (stream != null && stream.getDataSource() != null) {
 				DataSource ds = stream.getDataSource();
 				// Find out the formats.
-				RTPControl ctl = (RTPControl) ds.getControl("javax.media.rtp.RTPControl");
-				System.err.println("  - The previously unidentified stream ");
+				RTPControl ctl = (RTPControl) ds.getControl("javax.media.rtp.RTPControl"); //$NON-NLS-1$
+				System.err.println("  - The previously unidentified stream "); //$NON-NLS-1$
 				if (ctl != null)
-					System.err.println("      " + ctl.getFormat());
-				System.err.println("      had now been identified as sent by: " + participant.getCNAME());
+					System.err.println("      " + ctl.getFormat()); //$NON-NLS-1$
+				System.err.println("      had now been identified as sent by: " + participant.getCNAME()); //$NON-NLS-1$
 			}
 		}
 
 		else if (evt instanceof ByeEvent) {
 
-			System.err.println("  - Got \"bye\" from: " + participant.getCNAME());
+			System.err.println("  - Got \"bye\" from: " + participant.getCNAME()); //$NON-NLS-1$
 			PlayerWindow pw = find(stream);
 			if (pw != null) {
 				pw.close();
@@ -184,7 +184,7 @@ public class Receiver implements Runnable, ControllerListener {
 			PlayerWindow pw = find(p);
 			if (pw == null) {
 				// Some strange happened.
-				System.err.println("Internal error!");
+				System.err.println("Internal error!"); //$NON-NLS-1$
 				System.exit(-1);
 			}
 			pw.initialize();
@@ -199,7 +199,7 @@ public class Receiver implements Runnable, ControllerListener {
 				pw.close();
 				playerWindows.removeElement(pw);
 			}
-			System.err.println("AVReceive2 internal error: " + ce);
+			System.err.println("AVReceive2 internal error: " + ce); //$NON-NLS-1$
 		}
 
 	}
@@ -264,9 +264,9 @@ public class Receiver implements Runnable, ControllerListener {
 		PlayerPanel(Player p) {
 			setLayout(new BorderLayout());
 			if ((vc = p.getVisualComponent()) != null)
-				add("Center", vc);
+				add("Center", vc); //$NON-NLS-1$
 			if ((cc = p.getControlPanelComponent()) != null)
-				add("South", cc);
+				add("South", cc); //$NON-NLS-1$
 		}
 
 		public Dimension getPreferredSize() {
