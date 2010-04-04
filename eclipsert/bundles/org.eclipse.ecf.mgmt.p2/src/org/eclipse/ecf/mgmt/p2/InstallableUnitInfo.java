@@ -7,7 +7,7 @@
  * Contributors:
  *   Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.mgmt.p2.repository;
+package org.eclipse.ecf.mgmt.p2;
 
 import java.io.Serializable;
 import java.util.ArrayList;
@@ -17,8 +17,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.eclipse.core.runtime.Assert;
-import org.eclipse.ecf.mgmt.p2.IVersionedId;
-import org.eclipse.ecf.mgmt.p2.VersionedId;
 import org.eclipse.equinox.p2.metadata.ICopyright;
 import org.eclipse.equinox.p2.metadata.IInstallableUnit;
 import org.eclipse.equinox.p2.metadata.ILicense;

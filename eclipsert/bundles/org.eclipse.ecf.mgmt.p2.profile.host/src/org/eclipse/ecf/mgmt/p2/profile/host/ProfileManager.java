@@ -20,6 +20,8 @@ import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.status.SerializableStatus;
 import org.eclipse.ecf.internal.mgmt.p2.profile.host.Activator;
+import org.eclipse.ecf.mgmt.p2.IInstallableUnitInfo;
+import org.eclipse.ecf.mgmt.p2.InstallableUnitInfo;
 import org.eclipse.ecf.mgmt.p2.profile.IProfileInfo;
 import org.eclipse.ecf.mgmt.p2.profile.IProfileManager;
 import org.eclipse.ecf.mgmt.p2.profile.ProfileInfo;
@@ -27,6 +29,8 @@ import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.ProvisionException;
 import org.eclipse.equinox.p2.engine.IProfile;
 import org.eclipse.equinox.p2.engine.IProfileRegistry;
+import org.eclipse.equinox.p2.metadata.IInstallableUnit;
+import org.eclipse.equinox.p2.query.QueryUtil;
 import org.eclipse.osgi.service.environment.EnvironmentInfo;
 import org.osgi.framework.BundleContext;
 import org.osgi.util.tracker.ServiceTracker;
@@ -58,8 +62,9 @@ public class ProfileManager implements IProfileManager, IAdaptable {
 		if (profileRegistry == null)
 			return createErrorStatus("Profile registry is null");
 
-		if (profileId == null) profileId = IProfileRegistry.SELF;
-		
+		if (profileId == null)
+			profileId = IProfileRegistry.SELF;
+
 		if (properties == null)
 			properties = new HashMap();
 		if (properties.get("org.eclipse.equinox.p2.environments") == null) {
@@ -157,6 +162,30 @@ public class ProfileManager implements IProfileManager, IAdaptable {
 
 	private IStatus createErrorStatus(String message) {
 		return createErrorStatus(message, null);
+	}
+
+	public IInstallableUnitInfo[] getInstalledFeatures(String profileId) {
+		IProfileRegistry profileRegistry = (IProfileRegistry) agent
+				.getService(IProfileRegistry.SERVICE_NAME);
+		if (profileRegistry == null)
+			return null;
+		if (profileId == null)
+			profileId = IProfileRegistry.SELF;
+
+		IProfile profile = profileRegistry.getProfile(profileId);
+		if (profile == null)
+			return null;
+
+		IInstallableUnit[] units = (IInstallableUnit[]) profile.query(
+				QueryUtil.createIUGroupQuery(), null).toArray(
+				IInstallableUnit.class);
+		if (units == null)
+			return null;
+		List results = new ArrayList();
+		for (int i = 0; i < units.length; i++)
+			results.add(new InstallableUnitInfo(units[i]));
+		return (IInstallableUnitInfo[]) results
+				.toArray(new IInstallableUnitInfo[] {});
 	}
 
 }

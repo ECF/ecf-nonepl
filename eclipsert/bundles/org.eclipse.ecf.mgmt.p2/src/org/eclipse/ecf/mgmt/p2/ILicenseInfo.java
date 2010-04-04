@@ -7,7 +7,7 @@
  * Contributors:
  *   Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.mgmt.p2.repository;
+package org.eclipse.ecf.mgmt.p2;
 
 import java.net.URI;
 

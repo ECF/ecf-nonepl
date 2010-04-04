@@ -7,19 +7,26 @@
  * Contributors:
  *   Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.mgmt.p2.repository;
+package org.eclipse.ecf.mgmt.p2;
 
-import java.net.URI;
 import java.util.Collection;
+import java.util.Map;
 
-public interface IUpdateDescriptorInfo {
 
-	public URI getLocation();
+public interface IInstallableUnitInfo {
 
-	public Collection getIUSBeingUpdated();
+	public IVersionedId getId();
 
-	public int getSeverity();
+	public Map getProperties();
 
-	public String getDescription();
+	public boolean isSingleton();
+
+	public boolean isResolved();
+
+	public Collection getLicenses();
+
+	public ICopyrightInfo getCopyright();
+
+	public IUpdateDescriptorInfo getUpdateDescriptor();
 
 }

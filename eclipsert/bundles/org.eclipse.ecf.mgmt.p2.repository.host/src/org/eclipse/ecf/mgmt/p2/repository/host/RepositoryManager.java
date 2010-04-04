@@ -20,10 +20,10 @@ import org.eclipse.core.runtime.MultiStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.status.SerializableStatus;
 import org.eclipse.ecf.internal.mgmt.p2.repository.host.Activator;
-import org.eclipse.ecf.mgmt.p2.repository.IInstallableUnitInfo;
+import org.eclipse.ecf.mgmt.p2.IInstallableUnitInfo;
+import org.eclipse.ecf.mgmt.p2.InstallableUnitInfo;
 import org.eclipse.ecf.mgmt.p2.repository.IRepositoryInfo;
 import org.eclipse.ecf.mgmt.p2.repository.IRepositoryManager;
-import org.eclipse.ecf.mgmt.p2.repository.InstallableUnitInfo;
 import org.eclipse.ecf.mgmt.p2.repository.RepositoryInfo;
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
 import org.eclipse.equinox.p2.core.ProvisionException;
@@ -339,7 +339,7 @@ public class RepositoryManager implements IRepositoryManager, IAdaptable {
 		return getMetadataRepositoryInfo(location, null);
 	}
 
-	public IInstallableUnitInfo[] getFeatures(URI location) {
+	public IInstallableUnitInfo[] getInstallableFeatures(URI location) {
 		IMetadataRepositoryManager manager = (IMetadataRepositoryManager) agent
 				.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		if (manager == null)

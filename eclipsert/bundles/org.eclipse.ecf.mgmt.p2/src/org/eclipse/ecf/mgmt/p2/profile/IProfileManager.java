@@ -12,6 +12,7 @@ package org.eclipse.ecf.mgmt.p2.profile;
 import java.util.Map;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.ecf.mgmt.p2.IInstallableUnitInfo;
 
 public interface IProfileManager {
 
@@ -25,4 +26,5 @@ public interface IProfileManager {
 
 	public IProfileInfo[] getProfiles();
 
+	public IInstallableUnitInfo[] getInstalledFeatures(String profileId);
 }

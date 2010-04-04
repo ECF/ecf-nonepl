@@ -12,6 +12,7 @@ package org.eclipse.ecf.mgmt.p2.repository;
 import java.net.URI;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.ecf.mgmt.p2.IInstallableUnitInfo;
 
 public interface IRepositoryManager {
 
@@ -63,5 +64,5 @@ public interface IRepositoryManager {
 
 	public IRepositoryInfo getMetadataRepositoryInfo(URI location);
 
-	public IInstallableUnitInfo[] getFeatures(URI location);
+	public IInstallableUnitInfo[] getInstallableFeatures(URI location);
 }

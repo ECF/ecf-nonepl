@@ -7,6 +7,8 @@ public interface IFeatureInstallManager {
 
 	public IStatus applyConfiguration();
 
+	public IVersionedId[] getInstalledFeatures(String profileId);
+	
 	public IVersionedId[] getInstalledFeatures();
 
 	public IStatus installFeature(IVersionedId featureId, String profileId);

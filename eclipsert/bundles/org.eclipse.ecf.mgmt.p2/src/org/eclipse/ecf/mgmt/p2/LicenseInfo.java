@@ -7,22 +7,24 @@
  * Contributors:
  *   Composent, Inc. - initial API and implementation
  ******************************************************************************/
-package org.eclipse.ecf.mgmt.p2.repository;
+package org.eclipse.ecf.mgmt.p2;
 
 import java.io.Serializable;
 import java.net.URI;
 
-import org.eclipse.equinox.p2.metadata.ICopyright;
+import org.eclipse.equinox.p2.metadata.ILicense;
 
-public class CopyrightInfo implements ICopyrightInfo, Serializable {
+public class LicenseInfo implements ILicenseInfo, Serializable {
 
-	private static final long serialVersionUID = 3852708688892784596L;
+	private static final long serialVersionUID = -4606908296710108594L;
 	private URI location;
 	private String body;
+	private String uuid;
 
-	public CopyrightInfo(ICopyright cr) {
-		this.location = cr.getLocation();
-		this.body = cr.getBody();
+	public LicenseInfo(ILicense l) {
+		this.location = l.getLocation();
+		this.body = l.getBody();
+		this.uuid = l.getUUID();
 	}
 
 	public URI getLocation() {
@@ -33,12 +35,18 @@ public class CopyrightInfo implements ICopyrightInfo, Serializable {
 		return body;
 	}
 
+	public String getUUID() {
+		return uuid;
+	}
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("CopyrightInfo[location=");
+		buffer.append("LicenseInfo[location=");
 		buffer.append(location);
 		buffer.append(", body=");
 		buffer.append(body);
+		buffer.append(", uuid=");
+		buffer.append(uuid);
 		buffer.append("]");
 		return buffer.toString();
 	}

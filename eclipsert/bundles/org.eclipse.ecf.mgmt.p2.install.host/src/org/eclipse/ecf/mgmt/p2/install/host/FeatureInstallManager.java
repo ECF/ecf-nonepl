@@ -73,22 +73,6 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 		}
 	}
 
-	public IVersionedId[] getInstalledFeatures() {
-		IQueryable queryable = (IMetadataRepositoryManager) agent
-				.getService(IMetadataRepositoryManager.SERVICE_NAME);
-		if (queryable == null)
-			return null;
-		IInstallableUnit[] ius = (IInstallableUnit[]) queryable.query(
-				QueryUtil.createIUGroupQuery(), null).toArray(
-				IInstallableUnit.class);
-		IVersionedId[] featureids = new IVersionedId[ius.length];
-		for (int i = 0; i < featureids.length; i++) {
-			featureids[i] = new VersionedId(ius[i].getId(), ius[i].getVersion()
-					.toString());
-		}
-		return featureids;
-	}
-
 	public IStatus installFeature(IVersionedId featureId, String profileId) {
 		if (featureId == null)
 			return createErrorStatus("featureid to install must not be null");
@@ -156,12 +140,13 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 			return createErrorStatus("no profile registry available");
 		IProfile profile = profileRegistry.getProfile(profileId);
 		if (profile == null)
-			return createErrorStatus("no matching profile="+profileId);
-		
+			return createErrorStatus("no matching profile=" + profileId);
+
 		IProgressMonitor monitor = new NullProgressMonitor();
 		String unitId = featureId.getId();
 		String unitVersion = featureId.getVersion();
-		IQueryResult units = profile.query(QueryUtil.createIUQuery(unitId, Version.create(unitVersion)), monitor);
+		IQueryResult units = profile.query(QueryUtil.createIUQuery(unitId,
+				Version.create(unitVersion)), monitor);
 
 		if (units.isEmpty()) {
 			StringBuffer error = new StringBuffer();
@@ -303,6 +288,32 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 				return installerPlanStatus;
 		}
 		return engine.perform(result, phaseSet, progress);
+	}
+
+	public IVersionedId[] getInstalledFeatures() {
+		return getInstalledFeatures(null);
+	}
+
+	public IVersionedId[] getInstalledFeatures(String profileId) {
+		IProfileRegistry profileRegistry = (IProfileRegistry) agent
+				.getService(IProfileRegistry.SERVICE_NAME);
+		if (profileRegistry == null)
+			return null;
+		if (profileId == null)
+			profileId = IProfileRegistry.SELF;
+
+		IProfile profile = profileRegistry.getProfile(profileId);
+		if (profile == null)
+			return null;
+		IInstallableUnit[] ius = (IInstallableUnit[]) profile.query(
+				QueryUtil.createIUGroupQuery(), null).toArray(
+				IInstallableUnit.class);
+		IVersionedId[] featureids = new IVersionedId[ius.length];
+		for (int i = 0; i < featureids.length; i++) {
+			featureids[i] = new VersionedId(ius[i].getId(), ius[i].getVersion()
+					.toString());
+		}
+		return featureids;
 	}
 
 }

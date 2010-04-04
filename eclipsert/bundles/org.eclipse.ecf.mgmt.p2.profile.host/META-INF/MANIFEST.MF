@@ -9,9 +9,12 @@ Bundle-ActivationPolicy: lazy
 Bundle-RequiredExecutionEnvironment: CDC-1.1/Foundation-1.1,
  J2SE-1.4
 Import-Package: org.eclipse.ecf.core.status,
+ org.eclipse.ecf.mgmt.p2,
  org.eclipse.ecf.mgmt.p2.profile,
  org.eclipse.equinox.p2.core,
  org.eclipse.equinox.p2.engine,
+ org.eclipse.equinox.p2.metadata;version="2.0.0",
+ org.eclipse.equinox.p2.query;version="2.0.0",
  org.eclipse.osgi.service.environment,
  org.osgi.framework,
  org.osgi.util.tracker
