@@ -93,7 +93,7 @@ public class SipCallSession implements ICallSession {
 	 * @see org.eclipse.ecf.telephony.call.ICallSession#sendTerminate()
 	 */
 
-	public void sendTerminate() throws CallException {
+	public void sendTerminate() {
 		callAdapter.hangupActiveCall();
 
 	}

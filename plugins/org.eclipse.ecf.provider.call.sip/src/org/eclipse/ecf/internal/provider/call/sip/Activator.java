@@ -35,7 +35,7 @@ public class Activator implements BundleActivator {
 		simpleLogService = (SimpleLogService) simpleLogServiceTracker.getService();
 
 		if (simpleLogService != null)
-			simpleLogService.log("Yee ha, I'm logging!");
+			simpleLogService.log("Yee ha, I'm logging!"); //$NON-NLS-1$
 
 		//		SipCall.main(null);
 	}
@@ -46,7 +46,7 @@ public class Activator implements BundleActivator {
 	 */
 	public void stop(BundleContext context) throws Exception {
 		if (simpleLogService != null)
-			simpleLogService.log("Yee ha, I'm logging!");
+			simpleLogService.log("Yee ha, I'm logging!"); //$NON-NLS-1$
 
 		// close the service tracker
 		simpleLogServiceTracker.close();

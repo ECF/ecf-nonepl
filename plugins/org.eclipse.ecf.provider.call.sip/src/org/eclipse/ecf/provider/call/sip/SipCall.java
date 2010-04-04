@@ -78,7 +78,7 @@ public class SipCall {
 	private String inviteSDP;
 
 	//	private static final String transportTCP = "tcp";
-	private static final String transportUDP = "udp";
+	private static final String transportUDP = "udp"; //$NON-NLS-1$
 	//	private static final String peerHostPortUDP = "192.168.1.5:5070";
 	//	private static final String peerHostPortTCP = "230.0.0.1:5070";
 
@@ -183,7 +183,7 @@ public class SipCall {
 		initiatorID = localParty.getInitiatorID();
 		initiatorName = localParty.getInitiatorName();
 		authPassword = localParty.getInitiatorPassword();
-		authUserName = initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@"));
+		authUserName = initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")); //$NON-NLS-1$ //$NON-NLS-2$
 		sipProxyServer = localParty.getSipProxyServer();
 	}
 
@@ -198,7 +198,7 @@ public class SipCall {
 
 		try {
 			createCallRequest();
-			System.out.println("Call request suceesfully created and sent");
+			System.out.println("Call request suceesfully created and sent"); //$NON-NLS-1$
 			return true;
 		} catch (SdpParseException e) {
 			e.printStackTrace();
@@ -246,34 +246,34 @@ public class SipCall {
 		sipStack = null;
 
 		sipFactory = SipFactory.getInstance();
-		sipFactory.setPathName("gov.nist");
+		sipFactory.setPathName("gov.nist"); //$NON-NLS-1$
 
 		Properties properties = new Properties();
 
-		properties.setProperty("javax.sip.OUTBOUND_PROXY", sipProxyServer + "/" + transportUDP);
+		properties.setProperty("javax.sip.OUTBOUND_PROXY", sipProxyServer + "/" + transportUDP); //$NON-NLS-1$ //$NON-NLS-2$
 
-		properties.setProperty("javax.sip.STACK_NAME", "Eclipse Sip Stack");
+		properties.setProperty("javax.sip.STACK_NAME", "Eclipse Sip Stack"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		properties.setProperty("gov.nist.javax.sip.DEBUG_LOG", "Sip Client Debug.txt");
-		properties.setProperty("javax.sip.IP_ADDRESS", InetAddress.getLocalHost().getHostAddress());
+		properties.setProperty("gov.nist.javax.sip.DEBUG_LOG", "Sip Client Debug.txt"); //$NON-NLS-1$ //$NON-NLS-2$
+		properties.setProperty("javax.sip.IP_ADDRESS", InetAddress.getLocalHost().getHostAddress()); //$NON-NLS-1$
 
-		properties.setProperty("gov.nist.javax.sip.SERVER_LOG", "Sip Client Server.txt");
+		properties.setProperty("gov.nist.javax.sip.SERVER_LOG", "Sip Client Server.txt"); //$NON-NLS-1$ //$NON-NLS-2$
 
-		properties.setProperty("gov.nist.javax.sip.CACHE_CLIENT_CONNECTIONS", "false");
-		properties.setProperty("gov.nist.javax.sip.TRACE_LEVEL", "ERROR");
+		properties.setProperty("gov.nist.javax.sip.CACHE_CLIENT_CONNECTIONS", "false"); //$NON-NLS-1$ //$NON-NLS-2$
+		properties.setProperty("gov.nist.javax.sip.TRACE_LEVEL", "ERROR"); //$NON-NLS-1$//$NON-NLS-2$
 
 		// Create SipStack object
 		sipStack = sipFactory.createSipStack(properties);
 		// sipStack=new SipStackImpl(properties);
-		System.out.println("createSipStack " + sipStack);
-		logger.debug("Sip Stack created");
+		System.out.println("createSipStack " + sipStack); //$NON-NLS-1$
+		logger.debug("Sip Stack created"); //$NON-NLS-1$
 
 		headerFactory = sipFactory.createHeaderFactory();
 		addressFactory = sipFactory.createAddressFactory();
 		messageFactory = sipFactory.createMessageFactory();
 
 		udpListeningPoint = sipStack.createListeningPoint(InetAddress.getLocalHost().getHostAddress(), 5060, "udp"); //$NON-NLS-1$
-		tcpListeningPoint = sipStack.createListeningPoint(InetAddress.getLocalHost().getHostAddress(), 5060, "tcp");
+		tcpListeningPoint = sipStack.createListeningPoint(InetAddress.getLocalHost().getHostAddress(), 5060, "tcp"); //$NON-NLS-1$
 		sipProvider = sipStack.createSipProvider(udpListeningPoint);
 		sipProvider.addListeningPoint(tcpListeningPoint);
 
@@ -297,7 +297,7 @@ public class SipCall {
 
 		Address fromNameAddress = addressFactory.createAddress(initiatorID.getUser());
 		fromNameAddress.setDisplayName(initiatorName);
-		FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "12345");
+		FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "12345"); //$NON-NLS-1$
 
 		// create To Header
 		Address toNameAddress = addressFactory.createAddress(receiverID.getUser());
@@ -305,7 +305,7 @@ public class SipCall {
 		ToHeader toHeader = headerFactory.createToHeader(toNameAddress, null);
 
 		// create Request URI
-		SipURI requestURI = addressFactory.createSipURI(receiverID.getUser().substring(receiverID.getUser().indexOf(":") + 1, receiverID.getUser().indexOf("@")), receiverID.getUser().substring(receiverID.getUser().indexOf("@") + 1));
+		SipURI requestURI = addressFactory.createSipURI(receiverID.getUser().substring(receiverID.getUser().indexOf(":") + 1, receiverID.getUser().indexOf("@")), receiverID.getUser().substring(receiverID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		// Create ViaHeaders
 
@@ -317,7 +317,7 @@ public class SipCall {
 		viaHeaders.add(viaHeader);
 
 		// Create ContentTypeHeader
-		ContentTypeHeader contentTypeHeader = headerFactory.createContentTypeHeader("application", "sdp");
+		ContentTypeHeader contentTypeHeader = headerFactory.createContentTypeHeader("application", "sdp"); //$NON-NLS-1$ //$NON-NLS-2$
 
 		// Create a new CallId header
 		CallIdHeader callIdHeader = sipProvider.getNewCallId();
@@ -337,7 +337,7 @@ public class SipCall {
 
 		// SipURI contactUrl =
 
-		SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+		SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		contactUrl.setPort(udpListeningPoint.getPort());
 		contactUrl.setLrParam();
@@ -345,20 +345,20 @@ public class SipCall {
 		// Create the contact name address.
 		SipURI contactURI = null;
 
-		contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+		contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		contactURI.setPort(sipProvider.getListeningPoint(transportUDP).getPort());
 
 		Address contactAddress = addressFactory.createAddress(contactURI);
 
 		// Add the contact address.
-		contactAddress.setDisplayName(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")));
+		contactAddress.setDisplayName(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@"))); //$NON-NLS-1$ //$NON-NLS-2$
 
 		contactHeader = headerFactory.createContactHeader(contactAddress);
 		request.addHeader(contactHeader);
 
 		// Add the extension header.
-		Header extensionHeader = headerFactory.createHeader("My-Header", "my header value");
+		Header extensionHeader = headerFactory.createHeader("My-Header", "my header value"); //$NON-NLS-1$ //$NON-NLS-2$
 		request.addHeader(extensionHeader);
 
 		String sdpData = new SessionDescriptionImpl().getInviteSDP().toString();
@@ -369,10 +369,10 @@ public class SipCall {
 		// You can add as many extension headers as you
 		// want.
 
-		extensionHeader = headerFactory.createHeader("My-Other-Header", "my new header value ");
+		extensionHeader = headerFactory.createHeader("My-Other-Header", "my new header value "); //$NON-NLS-1$ //$NON-NLS-2$
 		request.addHeader(extensionHeader);
 
-		Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>");
+		Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>"); //$NON-NLS-1$ //$NON-NLS-2$
 		request.addHeader(callInfoHeader);
 
 		// Create the client transaction.
@@ -398,7 +398,7 @@ public class SipCall {
 
 			Address fromNameAddress = addressFactory.createAddress(initiatorID.getUser());
 			fromNameAddress.setDisplayName(initiatorName);
-			FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "12345");
+			FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "12345"); //$NON-NLS-1$
 
 			// create To Header
 			Address toNameAddress = addressFactory.createAddress(receiverID.getUser());
@@ -406,7 +406,7 @@ public class SipCall {
 			ToHeader toHeader = headerFactory.createToHeader(toNameAddress, null);
 
 			// create Request URI
-			SipURI requestURI = addressFactory.createSipURI(receiverID.getUser().substring(receiverID.getUser().indexOf(":") + 1, receiverID.getUser().indexOf("@")), receiverID.getUser().substring(receiverID.getUser().indexOf("@") + 1));
+			SipURI requestURI = addressFactory.createSipURI(receiverID.getUser().substring(receiverID.getUser().indexOf(":") + 1, receiverID.getUser().indexOf("@")), receiverID.getUser().substring(receiverID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			// Create ViaHeaders
 
@@ -418,7 +418,7 @@ public class SipCall {
 			viaHeaders.add(viaHeader);
 
 			// Create ContentTypeHeader
-			ContentTypeHeader contentTypeHeader = headerFactory.createContentTypeHeader("application", "sdp");
+			ContentTypeHeader contentTypeHeader = headerFactory.createContentTypeHeader("application", "sdp"); //$NON-NLS-1$ //$NON-NLS-2$
 
 			// Create a new CallId header
 			CallIdHeader callIdHeader = headerFactory.createCallIdHeader(callId);
@@ -435,7 +435,7 @@ public class SipCall {
 			// Create contact headers
 			String host = InetAddress.getLocalHost().getHostAddress();
 
-			SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+			SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			contactUrl.setPort(udpListeningPoint.getPort());
 			contactUrl.setLrParam();
@@ -443,9 +443,9 @@ public class SipCall {
 			// Create the contact name address.
 			SipURI contactURI = null;
 			try {
-				contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), host);
+				contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), host); //$NON-NLS-1$ //$NON-NLS-2$
 			} catch (Exception e) {
-				contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), "sip." + initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+				contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), "sip." + initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 			}
 			contactURI.setPort(sipProvider.getListeningPoint(transportUDP).getPort());
@@ -453,13 +453,13 @@ public class SipCall {
 			Address contactAddress = addressFactory.createAddress(contactURI);
 
 			// Add the contact address.
-			contactAddress.setDisplayName(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")));
+			contactAddress.setDisplayName(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@"))); //$NON-NLS-1$ //$NON-NLS-2$
 
 			contactHeader = headerFactory.createContactHeader(contactAddress);
 			request.addHeader(contactHeader);
 
 			// Add the extension header.
-			Header extensionHeader = headerFactory.createHeader("My-Header", "my header value");
+			Header extensionHeader = headerFactory.createHeader("My-Header", "my header value"); //$NON-NLS-1$ //$NON-NLS-2$
 			request.addHeader(extensionHeader);
 
 			String sdpData = new SessionDescriptionImpl().getInviteSDP().toString();
@@ -470,10 +470,10 @@ public class SipCall {
 			// You can add as many extension headers as you
 			// want.
 
-			extensionHeader = headerFactory.createHeader("My-Other-Header", "my new header value ");
+			extensionHeader = headerFactory.createHeader("My-Other-Header", "my new header value "); //$NON-NLS-1$ //$NON-NLS-2$
 			request.addHeader(extensionHeader);
 
-			Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>");
+			Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>"); //$NON-NLS-1$ //$NON-NLS-2$
 			request.addHeader(callInfoHeader);
 
 		} catch (ParseException e) {
@@ -507,7 +507,7 @@ public class SipCall {
 			ringingReceived = false;// Now next time caller will be able to
 			// cancel it
 
-			System.out.println("On going Call request cancelled");
+			System.out.println("On going Call request cancelled"); //$NON-NLS-1$
 
 		} catch (SipException e) {
 			e.printStackTrace();
@@ -524,26 +524,26 @@ public class SipCall {
 	public void processBye(Request request, ServerTransaction serverTransactionId) {
 
 		if (sdpImpl != null) {
-			System.out.println("Media Session Stopped");
+			System.out.println("Media Session Stopped"); //$NON-NLS-1$
 			sdpImpl.disposeFMJ();
 			// Now the Call is not active anymore
 			setActiveCall(false);
 		}
 
 		try {
-			System.out.println("Sip Client:  Recived a bye for Out going call, from " + request.getRequestURI());
-			logger.info("Sip Client:  Recived a bye for Out going call, from " + request.getRequestURI());
+			System.out.println("Sip Client:  Recived a bye for Out going call, from " + request.getRequestURI()); //$NON-NLS-1$
+			logger.info("Sip Client:  Recived a bye for Out going call, from " + request.getRequestURI()); //$NON-NLS-1$
 			if (serverTransactionId == null) {
-				System.out.println("Sip Client:  null TID.");
-				logger.debug("Sip Client:  null TID.");
+				System.out.println("Sip Client:  null TID."); //$NON-NLS-1$
+				logger.debug("Sip Client:  null TID."); //$NON-NLS-1$
 				return;
 			}
 			Dialog dialog = serverTransactionId.getDialog();
-			System.out.println("Dialog State = " + dialog.getState());
+			System.out.println("Dialog State = " + dialog.getState()); //$NON-NLS-1$
 			Response response = messageFactory.createResponse(200, request);
 			serverTransactionId.sendResponse(response);
-			System.out.println("Sip Client:  Sending OK.");
-			System.out.println("Dialog State = " + dialog.getState());
+			System.out.println("Sip Client:  Sending OK."); //$NON-NLS-1$
+			System.out.println("Dialog State = " + dialog.getState()); //$NON-NLS-1$
 
 		} catch (Exception ex) {
 			ex.printStackTrace();
@@ -615,7 +615,7 @@ public class SipCall {
 	public void terminateIncomingCall() {
 
 		if (sdpImpl != null) {
-			System.out.println("Media Session stoppped");
+			System.out.println("Media Session stoppped"); //$NON-NLS-1$
 			sdpImpl.disposeFMJ();
 
 			// Now the call is not active anymore
@@ -623,14 +623,14 @@ public class SipCall {
 		}
 
 		try {
-			System.out.println("Before sending Bye to incoming call Dialog Status: " + requestDialog.getState());
+			System.out.println("Before sending Bye to incoming call Dialog Status: " + requestDialog.getState()); //$NON-NLS-1$
 			Request byeRequest = requestDialog.createRequest(Request.BYE);
 
 			cancelCTid = sipProvider.getNewClientTransaction(byeRequest);
 
 			requestDialog.sendRequest(cancelCTid);
 
-			System.out.println("After sending Bye to incoming call Dialog Status: " + requestDialog.getState());
+			System.out.println("After sending Bye to incoming call Dialog Status: " + requestDialog.getState()); //$NON-NLS-1$
 
 		} catch (TransactionUnavailableException e) {
 			e.printStackTrace();
@@ -649,12 +649,12 @@ public class SipCall {
 
 		try {
 			if (inviteSTid.getState() != TransactionState.COMPLETED) {
-				System.out.println("Sip Call: Dialog state before 480: " + inviteSTid.getDialog().getState());
+				System.out.println("Sip Call: Dialog state before 480: " + inviteSTid.getDialog().getState()); //$NON-NLS-1$
 
 				Response tempararilyUnavailableResponse = messageFactory.createResponse(Response.TEMPORARILY_UNAVAILABLE, inviteRequest);
 
 				inviteSTid.sendResponse(tempararilyUnavailableResponse);
-				System.out.println("Sip Call: Dialog state after 480: " + inviteSTid.getDialog().getState());
+				System.out.println("Sip Call: Dialog state after 480: " + inviteSTid.getDialog().getState()); //$NON-NLS-1$
 			}
 		} catch (SipException ex) {
 			ex.printStackTrace();
@@ -679,7 +679,7 @@ public class SipCall {
 		// create >From Header
 		Address fromNameAddress = addressFactory.createAddress(initiatorID.getUser());
 		fromNameAddress.setDisplayName(initiatorName);
-		FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "98765");
+		FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "98765"); //$NON-NLS-1$
 
 		// create To Header
 		Address toNameAddress = addressFactory.createAddress(initiatorID.getUser());
@@ -718,7 +718,7 @@ public class SipCall {
 
 		String host = InetAddress.getLocalHost().getHostAddress();
 
-		SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+		SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		contactUrl.setPort(udpListeningPoint.getPort());
 		contactUrl.setLrParam();
@@ -726,7 +726,7 @@ public class SipCall {
 		// Create the contact name address.
 		SipURI contactURI = null;
 
-		contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+		contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		contactURI.setPort(sipProvider.getListeningPoint(transportUDP).getPort());
 
@@ -739,7 +739,7 @@ public class SipCall {
 		request.addHeader(contactHeader);
 
 		// create Call Info Header
-		Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>");
+		Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>"); //$NON-NLS-1$ //$NON-NLS-2$
 		request.addHeader(callInfoHeader);
 
 		// Insert content Length
@@ -768,7 +768,7 @@ public class SipCall {
 			// create >From Header
 			Address fromNameAddress = addressFactory.createAddress(initiatorID.getUser());
 			fromNameAddress.setDisplayName(initiatorName);
-			FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "56789");
+			FromHeader fromHeader = headerFactory.createFromHeader(fromNameAddress, "56789"); //$NON-NLS-1$
 
 			// create To Header
 			Address toNameAddress = addressFactory.createAddress(initiatorID.getUser());
@@ -777,7 +777,7 @@ public class SipCall {
 
 			// create Request URI
 			SipURI requestURI = new SipUri();
-			requestURI.setHost(initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+			requestURI.setHost(initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$
 
 			// Create ViaHeaders
 
@@ -806,7 +806,7 @@ public class SipCall {
 			// Create contact headers
 			String host = InetAddress.getLocalHost().getHostAddress();
 
-			SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+			SipURI contactUrl = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 			contactUrl.setPort(udpListeningPoint.getPort());
 			contactUrl.setLrParam();
@@ -814,7 +814,7 @@ public class SipCall {
 			// Create the contact name address.
 			SipURI contactURI = null;
 			try {
-				contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), host);
+				contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), host); //$NON-NLS-1$ //$NON-NLS-2$
 
 			} catch (Exception e) {
 				// contactURI =
@@ -836,7 +836,7 @@ public class SipCall {
 			contactHeader = headerFactory.createContactHeader(contactAddress);
 			request.addHeader(contactHeader);
 
-			Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>");
+			Header callInfoHeader = headerFactory.createHeader("Call-Info", "<http://www.antd.nist.gov>"); //$NON-NLS-1$//$NON-NLS-2$
 			request.addHeader(callInfoHeader);
 
 			// Insert content Length
@@ -848,12 +848,12 @@ public class SipCall {
 
 			// Create User-Agent
 			List userAgents = new ArrayList();
-			userAgents.add("Eclipse ECF 3.0");
+			userAgents.add("Eclipse ECF 3.0"); //$NON-NLS-1$
 			UserAgentHeader userAgentHeader = headerFactory.createUserAgentHeader(userAgents);
 			request.addHeader(userAgentHeader);
 
 			// Create Allow header
-			String methods = "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO";
+			String methods = "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO"; //$NON-NLS-1$
 			AllowHeader allowHeader = headerFactory.createAllowHeader(methods);
 			request.addHeader(allowHeader);
 
@@ -879,7 +879,7 @@ public class SipCall {
 	public void processResponseAuthorization(Response response, URI uriReq) {
 		Request requestauth = null;
 		try {
-			System.out.println("Processing and Preparing Authorization");
+			System.out.println("Processing and Preparing Authorization"); //$NON-NLS-1$
 
 			String callId = ((CallIdHeader) response.getHeader(CallIdHeader.NAME)).getCallId();
 			requestauth = createRegisterRequest(callId);
@@ -895,14 +895,14 @@ public class SipCall {
 
 			DigestClientAuthenticationMethod digest = new DigestClientAuthenticationMethod();
 
-			digest.initialize(realm, authUserName, uriReq.toString(), nonce, authPassword, ((CSeqHeader) response.getHeader(CSeqHeader.NAME)).getMethod(), null, "MD5");
+			digest.initialize(realm, authUserName, uriReq.toString(), nonce, authPassword, ((CSeqHeader) response.getHeader(CSeqHeader.NAME)).getMethod(), null, "MD5"); //$NON-NLS-1$
 
 			String respuestaM = digest.generateResponse();
 			wwwAuthheader.setResponse(respuestaM);
 
-			System.out.println("Proxy Response modified : " + wwwAuthheader.getResponse());
+			System.out.println("Proxy Response modified : " + wwwAuthheader.getResponse()); //$NON-NLS-1$
 
-			wwwAuthheader.setAlgorithm("MD5");
+			wwwAuthheader.setAlgorithm("MD5"); //$NON-NLS-1$
 
 			requestauth.addHeader(wwwAuthheader);
 
@@ -914,13 +914,13 @@ public class SipCall {
 
 			requestDialog = registerCTid.getDialog();
 
-			System.out.println("REGISTER AUTHORIZATION sent:\n" + requestauth);
+			System.out.println("REGISTER AUTHORIZATION sent:\n" + requestauth); //$NON-NLS-1$
 		} catch (ParseException pa) {
-			System.out.println("processResponseAuthorization() ParseException:");
+			System.out.println("processResponseAuthorization() ParseException:"); //$NON-NLS-1$
 			System.out.println(pa.getMessage());
 			pa.printStackTrace();
 		} catch (Exception ex) {
-			System.out.println("processResponseAuthorization() Exception:");
+			System.out.println("processResponseAuthorization() Exception:"); //$NON-NLS-1$
 			System.out.println(ex.getMessage());
 			ex.printStackTrace();
 		}
@@ -937,7 +937,7 @@ public class SipCall {
 	public void processResponseProxyAuthorization(Response response, URI uriReq) {
 		Request requestauth = null;
 		try {
-			System.out.println("Processing and Preparing Authorization");
+			System.out.println("Processing and Preparing Authorization"); //$NON-NLS-1$
 
 			String callId = ((CallIdHeader) response.getHeader(CallIdHeader.NAME)).getCallId();
 
@@ -954,14 +954,14 @@ public class SipCall {
 
 			DigestClientAuthenticationMethod digest = new DigestClientAuthenticationMethod();
 
-			digest.initialize(realm, authUserName, uriReq.toString(), nonce, authPassword, ((CSeqHeader) response.getHeader(CSeqHeader.NAME)).getMethod(), null, "MD5");
+			digest.initialize(realm, authUserName, uriReq.toString(), nonce, authPassword, ((CSeqHeader) response.getHeader(CSeqHeader.NAME)).getMethod(), null, "MD5"); //$NON-NLS-1$
 
 			String respuestaM = digest.generateResponse();
 			proxyAuth.setResponse(respuestaM);
 
-			System.out.println("Proxy Auth Response modified : " + proxyAuth.getResponse());
+			System.out.println("Proxy Auth Response modified : " + proxyAuth.getResponse()); //$NON-NLS-1$
 
-			proxyAuth.setAlgorithm("MD5");
+			proxyAuth.setAlgorithm("MD5"); //$NON-NLS-1$
 
 			requestauth.addHeader(proxyAuth);
 
@@ -973,13 +973,13 @@ public class SipCall {
 
 			responseDialog = inviteCTid.getDialog();
 
-			System.out.println("INVITE PROXY AUTHORIZATION sent:\n" + requestauth);
+			System.out.println("INVITE PROXY AUTHORIZATION sent:\n" + requestauth); //$NON-NLS-1$
 		} catch (ParseException pa) {
-			System.out.println("processResponseAuthorization() ParseException:");
+			System.out.println("processResponseAuthorization() ParseException:"); //$NON-NLS-1$
 			System.out.println(pa.getMessage());
 			pa.printStackTrace();
 		} catch (Exception ex) {
-			System.out.println("processResponseAuthorization() Exception:");
+			System.out.println("processResponseAuthorization() Exception:"); //$NON-NLS-1$
 			System.out.println(ex.getMessage());
 			ex.printStackTrace();
 		}
@@ -993,7 +993,7 @@ public class SipCall {
 		SipProvider sipProvider = (SipProvider) requestEvent.getSource();
 		Request request = requestEvent.getRequest();
 		try {
-			System.out.println("Sip Client: got an Invite from " + request.getRequestURI() + " sending Trying to INVITER.");
+			System.out.println("Sip Client: got an Invite from " + request.getRequestURI() + " sending Trying to INVITER."); //$NON-NLS-1$ //$NON-NLS-2$
 
 			Response response = messageFactory.createResponse(Response.RINGING, request);
 			ServerTransaction st = requestEvent.getServerTransaction();
@@ -1019,9 +1019,9 @@ public class SipCall {
 
 			// TODO Only for Junit Test for evaluation
 			// TODO Remove and decide using UI
-			System.out.println("Please enter 1 to answer the Call");
-			System.out.println("Please enter 2 to reject the call");
-			System.out.println("Make sure to enter correct option for correct test case");
+			System.out.println("Please enter 1 to answer the Call"); //$NON-NLS-1$
+			System.out.println("Please enter 2 to reject the call"); //$NON-NLS-1$
+			System.out.println("Make sure to enter correct option for correct test case"); //$NON-NLS-1$
 			BufferedReader reader = new BufferedReader(new InputStreamReader(System.in));
 			String userResponse = reader.readLine();
 			int usersDecision = Integer.parseInt(userResponse);
@@ -1076,13 +1076,13 @@ public class SipCall {
 	public void acceptIncomingCall() throws SdpException, IOException {
 		try {
 			if (inviteSTid.getState() != TransactionState.COMPLETED) {
-				System.out.println("Sip Call: Dialog state before 200: " + inviteSTid.getDialog().getState());
+				System.out.println("Sip Call: Dialog state before 200: " + inviteSTid.getDialog().getState()); //$NON-NLS-1$
 
 				Response okResponse = messageFactory.createResponse(Response.OK, inviteRequest);
 
 				SipURI contactURI = null;
 				try {
-					contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1));
+					contactURI = addressFactory.createSipURI(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")), initiatorID.getUser().substring(initiatorID.getUser().indexOf("@") + 1)); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				} catch (Exception e) {
 					e.printStackTrace();
 				}
@@ -1091,21 +1091,21 @@ public class SipCall {
 				Address contactAddress = addressFactory.createAddress(contactURI);
 
 				// Add the contact address.
-				contactAddress.setDisplayName(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@")));
+				contactAddress.setDisplayName(initiatorID.getUser().substring(initiatorID.getUser().indexOf(":") + 1, initiatorID.getUser().indexOf("@"))); //$NON-NLS-1$ //$NON-NLS-2$
 
 				contactHeader = headerFactory.createContactHeader(contactAddress);
 				okResponse.addHeader(contactHeader);
 
 				ToHeader toHeader = (ToHeader) okResponse.getHeader(ToHeader.NAME);
-				toHeader.setTag("98765");
+				toHeader.setTag("98765"); //$NON-NLS-1$
 
 				// Create Allow header
-				String methods = "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO";
+				String methods = "INVITE, ACK, CANCEL, OPTIONS, BYE, REFER, NOTIFY, MESSAGE, SUBSCRIBE, INFO"; //$NON-NLS-1$
 				AllowHeader allowHeader = headerFactory.createAllowHeader(methods);
 				okResponse.addHeader(allowHeader);
 
 				// Create ContentTypeHeader
-				ContentTypeHeader contentTypeHeader = headerFactory.createContentTypeHeader("application", "sdp");
+				ContentTypeHeader contentTypeHeader = headerFactory.createContentTypeHeader("application", "sdp"); //$NON-NLS-1$ //$NON-NLS-2$
 
 				// ///Have to send this after considering the sdp data in the
 				// INVITE REQUEST
@@ -1121,7 +1121,7 @@ public class SipCall {
 
 				inviteSTid.sendResponse(okResponse);
 
-				System.out.println("Sip Call: Dialog state after 200: " + inviteSTid.getDialog().getState());
+				System.out.println("Sip Call: Dialog state after 200: " + inviteSTid.getDialog().getState()); //$NON-NLS-1$
 
 				// TODO TEST
 				sdpImpl.initFMJ();
@@ -1150,9 +1150,9 @@ public class SipCall {
 		Request request = requestEvent.getRequest();
 
 		try {
-			System.out.println("Sip Client :  Received a cancel. Sending OK to Cancel.");
+			System.out.println("Sip Client :  Received a cancel. Sending OK to Cancel."); //$NON-NLS-1$
 			if (serverTransactionId == null) {
-				System.out.println("Sip Client:  null tid.");
+				System.out.println("Sip Client:  null tid."); //$NON-NLS-1$
 				return;
 			}
 			Response response = messageFactory.createResponse(200, request);
@@ -1162,7 +1162,7 @@ public class SipCall {
 				response = messageFactory.createResponse(Response.REQUEST_TERMINATED, inviteRequest);
 				inviteSTid.sendResponse(response);
 
-				System.out.println("Request Terminated Response sent to Invite Request.");
+				System.out.println("Request Terminated Response sent to Invite Request."); //$NON-NLS-1$
 			}
 
 		} catch (Exception ex) {
@@ -1179,8 +1179,8 @@ public class SipCall {
 	 */
 	public void processAck(RequestEvent requestEvent, ServerTransaction serverTransaction) {
 		try {
-			System.out.println("Sip  client: Received an ACK! ");
-			System.out.println("Dialog State = " + requestDialog.getState());
+			System.out.println("Sip  client: Received an ACK! "); //$NON-NLS-1$
+			System.out.println("Dialog State = " + requestDialog.getState()); //$NON-NLS-1$
 			SipProvider provider = (SipProvider) requestEvent.getSource();
 			if (!callerSendsBye) {// / If we terminate call set to true or false
 				Request byeRequest = requestDialog.createRequest(Request.BYE);
@@ -1196,7 +1196,7 @@ public class SipCall {
 
 	public static String getPublicIp() throws IOException {
 
-		java.net.URL URL = new java.net.URL("http://www.whatismyip.org/");
+		java.net.URL URL = new java.net.URL("http://www.whatismyip.org/"); //$NON-NLS-1$
 
 		java.net.HttpURLConnection Conn = (HttpURLConnection) URL.openConnection();
 
@@ -1208,7 +1208,7 @@ public class SipCall {
 
 		String publicIp = Br.readLine();
 
-		logger.debug("Your IP address is " + publicIp);
+		logger.debug("Your IP address is " + publicIp); //$NON-NLS-1$
 
 		return publicIp;
 
@@ -1403,22 +1403,22 @@ public class SipCall {
 		this.callAdapter = callAdapter;
 	}
 
-	public static void main(String args[]) throws ParseException, PeerUnavailableException, IOException {
+	public static void main(String args[]) throws ParseException, PeerUnavailableException {
 
 		try {
-			SipLocalParticipant localParty = new SipLocalParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:2233371083@sip2sip.info"}), "Harshana Eranga", "4j5yx83hs5", "proxy.sipthor.net");
+			SipLocalParticipant localParty = new SipLocalParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:2233371083@sip2sip.info"}), "Harshana Eranga", "4j5yx83hs5", "proxy.sipthor.net"); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$ //$NON-NLS-4$
 
 			System.out.println(localParty.getInitiatorID());
 			SipCall ecfCall = new SipCall(localParty);
 
-			SipRemoteParticipant remoteParty = new SipRemoteParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:3333@sip2sip.info"}), "Harshana Eranga Martin");
+			SipRemoteParticipant remoteParty = new SipRemoteParticipant((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:3333@sip2sip.info"}), "Harshana Eranga Martin"); //$NON-NLS-1$ //$NON-NLS-2$
 
-			System.out.println(((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:2233371083@sip2sip.info"})).getUser());
+			System.out.println(((SipUriID) new SipUriNamespace().createInstance(new Object[] {"sip:2233371083@sip2sip.info"})).getUser()); //$NON-NLS-1$
 			System.out.println(localParty.getInitiatorID());
 
 			// System.out.println(new SipUriID("sip:2233371083@sip2sip.info"));
 			AddressFactory add = SipFactory.getInstance().createAddressFactory();
-			System.out.println(add.createSipURI("Harshana", "Martin").toString());
+			System.out.println(add.createSipURI("Harshana", "Martin").toString()); //$NON-NLS-1$ //$NON-NLS-2$
 			// System.out.println(new
 			// SipUriID(add.createSipURI("Harshana","Martin")));
 
