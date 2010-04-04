@@ -62,10 +62,10 @@ public class SipCallSessionContainerAdapter implements ICallSessionContainerAdap
 		try {
 			final Object connectData = getConnectData(remote, joinContext);
 
-			SipUriID initiatorId = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + remote.getName() + ">"});
+			SipUriID initiatorId = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + remote.getName() + ">"}); //$NON-NLS-1$ //$NON-NLS-2$
 			String initiatorName = null;
 			String password = (String) connectData;
-			String proxyServer = "proxy.sipthor.net";//TODO Remove hard code
+			String proxyServer = "proxy.sipthor.net";//TODO Remove hard code //$NON-NLS-1$
 
 			localUser = new SipLocalParticipant(initiatorId, initiatorName, password, proxyServer);
 
@@ -92,7 +92,7 @@ public class SipCallSessionContainerAdapter implements ICallSessionContainerAdap
 
 			((ICallSessionRequestListener) it.next()).handleCallSessionRequest(new ICallSessionRequestEvent() {
 
-				public ICallSession accept(ICallSessionListener listener, Map properties) throws CallException {
+				public ICallSession accept(ICallSessionListener listener, Map properties) {
 					SipCallSession session = new SipCallSession(userId, callerId, listener, SipCallSessionContainerAdapter.this);
 					sipCall.getDefault(SipCallSessionContainerAdapter.this).acceptIncomingCall(callerId);
 					return session;
@@ -103,7 +103,7 @@ public class SipCallSessionContainerAdapter implements ICallSessionContainerAdap
 				}
 
 				public ID getInitiator() {
-					SipUriID initiatorId = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + callerId.getName() + ">"});
+					SipUriID initiatorId = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + callerId.getName() + ">"}); //$NON-NLS-1$ //$NON-NLS-2$
 					return initiatorId;
 				}
 
@@ -174,7 +174,7 @@ public class SipCallSessionContainerAdapter implements ICallSessionContainerAdap
 	 */
 
 	public void sendCallRequest(ID[] receivers, ICallSessionListener listener, Map properties) throws CallException {
-		throw new CallException("Conference Call support not implemented");
+		throw new CallException("Conference Call support not implemented"); //$NON-NLS-1$
 	}
 
 	/*
@@ -186,9 +186,9 @@ public class SipCallSessionContainerAdapter implements ICallSessionContainerAdap
 	 * org.eclipse.ecf.telephony.call.ICallSessionListener, java.util.Map)
 	 */
 
-	public void sendCallRequest(ID receiver, ICallSessionListener listener, Map properties) throws CallException {
+	public void sendCallRequest(ID receiver, ICallSessionListener listener, Map properties) {
 
-		SipUriID receipient = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + receiver.getName() + ">"});
+		SipUriID receipient = (SipUriID) new SipUriNamespace().createInstance(new Object[] {"<sip:" + receiver.getName() + ">"}); //$NON-NLS-1$ //$NON-NLS-2$
 		SipRemoteParticipant remoteParty = new SipRemoteParticipant(receipient, null);
 
 		sipCall.initiateCall(remoteParty, new SipCallSession(userId, receipient, listener, this));

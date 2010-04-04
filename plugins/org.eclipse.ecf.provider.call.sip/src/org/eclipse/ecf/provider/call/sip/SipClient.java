@@ -32,19 +32,19 @@ public class SipClient implements SipListener {
 	}
 
 	public void processDialogTerminated(DialogTerminatedEvent dialogTerminatedEvent) {
-		System.out.println("Dialog Terminated Event Received");
+		System.out.println("Dialog Terminated Event Received"); //$NON-NLS-1$
 
 	}
 
 	public void processIOException(IOExceptionEvent exceptionEvent) {
-		System.out.println("IOException happened for " + exceptionEvent.getHost() + " port = " + exceptionEvent.getPort());
+		System.out.println("IOException happened for " + exceptionEvent.getHost() + " port = " + exceptionEvent.getPort()); //$NON-NLS-1$ //$NON-NLS-2$
 	}
 
 	public void processRequest(RequestEvent requestReceivedEvent) {
 		Request request = requestReceivedEvent.getRequest();
 		ServerTransaction serverTransactionId = requestReceivedEvent.getServerTransaction();
 
-		System.out.println("\n\nRequest " + request.getMethod() + " received at " + call.getSipStack().getStackName() + " with server transaction id " + serverTransactionId);
+		System.out.println("\n\nRequest " + request.getMethod() + " received at " + call.getSipStack().getStackName() + " with server transaction id " + serverTransactionId); //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 
 		// We are the UAC so the only request we get is the BYE.
 		if (request.getMethod().equals(Request.BYE)) {
@@ -73,18 +73,18 @@ public class SipClient implements SipListener {
 	}
 
 	public void processResponse(ResponseEvent responseReceivedEvent) {
-		System.out.println("Got a response");
+		System.out.println("Got a response"); //$NON-NLS-1$
 		Response response = (Response) responseReceivedEvent.getResponse();
 		ClientTransaction tid = responseReceivedEvent.getClientTransaction();
 		CSeqHeader cseq = (CSeqHeader) response.getHeader(CSeqHeader.NAME);
 
-		System.out.println("Response received : Status Code = " + response.getStatusCode() + " " + cseq);
+		System.out.println("Response received : Status Code = " + response.getStatusCode() + " " + cseq); //$NON-NLS-1$ //$NON-NLS-2$
 
 		if (tid == null) {
 
 			// RFC3261: MUST respond to every 2xx
 			if (ackRequest != null && call.getResponseDialog() != null) {
-				System.out.println("re-sending ACK");
+				System.out.println("re-sending ACK"); //$NON-NLS-1$
 				try {
 					call.getResponseDialog().sendAck(ackRequest);
 				} catch (SipException se) {
@@ -94,20 +94,20 @@ public class SipClient implements SipListener {
 			return;
 		}
 
-		System.out.println("transaction state is " + tid.getState());
-		System.out.println("Dialog = " + tid.getDialog());
+		System.out.println("transaction state is " + tid.getState()); //$NON-NLS-1$
+		System.out.println("Dialog = " + tid.getDialog()); //$NON-NLS-1$
 
 		try {
 			if (response.getStatusCode() == Response.OK) {
 				if (cseq.getMethod().equals(Request.INVITE)) {
-					System.out.println("Dialog after 200 OK  " + call.getResponseDialog());
-					System.out.println("Dialog State after 200 OK  " + call.getResponseDialog().getState());
+					System.out.println("Dialog after 200 OK  " + call.getResponseDialog()); //$NON-NLS-1$
+					System.out.println("Dialog State after 200 OK  " + call.getResponseDialog().getState()); //$NON-NLS-1$
 					ackRequest = call.getResponseDialog().createAck(((CSeqHeader) response.getHeader(CSeqHeader.NAME)).getSeqNumber());
-					System.out.println("Sending ACK");
+					System.out.println("Sending ACK"); //$NON-NLS-1$
 					call.getResponseDialog().sendAck(ackRequest);
 
 					String okSdpData = new String((byte[]) response.getContent());
-					System.out.println("OK RECIVED with SDP " + okSdpData);
+					System.out.println("OK RECIVED with SDP " + okSdpData); //$NON-NLS-1$
 					SipCall.sdpImpl = new SessionDescriptionImpl();
 					SipCall.sdpImpl.resolveOkSDP(okSdpData);
 
@@ -141,13 +141,13 @@ public class SipClient implements SipListener {
 				}
 			} else if (response.getStatusCode() == Response.UNAUTHORIZED) {
 				// Used by REGISTER
-				System.out.println("Unauthorized recived " + response.getStatusCode());
+				System.out.println("Unauthorized recived " + response.getStatusCode()); //$NON-NLS-1$
 				URI uriReq = tid.getRequest().getRequestURI();
 				call.processResponseAuthorization(response, uriReq);
 
 			} else if (response.getStatusCode() == Response.PROXY_AUTHENTICATION_REQUIRED) {
 				// Used by INVITE
-				System.out.println("Proxy Authentication Required recived " + response.getStatusCode());
+				System.out.println("Proxy Authentication Required recived " + response.getStatusCode()); //$NON-NLS-1$
 				URI uriReq = tid.getRequest().getRequestURI();
 				call.processResponseProxyAuthorization(response, uriReq);
 			} else if (response.getStatusCode() == Response.RINGING) {
@@ -160,11 +160,11 @@ public class SipClient implements SipListener {
 	}
 
 	public void processTimeout(TimeoutEvent timeoutEvent) {
-		System.out.println("Transaction Time out event recieved");
+		System.out.println("Transaction Time out event recieved"); //$NON-NLS-1$
 	}
 
 	public void processTransactionTerminated(TransactionTerminatedEvent transactionTerminatedEvent) {
-		System.out.println("Transaction terminated event recieved");
+		System.out.println("Transaction terminated event recieved"); //$NON-NLS-1$
 	}
 
 }

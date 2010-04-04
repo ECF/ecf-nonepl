@@ -14,8 +14,8 @@ import org.eclipse.ecf.core.identity.*;
 
 public class SipUriNamespace extends Namespace {
 
-	public static final String NAME = "ecf.sip.uri";
-	public static final String SCHEME = "sip";
+	public static final String NAME = "ecf.sip.uri"; //$NON-NLS-1$
+	public static final String SCHEME = "sip"; //$NON-NLS-1$
 
 	/**
 	 * 
@@ -27,7 +27,7 @@ public class SipUriNamespace extends Namespace {
 			return null;
 		if (args[0] instanceof String) {
 			final String arg = (String) args[0];
-			if (arg.startsWith("<" + getScheme() + Namespace.SCHEME_SEPARATOR)) {
+			if (arg.startsWith("<" + getScheme() + Namespace.SCHEME_SEPARATOR)) { //$NON-NLS-1$
 				final int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
 				if (index >= arg.length())
 					return null;
@@ -44,7 +44,7 @@ public class SipUriNamespace extends Namespace {
 				return new SipUriID(this, init);
 			return new SipUriID(this, (String) parameters[0]);
 		} catch (final Exception e) {
-			throw new IDCreateException("Cannot create SIP URI");
+			throw new IDCreateException("Cannot create SIP URI"); //$NON-NLS-1$
 		}
 	}
 

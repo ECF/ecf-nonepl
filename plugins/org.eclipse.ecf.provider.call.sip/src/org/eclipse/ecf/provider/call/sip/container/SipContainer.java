@@ -11,7 +11,8 @@
 package org.eclipse.ecf.provider.call.sip.container;
 
 import java.util.*;
-import org.eclipse.ecf.core.*;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.events.*;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.Namespace;
@@ -86,7 +87,7 @@ public class SipContainer implements IContainer {
 	 * @see org.eclipse.ecf.core.IContainer#connect(org.eclipse.ecf.core.identity.ID, org.eclipse.ecf.core.security.IConnectContext)
 	 */
 
-	public void connect(ID targetId, IConnectContext connectContext) throws ContainerConnectException {
+	public void connect(ID targetId, IConnectContext connectContext) {
 
 		callAdapter.createVoiceConnection(targetId, connectContext);
 
