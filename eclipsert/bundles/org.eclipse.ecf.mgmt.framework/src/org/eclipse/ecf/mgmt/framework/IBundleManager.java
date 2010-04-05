@@ -23,7 +23,11 @@ public interface IBundleManager {
 	
 	public IStatus start(IBundleId bundleId);
 	
+	public IStatus start(Long bundleId);
+	
 	public IStatus stop(IBundleId bundleId);
+	
+	public IStatus stop(Long bundleId);
 	
 	public IStatus diagnose(IBundleId bundleId);
 	

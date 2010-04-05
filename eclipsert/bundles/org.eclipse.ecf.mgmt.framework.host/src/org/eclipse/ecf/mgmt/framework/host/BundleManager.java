@@ -102,13 +102,8 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		if (bs.length > 1)
 			return createErrorStatus(symbolicId
 					+ " with version " + version + " resulted in multiple bundles"); //$NON-NLS-1$ //$NON-NLS-2$
-		try {
-			bs[0].start();
-			return new SerializableStatus(Status.OK_STATUS);
-		} catch (BundleException e) {
-			return createErrorStatus(
-					"Exception starting " + symbolicId + " version " + version, e); //$NON-NLS-1$ //$NON-NLS-2$
-		}
+		
+		return start(bs[0]);
 	}
 
 	public IStatus stop(IBundleId bundleId) {
@@ -123,13 +118,29 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		if (bs.length > 1)
 			return createErrorStatus(symbolicId
 					+ " with version " + version + " resulted in multiple bundles"); //$NON-NLS-1$ //$NON-NLS-2$
+		return stop(bs[0]);
+	}
+
+	private IStatus start(Bundle bundle) {
 		try {
-			bs[0].stop();
+			bundle.start();
 			return new SerializableStatus(Status.OK_STATUS);
 		} catch (BundleException e) {
 			return createErrorStatus(
-					"Exception stopping " + symbolicId + " version " + version, e); //$NON-NLS-1$ //$NON-NLS-2$
+					"Exception starting " + bundle.getSymbolicName() + " version " + bundle.getVersion().toString(), e); //$NON-NLS-1$ //$NON-NLS-2$
 		}
+
+	}
+	
+	private IStatus stop(Bundle bundle) {
+		try {
+			bundle.stop();
+			return new SerializableStatus(Status.OK_STATUS);
+		} catch (BundleException e) {
+			return createErrorStatus(
+					"Exception stoping " + bundle.getSymbolicName() + " version " + bundle.getVersion().toString(), e); //$NON-NLS-1$ //$NON-NLS-2$
+		}
+
 	}
 
 	public IStatus diagnose(IBundleId bundleId) {
@@ -192,6 +203,32 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 				}
 
 		return (Bundle[]) results.toArray(new Bundle[0]);
+	}
+
+	protected Bundle internalGetBundle(long bundleId) {
+		Bundle bundles[] = getAllBundles();
+		if (bundles == null)
+			return null;
+		for (int i = 0; i < bundles.length; i++) {
+			if (bundles[i].getBundleId() == bundleId) return bundles[i];
+		}
+		return null;
+	}
+
+	public IStatus start(Long bundleId) {
+		if (bundleId == null)
+			return createErrorStatus("bundleId parameter cannot be null"); //$NON-NLS-1$
+		Bundle b = internalGetBundle(bundleId.longValue());
+		if (b == null) createErrorStatus("Cannot find bundle with id="+bundleId); //$NON-NLS-1$
+		return start(b);
+	}
+
+	public IStatus stop(Long bundleId) {
+		if (bundleId == null)
+			return createErrorStatus("bundleId parameter cannot be null"); //$NON-NLS-1$
+		Bundle b = internalGetBundle(bundleId.longValue());
+		if (b == null) createErrorStatus("Cannot find bundle with id="+bundleId); //$NON-NLS-1$
+		return stop(b);
 	}
 
 }
