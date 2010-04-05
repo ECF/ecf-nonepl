@@ -15,7 +15,7 @@ import java.util.Arrays;
 import junit.framework.TestCase;
 
 import org.eclipse.core.runtime.IStatus;
-import org.eclipse.ecf.mgmt.p2.repository.IInstallableUnitInfo;
+import org.eclipse.ecf.mgmt.p2.IInstallableUnitInfo;
 import org.eclipse.ecf.mgmt.p2.repository.IRepositoryInfo;
 import org.eclipse.ecf.mgmt.p2.repository.host.RepositoryManager;
 
@@ -192,7 +192,7 @@ public class RepositoryManagerTest extends TestCase {
 		assertTrue(result.isOK());
 		
 		// Then get features
-		IInstallableUnitInfo[] ius = repositoryManager.getFeatures(null);
+		IInstallableUnitInfo[] ius = repositoryManager.getInstallableFeatures(null);
 		assertNotNull(ius);
 		assertTrue(ius.length > 0);
 		
