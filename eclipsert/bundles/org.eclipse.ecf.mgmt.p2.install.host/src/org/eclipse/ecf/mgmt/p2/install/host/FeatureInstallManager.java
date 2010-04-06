@@ -11,6 +11,8 @@ package org.eclipse.ecf.mgmt.p2.install.host;
 
 import java.io.IOException;
 import java.net.URI;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
 import org.eclipse.core.runtime.IAdapterManager;
@@ -314,6 +316,41 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 					.toString());
 		}
 		return featureids;
+	}
+
+	public IVersionedId[] getInstallableFeatures(URI location) {
+		IMetadataRepositoryManager manager = (IMetadataRepositoryManager) agent
+				.getService(IMetadataRepositoryManager.SERVICE_NAME);
+		if (manager == null)
+			return null;
+		IQueryable queryable = null;
+		if (location == null) {
+			queryable = manager;
+		} else {
+			try {
+				queryable = manager.loadRepository(location, null);
+			} catch (Exception e) {
+				return null;
+			}
+		}
+		if (queryable == null)
+			return null;
+		IInstallableUnit[] units = (IInstallableUnit[]) queryable.query(
+				QueryUtil.createIUGroupQuery(), null).toArray(
+				IInstallableUnit.class);
+		if (units == null)
+			return null;
+		List results = new ArrayList();
+		for (int i = 0; i < units.length; i++) {
+			Version ver = units[i].getVersion();
+			results.add(new VersionedId(units[i].getId(), (ver == null) ? null
+					: ver.toString()));
+		}
+		return (IVersionedId[]) results.toArray(new IVersionedId[] {});
+	}
+
+	public IVersionedId[] getInstallableFeatures() {
+		return getInstallableFeatures(null);
 	}
 
 }
