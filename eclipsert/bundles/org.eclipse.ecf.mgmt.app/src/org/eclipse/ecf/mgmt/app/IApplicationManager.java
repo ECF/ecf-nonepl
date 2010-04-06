@@ -10,7 +10,6 @@
 package org.eclipse.ecf.mgmt.app;
 
 import org.eclipse.core.runtime.IStatus;
-import org.osgi.service.application.ApplicationException;
 
 public interface IApplicationManager {
 
@@ -18,9 +17,8 @@ public interface IApplicationManager {
 
 	public IApplicationInstanceInfo[] getRunningApplications();
 
-	public IApplicationInstanceInfo start(String applicationId,
-			String[] applicationArgs) throws ApplicationException;
-
+	public IStatus start(String applicationId, String[] applicationArgs);
+	
 	public IStatus stop(String applicationInstanceId);
 	
 	public IStatus lock(String applicationId);

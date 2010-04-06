@@ -28,7 +28,6 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.application.ApplicationDescriptor;
-import org.osgi.service.application.ApplicationException;
 import org.osgi.service.application.ApplicationHandle;
 import org.osgi.service.log.LogService;
 import org.osgi.util.tracker.ServiceTracker;
@@ -102,20 +101,21 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 		return applicationInstancesTracker.getServiceReferences();
 	}
 
-	public IApplicationInstanceInfo start(String applicationId,
-			String[] applicationArgs) throws ApplicationException {
-		if (applicationId == null) throw new ApplicationException(ApplicationException.APPLICATION_INTERNAL_ERROR,"applicationId cannot be null"); //$NON-NLS-1$
+	public IStatus start(String applicationId,
+			String[] applicationArgs) {
+		if (applicationId == null) return createErrorStatus("applicationId cannot be null"); //$NON-NLS-1$
 		ServiceReference appServiceReference = getApplicationDescriptorServiceReference(applicationId);
-		if (appServiceReference == null) throw new ApplicationException(ApplicationException.APPLICATION_INTERNAL_ERROR,"application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appServiceReference == null) return createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
 		ApplicationDescriptor appDescriptor = getApplicationDescriptor(appServiceReference);
-		if (appDescriptor == null) throw new ApplicationException(ApplicationException.APPLICATION_INTERNAL_ERROR,"application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appDescriptor == null) return createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
 		HashMap args = new HashMap();
 		if (applicationArgs != null) args.put("application.args", applicationArgs); //$NON-NLS-1$
 		try {
-			return new ApplicationInstanceInfo(appDescriptor.launch(args));
+			appDescriptor.launch(args);
+			return new SerializableStatus(Status.OK_STATUS);
 		} catch (Exception e) {
 			logException("start exception for applicationId="+applicationId,e); //$NON-NLS-1$
-			throw new ApplicationException(ApplicationException.APPLICATION_NOT_LAUNCHABLE,"cannot launch applicationId="+applicationId,e); //$NON-NLS-1$
+			return createErrorStatus("Exception starting applicationId="+applicationId,e); //$NON-NLS-1$
 		} finally {
 			ungetServiceReference(appServiceReference);
 		}
