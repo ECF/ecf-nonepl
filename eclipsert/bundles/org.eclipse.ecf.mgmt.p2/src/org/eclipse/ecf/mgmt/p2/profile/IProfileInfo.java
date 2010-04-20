@@ -11,6 +11,7 @@ package org.eclipse.ecf.mgmt.p2.profile;
 
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 public interface IProfileInfo {
 
 	public String getProfileId();

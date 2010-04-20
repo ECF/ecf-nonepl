@@ -12,6 +12,7 @@ package org.eclipse.ecf.mgmt.p2.repository;
 import java.net.URI;
 import java.util.Map;
 
+@SuppressWarnings("rawtypes")
 public interface IRepositoryInfo {
 
 	public String getDescription();

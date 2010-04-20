@@ -15,6 +15,7 @@ import java.util.Collection;
 
 import org.eclipse.equinox.p2.metadata.IUpdateDescriptor;
 
+@SuppressWarnings("rawtypes")
 public class UpdateDescriptorInfo implements IUpdateDescriptorInfo,
 		Serializable {
 

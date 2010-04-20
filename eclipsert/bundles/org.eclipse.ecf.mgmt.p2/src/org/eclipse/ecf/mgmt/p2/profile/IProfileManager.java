@@ -14,6 +14,7 @@ import java.util.Map;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.mgmt.p2.IInstallableUnitInfo;
 
+@SuppressWarnings("rawtypes")
 public interface IProfileManager {
 
 	public IStatus addProfile(String profileId, Map properties);

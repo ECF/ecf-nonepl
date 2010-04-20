@@ -35,6 +35,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	private boolean isDefaultEnabled;
 	private boolean isImmediate;
 	private String[] services;
+	@SuppressWarnings("rawtypes")
 	private Map properties;
 	private Reference[] references;
 	private boolean isActivated;
@@ -73,6 +74,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		this.configurationPolicy = component.getConfigurationPolicy();
 	}
 	
+	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Map convertDictionaryToMap(Dictionary dict) {
 		Map result = new Properties();
 		for (Enumeration e = dict.keys(); e.hasMoreElements(); ) {
@@ -122,6 +124,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		return services;
 	}
 
+	@SuppressWarnings("rawtypes")
 	public Map getProperties() {
 		return properties;
 	}

@@ -35,6 +35,7 @@ public interface IComponentInfo {
 	
 	public String[] getServices();
 	
+	@SuppressWarnings("rawtypes")
 	public Map getProperties();
 	
 	public IReference[] getReferences();

@@ -23,6 +23,7 @@ import org.eclipse.equinox.p2.metadata.ILicense;
 import org.eclipse.equinox.p2.metadata.IUpdateDescriptor;
 import org.eclipse.equinox.p2.metadata.Version;
 
+@SuppressWarnings("rawtypes")
 public class InstallableUnitInfo implements IInstallableUnitInfo, Serializable {
 
 	private static final long serialVersionUID = 9083209362827317722L;
@@ -49,6 +50,7 @@ public class InstallableUnitInfo implements IInstallableUnitInfo, Serializable {
 				ud);
 	}
 
+	@SuppressWarnings("unchecked")
 	private Collection createLicenses(Collection licenses2) {
 		List results = new ArrayList();
 		if (licenses2 == null)

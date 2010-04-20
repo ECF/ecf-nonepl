@@ -15,6 +15,7 @@ import java.util.Map;
 
 import org.eclipse.equinox.p2.repository.IRepository;
 
+@SuppressWarnings("rawtypes")
 public class RepositoryInfo implements IRepositoryInfo, Serializable {
 
 	private static final long serialVersionUID = 6142653685320084516L;

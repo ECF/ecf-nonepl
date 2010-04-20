@@ -13,6 +13,7 @@ import java.util.Map;
 
 import org.eclipse.equinox.p2.engine.IProfile;
 
+@SuppressWarnings("rawtypes")
 public class ProfileInfo implements IProfileInfo {
 
 	private String id;

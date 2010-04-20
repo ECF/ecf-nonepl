@@ -12,6 +12,7 @@ package org.eclipse.ecf.mgmt.p2;
 import java.net.URI;
 import java.util.Collection;
 
+@SuppressWarnings("rawtypes")
 public interface IUpdateDescriptorInfo {
 
 	public URI getLocation();

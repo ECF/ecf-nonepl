@@ -13,6 +13,7 @@ import java.util.Collection;
 import java.util.Map;
 
 
+@SuppressWarnings("rawtypes")
 public interface IInstallableUnitInfo {
 
 	public IVersionedId getId();
