@@ -15,7 +15,14 @@ public interface IApplicationInfo {
 
 	public String getId();
 	
+	public String getName();
+	
 	public Map getProperties();
 	
 	public boolean isLocked();
+	
+	public boolean isLaunchable();
+	
+	public boolean isVisible();
+	
 }
