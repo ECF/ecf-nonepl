@@ -218,4 +218,6 @@ public interface IArticle extends Serializable, IProperties {
 	 * @return the URL
 	 */
 	String getURL();
+
+	public String[] getHeaderAttributeValues();
 }
