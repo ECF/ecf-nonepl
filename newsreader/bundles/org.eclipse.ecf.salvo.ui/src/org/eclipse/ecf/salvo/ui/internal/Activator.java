@@ -56,11 +56,11 @@ public class Activator extends AbstractUIPlugin {
 			store.setSecureStore(prefs);
 			StoreStore.instance().addStore(store);
 		}
-//		{
-//			IStore store = StoreFactory.createStore("");
-//			store.setSecureStore(prefs);
-//			StoreStore.instance().addStore(store);
-//		}
+		// {
+		// IStore store = StoreFactory.createStore("");
+		// store.setSecureStore(prefs);
+		// StoreStore.instance().addStore(store);
+		// }
 
 		super.start(context);
 		plugin = this;
@@ -71,11 +71,11 @@ public class Activator extends AbstractUIPlugin {
 
 	private void startUpdateThread() {
 
-		if (updateRunner == null) {
+		if (updateRunner == null)
 			updateRunner = new UpdateRunner();
-		}
 
-		updateRunner.start();
+		if (!updateRunner.isThreadRunning())
+			updateRunner.start();
 
 	}
 
