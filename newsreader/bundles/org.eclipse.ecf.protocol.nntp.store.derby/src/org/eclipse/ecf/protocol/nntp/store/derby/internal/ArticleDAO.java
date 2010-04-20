@@ -24,6 +24,7 @@ import java.sql.Statement;
 import java.util.ArrayList;
 
 import org.eclipse.ecf.protocol.nntp.core.ArticleFactory;
+import org.eclipse.ecf.protocol.nntp.core.Debug;
 import org.eclipse.ecf.protocol.nntp.core.StringUtils;
 import org.eclipse.ecf.protocol.nntp.model.IArticle;
 import org.eclipse.ecf.protocol.nntp.model.INewsgroup;
@@ -433,13 +434,16 @@ public class ArticleDAO {
 	private void processArticleHeader(PreparedStatement statement,
 			IArticle article) throws StoreException {
 		try {
+			int r = Debug.timerStart(getClass());
 			String[] headerAttributes = article.getHeaderAttributes();
+			String[] headerAttrValues = article.getHeaderAttributeValues();
+			int articleID = Integer.parseInt(article.getProperty("DB_ID"));
+			Debug.timerStop(getClass(), r);
 			for (int i = 0; i < headerAttributes.length; i++) {
 				String attr = headerAttributes[i];
-				statement.setInt(1, Integer.parseInt(article
-						.getProperty("DB_ID")));
+				statement.setInt(1, articleID);
 				statement.setString(2, attr);
-				statement.setString(3, article.getHeaderAttributeValue(attr));
+				statement.setString(3, headerAttrValues[i]);
 				statement.execute();
 			}
 		} catch (SQLException e) {

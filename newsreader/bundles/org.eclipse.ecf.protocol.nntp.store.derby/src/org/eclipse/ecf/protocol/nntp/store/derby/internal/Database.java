@@ -72,7 +72,7 @@ public class Database {
 			String article = "CREATE TABLE Article  "
 					+ "( "
 					+ "ID INTEGER NOT NULL  primary key GENERATED always as identity (start with 1, increment by 1) ,"
-					+ " messageID varchar(256) constraint artbyid UNIQUE,"
+					+ " messageID varchar(256),"
 					+ " uri VARCHAR(256) constraint artbyuri UNIQUE,"
 					+ " newsgroupID integer constraint newsgroup_fk references newsgroup on delete cascade on update restrict, "
 					+ "articleNumber integer,  " + "isMarked char,"

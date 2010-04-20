@@ -203,26 +203,30 @@ public class ServerDAO {
 	}
 
 	public IServer[] getServers(boolean subscribed) throws NNTPException {
-		try {
-			getSubscribedServer.setString(1, subscribed ? "1" : "0");
-			getSubscribedServer.execute();
-			ResultSet r = getSubscribedServer.getResultSet();
-			if (r == null)
-				return new IServer[0];
 
-			ArrayList result = new ArrayList();
+		synchronized (connection) {
+			try {
+				getSubscribedServer.setString(1, subscribed ? "1" : "0");
+				getSubscribedServer.execute();
+				ResultSet r = getSubscribedServer.getResultSet();
+				if (r == null)
+					return new IServer[0];
 
-			while (r.next()) {
-				IServer server = ServerFactory.getCreateServer(getAddress(r),
-						getPort(r), getCredentials(r), getSecure(r));
-				server.setSubscribed(true);
-				result.add(server);
+				ArrayList result = new ArrayList();
+
+				while (r.next()) {
+					IServer server = ServerFactory.getCreateServer(
+							getAddress(r), getPort(r), getCredentials(r),
+							getSecure(r));
+					server.setSubscribed(true);
+					result.add(server);
+				}
+				r.close();
+				return (IServer[]) result.toArray(new IServer[0]);
+
+			} catch (SQLException e) {
+				throw new StoreException(e.getMessage(), e);
 			}
-			r.close();
-			return (IServer[]) result.toArray(new IServer[0]);
-
-		} catch (SQLException e) {
-			throw new StoreException(e.getMessage(), e);
 		}
 	}
 }

@@ -286,13 +286,15 @@ public class Store implements IStore {
 	private void internalStoreArticles(Collection articles)
 			throws StoreException {
 
+		long t = System.currentTimeMillis();
 		for (Iterator iterator = articles.iterator(); iterator.hasNext();) {
 			IArticle article = (IArticle) iterator.next();
 
-			if (!articleDOA.hasArticle(article))
+			if (!articleDOA.hasArticle(article)) {
 				articleDOA.insertArticle(article);
+			}
 		}
-
+		System.out.println((System.currentTimeMillis() - t) / 1000);
 	}
 
 	public IArticle getFirstArticle(INewsgroup newsgroup) throws StoreException {
