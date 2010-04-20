@@ -73,6 +73,10 @@ public class Article implements IArticle {
 		return (String) headerAttributes.get(attribute);
 	}
 
+	public String[] getHeaderAttributeValues() {
+		return (String[]) headerAttributes.values().toArray(new String[headerAttributes.size()]);
+	}
+
 	public String getMessageId() {
 		return (String) headerAttributes.get("Message-ID:");
 	}
@@ -174,7 +178,7 @@ public class Article implements IArticle {
 	}
 
 	public String[] getHeaderAttributes() {
-		return (String[]) headerAttributes.keySet().toArray(new String[0]);
+		return (String[]) headerAttributes.keySet().toArray(new String[headerAttributes.size()]);
 	}
 
 	public boolean isMine() {
