@@ -23,7 +23,8 @@
          name="Weblogic JMS Server"
          point="org.eclipse.core.runtime.applications">
       <application
-            thread="main"
+            cardinality="*"
+            thread="any"
             visible="true">
          <run
                class="org.eclipse.ecf.provider.jms.weblogic.application.WeblogicJMSServer">
