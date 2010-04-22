@@ -17,6 +17,8 @@ public interface IComponentInfo {
 
 	public long getId();
 	
+	public long getComponentId();
+	
 	public String getName();
 	
 	public int getState();

@@ -20,12 +20,14 @@ import org.apache.felix.scr.Component;
 import org.eclipse.ecf.mgmt.framework.BundleId;
 import org.eclipse.ecf.mgmt.framework.IBundleId;
 import org.eclipse.osgi.service.resolver.BundleDescription;
+import org.osgi.service.component.ComponentInstance;
 
 public class ComponentInfo implements IComponentInfo, Serializable {
 
 	private static final long serialVersionUID = 8848557838339851546L;
 	
 	private long id;
+	private long componentId;
 	private String name;
 	private int state;
 	private BundleId bundleId;
@@ -46,8 +48,9 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	private String modified;
 	private String configurationPolicy;
 	
-	public ComponentInfo(Component component, BundleDescription bd) {
-		this.id = component.getId();
+	public ComponentInfo(long id, Component component, BundleDescription bd) {
+		this.id = id;
+		this.componentId = component.getId();
 		this.name = component.getName();
 		this.state = component.getState();
 		this.bundleId = new BundleId(bd.getSymbolicName(),bd.getVersion().toString());
@@ -65,7 +68,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 				references[i] = new Reference(cRefs[i]);
 			}
 		}
-		this.isActivated = (component.getComponentInstance() != null);
+		ComponentInstance componentInstance = component.getComponentInstance();
+		this.isActivated = (componentInstance == null)?false:true;
 		this.activate = component.getActivate();
 		this.isActivateDeclared = component.isActivateDeclared();
 		this.deactivate = component.getDeactivate();
@@ -88,6 +92,10 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		return id;
 	}
 
+	public long getComponentId() {
+		return componentId;
+	}
+	
 	public String getName() {
 		return name;
 	}
@@ -165,6 +173,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("ComponentInfo[id=");
 		buffer.append(id);
+		buffer.append(", componentid=");
+		buffer.append(componentId);
 		buffer.append(", name=");
 		buffer.append(name);
 		buffer.append(", state=");

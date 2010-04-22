@@ -9,12 +9,12 @@ import org.eclipse.equinox.concurrent.future.IFuture;
 @SuppressWarnings("restriction")
 public interface IScrManagerAsync extends IAsyncRemoteServiceProxy {
 
-	public void getComponentInfoAsync(IBundleId bundleId, IAsyncCallback<IComponentInfo[]> callback);
-	public IFuture getComponentInfoAsync(IBundleId bundleId);
-	public void getComponentInfoAsync(Long componentId, IAsyncCallback<IComponentInfo> callback);
-	public IFuture getComponentInfoAsync(Long componentId);
-	public void getAllComponentInfoAsync(IAsyncCallback<IComponentInfo[]> callback);
-	public IFuture getAllComponentInfoAsync();
+	public void getComponentsAsync(IBundleId bundleId, IAsyncCallback<IComponentInfo[]> callback);
+	public IFuture getComponentsAsync(IBundleId bundleId);
+	public void getComponentAsync(Long componentId, IAsyncCallback<IComponentInfo> callback);
+	public IFuture getComponentAsync(Long componentId);
+	public void getComponentsAsync(IAsyncCallback<IComponentInfo[]> callback);
+	public IFuture getComponentsAsync();
 
 	public void enableAsync(Long componentId, IAsyncCallback<IStatus> callback);
 	public IFuture enableAsync(Long componentId);

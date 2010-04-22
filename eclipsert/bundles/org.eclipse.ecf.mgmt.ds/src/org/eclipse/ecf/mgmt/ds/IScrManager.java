@@ -14,10 +14,10 @@ import org.eclipse.ecf.mgmt.framework.IBundleId;
 
 public interface IScrManager {
 
-	public IComponentInfo[] getComponentInfo(IBundleId bundleId);
-	public IComponentInfo getComponentInfo(Long componentId);
-	public IComponentInfo[] getAllComponentInfo();
+	public IComponentInfo[] getComponents(IBundleId bundleId);
+	public IComponentInfo getComponent(Long id);
+	public IComponentInfo[] getComponents();
 	
-	public IStatus enable(Long componentId);
-	public IStatus disable(Long componentId);
+	public IStatus enable(Long id);
+	public IStatus disable(Long id);
 }
