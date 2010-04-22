@@ -29,12 +29,12 @@ public class ScrManagerLocalTest extends ECFAbstractTestCase {
 	}
 	
 	public void testGetAllComponents() throws Exception {
-		IComponentInfo[] components = manager.getAllComponentInfo();
+		IComponentInfo[] components = manager.getComponents();
 		assertNotNull(components);
 	}
 	
 	public void testGetP2BundleComponents() throws Exception {
-		IComponentInfo[] components = manager.getComponentInfo(new BundleId("org.eclipse.equinox.p2.core"));
+		IComponentInfo[] components = manager.getComponents(new BundleId("org.eclipse.equinox.p2.core"));
 		assertNotNull(components);
 		assertTrue(components.length > 0);
 	}
