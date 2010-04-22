@@ -54,7 +54,7 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		return ids;
 	}
 
-	public IBundleInfo[] getBundleInfo(IBundleId bundleId) {
+	public IBundleInfo[] getBundles(IBundleId bundleId) {
 		Bundle bundles[] = (bundleId == null) ? getAllBundles()
 				: internalGetBundles(bundleId.getSymbolicName(), bundleId
 						.getVersion());
@@ -71,11 +71,11 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		return (IBundleInfo[]) results.toArray(new IBundleInfo[] {});
 	}
 
-	public IBundleInfo[] getAllBundleInfo() {
-		return getBundleInfo((IBundleId) null);
+	public IBundleInfo[] getBundles() {
+		return getBundles((IBundleId) null);
 	}
 
-	public IBundleInfo getBundleInfo(Long bundleid) {
+	public IBundleInfo getBundle(Long bundleid) {
 		if (bundleid == null) return null;
 		Bundle bundles[] = getAllBundles();
 		if (bundles == null)

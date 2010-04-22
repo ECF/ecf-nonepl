@@ -16,12 +16,12 @@ import org.eclipse.equinox.concurrent.future.IFuture;
 @SuppressWarnings("restriction")
 public interface IServiceManagerAsync extends IAsyncRemoteServiceProxy {
 
-	public void getServiceInfoAsync(IBundleId bundleId, IAsyncCallback<IServiceInfo[]> callback);
-	public IFuture getServiceInfoAsync(IBundleId bundleId);
+	public void getServicesAsync(IBundleId bundleId, IAsyncCallback<IServiceInfo[]> callback);
+	public IFuture getServicesAsync(IBundleId bundleId);
 
-	public void getAllServiceInfoAsync(IAsyncCallback<IServiceInfo[]> callback);
-	public IFuture getAllServiceInfoAsync();
+	public void getServicesAsync(IAsyncCallback<IServiceInfo[]> callback);
+	public IFuture getServicesAsync();
 	
-	public void getServiceInfoAsync(Long serviceid, IAsyncCallback<IServiceInfo> callback);
-	public IFuture getServiceInfoAsync(Long serviceid);
+	public void getServiceAsync(Long serviceid, IAsyncCallback<IServiceInfo> callback);
+	public IFuture getServiceAsync(Long serviceid);
 }

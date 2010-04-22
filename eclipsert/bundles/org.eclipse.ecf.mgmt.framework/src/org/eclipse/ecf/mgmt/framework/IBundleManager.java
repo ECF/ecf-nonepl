@@ -15,11 +15,11 @@ public interface IBundleManager {
 
 	public String[] getBundleSymbolicIds();
 	
-	public IBundleInfo[] getBundleInfo(IBundleId bundleId);
+	public IBundleInfo[] getBundles(IBundleId bundleId);
 	
-	public IBundleInfo[] getAllBundleInfo();
+	public IBundleInfo[] getBundles();
 	
-	public IBundleInfo getBundleInfo(Long bundleid);
+	public IBundleInfo getBundle(Long bundleid);
 	
 	public IStatus start(IBundleId bundleId);
 	

@@ -20,14 +20,14 @@ public interface IBundleManagerAsync extends IAsyncRemoteServiceProxy {
 	public void getBundleSymbolicIdsAsync(IAsyncCallback<String[]> callback);
 	public IFuture getBundleSymbolicIdsAsync();
 	
-	public void getBundleInfoAsync(IBundleId bundleId,IAsyncCallback<IBundleInfo[]> callback);
-	public IFuture getBundleInfoAsync(IBundleId bundleId);
+	public void getBundlesAsync(IBundleId bundleId,IAsyncCallback<IBundleInfo[]> callback);
+	public IFuture getBundlesAsync(IBundleId bundleId);
 	
-	public void getAllBundleInfoAsync(IAsyncCallback<IBundleInfo[]> callback);
-	public IFuture getAllBundleInfoAsync();
+	public void getBundlesAsync(IAsyncCallback<IBundleInfo[]> callback);
+	public IFuture getBundlesAsync();
 	
-	public void getBundleInfoAsync(Long bundleid, IAsyncCallback<IBundleInfo> callback);
-	public IFuture getBundleInfoAsync(Long bundleid);
+	public void getBundleAsync(Long bundleid, IAsyncCallback<IBundleInfo> callback);
+	public IFuture getBundleAsync(Long bundleid);
 	
 	public void startAsync(IBundleId bundleId, IAsyncCallback<IStatus> callback);
 	public IFuture startAsync(IBundleId bundleId);

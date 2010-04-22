@@ -44,7 +44,7 @@ public class ServiceManager extends AbstractFrameworkManager implements IService
 		return null;
 	}
 
-	public IServiceInfo[] getServiceInfo(IBundleId bundleId) {
+	public IServiceInfo[] getServices(IBundleId bundleId) {
 		ServiceReference srs[] = getAllServiceReferences();
 		if (srs == null)
 			return null;
@@ -67,11 +67,11 @@ public class ServiceManager extends AbstractFrameworkManager implements IService
 		return (IServiceInfo[]) results.toArray(new IServiceInfo[0]);
 	}
 
-	public IServiceInfo[] getAllServiceInfo() {
-		return getServiceInfo((IBundleId) null);
+	public IServiceInfo[] getServices() {
+		return getServices((IBundleId) null);
 	}
 
-	public IServiceInfo getServiceInfo(Long serviceid) {
+	public IServiceInfo getService(Long serviceid) {
 		if (serviceid == null) return null;
 		ServiceReference srs[] = getAllServiceReferences();
 		if (srs == null)

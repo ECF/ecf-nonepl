@@ -11,9 +11,9 @@ package org.eclipse.ecf.mgmt.framework;
 
 public interface IServiceManager {
 
-	public IServiceInfo[] getServiceInfo(IBundleId bundleId);
+	public IServiceInfo[] getServices(IBundleId bundleId);
 
-	public IServiceInfo[] getAllServiceInfo();
+	public IServiceInfo[] getServices();
 	
-	public IServiceInfo getServiceInfo(Long serviceid);
+	public IServiceInfo getService(Long serviceid);
 }
