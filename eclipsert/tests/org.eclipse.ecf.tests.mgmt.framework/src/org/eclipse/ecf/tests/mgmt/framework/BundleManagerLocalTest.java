@@ -43,13 +43,13 @@ public class BundleManagerLocalTest extends ECFAbstractTestCase {
 	}
 	
 	public void testGetSystemBundleInfo() throws Exception {
-		IBundleInfo bundleInfo = manager.getBundleInfo(new Long(0));
+		IBundleInfo bundleInfo = manager.getBundle(new Long(0));
 		assertNotNull(bundleInfo);
 		assertTrue(bundleInfo.getId() == 0);
 	}
 	
 	public void testGetECFBundleInfo() throws Exception {
-		IBundleInfo[] bundleInfo = manager.getBundleInfo(new BundleId("org.eclipse.ecf"));
+		IBundleInfo[] bundleInfo = manager.getBundles(new BundleId("org.eclipse.ecf"));
 		assertNotNull(bundleInfo);
 		assertTrue(bundleInfo.length == 1);
 		assertTrue(bundleInfo[0].getBundleId().getSymbolicName().equals("org.eclipse.ecf"));
@@ -61,14 +61,14 @@ public class BundleManagerLocalTest extends ECFAbstractTestCase {
 		assertTrue(bundleFound);
 	}
 	public void testGetAllBundleInfo() throws Exception {
-		IBundleInfo[] bundleInfo = manager.getAllBundleInfo();
+		IBundleInfo[] bundleInfo = manager.getBundles();
 		assertNotNull(bundleInfo);
 		assertTrue(bundleInfo.length > 5);
 		verifyBundlePresent(bundleInfo,0);
 	}
 	
 	public void testStopAndStart() throws Exception {
-		IBundleInfo[] bundleInfo = manager.getBundleInfo(new BundleId("org.eclipse.ecf"));
+		IBundleInfo[] bundleInfo = manager.getBundles(new BundleId("org.eclipse.ecf"));
 		assertNotNull(bundleInfo);
 		assertTrue(bundleInfo.length == 1);
 		long ecfBundleid = bundleInfo[0].getId();
@@ -79,23 +79,23 @@ public class BundleManagerLocalTest extends ECFAbstractTestCase {
 			IStatus result = manager.stop(ecfId);
 			assertNotNull(result);
 			assertTrue(result.isOK());
-			IBundleInfo bundleInfoUpdated = manager.getBundleInfo(new Long(ecfBundleid));
+			IBundleInfo bundleInfoUpdated = manager.getBundle(new Long(ecfBundleid));
 			assertTrue(bundleInfoUpdated.getState() == Bundle.RESOLVED);
 			result = manager.start(ecfId);
 			assertNotNull(result);
 			assertTrue(result.isOK());
-			bundleInfoUpdated = manager.getBundleInfo(new Long(ecfBundleid));
+			bundleInfoUpdated = manager.getBundle(new Long(ecfBundleid));
 			assertTrue(bundleInfoUpdated.getState() == Bundle.ACTIVE);
 		} else {
 			IStatus result = manager.start(ecfId);
 			assertNotNull(result);
 			assertTrue(result.isOK());
-			IBundleInfo bundleInfoUpdated = manager.getBundleInfo(new Long(ecfBundleid));
+			IBundleInfo bundleInfoUpdated = manager.getBundle(new Long(ecfBundleid));
 			assertTrue(bundleInfoUpdated.getState() == Bundle.ACTIVE);
 			result = manager.stop(ecfId);
 			assertNotNull(result);
 			assertTrue(result.isOK());
-			bundleInfoUpdated = manager.getBundleInfo(new Long(ecfBundleid));
+			bundleInfoUpdated = manager.getBundle(new Long(ecfBundleid));
 			assertTrue(bundleInfoUpdated.getState() == Bundle.RESOLVED);
 		}
 	}

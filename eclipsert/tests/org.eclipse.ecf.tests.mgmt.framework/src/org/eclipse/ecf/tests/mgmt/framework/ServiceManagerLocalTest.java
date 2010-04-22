@@ -29,19 +29,19 @@ public class ServiceManagerLocalTest extends ECFAbstractTestCase {
 	}
 	
 	public void testGetServiceZeroInfo() throws Exception {
-		IServiceInfo service = manager.getServiceInfo(new Long(2));
+		IServiceInfo service = manager.getService(new Long(2));
 		assertNotNull(service);
 		assertTrue(service.getServiceId() == 2);
 	}
 	
 	public void testGetAllServiceInfo() throws Exception {
-		IServiceInfo[] services = manager.getAllServiceInfo();
+		IServiceInfo[] services = manager.getServices();
 		assertNotNull(services);
 		assertTrue(services.length > 2);
 	}
 	
 	public void testGetSystemBundleServices() throws Exception {
-		IServiceInfo[] services = manager.getServiceInfo(new BundleId("org.eclipse.osgi"));
+		IServiceInfo[] services = manager.getServices(new BundleId("org.eclipse.osgi"));
 		assertNotNull(services);
 		assertTrue(services.length > 1);
 	}
