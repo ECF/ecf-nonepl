@@ -163,6 +163,7 @@ public class TwitterContainerTests extends ContainerAbstractTestCase {
 		TwitterContainer container = (TwitterContainer) client
 				.getAdapter(TwitterContainer.class);
 		List l = container.getFriendsTimeline();
+		assertTrue(l != null);
 	}
 
 	public void testFollowings() throws ECFException {
