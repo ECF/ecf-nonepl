@@ -14,7 +14,7 @@ import java.io.Serializable;
 import org.osgi.framework.Constants;
 import org.osgi.framework.ServiceReference;
 
-public class Reference implements IReference, Serializable {
+public class ReferenceInfo implements IReferenceInfo, Serializable {
 
 	private static final long serialVersionUID = -2100180202415162228L;
 	
@@ -29,7 +29,7 @@ public class Reference implements IReference, Serializable {
 	private String bindMethodName;
 	private String unbindMethodName;
 
-	public Reference(org.apache.felix.scr.Reference ref) {
+	public ReferenceInfo(org.apache.felix.scr.Reference ref) {
 		this.name = ref.getName();
 		this.serviceName = ref.getServiceName();
 		ServiceReference[] srefs = ref.getServiceReferences();
@@ -97,7 +97,7 @@ public class Reference implements IReference, Serializable {
 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("Reference[name=");
+		buffer.append("ReferenceInfo[name=");
 		buffer.append(name);
 		buffer.append(", serviceName=");
 		buffer.append(serviceName);

@@ -9,7 +9,7 @@
 ******************************************************************************/
 package org.eclipse.ecf.mgmt.ds;
 
-public interface IReference {
+public interface IReferenceInfo {
 
     String getName();
 

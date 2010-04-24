@@ -39,7 +39,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	private String[] services;
 	@SuppressWarnings("rawtypes")
 	private Map properties;
-	private Reference[] references;
+	private ReferenceInfo[] referenceInfos;
 	private boolean isActivated;
 	private String activate;
 	private boolean isActivateDeclared;
@@ -63,9 +63,9 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		this.properties = convertDictionaryToMap(component.getProperties());
 		org.apache.felix.scr.Reference[] cRefs = component.getReferences();
 		if (cRefs != null) {
-			this.references = new Reference[cRefs.length];
+			this.referenceInfos = new ReferenceInfo[cRefs.length];
 			for(int i=0; i < cRefs.length; i++) {
-				references[i] = new Reference(cRefs[i]);
+				referenceInfos[i] = new ReferenceInfo(cRefs[i]);
 			}
 		}
 		ComponentInstance componentInstance = component.getComponentInstance();
@@ -137,8 +137,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		return properties;
 	}
 
-	public IReference[] getReferences() {
-		return references;
+	public IReferenceInfo[] getReferences() {
+		return referenceInfos;
 	}
 
 	public boolean isActivated() {
@@ -195,8 +195,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		buffer.append(services != null ? Arrays.asList(services) : null);
 		buffer.append(", properties=");
 		buffer.append(properties);
-		buffer.append(", references=");
-		buffer.append(references != null ? Arrays.asList(references) : null);
+		buffer.append(", referenceInfos=");
+		buffer.append(referenceInfos != null ? Arrays.asList(referenceInfos) : null);
 		buffer.append(", isActivated=");
 		buffer.append(isActivated);
 		buffer.append(", activate=");

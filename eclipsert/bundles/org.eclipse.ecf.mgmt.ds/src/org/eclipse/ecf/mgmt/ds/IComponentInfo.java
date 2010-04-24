@@ -40,7 +40,7 @@ public interface IComponentInfo {
 	@SuppressWarnings("rawtypes")
 	public Map getProperties();
 	
-	public IReference[] getReferences();
+	public IReferenceInfo[] getReferences();
 	
 	public boolean isActivated();
 	
