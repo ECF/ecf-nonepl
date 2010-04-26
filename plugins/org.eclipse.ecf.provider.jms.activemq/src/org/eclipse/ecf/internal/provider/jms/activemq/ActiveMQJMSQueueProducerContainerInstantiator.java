@@ -9,6 +9,7 @@
 package org.eclipse.ecf.internal.provider.jms.activemq;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import org.eclipse.ecf.core.ContainerCreateException;
@@ -27,6 +28,8 @@ public class ActiveMQJMSQueueProducerContainerInstantiator extends
 
 	protected static final String[] jmsIntents = { "JMS" };
 
+	protected static final String JMS_LBMANAGER_NAME = "ecf.jms.activemq.tcp.manager.lb.svchost";
+	
 	public ActiveMQJMSQueueProducerContainerInstantiator() {
 
 	}
@@ -78,6 +81,23 @@ public class ActiveMQJMSQueueProducerContainerInstantiator extends
 			results.add(jmsIntents[i]);
 		}
 		return (String[]) results.toArray(new String[] {});
+	}
+
+	public String[] getImportedConfigs(ContainerTypeDescription description, String[] exporterSupportedConfigs) {
+		List results = new ArrayList();
+		List supportedConfigs = Arrays.asList(exporterSupportedConfigs);
+		// For a manager, if a client is exporter then we are an importer
+		if (JMS_LBMANAGER_NAME.equals(description.getName())) {
+			if (supportedConfigs.contains(ActiveMQJMSClientContainerInstantiator.JMS_CLIENT_NAME))
+				results.add(JMS_LBMANAGER_NAME);
+		}
+		if (results.size() == 0)
+			return null;
+		return (String[]) results.toArray(new String[] {});
+	}
+
+	public String[] getSupportedConfigs(ContainerTypeDescription description) {
+		return new String[] { JMS_LBMANAGER_NAME };
 	}
 
 }
