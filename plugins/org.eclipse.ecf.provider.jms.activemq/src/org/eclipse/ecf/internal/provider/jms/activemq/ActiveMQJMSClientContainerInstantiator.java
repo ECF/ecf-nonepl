@@ -84,12 +84,17 @@ public class ActiveMQJMSClientContainerInstantiator extends
 		List results = new ArrayList();
 		List supportedConfigs = Arrays.asList(exporterSupportedConfigs);
 		if (JMS_CLIENT_NAME.equals(description.getName())) {
-			if (supportedConfigs
+			if (
+					// If it's a normal manager
+					supportedConfigs
 					.contains(ActiveMQJMSServerContainerInstantiator.JMS_MANAGER_NAME)
-					|| supportedConfigs.contains(JMS_CLIENT_NAME)) {
+					// Or the service exporter is a client
+					|| supportedConfigs.contains(JMS_CLIENT_NAME)
+					// Or it's a load balancing service host
+					|| supportedConfigs
+							.contains(ActiveMQJMSQueueProducerContainerInstantiator.JMS_LBMANAGER_NAME)) {
 				results.add(JMS_CLIENT_NAME);
-				results
-						.add(ActiveMQJMSServerContainerInstantiator.JMS_MANAGER_NAME);
+				results.add(ActiveMQJMSServerContainerInstantiator.JMS_MANAGER_NAME);
 			}
 		}
 		if (results.size() == 0)
