@@ -94,7 +94,6 @@ public class ActiveMQJMSClientContainerInstantiator extends
 					|| supportedConfigs
 							.contains(ActiveMQJMSQueueProducerContainerInstantiator.JMS_LBMANAGER_NAME)) {
 				results.add(JMS_CLIENT_NAME);
-				results.add(ActiveMQJMSServerContainerInstantiator.JMS_MANAGER_NAME);
 			}
 		}
 		if (results.size() == 0)
