@@ -158,7 +158,7 @@ public class ScrManager implements IAdaptable, IScrManager {
 		for(Enumeration e=compProperties.keys(); e.hasMoreElements(); ) {
 			String key = (String) e.nextElement();
 			Object compVal = compProperties.get(key);
-			if (!key.equals("component.name") && !key.equals("component.id") && !key.equals("objectClass")) { //$NON-NLS-1$ //$NON-NLS-2$
+			if (!key.equals("component.name") && !key.equals("component.id") && !key.equals("objectClass")) { //$NON-NLS-1$ //$NON-NLS-2$ //$NON-NLS-3$
 				Object serviceVal = serviceProperties.get(key);
 				if (!compVal.equals(serviceVal)) return false;
 			}
