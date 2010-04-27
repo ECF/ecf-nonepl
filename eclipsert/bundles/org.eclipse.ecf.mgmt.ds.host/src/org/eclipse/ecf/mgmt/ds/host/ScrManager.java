@@ -10,10 +10,14 @@
 package org.eclipse.ecf.mgmt.ds.host;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Dictionary;
+import java.util.Enumeration;
 import java.util.Hashtable;
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.felix.scr.Component;
 import org.apache.felix.scr.ScrService;
@@ -27,7 +31,10 @@ import org.eclipse.ecf.internal.mgmt.ds.host.Activator;
 import org.eclipse.ecf.mgmt.ds.ComponentInfo;
 import org.eclipse.ecf.mgmt.ds.IComponentInfo;
 import org.eclipse.ecf.mgmt.ds.IScrManager;
+import org.eclipse.ecf.mgmt.framework.BundleId;
 import org.eclipse.ecf.mgmt.framework.IBundleId;
+import org.eclipse.ecf.mgmt.framework.IServiceInfo;
+import org.eclipse.ecf.mgmt.framework.IServiceManager;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.eclipse.osgi.service.resolver.PlatformAdmin;
 import org.osgi.framework.Bundle;
@@ -47,6 +54,8 @@ public class ScrManager implements IAdaptable, IScrManager {
 	private Object compRefsLock = new Object();
 	private static long curID = 0;
 
+	private ServiceTracker serviceManagerTracker;
+	
 	private synchronized long generateID() {
 		return curID++;
 	}
@@ -111,7 +120,59 @@ public class ScrManager implements IAdaptable, IScrManager {
 			return null;
 		CompRef cRef = getCompRef(comp.getId(), comp.getName());
 		if (cRef == null) return null;
-		return new ComponentInfo(cRef.id, comp, getBundleDescription(comp.getBundle()));
+		return new ComponentInfo(cRef.id, comp, getBundleDescription(comp.getBundle()), findServicesForComponent(comp));
+	}
+
+	private IServiceInfo[] findServicesForComponent(Component comp) {
+		if (comp.getState() != Component.STATE_ACTIVE) return null;
+		String[] compServices = comp.getServices();
+		if (compServices == null || compServices.length < 1) return null;
+		IServiceManager serviceManager = getServiceManager();
+		if (serviceManager == null) {
+			logError("Service manager not available...cannot correlate service with component="+comp.getId(), null); //$NON-NLS-1$
+			return null;
+		}
+		Bundle componentBundle = comp.getBundle();
+		IBundleId bundleId = new BundleId(componentBundle.getSymbolicName(),componentBundle.getVersion().toString());
+		
+		IServiceInfo[] bundleServices = serviceManager.getServices(bundleId);
+		if (bundleServices == null) return null;
+		List results = new ArrayList();
+		for(int i=0; i < bundleServices.length; i++) 
+			if (matchComponentToService(compServices, comp, bundleServices[i])) results.add(bundleServices[i]);
+		
+		if (results.size() == 0) return null;
+		return (IServiceInfo[]) results.toArray(new IServiceInfo[results.size()]);
+	}
+
+	private boolean matchComponentToService(String[] compServices, Component comp,
+			IServiceInfo serviceInfo) {
+		boolean servicesMatch = matchServices(compServices,serviceInfo.getServiceClasses());
+		if (!servicesMatch) return false;
+		boolean propertiesMatch = matchServiceProperties(comp.getProperties(),serviceInfo.getServiceProperties());
+		return (propertiesMatch);
+	}
+
+	private boolean matchServiceProperties(Dictionary compProperties,
+			Map serviceProperties) {
+		for(Enumeration e=compProperties.keys(); e.hasMoreElements(); ) {
+			String key = (String) e.nextElement();
+			Object compVal = compProperties.get(key);
+			if (!key.equals("component.name") && !key.equals("component.id") && !key.equals("objectClass")) { //$NON-NLS-1$ //$NON-NLS-2$
+				Object serviceVal = serviceProperties.get(key);
+				if (!compVal.equals(serviceVal)) return false;
+			}
+		}
+		return true;
+	}
+
+	private boolean matchServices(String[] compServices, String[] serviceClasses) {
+		if (compServices == null || serviceClasses == null) return false;
+		List serviceClassesList = Arrays.asList(serviceClasses);
+		for(int i=0; i < compServices.length; i++) {
+			if (!serviceClassesList.contains(compServices[i])) return false;
+		}
+		return true;
 	}
 
 	private Component[] getComponentsForBundle(ScrService scrService, Bundle bundle) {
@@ -141,9 +202,10 @@ public class ScrManager implements IAdaptable, IScrManager {
 			if (bundle == null)
 				bundle = components[i].getBundle();
 			CompRef cRef = getCompRef(bundle.getBundleId(), componentName);
-			if (cRef != null)
-			results.add(new ComponentInfo(cRef.id, components[i],
-					getBundleDescription(bundle)));
+			if (cRef != null) {
+				results.add(new ComponentInfo(cRef.id, components[i],
+						getBundleDescription(bundle),  findServicesForComponent(components[i])));
+			}
 		}
 		return results;
 	}
@@ -174,6 +236,17 @@ public class ScrManager implements IAdaptable, IScrManager {
 				scrTracker.open();
 			}
 			return (ScrService) scrTracker.getService();
+		}
+	}
+
+	private IServiceManager getServiceManager() {
+		synchronized (lock) {
+			if (serviceManagerTracker == null) {
+				serviceManagerTracker = new ServiceTracker(context,
+						IServiceManager.class.getName(), null);
+				serviceManagerTracker.open();
+			}
+			return (IServiceManager) serviceManagerTracker.getService();
 		}
 	}
 
@@ -308,6 +381,10 @@ public class ScrManager implements IAdaptable, IScrManager {
 			if (platformAdminServiceTracker != null) {
 				platformAdminServiceTracker.close();
 				platformAdminServiceTracker = null;
+			}
+			if (serviceManagerTracker != null) {
+				serviceManagerTracker.close();
+				serviceManagerTracker = null;
 			}
 			context = null;
 			log = null;

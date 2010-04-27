@@ -12,6 +12,7 @@ package org.eclipse.ecf.mgmt.ds;
 import java.util.Map;
 
 import org.eclipse.ecf.mgmt.framework.IBundleId;
+import org.eclipse.ecf.mgmt.framework.IServiceInfo;
 
 public interface IComponentInfo {
 
@@ -56,4 +57,6 @@ public interface IComponentInfo {
 
     String getConfigurationPolicy();
 
+    public IServiceInfo[] getServiceInstances();
+    
 }

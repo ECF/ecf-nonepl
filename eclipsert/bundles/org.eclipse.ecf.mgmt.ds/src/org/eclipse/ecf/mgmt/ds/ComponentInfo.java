@@ -19,6 +19,7 @@ import java.util.Properties;
 import org.apache.felix.scr.Component;
 import org.eclipse.ecf.mgmt.framework.BundleId;
 import org.eclipse.ecf.mgmt.framework.IBundleId;
+import org.eclipse.ecf.mgmt.framework.IServiceInfo;
 import org.eclipse.osgi.service.resolver.BundleDescription;
 import org.osgi.service.component.ComponentInstance;
 
@@ -47,8 +48,9 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	private boolean isDeactivateDeclared;
 	private String modified;
 	private String configurationPolicy;
+	private IServiceInfo[] serviceInstances;
 	
-	public ComponentInfo(long id, Component component, BundleDescription bd) {
+	public ComponentInfo(long id, Component component, BundleDescription bd, IServiceInfo[] serviceInstances) {
 		this.id = id;
 		this.componentId = component.getId();
 		this.name = component.getName();
@@ -76,6 +78,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		this.isDeactivateDeclared = component.isDeactivateDeclared();
 		this.modified = component.getModified();
 		this.configurationPolicy = component.getConfigurationPolicy();
+		this.serviceInstances = serviceInstances;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -169,6 +172,10 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		return configurationPolicy;
 	}
 
+	public IServiceInfo[] getServiceInstances() {
+		return serviceInstances;
+	}
+	
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("ComponentInfo[id=");
@@ -211,6 +218,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		buffer.append(modified);
 		buffer.append(", configurationPolicy=");
 		buffer.append(configurationPolicy);
+		buffer.append(", serviceInstances=");
+		buffer.append(serviceInstances != null ? Arrays.asList(serviceInstances) : null);
 		buffer.append("]");
 		return buffer.toString();
 	}
