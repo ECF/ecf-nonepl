@@ -31,7 +31,7 @@ public class ServiceManagerLocalTest extends ECFAbstractTestCase {
 	public void testGetServiceZeroInfo() throws Exception {
 		IServiceInfo service = manager.getService(new Long(2));
 		assertNotNull(service);
-		assertTrue(service.getServiceId() == 2);
+		assertTrue(service.getId() == 2);
 	}
 	
 	public void testGetAllServiceInfo() throws Exception {

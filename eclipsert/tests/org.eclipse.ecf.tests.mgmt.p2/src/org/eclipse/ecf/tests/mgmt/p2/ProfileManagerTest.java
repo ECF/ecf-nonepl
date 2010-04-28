@@ -61,7 +61,7 @@ public class ProfileManagerTest extends TestCase {
 		
 		IProfileInfo profileInfo = profileManager.getProfile(PROFILE_ID_1);
 		assertNotNull(profileInfo);
-		assertTrue(PROFILE_ID_1.equals(profileInfo.getProfileId()));
+		assertTrue(PROFILE_ID_1.equals(profileInfo.getId()));
 		
 		removeProfile(PROFILE_ID_1);
 		
