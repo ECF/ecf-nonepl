@@ -15,7 +15,7 @@ public interface IReferenceInfo {
 
     String getServiceName();
 
-    long[] getServiceReferenceIds();
+    long[] getIds();
 
     boolean isSatisfied();
 

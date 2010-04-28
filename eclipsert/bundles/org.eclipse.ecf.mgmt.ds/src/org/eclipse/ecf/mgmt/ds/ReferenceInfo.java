@@ -63,7 +63,7 @@ public class ReferenceInfo implements IReferenceInfo, Serializable {
 		return serviceName;
 	}
 
-	public long[] getServiceReferenceIds() {
+	public long[] getIds() {
 		return serviceReferenceIds;
 	}
 
