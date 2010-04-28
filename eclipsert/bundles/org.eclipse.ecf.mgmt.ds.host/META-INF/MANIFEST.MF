@@ -14,6 +14,7 @@ Import-Package: org.apache.felix.scr,
  org.eclipse.ecf.mgmt.framework,
  org.eclipse.osgi.service.resolver,
  org.osgi.framework,
+ org.osgi.service.component,
  org.osgi.service.log,
  org.osgi.util.tracker
 Require-Bundle: org.eclipse.equinox.common

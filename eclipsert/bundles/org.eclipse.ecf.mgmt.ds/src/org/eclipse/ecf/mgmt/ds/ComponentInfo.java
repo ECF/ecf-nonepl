@@ -48,9 +48,9 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	private boolean isDeactivateDeclared;
 	private String modified;
 	private String configurationPolicy;
-	private IServiceInfo[] serviceInstances;
+	private IServiceInfo serviceInstance;
 	
-	public ComponentInfo(long id, Component component, BundleDescription bd, IServiceInfo[] serviceInstances) {
+	public ComponentInfo(long id, Component component, BundleDescription bd, IServiceInfo serviceInstance) {
 		this.id = id;
 		this.componentId = component.getId();
 		this.name = component.getName();
@@ -78,7 +78,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		this.isDeactivateDeclared = component.isDeactivateDeclared();
 		this.modified = component.getModified();
 		this.configurationPolicy = component.getConfigurationPolicy();
-		this.serviceInstances = serviceInstances;
+		this.serviceInstance = serviceInstance;
 	}
 	
 	@SuppressWarnings({ "rawtypes", "unchecked" })
@@ -172,8 +172,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		return configurationPolicy;
 	}
 
-	public IServiceInfo[] getServiceInstances() {
-		return serviceInstances;
+	public IServiceInfo getActiveService() {
+		return serviceInstance;
 	}
 	
 	public String toString() {
@@ -218,8 +218,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		buffer.append(modified);
 		buffer.append(", configurationPolicy=");
 		buffer.append(configurationPolicy);
-		buffer.append(", serviceInstances=");
-		buffer.append(serviceInstances != null ? Arrays.asList(serviceInstances) : null);
+		buffer.append(", serviceInstance=");
+		buffer.append(serviceInstance);
 		buffer.append("]");
 		return buffer.toString();
 	}

@@ -57,6 +57,6 @@ public interface IComponentInfo {
 
     String getConfigurationPolicy();
 
-    public IServiceInfo[] getServiceInstances();
+    public IServiceInfo getActiveService();
     
 }
