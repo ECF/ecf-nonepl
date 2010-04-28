@@ -13,7 +13,7 @@ public interface IReferenceInfo {
 
     String getName();
 
-    String getServiceName();
+    String getService();
 
     long[] getIds();
 

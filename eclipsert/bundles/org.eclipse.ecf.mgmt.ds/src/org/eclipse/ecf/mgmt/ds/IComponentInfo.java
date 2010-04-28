@@ -24,7 +24,7 @@ public interface IComponentInfo {
 	
 	public int getState();
 	
-	public IBundleId getBundle();
+	public IBundleId getBundleId();
 	
 	public String getFactory();
 	

@@ -107,7 +107,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		return state;
 	}
 
-	public IBundleId getBundle() {
+	public IBundleId getBundleId() {
 		return bundleId;
 	}
 

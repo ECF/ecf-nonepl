@@ -59,7 +59,7 @@ public class ReferenceInfo implements IReferenceInfo, Serializable {
 		return name;
 	}
 
-	public String getServiceName() {
+	public String getService() {
 		return serviceName;
 	}
 

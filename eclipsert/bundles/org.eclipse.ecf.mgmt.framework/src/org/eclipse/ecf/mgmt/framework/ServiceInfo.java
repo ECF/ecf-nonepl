@@ -22,12 +22,12 @@ public class ServiceInfo implements IServiceInfo, Serializable {
 
 	private static final long serialVersionUID = 7705971104116138176L;
 	
-	private String bundleSymbolicName;
+	private long bundleId;
 	private Map properties;
 	private long usingIds[];
 
 	public ServiceInfo(ServiceReference serviceReference, State platformState) {
-		bundleSymbolicName = serviceReference.getBundle().getSymbolicName();
+		bundleId = serviceReference.getBundle().getBundleId();
 		Properties props = new Properties();
 		String keys[] = serviceReference.getPropertyKeys();
 		for (int i = 0; i < keys.length; i++)
@@ -42,8 +42,8 @@ public class ServiceInfo implements IServiceInfo, Serializable {
 		}
 	}
 
-	public String getBundleSymbolicName() {
-		return bundleSymbolicName;
+	public long getBundleId() {
+		return bundleId;
 	}
 
 	public String[] getServices() {
@@ -76,8 +76,8 @@ public class ServiceInfo implements IServiceInfo, Serializable {
 
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
-		buffer.append("ServiceInfo[bundleSymbolicName="); //$NON-NLS-1$
-		buffer.append(bundleSymbolicName);
+		buffer.append("ServiceInfo[bundleId="); //$NON-NLS-1$
+		buffer.append(bundleId);
 		buffer.append(", properties="); //$NON-NLS-1$
 		buffer.append(properties);
 		buffer.append(", usingIds="); //$NON-NLS-1$

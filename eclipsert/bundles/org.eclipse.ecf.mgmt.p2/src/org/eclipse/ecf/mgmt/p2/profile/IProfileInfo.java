@@ -14,7 +14,7 @@ import java.util.Map;
 @SuppressWarnings("rawtypes")
 public interface IProfileInfo {
 
-	public String getProfileId();
+	public String getId();
 
 	public Map getProperties();
 

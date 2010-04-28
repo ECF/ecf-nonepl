@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface IServiceInfo {
 
-	public String getBundleSymbolicName();
+	public long getBundleId();
 
 	public long[] getUsingBundleIds();
 

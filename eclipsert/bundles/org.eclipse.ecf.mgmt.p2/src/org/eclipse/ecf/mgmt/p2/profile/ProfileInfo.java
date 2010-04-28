@@ -26,7 +26,7 @@ public class ProfileInfo implements IProfileInfo {
 		this.timestamp = profile.getTimestamp();
 	}
 
-	public String getProfileId() {
+	public String getId() {
 		return id;
 	}
 
