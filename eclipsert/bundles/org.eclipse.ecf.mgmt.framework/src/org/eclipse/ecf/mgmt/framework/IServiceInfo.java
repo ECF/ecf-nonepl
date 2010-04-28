@@ -17,12 +17,12 @@ public interface IServiceInfo {
 
 	public long[] getUsingBundleIds();
 
-	public Map getServiceProperties();
+	public Map getProperties();
 
-	public String[] getServiceClasses();
+	public String[] getServices();
 
-	public long getServiceId();
+	public long getId();
 
-	public int getServiceRanking();
+	public int getRanking();
 
 }

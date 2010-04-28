@@ -46,26 +46,26 @@ public class ServiceInfo implements IServiceInfo, Serializable {
 		return bundleSymbolicName;
 	}
 
-	public String[] getServiceClasses() {
-		Object o = getServiceProperties().get(Constants.OBJECTCLASS);
+	public String[] getServices() {
+		Object o = getProperties().get(Constants.OBJECTCLASS);
 		if (o instanceof String[])
 			return (String[]) o;
 		else
 			return null;
 	}
 
-	public long getServiceId() {
-		Object serviceid = getServiceProperties().get(Constants.SERVICE_ID);
+	public long getId() {
+		Object serviceid = getProperties().get(Constants.SERVICE_ID);
 		return (serviceid instanceof Long) ? ((Long) serviceid).longValue()
 				: 0L;
 	}
 
-	public Map getServiceProperties() {
+	public Map getProperties() {
 		return properties;
 	}
 
-	public int getServiceRanking() {
-		Object ranking = getServiceProperties().get(Constants.SERVICE_RANKING);
+	public int getRanking() {
+		Object ranking = getProperties().get(Constants.SERVICE_RANKING);
 		return (ranking instanceof Integer) ? ((Integer) ranking).intValue()
 				: 0;
 	}

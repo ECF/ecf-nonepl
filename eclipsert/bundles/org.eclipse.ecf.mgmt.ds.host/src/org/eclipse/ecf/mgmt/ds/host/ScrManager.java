@@ -147,9 +147,9 @@ public class ScrManager implements IAdaptable, IScrManager {
 
 	private boolean matchComponentToService(String[] compServices, Component comp,
 			IServiceInfo serviceInfo) {
-		boolean servicesMatch = matchServices(compServices,serviceInfo.getServiceClasses());
+		boolean servicesMatch = matchServices(compServices,serviceInfo.getServices());
 		if (!servicesMatch) return false;
-		boolean propertiesMatch = matchServiceProperties(comp.getProperties(),serviceInfo.getServiceProperties());
+		boolean propertiesMatch = matchServiceProperties(comp.getProperties(),serviceInfo.getProperties());
 		return (propertiesMatch);
 	}
 
