@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+   <extension
+         point="org.eclipse.ecf.containerFactory">
+      <containerFactory
+            class="org.eclipse.ecf.example.remoteservice.soap.host.hello.HelloSoapContainerInstantiator"
+            name="org.eclipse.ecf.remoteservice.soap.host.hello">
+      </containerFactory>
+   </extension>
+
+</plugin>

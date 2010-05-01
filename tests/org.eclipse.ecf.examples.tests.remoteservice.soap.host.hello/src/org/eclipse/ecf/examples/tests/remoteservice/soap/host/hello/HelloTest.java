@@ -16,8 +16,8 @@ import junit.framework.Assert;
 import org.apache.axis.client.Call;
 import org.apache.axis.client.Service;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.example.remoteservice.soap.host.hello.HelloSoapContainer;
 import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
-import org.eclipse.ecf.remoteservice.soap.host.hello.HelloSoapContainer;
 import org.eclipse.ecf.tests.httpservice.AbstractHttpServiceTest;
 
 
