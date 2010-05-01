@@ -16,7 +16,10 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.IContainerListener;
 import org.eclipse.ecf.core.IContainerManager;
+import org.eclipse.ecf.core.events.IContainerConnectedEvent;
+import org.eclipse.ecf.core.events.IContainerEvent;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.security.ConnectContextFactory;
@@ -24,9 +27,11 @@ import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.internal.provider.wave.google.ui.Activator;
 import org.eclipse.ecf.internal.provider.wave.google.ui.Messages;
 import org.eclipse.ecf.ui.IConnectWizard;
+import org.eclipse.ecf.ui.actions.AsynchContainerConnectAction;
 import org.eclipse.ecf.ui.dialogs.IDCreateErrorDialog;
 import org.eclipse.jface.viewers.IStructuredSelection;
 import org.eclipse.jface.wizard.Wizard;
+import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.INewWizard;
 import org.eclipse.ui.IWorkbench;
@@ -40,6 +45,7 @@ public class WaveConnectWizard extends Wizard implements IConnectWizard,
 	private Shell shell;
 	private WaveConnectWizardPage page;
 	private ID targetID;
+	private IConnectContext connectContext;
 
 	@Override
 	public void init(IWorkbench workbench, IStructuredSelection selection) {
@@ -70,6 +76,7 @@ public class WaveConnectWizard extends Wizard implements IConnectWizard,
 	public boolean performFinish() {
 		final String email = page.getEmail();
 		final String server = page.getServer();
+		final String password = page.getPassword();
 
 		try {
 			targetID = container.getConnectNamespace().createInstance(
@@ -78,7 +85,25 @@ public class WaveConnectWizard extends Wizard implements IConnectWizard,
 			new IDCreateErrorDialog(null, email, e).open();
 			return false;
 		}
+		
+		connectContext = ConnectContextFactory.createPasswordConnectContext(password);
 
+		container.addListener(new IContainerListener() {
+			public void handleEvent(IContainerEvent event) {
+				if (event instanceof IContainerConnectedEvent) {
+					Display.getDefault().asyncExec(new Runnable() {
+						public void run() {
+							// XXX: Todo
+							Status status = new Status(Status.OK, Activator.PLUGIN_ID, "connection established");
+							StatusManager.getManager().addLoggedStatus(status);
+						}
+					});
+				}
+			}
+		});
+
+		new AsynchContainerConnectAction(container, targetID, connectContext).run();
+		
 		return true;
 	}
 

@@ -55,7 +55,7 @@ public class WaveBackendID extends BaseID {
 	}
 
 	protected String namespaceGetName() {
-		return userAtDomain + "@" + host + ":" + port;
+		return userAtDomain + " [" + host + ":" + port + "]";
 	}
 
 	protected int namespaceHashCode() {

@@ -161,19 +161,25 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 
 	public void connect(ID targetID, IConnectContext connectContext)
 			throws ContainerConnectException {
+		
 		if (targetID == null)
 			throw new ContainerConnectException(
 					"WaveBackend targetID cannot be null");
+		
 		if (!(targetID instanceof WaveBackendID))
 			throw new ContainerConnectException(
 					"targetID must be a WaveBackendID");
+
 		WaveBackendID backendID = (WaveBackendID) targetID;
 		fireContainerEvent(new ContainerConnectingEvent(localID, targetID, null));
+
 		synchronized (connectLock) {
 			if (backendConnected())
 				throw new ContainerConnectException("Already connected");
+
 			connectToBackend(backendID);
 		}
+
 		fireContainerEvent(new ContainerConnectedEvent(localID, targetID));
 	}
 
@@ -193,16 +199,19 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 				throw new ContainerConnectException(
 						"Wave client already connected");
 			try {
-				this.userId = new ParticipantId(userAtDomain);
-				this.idGenerator = new RandomIdGenerator(userId.getDomain());
 				this.uriCodec = new IdURIEncoderDecoder(
 						new URLEncoderDecoderBasedPercentEncoderDecoder());
 				this.rpcChannel = new ClientRpcChannel(new InetSocketAddress(
 						host, port));
 				this.rpcServer = ProtocolWaveClientRpc.newStub(rpcChannel);
+				this.userId = new ParticipantId(userAtDomain);
+				this.idGenerator = new RandomIdGenerator(userId.getDomain());
 				connectedID = waveBackendConnectID;
+				
 				// open wave
-				openWave(CommonConstants.INDEX_WAVE_ID, "");
+				WaveId index = new WaveId(host, "indexwave");
+				openWave(index, "");
+
 				// add operation listener
 				addWaveletOperationListener(waveletOperationListener);
 			} catch (IOException e) {

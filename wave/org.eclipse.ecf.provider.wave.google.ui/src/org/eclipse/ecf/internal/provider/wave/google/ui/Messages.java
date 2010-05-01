@@ -31,4 +31,8 @@ public class Messages extends NLS {
 	static {
 		NLS.initializeMessages(BUNDLE_NAME, Messages.class);
 	}
+
+	private Messages() {
+		// private null constructor
+	}
 }
