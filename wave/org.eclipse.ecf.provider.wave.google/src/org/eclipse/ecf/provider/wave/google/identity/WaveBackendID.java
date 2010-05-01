@@ -22,13 +22,11 @@ public class WaveBackendID extends BaseID {
 	
 	public WaveBackendID(Namespace namespace, String userAtDomain, String host, int port) {
 		super(namespace);
+
 		this.userAtDomain = userAtDomain;
 		this.host = host;
 		this.port = port;
-		hashCode = 7;
-		hashCode = 31 * hashCode + userAtDomain.hashCode();
-		hashCode = 31 * hashCode + host.hashCode();
-		hashCode = 31 * hashCode + port;
+		this.hashCode = hashCode();
 	}
 
 	public String getUserAtDomain() {
@@ -62,6 +60,16 @@ public class WaveBackendID extends BaseID {
 
 	protected int namespaceHashCode() {
 		return hashCode;
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + ((host == null) ? 0 : host.hashCode());
+		result = prime * result + port;
+		result = prime * result	+ ((userAtDomain == null) ? 0 : userAtDomain.hashCode());
+		return result;
 	}
 
 }

@@ -20,16 +20,10 @@
    <extension
          point="org.eclipse.ecf.identity.namespace">
       <namespace
-            class="org.eclipse.ecf.provider.wave.google.identity.WaveletNamespace"
+            class="org.eclipse.ecf.provider.wave.google.identity.WaveBackendNamespace"
             description="Google WaveBackend Namespace"
             name="ecf.namespace.googlewave.wavebackend">
       </namespace>
-   </extension>
-   <extension
-         point="org.eclipse.ecf.containerFactory">
-      <containerFactory
-            class="org.eclipse.ecf.provider.internal.wave.google.WaveClientContainerInstantiator">
-      </containerFactory>
    </extension>
    <extension
          point="org.eclipse.ecf.containerFactory">
