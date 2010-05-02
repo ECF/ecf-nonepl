@@ -16,23 +16,25 @@ public class WaveID extends BaseID {
 	private static final long serialVersionUID = -4591927740497040435L;
 
 	private WaveId waveId;
-	private int hashCode;
-	
-	protected WaveID(WaveNamespace ns, String waveDomain, String waveId) {
+
+	private String waveDomain;
+
+	private String waveIdName;
+
+	protected WaveID(WaveNamespace ns, String waveDomain, String waveIdName) {
 		super(ns);
-		this.waveId = new WaveId(waveDomain,waveId);
+		this.waveId = new WaveId(waveDomain, waveIdName);
+		this.waveDomain = waveDomain;
+		this.waveIdName = waveIdName;
 	}
-	
-	public WaveId getWaveId() {
-		return waveId;
-	}
-	
+
 	protected int namespaceCompareTo(BaseID obj) {
 		return getName().compareTo(obj.getName());
 	}
 
 	protected boolean namespaceEquals(BaseID o) {
-		if (o == this) return true;
+		if (o == this)
+			return true;
 		if (!(o instanceof WaveID))
 			return false;
 		WaveID wo = (WaveID) o;
@@ -40,11 +42,34 @@ public class WaveID extends BaseID {
 	}
 
 	protected String namespaceGetName() {
-		return waveId.getId();
+		return waveIdName;
 	}
 
 	protected int namespaceHashCode() {
-		return hashCode;
+		return hashCode();
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result
+				+ ((waveDomain == null) ? 0 : waveDomain.hashCode());
+		result = prime * result
+				+ ((waveIdName == null) ? 0 : waveIdName.hashCode());
+		return result;
+	}
+
+	public WaveId getWaveId() {
+		return waveId;
+	}
+
+	public String getWaveDomain() {
+		return waveDomain;
+	}
+
+	public String getWaveIdName() {
+		return waveIdName;
 	}
 
 }
