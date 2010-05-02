@@ -1,4 +1,4 @@
-package org.eclipse.ecf.tests.provider.wave.google;
+package org.eclipse.ecf.tests.provider.wave.google.namespaces;
 
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
