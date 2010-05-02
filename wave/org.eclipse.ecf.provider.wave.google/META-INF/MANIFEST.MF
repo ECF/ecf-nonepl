@@ -50,7 +50,6 @@ Export-Package: com.google.common.annotations,
  org.waveprotocol.wave.examples.fedone.agents.echoey,
  org.waveprotocol.wave.examples.fedone.agents.probey,
  org.waveprotocol.wave.examples.fedone.common,
- org.waveprotocol.wave.examples.fedone.federation.xmpp,
  org.waveprotocol.wave.examples.fedone.model.util,
  org.waveprotocol.wave.examples.fedone.rpc,
  org.waveprotocol.wave.examples.fedone.util,
@@ -71,8 +70,7 @@ Export-Package: com.google.common.annotations,
  org.waveprotocol.wave.model.util,
  org.waveprotocol.wave.model.wave,
  org.waveprotocol.wave.model.wave.data,
- org.waveprotocol.wave.model.wave.data.impl,
- org.waveprotocol.wave.protocol
+ org.waveprotocol.wave.model.wave.data.impl
 Bundle-ClassPath: lib/wave/fedone-client-console-0.2.jar,
  .
 Require-Bundle: org.eclipse.equinox.common;bundle-version="3.5.1"

@@ -62,7 +62,7 @@ import org.waveprotocol.wave.model.operation.wave.WaveletOperation;
 import org.waveprotocol.wave.model.util.Pair;
 import org.waveprotocol.wave.model.wave.ParticipantId;
 import org.waveprotocol.wave.model.wave.data.WaveletData;
-import org.waveprotocol.wave.protocol.common.ProtocolWaveletDelta;
+import org.waveprotocol.wave.federation.Proto.ProtocolWaveletDelta;
 
 import com.google.common.base.Preconditions;
 import com.google.common.collect.Lists;
@@ -191,9 +191,11 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 
 	private void connectToBackend(WaveBackendID waveBackendConnectID)
 			throws ContainerConnectException {
+	
 		String userAtDomain = waveBackendConnectID.getUserAtDomain();
 		String host = waveBackendConnectID.getHost();
 		int port = waveBackendConnectID.getPort();
+		
 		synchronized (connectLock) {
 			if (backendConnected())
 				throw new ContainerConnectException(
@@ -209,8 +211,7 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 				connectedID = waveBackendConnectID;
 				
 				// open wave
-				WaveId index = new WaveId(host, "indexwave");
-				openWave(index, "");
+				openWave(CommonConstants.INDEX_WAVE_ID, "");
 
 				// add operation listener
 				addWaveletOperationListener(waveletOperationListener);
@@ -298,11 +299,11 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 	}
 
 	private void logWarning(String message) {
-
+		trace(DebugOptions.TRACE, message);
 	}
 
 	private void logException(String message, Throwable t) {
-
+		trace(DebugOptions.TRACE, message);
 	}
 
 	private void logInfo(String message) {
