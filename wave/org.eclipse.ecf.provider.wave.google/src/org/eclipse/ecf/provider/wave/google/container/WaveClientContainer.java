@@ -60,7 +60,9 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 	private WaveID indexWave;
 
 	private ID localID;
+	
 	private WaveBackendID connectedID;
+	
 	private Object connectLock = new Object();
 
 	/** User id of the user of the backend (encapsulating both user and server). */

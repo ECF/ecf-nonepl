@@ -95,7 +95,7 @@ public class Wavelet implements IWavelet {
 		if (OpComparators.SYNTACTIC_IDENTITY.equal(updated, new DocOpBuffer().finish())) {
 			documents.remove(documentId);
 		} else {
-			documents.put(documentId, doc);
+			documents.put(documentId, updated);
 		}
 
 		return true;
