@@ -8,33 +8,22 @@
  ******************************************************************************/
 package org.eclipse.ecf.provider.wave.google.identity;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.BaseID;
-import org.waveprotocol.wave.model.id.WaveletId;
 
 public class WaveletID extends BaseID {
 
 	private static final long serialVersionUID = -6043054539024233450L;
-	private WaveletId waveletId;
 	private int hashCode;
-	
-	protected WaveletID(WaveletNamespace ns, WaveletId waveletId) {
-		super(ns);
-		Assert.isNotNull(waveletId);
-		this.waveletId = waveletId;
-		hashCode = 7;
-		hashCode = 31 * hashCode + waveletId.hashCode();
-	}
-	
+	private String waveletId;
+	private String waveletDomain;
+
 	protected WaveletID(WaveletNamespace ns, String waveletDomain, String waveletId) {
 		super(ns);
-		this.waveletId = new WaveletId(waveletDomain,waveletId);
+		this.waveletDomain = waveletDomain;
+		this.waveletId = waveletId;
+		this.hashCode = hashCode();
 	}
-	
-	public WaveletId getWaveletId() {
-		return waveletId;
-	}
-	
+
 	protected int namespaceCompareTo(BaseID obj) {
 		return getName().compareTo(obj.getName());
 	}
@@ -44,15 +33,31 @@ public class WaveletID extends BaseID {
 		if (!(o instanceof WaveletID))
 			return false;
 		WaveletID wo = (WaveletID) o;
-		return wo.waveletId.equals(this.waveletId);
+		return wo.waveletId.equals(this.waveletId) && wo.waveletDomain.equals(this.waveletDomain);
+	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 0;
+		result = prime * result + ((waveletDomain == null) ? 0 : waveletDomain.hashCode());
+		result = prime * result	+ ((waveletId == null) ? 0 : waveletId.hashCode());
+		return result;
 	}
 
 	protected String namespaceGetName() {
-		return waveletId.getId();
+		return waveletDomain  + "!" + waveletId;
 	}
 
 	protected int namespaceHashCode() {
 		return hashCode;
 	}
 
+	public String getWaveletId() {
+		return waveletId;
+	}
+
+	public String getWaveletDomain() {
+		return waveletDomain;
+	}
 }

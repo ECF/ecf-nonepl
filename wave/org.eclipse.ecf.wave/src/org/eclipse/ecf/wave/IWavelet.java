@@ -8,21 +8,9 @@
  ******************************************************************************/
 package org.eclipse.ecf.wave;
 
-import java.util.Map;
-
 import org.eclipse.ecf.core.identity.ID;
-import org.eclipse.ecf.wave.document.IBufferedDocumentOperation;
-import org.eclipse.ecf.wave.document.DocumentOperationException;
+import org.waveprotocol.wave.model.wave.data.WaveletData;
 
-public interface IWavelet {
-
-	public Map<ID,IBufferedDocumentOperation> getDocuments();
-	
-	public ID[] getParticipants();
-	
-	public boolean addParticipant(ID participantID);
-	public boolean removeParticipant(ID participantID);
-	
-	public boolean modifyDocument(ID documentID, IBufferedDocumentOperation operation) throws DocumentOperationException;
-	
+public interface IWavelet extends WaveletData {
+	public ID getWaveletId();
 }

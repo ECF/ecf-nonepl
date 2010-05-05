@@ -10,8 +10,8 @@ package org.eclipse.ecf.wave;
 
 import org.eclipse.ecf.core.identity.IIdentifiable;
 
-public interface IWaveClientView extends IIdentifiable {
 
-	public IWavelet[] getWavelets();
+public interface IWave extends IIdentifiable {
+
 
 }

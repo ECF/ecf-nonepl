@@ -9,23 +9,19 @@
 package org.eclipse.ecf.provider.wave.google.identity;
 
 import org.eclipse.ecf.core.identity.BaseID;
-import org.waveprotocol.wave.model.id.WaveId;
 
 public class WaveID extends BaseID {
 
 	private static final long serialVersionUID = -4591927740497040435L;
 
-	private WaveId waveId;
-
 	private String waveDomain;
 
-	private String waveIdName;
+	private String waveId;
 
-	protected WaveID(WaveNamespace ns, String waveDomain, String waveIdName) {
+	protected WaveID(WaveNamespace ns, String waveDomain, String waveId) {
 		super(ns);
-		this.waveId = new WaveId(waveDomain, waveIdName);
 		this.waveDomain = waveDomain;
-		this.waveIdName = waveIdName;
+		this.waveId = waveId;
 	}
 
 	protected int namespaceCompareTo(BaseID obj) {
@@ -38,11 +34,11 @@ public class WaveID extends BaseID {
 		if (!(o instanceof WaveID))
 			return false;
 		WaveID wo = (WaveID) o;
-		return wo.waveId.equals(this.waveId);
+		return wo.waveDomain.equals(this.waveDomain) && wo.waveId.equals(this.waveId);
 	}
 
 	protected String namespaceGetName() {
-		return waveIdName;
+		return waveId;
 	}
 
 	protected int namespaceHashCode() {
@@ -52,24 +48,25 @@ public class WaveID extends BaseID {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 0;
 		result = prime * result
 				+ ((waveDomain == null) ? 0 : waveDomain.hashCode());
 		result = prime * result
-				+ ((waveIdName == null) ? 0 : waveIdName.hashCode());
+				+ ((waveId == null) ? 0 : waveId.hashCode());
 		return result;
 	}
 
-	public WaveId getWaveId() {
-		return waveId;
+	@Override
+	public String toString() {
+		return waveDomain + "!" + waveId;
 	}
 
 	public String getWaveDomain() {
 		return waveDomain;
 	}
 
-	public String getWaveIdName() {
-		return waveIdName;
+	public String getWaveId() {
+		return waveId;
 	}
 
 }

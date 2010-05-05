@@ -65,7 +65,7 @@ public class WaveBackendID extends BaseID {
 	@Override
 	public int hashCode() {
 		final int prime = 31;
-		int result = super.hashCode();
+		int result = 0;
 		result = prime * result + ((host == null) ? 0 : host.hashCode());
 		result = prime * result + port;
 		result = prime * result	+ ((userAtDomain == null) ? 0 : userAtDomain.hashCode());

@@ -12,7 +12,7 @@ import org.eclipse.ecf.core.identity.Namespace;
 
 public interface IWaveClientContainerAdapter {
 
-	public IWaveClientView getIndexWaveClientView();
+	public IWave getIndexWaveClientView();
 	public Namespace getWaveNamespace();
 	public Namespace getWaveletNamespace();
 	public Namespace getParticipantNamespace();

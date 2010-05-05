@@ -11,6 +11,7 @@ package org.eclipse.ecf.provider.wave.google.identity;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.eclipse.ecf.provider.internal.wave.google.CommonConstants;
 
 public class WaveNamespace extends Namespace {
 
@@ -19,10 +20,6 @@ public class WaveNamespace extends Namespace {
 	
 	private static final long serialVersionUID = 2615028840514406159L;
 
-	public WaveNamespace() {
-		super(NAME, null);
-	}
-	
 	public ID createInstance(Object[] objects) throws IDCreateException {
 		try {
 			if (objects == null || objects.length < 1 || objects[0] == null) {
@@ -33,8 +30,8 @@ public class WaveNamespace extends Namespace {
 				throw new IllegalArgumentException("Invalid WaveId creation arguments");
 			}
 			
-			// TODO: parameter checks
 			String[] parameters = (String[]) objects;
+			stripWaveProtocolPrefix(parameters);
 			String waveIdName = getWaveIdName(parameters);
 			String waveDomain = getWaveDomain(parameters);
 			
@@ -44,11 +41,25 @@ public class WaveNamespace extends Namespace {
 		}
 	}
 
+	private void stripWaveProtocolPrefix(String[] parameters) {
+		if(parameters[0].startsWith(CommonConstants.WAVE_PROTOCOL_PREFIX)) {
+			parameters[0] = parameters[0].substring(CommonConstants.WAVE_PROTOCOL_PREFIX.length());
+		}
+	}
+
 	private String getWaveIdName(String[] parameters) {
 		if(parameters.length == 2) {
 			return parameters[1];
 		} else {
-			return parameters[0].substring(parameters[0].indexOf("!") + 1);
+			String[] parts = parameters[0].split("/");
+			if(parts.length == 1) {
+				// test-wave.de!test
+				String[] idParts = parts[0].split("!");
+				return idParts[1];
+			}
+			
+			String[] idParts = parts[1].split("!");
+			return idParts[idParts.length - 1];
 		}
 
 	}
@@ -57,7 +68,20 @@ public class WaveNamespace extends Namespace {
 		if(parameters.length == 2) {
 			return parameters[0];
 		} else {
-			return parameters[0].substring(0, parameters[0].indexOf("!"));
+			String[] parts = parameters[0].split("/");
+			if(parts.length == 1) {
+				// test-wave.de!test
+				String[] idParts = parts[0].split("!");
+				return idParts[0];
+			}
+			
+			String[] idParts = parts[1].split("!");
+			
+			if(idParts.length == 1) {
+				return parts[0];
+			} else {
+				return idParts[0];
+			}
 		}
 	}
 

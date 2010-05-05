@@ -11,7 +11,7 @@ package org.eclipse.ecf.provider.wave.google.identity;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.identity.Namespace;
-import org.waveprotocol.wave.model.id.LongIdSerialiser;
+import org.eclipse.ecf.provider.internal.wave.google.CommonConstants;
 
 public class WaveletNamespace extends Namespace {
 
@@ -20,39 +20,52 @@ public class WaveletNamespace extends Namespace {
 	
 	private static final long serialVersionUID = 2615028840514406159L;
 
-	public WaveletNamespace() {
-		super(NAME,null);
-	}
-	
-	private String getInitFromExternalForm(Object[] args) {
-		if (args == null || args.length < 1 || args[0] == null)
-			return null;
-		if (args[0] instanceof String) {
-			String arg = (String) args[0];
-			if (arg.startsWith(getScheme() + Namespace.SCHEME_SEPARATOR)) {
-				int index = arg.indexOf(Namespace.SCHEME_SEPARATOR);
-				if (index >= arg.length())
-					return null;
-				return arg.substring(index + 1);
-			}
-		}
-		return null;
-	}
-
-
-	public ID createInstance(Object[] parameters) throws IDCreateException {
+	public ID createInstance(Object[] objects) throws IDCreateException {
 		try {
-			String init = getInitFromExternalForm(parameters);
-			if (init != null)
-				return new WaveletID(this, LongIdSerialiser.INSTANCE.deserialiseWaveletId(init));
-			if (parameters.length == 1) {
-				if (parameters[0] instanceof String) {
-					return new WaveletID(this, LongIdSerialiser.INSTANCE.deserialiseWaveletId((String) parameters[0]));
-				}
+			if (objects == null || objects.length != 1 || objects[0] == null) {
+				throw new IllegalArgumentException("Invalid WaveId creation arguments");
 			}
-			throw new IllegalArgumentException("Invalid WaveletID creation arguments");
+
+			if(!(objects[0] instanceof String)) {
+				throw new IllegalArgumentException("Invalid WaveId creation arguments");
+			}
+			
+			String[] parameters = (String[]) objects;
+			stripWaveProtocolPrefix(parameters);
+			String waveletId = getWaveletId(parameters[0]);
+			String waveletDomain = getWaveletDomain(parameters[0]);
+			
+			return new WaveletID(this, waveletDomain, waveletId);
 		} catch (Exception e) {
 			throw new IDCreateException("WaveletID creation failed", e);
+		}
+	}
+
+	private String getWaveletId(String parameter) {
+		String[] parts = parameter.split("/");
+		if(parts.length == 1) {
+			// test-wave.de!test
+			String[] idParts = parts[0].split("!");
+			return idParts[1];
+		}
+		
+		return parts[parts.length - 1];
+	}
+
+	private String getWaveletDomain(String parameter) {
+		String[] parts = parameter.split("/");
+		if(parts.length == 1) {
+			// test-wave.de!test
+			String[] idParts = parts[0].split("!");
+			return idParts[0];
+		}
+
+		return parts[0];
+	}
+
+	private void stripWaveProtocolPrefix(String[] parameters) {
+		if(parameters[0].startsWith(CommonConstants.WAVE_PROTOCOL_PREFIX)) {
+			parameters[0] = parameters[0].substring(CommonConstants.WAVE_PROTOCOL_PREFIX.length());
 		}
 	}
 
