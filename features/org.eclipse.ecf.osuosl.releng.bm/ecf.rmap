@@ -25,10 +25,18 @@
 		</provider>
 	</searchPath>
 
+	<!-- org.xbill.dns -->
+	<searchPath name="org.xbill.dns">
+		<provider readerType="url" componentTypes="osgi.bundle" mutable="false" source="false">
+			<uri format="http://ecf2.osuosl.org/org.xbill.dns_2.0.8.jar"/>
+		</provider>
+	</searchPath>
+	
 	<!-- below order does matter!!! -->
 
 	<!-- ECF OSU -->
 	<locator searchPathRef="com.skype" pattern="^com\.skype(\..+)?" failOnError="false"/>
+	<locator searchPathRef="org.xbill.dns" pattern="^org\.xbill\.dns?" failOnError="false"/>
 	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf(\..+)?" failOnError="false"/>
 	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.apache\.zookeeper?" failOnError="false"/>
 
