@@ -10,6 +10,7 @@ package org.eclipse.ecf.provider.wave.google.identity;
 
 import org.eclipse.ecf.core.identity.BaseID;
 import org.eclipse.ecf.core.identity.Namespace;
+import org.waveprotocol.wave.model.wave.ParticipantId;
 
 public class WaveBackendID extends BaseID {
 
@@ -17,6 +18,7 @@ public class WaveBackendID extends BaseID {
 
 	private String userAtDomain;
 	private String host;
+	private ParticipantId participant;
 	private int port;
 	private int hashCode;
 	
@@ -24,6 +26,7 @@ public class WaveBackendID extends BaseID {
 		super(namespace);
 
 		this.userAtDomain = userAtDomain;
+		this.participant = new ParticipantId(userAtDomain);
 		this.host = host;
 		this.port = port;
 		this.hashCode = hashCode();
@@ -31,6 +34,10 @@ public class WaveBackendID extends BaseID {
 
 	public String getUserAtDomain() {
 		return userAtDomain;
+	}
+
+	public ParticipantId getParticipant() {
+		return participant;
 	}
 
 	public String getHost() {

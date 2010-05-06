@@ -9,8 +9,10 @@
 package org.eclipse.ecf.wave;
 
 import org.eclipse.ecf.core.identity.ID;
+import org.waveprotocol.wave.model.document.operation.BufferedDocOp;
 import org.waveprotocol.wave.model.wave.data.WaveletData;
 
 public interface IWavelet extends WaveletData {
 	public ID getWaveletId();
+	public BufferedDocOp getDocument(String documentId);
 }

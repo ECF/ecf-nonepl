@@ -25,6 +25,7 @@ import org.eclipse.ecf.core.identity.Namespace;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.util.Trace;
 import org.eclipse.ecf.provider.internal.wave.google.Activator;
+import org.eclipse.ecf.provider.internal.wave.google.CommonConstants;
 import org.eclipse.ecf.provider.internal.wave.google.DebugOptions;
 import org.eclipse.ecf.provider.wave.google.identity.WaveBackendID;
 import org.eclipse.ecf.provider.wave.google.identity.WaveBackendNamespace;
@@ -57,7 +58,7 @@ import com.google.protobuf.RpcController;
 
 public class WaveClientContainer extends AbstractContainer implements IWaveClientContainerAdapter {
 
-	private WaveID indexWave;
+	private WaveID indexWave = CommonConstants.INDEX_WAVE_ID;
 
 	private ID localID;
 	
@@ -89,23 +90,23 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 	public void connect(ID targetID, IConnectContext connectContext)
 			throws ContainerConnectException {
 
-		if (targetID == null)
+		if (targetID == null) {
 			throw new ContainerConnectException(
 					"WaveBackend targetID cannot be null");
-
-		if (!(targetID instanceof WaveBackendID))
+		}
+	
+		if (!(targetID instanceof WaveBackendID)) {
 			throw new ContainerConnectException(
 					"targetID must be a WaveBackendID");
-
+		}
+		
 		WaveBackendID backendID = (WaveBackendID) targetID;
 		fireContainerEvent(new ContainerConnectingEvent(localID, targetID, null));
 
-		indexWave = (WaveID) getWaveNamespace().createInstance(
-				new String[] { "indexwave!indexwave" });
-
 		synchronized (connectLock) {
-			if (backendConnected())
+			if (backendConnected()) {
 				throw new ContainerConnectException("Already connected");
+			}
 
 			connectToBackend(backendID);
 		}
@@ -120,18 +121,19 @@ public class WaveClientContainer extends AbstractContainer implements IWaveClien
 	}
 
 	private void connectToBackend(WaveBackendID waveBackendConnectID) throws ContainerConnectException {
-
 		String userAtDomain = waveBackendConnectID.getUserAtDomain();
 		String host = waveBackendConnectID.getHost();
 		int port = waveBackendConnectID.getPort();
 
 		synchronized (connectLock) {
-			if (backendConnected())
+			if (backendConnected()) {
 				throw new ContainerConnectException("Wave client already connected");
+			}
+			
 			try {
 				this.rpcChannel = new ClientRpcChannel(new InetSocketAddress(host, port));
 				this.rpcServer = ProtocolWaveClientRpc.newStub(rpcChannel);
-				this.userId = new ParticipantId(userAtDomain);
+				this.userId = waveBackendConnectID.getParticipant();
 				this.idGenerator = new RandomIdGenerator(userId.getDomain());
 				connectedID = waveBackendConnectID;
 

@@ -61,6 +61,15 @@ public class Wavelet implements IWavelet {
 
 	/*
 	 * (non-Javadoc)
+	 * @see org.eclipse.ecf.wave.IWavelet#getDocument(java.lang.String)
+	 */
+	@Override
+	public BufferedDocOp getDocument(String documentId) {
+		return documents.get(documentId);
+	}
+	
+	/*
+	 * (non-Javadoc)
 	 * @see org.waveprotocol.wave.model.wave.data.WaveletData#getParticipants()
 	 */
 	@Override
@@ -73,6 +82,7 @@ public class Wavelet implements IWavelet {
 	 * @see org.waveprotocol.wave.model.wave.data.WaveletData#getWaveletName()
 	 */
 	@Override
+	@Deprecated
 	public WaveletName getWaveletName() {
 		return null; // do we need this?
 	}
