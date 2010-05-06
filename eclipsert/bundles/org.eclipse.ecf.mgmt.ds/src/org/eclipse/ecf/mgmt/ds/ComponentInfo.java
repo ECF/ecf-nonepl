@@ -9,6 +9,9 @@
 ******************************************************************************/
 package org.eclipse.ecf.mgmt.ds;
 
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Arrays;
 import java.util.Dictionary;
@@ -39,7 +42,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	private boolean isImmediate;
 	private String[] services;
 	@SuppressWarnings("rawtypes")
-	private Map properties;
+	private Properties properties;
 	private ReferenceInfo[] referenceInfos;
 	private boolean isActivated;
 	private String activate;
@@ -62,7 +65,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		this.isDefaultEnabled = component.isDefaultEnabled();
 		this.isImmediate = component.isImmediate();
 		this.services = component.getServices();
-		this.properties = convertDictionaryToMap(component.getProperties());
+		this.properties = convertProperties(component.getProperties());
 		org.apache.felix.scr.Reference[] cRefs = component.getReferences();
 		if (cRefs != null) {
 			this.referenceInfos = new ReferenceInfo[cRefs.length];
@@ -81,12 +84,27 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		this.serviceInstance = serviceInstance;
 	}
 	
+	private static boolean isSerializable(Object o) {
+		try {
+			ObjectOutputStream ois = new ObjectOutputStream(
+					new ByteArrayOutputStream());
+			ois.writeObject(o);
+			return true;
+		} catch (IOException e) {
+			return false;
+		}
+	}
+
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	private Map convertDictionaryToMap(Dictionary dict) {
-		Map result = new Properties();
+	private Properties convertProperties(Dictionary dict) {
+		Properties result = new Properties();
 		for (Enumeration e = dict.keys(); e.hasMoreElements(); ) {
 			String key = (String) e.nextElement();
-			result.put(key, dict.get(key));
+			Object value = dict.get(key);
+			if (isSerializable(value))
+				result.put(key, value);
+			else
+				result.put(key, value.toString());
 		}
 		return result;
 	}
