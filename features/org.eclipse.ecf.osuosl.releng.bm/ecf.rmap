@@ -38,7 +38,6 @@
 	<locator searchPathRef="com.skype" pattern="^com\.skype(\..+)?" failOnError="false"/>
 	<locator searchPathRef="org.xbill.dns" pattern="^org\.xbill\.dns?" failOnError="false"/>
 	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.eclipse\.ecf(\..+)?" failOnError="false"/>
-	<locator searchPathRef="org.eclipse.ecf.osu" pattern="^org\.apache\.zookeeper?" failOnError="false"/>
 
 	<!--  everything else is redirected to ecf.rmap at dev.eclipse.org -->
 	<redirect 
