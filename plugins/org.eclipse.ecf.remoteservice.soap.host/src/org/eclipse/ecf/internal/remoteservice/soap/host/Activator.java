@@ -10,8 +10,10 @@
 
 package org.eclipse.ecf.internal.remoteservice.soap.host;
 
+import org.eclipse.core.runtime.IAdapterManager;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.core.util.LogHelper;
+import org.eclipse.ecf.core.util.PlatformHelper;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.service.log.LogService;
@@ -33,6 +35,8 @@ public class Activator implements BundleActivator {
 	private BundleContext context = null;
 
 	private SOAPServiceTracker serviceTracker;
+	
+	private ServiceTracker adapterManagerTracker = null;
 	
 	public SOAPServiceTracker getServiceTracker() {
 		return serviceTracker;
@@ -70,7 +74,10 @@ public class Activator implements BundleActivator {
 			logServiceTracker.close();
 			logServiceTracker = null;
 		}
-
+		if (adapterManagerTracker != null) {
+			adapterManagerTracker.close();
+			adapterManagerTracker = null;
+		}
 		if (serviceTracker != null) {
 			serviceTracker.close();
 			serviceTracker = null;
@@ -91,5 +98,19 @@ public class Activator implements BundleActivator {
 
 	public BundleContext getContext() {
 		return context;
+	}
+
+	public IAdapterManager getAdapterManager() {
+		// First, try to get the adapter manager via
+		if (adapterManagerTracker == null) {
+			adapterManagerTracker = new ServiceTracker(this.context, IAdapterManager.class.getName(), null);
+			adapterManagerTracker.open();
+		}
+		IAdapterManager adapterManager = (IAdapterManager) adapterManagerTracker.getService();
+		// Then, if the service isn't there, try to get from Platform class via
+		// PlatformHelper class
+		if (adapterManager == null)
+			adapterManager = PlatformHelper.getPlatformAdapterManager();
+		return adapterManager;
 	}
 }
