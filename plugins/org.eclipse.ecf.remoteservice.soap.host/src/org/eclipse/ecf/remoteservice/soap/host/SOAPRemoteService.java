@@ -8,7 +8,7 @@
  *
  ******************************************************************************/
 
-package org.eclipse.ecf.internal.remoteservice.soap.host;
+package org.eclipse.ecf.remoteservice.soap.host;
 
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
@@ -24,6 +24,7 @@ import org.apache.axis.server.AxisServer;
 import org.apache.axis.utils.XMLUtils;
 import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.util.ECFException;
+import org.eclipse.ecf.internal.remoteservice.soap.host.Messages;
 import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.xml.sax.SAXException;
 
@@ -39,7 +40,7 @@ public class SOAPRemoteService {
 
 	private AxisEngine engine = null;
 	private String serviceName = null;
-	private IRemoteService remoteService = null;
+	private Object remoteService = null;
 	private String allowedMethods = null;
 
 	/**
@@ -50,7 +51,7 @@ public class SOAPRemoteService {
 	 * @param allowedMethods.  Must not be <code>null</code>.
 	 */
 	public SOAPRemoteService(AxisEngine engine, String serviceName,
-			IRemoteService remoteService, String allowedMethods) {
+			Object remoteService, String allowedMethods) {
 
 		Assert.isNotNull(engine);
 		Assert.isNotNull(serviceName);
@@ -70,7 +71,7 @@ public class SOAPRemoteService {
 	 * @param remoteService.  Must not be <code>null</code>.
 	 * 
 	 */
-	public SOAPRemoteService(AxisServer engine, String clazz, IRemoteService remoteService) {
+	public SOAPRemoteService(AxisServer engine, String clazz, Object remoteService) {
 		this(engine, clazz, remoteService, "*");
 	}
 
@@ -80,14 +81,14 @@ public class SOAPRemoteService {
 	 */
 	public void deployService() throws ECFException {
 		engine.getClassCache().registerClass(serviceName,
-				remoteService.getProxy().getClass());
+				remoteService.getClass());
 
 		Object service = engine.getApplicationSession().get(serviceName);
 
 		if (service == null) {
 			deployWSDD(deploymentDescriptor());
 			engine.getApplicationSession().set(serviceName,
-					remoteService.getProxy());
+					remoteService);
 		}
 	}
 
