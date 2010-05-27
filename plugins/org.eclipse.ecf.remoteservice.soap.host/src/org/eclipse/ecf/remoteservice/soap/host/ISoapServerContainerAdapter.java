@@ -15,7 +15,7 @@ public interface ISoapServerContainerAdapter extends IAdaptable{
 	 * @param allowedMethod
 	 *            . The exposed methods ex.: *. Must not be <code>null</code>.
 	 * @param remoteServiceContainer Must not be <code>null</code>.
-	 * @param targetID Must not be <code>null</code>.
+	 * @param targetID the ID of the target. Must not be <code>null</code>.
 	 * @throws ECFException
 	 */
 	public void deployRemoteServiceAsWebService(String clazz,String allowedMethod, IRemoteServiceContainer remoteServiceContainer, ID targetID) throws ECFException;
@@ -26,7 +26,7 @@ public interface ISoapServerContainerAdapter extends IAdaptable{
 	 *            . the fully qualified name of the interface class that
 	 *            describes the desired service. It will be the web service name. Must not be <code>null</code>.
 	 * @param remoteServiceContainer Must not be <code>null</code>.
-	 * @param targetID Must not be <code>null</code>.
+	 * @param targetID the ID of the target. Must not be <code>null</code>.
 	 * @throws ECFException
 	 */
 	public void undeployRemoteServiceAsWebService(String clazz, IRemoteServiceContainer remoteServiceContainer, ID targetID)
