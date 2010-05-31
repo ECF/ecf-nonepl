@@ -1,0 +1,11 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Quotes Consumer
+Bundle-SymbolicName: org.eclipse.ecf.examples.remoteservices.quotes.consumer
+Bundle-Version: 1.0.0.qualifier
+Bundle-Activator: org.eclipse.ecf.examples.remoteservices.quotes.consumer.Activator
+Bundle-Vendor: YAZAFATUTU
+Bundle-RequiredExecutionEnvironment: JavaSE-1.6
+Import-Package: org.eclipse.ecf.services.quotes,
+ org.osgi.framework;version="1.3.0"
+Bundle-ActivationPolicy: lazy
