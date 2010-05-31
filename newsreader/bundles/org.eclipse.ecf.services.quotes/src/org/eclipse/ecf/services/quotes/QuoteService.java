@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2009 Weltevree Beheer BV, Nederland
+ *  Copyright (c) 2009 Remain Software, Industrial-TSI en Weltevree Beheer
  *
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
