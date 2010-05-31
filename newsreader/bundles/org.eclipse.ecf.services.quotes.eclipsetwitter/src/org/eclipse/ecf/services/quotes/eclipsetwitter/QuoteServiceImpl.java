@@ -30,15 +30,13 @@ public class QuoteServiceImpl implements QuoteService {
 			"Pressure makes diamonds" + NL + "\tChris Anyszcyk",
 			"In vacation. May the internet survive without me" + NL
 					+ "\tLars Vogel",
-			"BONG BONG BONG BONG" + NL + "Big Ben Clock",
+			"BONG BONG BONG BONG" + NL + "\tBig Ben Clock",
 			"wondering if I will ever again give a talk that I didn't prepare up to the minute..."
 					+ NL + "\tPeter Friese",
 			"I am all for convention over configuration, the only question is: Whose convention?"
 					+ NL + "\tWim Jongman",
-			"birdstrike today - pigeon into windscreen at 80km/h " + NL
-					+ "- quite a solid thunk " + NL
-					+ "- some dusty smears - alfa 156 2.0l wins)" + NL
-					+ "\tOison Hurley",
+			"birdstrike today - pigeon into windscreen at 80km/h - quite a solid thunk - some dusty smears - alfa 156 2.0l wins"
+					+ NL + "\tOison Hurley",
 			"learning an important lesson: sometimes the crowd is not that wise"
 					+ NL + "\tIan Skerrett",
 			"Wow, Twitter just hired their 140th employee. I wonder if they will force themselves to stop there."

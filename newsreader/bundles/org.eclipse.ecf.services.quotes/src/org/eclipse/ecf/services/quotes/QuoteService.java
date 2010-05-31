@@ -1,5 +1,5 @@
 /*******************************************************************************
- *  Copyright (c) 2009 Remain Software, Industrial-TSI en Weltevree Beheer
+ *  Copyright (c) 2009 Remain Software, Industrial-TSI & Weltevree Beheer
  *
  *  All rights reserved. This program and the accompanying materials
  *  are made available under the terms of the Eclipse Public License v1.0
@@ -21,7 +21,6 @@ package org.eclipse.ecf.services.quotes;
  */
 public interface QuoteService {
 
-
 	/**
 	 * A short and descriptive name of the service. This could be for instance
 	 * "Star Wars" or "20th Century Politics".
@@ -38,12 +37,22 @@ public interface QuoteService {
 	public String getServiceDescription();
 
 	/**
-	 * Returns a random quote.
+	 * Returns a random quote. It is advised to use the following convention
+	 * when passing a quote:
+	 * <p>
+	 * "quote\n\tsignature"
+	 * </p>
+	 * This will then be displayed as follows:
 	 * 
-	 * @return
+	 * <pre>
+	 * When 900 years old, you reach… Look as good, you will not.
+	 * 	Yoda to Luke Skywalker, Episode VI: Return Of The Jedi
+	 * </pre>
+	 * 
+	 * @return a quote
 	 */
 	public String getRandomQuote();
- 
+
 	/**
 	 * Returns all quotes.
 	 * 
@@ -51,5 +60,4 @@ public interface QuoteService {
 	 */
 	public String[] getAllQuotes();
 
-	
 }
