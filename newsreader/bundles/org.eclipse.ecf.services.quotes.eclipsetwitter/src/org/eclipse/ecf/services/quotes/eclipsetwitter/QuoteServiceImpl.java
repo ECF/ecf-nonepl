@@ -5,32 +5,31 @@ import java.util.Random;
 import org.eclipse.ecf.services.quotes.QuoteService;
 
 public class QuoteServiceImpl implements QuoteService {
-	final static String NL = System.getenv("line.separator");
+	final static String NL = System.getProperty("line.separator");
 
 	public static final String[] QUOTES = new String[] {
 			"The net knows all! " + NL + "Jeff McAffer - EclipseSource",
-			"is building, testing, building (but with hand crafted bits)",
-			NL + "Paul Webster",
-			"is sitting still",
-			NL + "Paul Webster",
-			"Taking a shower. Need a couple of good ideas. ;-)",
-			NL + "Boris Bokowski",
-			"Pressure makes diamonds",
-			NL + "Chris Anyszcyk",
-			"In vacation. May the internet survive without me",
-			NL + "Lars Vogel",
-			"BONG BONG BONG BONG",
-			NL + "Big Ben Clock",
-			"wondering if I will ever again give a talk that I didn't prepare up to the minute...",
-			NL + "Peter Friese",
-			"I am all for convention over configuration, the only question is: Whose convention?",
-			NL + "Wim Jongman",
+			"is building, testing, building (but with hand crafted bits)" + NL
+					+ "\tPaul Webster",
+			"is sitting still" + NL + "\tPaul Webster",
+			"Taking a shower. Need a couple of good ideas. ;-)" + NL
+					+ "\tBoris Bokowski",
+			"Pressure makes diamonds" + NL + "\tChris Anyszcyk",
+			"In vacation. May the internet survive without me" + NL
+					+ "\tLars Vogel",
+			"BONG BONG BONG BONG" + NL + "Big Ben Clock",
+			"wondering if I will ever again give a talk that I didn't prepare up to the minute..."
+					+ NL + "\tPeter Friese",
+			"I am all for convention over configuration, the only question is: Whose convention?"
+					+ NL + "\tWim Jongman",
 			"birdstrike today - pigeon into windscreen at 80km/h " + NL
 					+ "- quite a solid thunk " + NL
-					+ "- some dusty smears - alfa 156 2.0l wins)",
-			NL + "Oison Hurley",
-			"learning an important lesson: sometimes the crowd is not that wise",
-			NL + "Ian Skerrett", };
+					+ "- some dusty smears - alfa 156 2.0l wins)" + NL
+					+ "\tOison Hurley",
+			"learning an important lesson: sometimes the crowd is not that wise"
+					+ NL + "\tIan Skerrett",
+			"Wow, Twitter just hired their 140th employee. I wonder if they will force themselves to stop there."
+					+ NL + "\tMik Kersten" };
 
 	private Random random;
 

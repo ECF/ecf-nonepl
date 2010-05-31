@@ -29,7 +29,7 @@ public class QuoteServiceImpl implements QuoteService {
 	}
 
 	public String getRandomQuote() {
-		return QUOTES[random.nextInt(QUOTES.length)] + "\r\n(Eclipse Old Skool Quote Service)";
+		return QUOTES[random.nextInt(QUOTES.length)] + "\n\t(Eclipse Old Skool Quote Service)";
 	}
 
 	public String getServiceName() {
