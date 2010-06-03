@@ -3,7 +3,6 @@ package org.eclipse.ecf.examples.remoteservices.quotes.consumer;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.provider.zookeeper.core.ZooDiscoveryContainer;
 import org.eclipse.ecf.provider.zookeeper.core.ZooDiscoveryContainerInstantiator;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.custom.StyledText;
@@ -16,7 +15,6 @@ import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Button;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
-import org.eclipse.swt.widgets.Group;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
@@ -82,33 +80,30 @@ public class ConsumerUI extends Shell {
 			}
 		});
 		btnConnect.setText("Connect");
-
-		gilloscope = new OSGilloscope(composite, SWT.NONE);
-		gilloscope.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true,
-				3, 1));
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-		new Label(composite, SWT.NONE);
-
-		Composite composite_1 = new Composite(composite, SWT.BORDER);
-		composite_1.setLayout(new GridLayout(1, false));
-		composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true,
-				3, 1));
-
-		label = (new Label(composite_1, SWT.NONE));
-		getLabel().setAlignment(SWT.CENTER);
-		getLabel().setFont(new Font(null, "Segoe UI", 15, SWT.BOLD));
-		getLabel().setLayoutData(
-				new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-		getLabel().setText("New Label");
-
-		Group group = new Group(composite_1, SWT.NONE);
-		group.setLayout(new GridLayout(1, false));
-		group.setLayoutData(new GridData(SWT.FILL, SWT.FILL, false, true, 1, 1));
-
-		styledText = (new StyledText(group, SWT.BORDER | SWT.WRAP));
-		getStyledText().setLayoutData(
-				new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+		
+		Composite composite_2 = new Composite(composite, SWT.NONE);
+		composite_2.setLayout(new GridLayout(1, false));
+		composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+		
+				gilloscope = new OSGilloscope(composite_2, SWT.NONE);
+				GridData gd_gilloscope = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+				gd_gilloscope.heightHint = 100;
+				gilloscope.setLayoutData(gd_gilloscope);
+				
+						Composite composite_1 = new Composite(composite_2, SWT.BORDER);
+						composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+						composite_1.setLayout(new GridLayout(1, false));
+						
+								label = (new Label(composite_1, SWT.NONE));
+								getLabel().setAlignment(SWT.CENTER);
+								getLabel().setFont(new Font(null, "Segoe UI", 15, SWT.BOLD));
+								getLabel().setLayoutData(
+										new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+								getLabel().setText("New Label");
+																
+																		styledText = (new StyledText(composite_1, SWT.BORDER | SWT.WRAP));
+																		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+																		styledText.setEditable(false);
 		createContents();
 	}
 
