@@ -51,12 +51,13 @@ public class Activator implements BundleActivator {
 
 					while (Activator.getContext().getBundle().getState() == Bundle.ACTIVE) {
 
-						Thread.sleep(1000);
+						Thread.sleep(500);
 
 						counter--;
 						if (counter == 0) {
 							counter = 15;
 							quotesBundles.get(activeBundle).stop();
+							Thread.sleep(1000);
 
 							activeBundle++;
 							if (activeBundle == quotesBundles.size()) {
