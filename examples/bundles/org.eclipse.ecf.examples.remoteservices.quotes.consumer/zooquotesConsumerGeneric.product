@@ -3,12 +3,11 @@
 
 <product name="Zookeeper Discoverable Quotes Service" uid="org.eclipse.ecf.examples.remoteservices.quotes.consumer" version="1.0.0" useFeatures="false" includeLaunchers="false">
 
-
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-console -consoleLog -clean</programArgs>
+      <programArgs>-console -consoleLog -clean -containerType ecf.generic.client</programArgs>
       <vmArgs>-Xms40m
 -Xmx512m
 -Declipse.ignoreApp=true
@@ -21,7 +20,6 @@
 
    <windowImages/>
 
-
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -29,13 +27,10 @@
       </win>
    </launcher>
 
-
    <vm>
    </vm>
 
-
    <plugins>
-      <plugin id="ch.ethz.iks.r_osgi.remote"/>
       <plugin id="org.apache.log4j"/>
       <plugin id="org.apache.zookeeper"/>
       <plugin id="org.eclipse.core.contenttype"/>
@@ -48,7 +43,7 @@
       <plugin id="org.eclipse.ecf.osgi.services.discovery"/>
       <plugin id="org.eclipse.ecf.osgi.services.distribution"/>
       <plugin id="org.eclipse.ecf.provider"/>
-      <plugin id="org.eclipse.ecf.provider.r_osgi"/>
+      <plugin id="org.eclipse.ecf.provider.remoteservice"/>
       <plugin id="org.eclipse.ecf.provider.zookeeper"/>
       <plugin id="org.eclipse.ecf.remoteservice"/>
       <plugin id="org.eclipse.ecf.services.quotes"/>
@@ -82,14 +77,13 @@
       <plugin id="org.eclipse.swt.photon.qnx.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86" fragment="true"/>
       <plugin id="org.eclipse.swt.win32.win32.x86_64" fragment="true"/>
-      <plugin id="org.objectweb.asm"/>
    </plugins>
 
    <configurations>
-      <plugin id="org.eclipse.ecf.discovery" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.ecf.discovery" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.ecf.examples.remoteservices.quotes.consumer" autoStart="false" startLevel="3" />
       <plugin id="org.eclipse.ecf.osgi.services.distribution" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.ecf.provider.zookeeper" autoStart="true" startLevel="1" />
+      <plugin id="org.eclipse.ecf.provider.zookeeper" autoStart="false" startLevel="1" />
       <plugin id="org.eclipse.ecf.remoteservice" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.ecf.sharedobject" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="1" />
