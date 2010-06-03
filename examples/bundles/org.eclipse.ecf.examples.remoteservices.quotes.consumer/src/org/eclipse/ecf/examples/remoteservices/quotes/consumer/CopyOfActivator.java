@@ -1,8 +1,12 @@
 package org.eclipse.ecf.examples.remoteservices.quotes.consumer;
 
+import java.net.URL;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.Executors;
 
 import org.eclipse.ecf.services.quotes.QuoteService;
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Display;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
@@ -10,7 +14,8 @@ import org.osgi.framework.Constants;
 import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceEvent;
 import org.osgi.framework.ServiceListener;
-import org.osgi.framework.ServiceRegistration;
+
+import com.swtdesigner.SWTResourceManager;
 
 public class CopyOfActivator implements BundleActivator {
 
@@ -19,6 +24,11 @@ public class CopyOfActivator implements BundleActivator {
 	static BundleContext getContext() {
 		return context;
 	}
+
+	/**
+	 * Maps URL to images.
+	 */
+	private static Map<String, Image> imageMap = new HashMap<String, Image>();
 
 	/*
 	 * (non-Javadoc)
@@ -52,13 +62,13 @@ public class CopyOfActivator implements BundleActivator {
 								public void serviceChanged(
 										final ServiceEvent event) {
 
-									Executors.newSingleThreadExecutor()
-											.execute(new Runnable() {
-
-												@Override
-												public void run() {
-													// TODO Auto-generated
-													// method stub
+//									Executors.newSingleThreadExecutor()
+//											.execute(new Runnable() {
+//
+//												@Override
+//												public void run() {
+//													// TODO Auto-generated
+//													// method stub
 
 													if (event.getType() == ServiceEvent.REGISTERED) {
 
@@ -121,8 +131,8 @@ public class CopyOfActivator implements BundleActivator {
 														}
 
 													}
-												}
-											});
+//												}
+//											});
 								}
 							}, "(" + Constants.OBJECTCLASS + "="
 									+ QuoteService.class.getName() + ")");
@@ -143,6 +153,12 @@ public class CopyOfActivator implements BundleActivator {
 	 */
 	public void stop(BundleContext bundleContext) throws Exception {
 		CopyOfActivator.context = null;
+		for (Image image : imageMap.entrySet().toArray(new Image[0])) {
+			image.dispose();
+		}
+		Display.getCurrent().dispose();
 	}
+
+
 
 }
