@@ -12,8 +12,8 @@ package org.eclipse.ecf.internal.remoteservice.soap.host;
 import java.util.Dictionary;
 import java.util.Hashtable;
 
-import org.eclipse.ecf.internal.remoteservice.soap.host.servlet.AbstractSOAPServlet;
-import org.eclipse.ecf.internal.remoteservice.soap.host.servlet.SOAPServlet;
+import org.eclipse.ecf.internal.remoteservice.soap.host.servlet.AbstractSoapServlet;
+import org.eclipse.ecf.internal.remoteservice.soap.host.servlet.SoapServlet;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.http.HttpService;
@@ -26,7 +26,7 @@ import org.osgi.util.tracker.ServiceTracker;
  */
 public class SOAPServiceTracker extends ServiceTracker {
 
-	private AbstractSOAPServlet soapServlet;
+	private AbstractSoapServlet soapServlet;
 	String services = "/services";
 	
 	public SOAPServiceTracker(BundleContext context) {
@@ -41,7 +41,7 @@ public class SOAPServiceTracker extends ServiceTracker {
 
 		try {
 						
-			soapServlet = new SOAPServlet(context);
+			soapServlet = new SoapServlet(context);
 			final Dictionary initParamsAxis = new Hashtable();
 			initParamsAxis.put("servlet-name", "AxisServlet");
 			
@@ -61,7 +61,7 @@ public class SOAPServiceTracker extends ServiceTracker {
 	}
 
 
-	public AbstractSOAPServlet getSoapServlet() {
+	public AbstractSoapServlet getSoapServlet() {
 		return soapServlet;
 	}
 

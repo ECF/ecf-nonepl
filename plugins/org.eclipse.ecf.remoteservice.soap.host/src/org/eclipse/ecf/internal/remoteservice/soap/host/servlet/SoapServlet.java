@@ -15,7 +15,7 @@ import org.osgi.framework.BundleContext;
  * This is the entry point to all SOAP requests for remote ECF services.
  * @since 3.4
  */
-public class SOAPServlet extends AbstractSOAPServlet {
+public class SoapServlet extends AbstractSoapServlet {
 
 	/**
 	 * 
@@ -24,14 +24,14 @@ public class SOAPServlet extends AbstractSOAPServlet {
 	
 	private BundleContext bundleContext;
 
-	public SOAPServlet(BundleContext context) {
+	public SoapServlet(BundleContext context) {
 		this.bundleContext = context;
 	}
 
 	/**
 	 * create a new servlet instance
 	 */
-	public SOAPServlet() {
+	public SoapServlet() {
 
 	}
 	

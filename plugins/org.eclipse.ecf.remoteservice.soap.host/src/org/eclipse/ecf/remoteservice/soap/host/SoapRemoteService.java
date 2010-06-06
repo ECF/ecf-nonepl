@@ -36,12 +36,13 @@ import org.xml.sax.SAXException;
  * @since 3.4
  * 
  */
-public class SOAPRemoteService {
+public class SoapRemoteService {
 
 	private AxisEngine engine = null;
 	private String serviceName = null;
 	private Object remoteService = null;
 	private String allowedMethods = null;
+	private IServiceDescription description = null;;
 
 	/**
 	 * 
@@ -50,8 +51,7 @@ public class SOAPRemoteService {
 	 * @param remoteService.  Must not be <code>null</code>.
 	 * @param allowedMethods.  Must not be <code>null</code>.
 	 */
-	public SOAPRemoteService(AxisEngine engine, String serviceName,
-			Object remoteService, String allowedMethods) {
+	public SoapRemoteService(AxisEngine engine, String serviceName,	Object remoteService, String allowedMethods) {
 
 		Assert.isNotNull(engine);
 		Assert.isNotNull(serviceName);
@@ -71,8 +71,26 @@ public class SOAPRemoteService {
 	 * @param remoteService.  Must not be <code>null</code>.
 	 * 
 	 */
-	public SOAPRemoteService(AxisServer engine, String clazz, Object remoteService) {
-		this(engine, clazz, remoteService, "*");
+	public SoapRemoteService(AxisServer engine, String serviceName, Object remoteService) {
+		this(engine, serviceName, remoteService, "*");
+	}
+
+	/**
+	 * The service descriptor will be generated based on the IServiceDescription
+	 * @param engine which will deploy the service as a webservice. Must not be <code>null</code>.
+	 * @param description contains the properties description for the service.  Must not be <code>null</code>.
+	 * @param remoteService.  Must not be <code>null</code>.
+	 * 
+	 */
+	public SoapRemoteService(AxisServer engine,	IServiceDescription description, Object remoteService) {
+		Assert.isNotNull(engine);
+		Assert.isNotNull(description);
+		Assert.isNotNull(remoteService);
+		
+		this.engine = engine;
+		this.description = description;
+		this.remoteService = remoteService;		
+
 	}
 
 	/**
@@ -80,16 +98,48 @@ public class SOAPRemoteService {
 	 * @throws ECFException
 	 */
 	public void deployService() throws ECFException {
-		engine.getClassCache().registerClass(serviceName,
-				remoteService.getClass());
+
+		String desc = null;
+		
+		if(description == null){			
+			desc = deploymentDefaultDescriptor();
+		}else{
+			serviceName = (String) description.getProperty(ISoapServerConstants.SERVICE_NAME);
+			desc = deploymentCustomDescriptor(description);
+		}
+
+		engine.getClassCache().registerClass(serviceName, remoteService.getClass());
 
 		Object service = engine.getApplicationSession().get(serviceName);
 
 		if (service == null) {
-			deployWSDD(deploymentDescriptor());
-			engine.getApplicationSession().set(serviceName,
-					remoteService);
+			deployWSDD(desc);
+			
+			engine.getApplicationSession().set(serviceName,	remoteService);
 		}
+	}
+
+	private String deploymentCustomDescriptor(IServiceDescription description) {
+
+		String serviceName = (String) description.getProperty(ISoapServerConstants.SERVICE_NAME);
+		String allowedMethods = (String) description.getProperty(ISoapServerConstants.ALLOWED_METHODS);//*
+		String provider = (String) description.getProperty(ISoapServerConstants.PROVIDER);//ex.: java:RPC
+		String scope = (String) description.getProperty(ISoapServerConstants.SCOPE);//ex.: Application
+		//TODO add others elements to the wsdd
+		String desc = "<deployment"
+		+ " xmlns=\"http://xml.apache.org/axis/wsdd/\"\n"
+		+ " xmlns:java=\"http://xml.apache.org/axis/wsdd/providers/java\"\n"
+		+ ">\n" + " <service name     = \"" + serviceName + "\"\n"
+		+ "          provider = \"" + provider + "\">\n"
+		+ "   <parameter name  = \"allowedMethods\"\n"
+		+ "              value = \"" + allowedMethods + "\"/>\n"
+		+ "   <parameter name  = \"className\"\n"
+		+ "              value=\"" + serviceName + "\"/>\n"
+		+ "   <parameter name=\"scope\"\n"
+		+ "              value=\"" +scope+"\"/>\n" + " </service>\n"
+		+ "</deployment>";
+		
+		return desc;
 	}
 
 	/**
@@ -105,7 +155,7 @@ public class SOAPRemoteService {
 		}
 	}
 
-	private String deploymentDescriptor() {
+	private String deploymentDefaultDescriptor() {
 		return "<deployment"
 				+ " xmlns=\"http://xml.apache.org/axis/wsdd/\"\n"
 				+ " xmlns:java=\"http://xml.apache.org/axis/wsdd/providers/java\"\n"
