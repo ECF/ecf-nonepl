@@ -68,7 +68,7 @@ public class SoapServerContainerAdapter implements ISoapServerContainerAdapter{
 			IRemoteService remoteService = remoteServiceContainerAdapter.getRemoteService(reference);
 
 			// Create the soap service on axis
-			SOAPRemoteService soapService = new SOAPRemoteService(
+			SoapRemoteService soapService = new SoapRemoteService(
 					serviceTracker.getSoapServlet().getEngine(), clazz,
 					remoteService.getProxy(), allowedMethod);
 
@@ -85,6 +85,10 @@ public class SoapServerContainerAdapter implements ISoapServerContainerAdapter{
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ecf.remoteservice.soap.host.ISoapServerContainerAdapter#deployRemoteServiceAsWebService(java.lang.String, java.lang.String, org.eclipse.ecf.remoteservice.IRemoteService)
+	 */
 	public void deployRemoteServiceAsWebService(String serviceName, String allowedMethod, IRemoteService remoteService) throws ECFException {
 		try {
 			Assert.isNotNull(serviceName);
@@ -92,7 +96,7 @@ public class SoapServerContainerAdapter implements ISoapServerContainerAdapter{
 			Assert.isNotNull(remoteService);
 
 			// Create the soap service on axis
-			SOAPRemoteService soapService = new SOAPRemoteService(
+			SoapRemoteService soapService = new SoapRemoteService(
 					serviceTracker.getSoapServlet().getEngine(), serviceName,
 					remoteService.getProxy(), allowedMethod);
 
@@ -106,6 +110,30 @@ public class SoapServerContainerAdapter implements ISoapServerContainerAdapter{
 		}
 
 	}
+	
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ecf.remoteservice.soap.host.ISoapServerContainerAdapter#deployRemoteServiceAsWebService(org.eclipse.ecf.remoteservice.soap.host.IServiceDescription, org.eclipse.ecf.remoteservice.IRemoteService)
+	 */
+	public void deployRemoteServiceAsWebService(IServiceDescription description, IRemoteService remoteService)throws ECFException {
+		try {
+			Assert.isNotNull(description);
+			Assert.isNotNull(remoteService);
+
+			// Create the soap service on axis
+			SoapRemoteService soapService = new SoapRemoteService(serviceTracker.getSoapServlet().getEngine(), description,	remoteService.getProxy());
+
+			//deploy the service
+			soapService.deployService();
+
+		} catch (AxisFault e) {
+			throw new ECFException("", e); //$NON-NLS-1$
+		} catch (IDCreateException e) {
+			throw new ECFException("",e); //$NON-NLS-1$
+		}
+		
+	}
+
 
 	/**
 	 * Get the remote service and remove the web service access to it
@@ -128,7 +156,7 @@ public class SoapServerContainerAdapter implements ISoapServerContainerAdapter{
 					.getRemoteService(serviceReferences[0]);
 
 			// Create the soap service on axis
-			SOAPRemoteService soapService = new SOAPRemoteService(
+			SoapRemoteService soapService = new SoapRemoteService(
 					serviceTracker.getSoapServlet().getEngine(), clazz,
 					remoteService.getProxy());
 			soapService.undeployService();
@@ -143,11 +171,15 @@ public class SoapServerContainerAdapter implements ISoapServerContainerAdapter{
 
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ecf.remoteservice.soap.host.ISoapServerContainerAdapter#undeployRemoteServiceAsWebService(java.lang.String, org.eclipse.ecf.remoteservice.IRemoteService)
+	 */
 	public void undeployRemoteServiceAsWebService(String serviceName, IRemoteService remoteService) throws ECFException {
 		try {
 
 			// Create the soap service on axis
-			SOAPRemoteService soapService = new SOAPRemoteService(
+			SoapRemoteService soapService = new SoapRemoteService(
 					serviceTracker.getSoapServlet().getEngine(), serviceName,
 					remoteService.getProxy());
 			soapService.undeployService();
@@ -167,6 +199,21 @@ public class SoapServerContainerAdapter implements ISoapServerContainerAdapter{
 		if (adapterManager == null)
 			return null;
 		return adapterManager.loadAdapter(this, adapter.getName());
+	}
+
+
+	/*
+	 * (non-Javadoc)
+	 * @see org.eclipse.ecf.remoteservice.soap.host.ISoapServerContainerAdapter#undeployRemoteServiceAsWebService(org.eclipse.ecf.remoteservice.soap.host.IServiceDescription, org.eclipse.ecf.remoteservice.IRemoteService)
+	 */
+	public void undeployRemoteServiceAsWebService(
+			IServiceDescription description, IRemoteService remoteService)
+			throws ECFException {
+		
+		String serviceName = (String) description.getProperty("service.name");
+		
+		undeployRemoteServiceAsWebService(serviceName, remoteService);
+		
 	}
 
 }

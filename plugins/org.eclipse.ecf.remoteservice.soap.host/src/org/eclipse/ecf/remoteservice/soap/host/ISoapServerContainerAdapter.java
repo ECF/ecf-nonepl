@@ -75,6 +75,28 @@ public interface ISoapServerContainerAdapter extends IAdaptable {
 	public void deployRemoteServiceAsWebService(String serviceName,
 			String allowedMethod, IRemoteService remoteService)
 			throws ECFException;
+	
+	/**
+	 * Get the remote service and publish a web service access to it
+	 * @param description Contain the service description for publishing. Must not be
+	 *            <code>null</code>.
+	 * @param remoteService. Must not be
+	 *            <code>null</code>.
+	 * @throws ECFException
+	 */
+	public void deployRemoteServiceAsWebService(IServiceDescription description, IRemoteService remoteService)
+			throws ECFException;
+
+	/**
+	 * Get the remote service and remove the web service access to it
+	 * @param description Contain the service description for publishing. Must not be
+	 *            <code>null</code>.
+	 * @param remoteService. Must not be
+	 *            <code>null</code>.
+	 * @throws ECFException
+	 */
+	public void undeployRemoteServiceAsWebService(IServiceDescription description, IRemoteService remoteService)
+			throws ECFException;
 
 	/**
 	 * Get the remote service and remove the web service access to it

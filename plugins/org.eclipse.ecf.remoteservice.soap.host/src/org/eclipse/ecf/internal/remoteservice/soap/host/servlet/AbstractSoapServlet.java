@@ -15,7 +15,7 @@ import org.apache.axis.transport.http.AxisServlet;
  * This is the entry point to all SOAP requests for remote ECF services.
  * @since 3.4
  */
-public abstract class AbstractSOAPServlet extends AxisServlet {
+public abstract class AbstractSoapServlet extends AxisServlet {
 
 	/**
 	 * 
