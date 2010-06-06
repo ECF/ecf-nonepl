@@ -5,7 +5,6 @@
       <provide interface="org.eclipse.ecf.services.quotes.QuoteService"/>
    </service>
       <property name="service.exported.interfaces" type="String" value="*"/>
-         <property name="service.exported.configs" type="String" value="ecf.r_osgi.peer"/>
-   <property name="org.eclipse.ecf.containerFactoryArgs" type="String" value="r-osgi://localhost:9278"/>
-   
+   <property name="service.exported.configs" type="String" value="ecf.generic.server"/>
+      <property name="org.eclipse.ecf.containerFactoryArgs" type="String" value="ecftcp://yazafatutu.com:3282/server"/>
 </scr:component>

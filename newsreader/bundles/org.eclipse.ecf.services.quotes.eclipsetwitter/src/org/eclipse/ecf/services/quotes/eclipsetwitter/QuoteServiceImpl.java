@@ -27,7 +27,7 @@ public class QuoteServiceImpl implements QuoteService {
 			"is sitting still" + NL + "\tPaul Webster",
 			"Taking a shower. Need a couple of good ideas. ;-)" + NL
 					+ "\tBoris Bokowski",
-			"Pressure makes diamonds" + NL + "\tChris Anyszcyk",
+			"Pressure makes diamonds" + NL + "\tChris Anyszczyk",
 			"In vacation. May the internet survive without me" + NL
 					+ "\tLars Vogel",
 			"BONG BONG BONG BONG" + NL + "\tBig Ben Clock",
@@ -39,8 +39,16 @@ public class QuoteServiceImpl implements QuoteService {
 					+ NL + "\tOison Hurley",
 			"learning an important lesson: sometimes the crowd is not that wise"
 					+ NL + "\tIan Skerrett",
+			"NASA keynote at EclipseCon has me re-evaluating my wasted life..."
+					+ NL + "\tWayne Beaton",
+			"is very proud, as a Dutch immigrant, to be Canadian." + NL
+					+ "\tEd Merks",
 			"Wow, Twitter just hired their 140th employee. I wonder if they will force themselves to stop there."
-					+ NL + "\tMik Kersten" };
+					+ NL + "\tMik Kersten",
+					"Too much coding lately, I find myself ending sentences with a semicolon"
+					+ NL + "\tIan Bull",
+			"What happens when 3D printers get good enough to print better 3D printers?"
+					+ NL + "\tNeil Bartlett" };
 
 	private Random random;
 
