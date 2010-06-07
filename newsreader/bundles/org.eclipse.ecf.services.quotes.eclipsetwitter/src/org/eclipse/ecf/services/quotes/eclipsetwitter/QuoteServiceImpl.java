@@ -43,10 +43,12 @@ public class QuoteServiceImpl implements QuoteService {
 					+ NL + "\tWayne Beaton",
 			"is very proud, as a Dutch immigrant, to be Canadian." + NL
 					+ "\tEd Merks",
-			"Wow, Twitter just hired their 140th employee. I wonder if they will force themselves to stop there."
-					+ NL + "\tMik Kersten",
-					"Too much coding lately, I find myself ending sentences with a semicolon"
+			"Too much coding lately, I find myself ending sentences with a semicolon"
 					+ NL + "\tIan Bull",
+			"When you get an error message, and punch it into Google, and get 0 hits, YOU ARE TRULY SCREWED."
+					+ NL + "\tDonald Smith",
+					"Liar.getLiar().isPantsOnFire()"
+					+ NL + "\tKim Horne",
 			"What happens when 3D printers get good enough to print better 3D printers?"
 					+ NL + "\tNeil Bartlett" };
 
