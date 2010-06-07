@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Zookeeper Discoverable Quotes Service" uid="org.eclipse.ecf.examples.remoteservices.quotes.consumer" id="org.eclipse.ecf.examples.remoteservices.quotes.consumer.zooquotesgenericconsumer" application="org.eclipse.ecf.examples.remoteservices.quotes.consumer.id1" version="1.0.0" useFeatures="false" includeLaunchers="true">
+<product name="Zookeeper Discoverable Quotes Service" uid="org.eclipse.ecf.examples.remoteservices.quotes.consumer.product" id="org.eclipse.ecf.examples.remoteservices.quotes.consumer.zooquotesgenericconsumer" application="org.eclipse.ecf.examples.remoteservices.quotes.consumer.id1" version="1.0.0" useFeatures="false" includeLaunchers="true">
+
 
    <configIni use="default">
    </configIni>
@@ -14,16 +15,21 @@
 
    <windowImages/>
 
+
    <launcher name="zooQuotes">
       <solaris/>
       <win useIco="false">
          <bmp
-            winSmallHigh="/org.eclipse.ecf.examples.remoteservices.quotes.consumer/images/quotes.bmp"/>
+            winSmallHigh="/org.eclipse.ecf.examples.remoteservices.quotes.consumer/images/quotes.bmp"
+            winMediumHigh="/org.eclipse.ecf.examples.remoteservices.quotes.consumer/images/quotes32x32x32.bmp"
+            winLargeHigh="/org.eclipse.ecf.examples.remoteservices.quotes.consumer/images/quotes48x48x32.bmp"/>
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="org.apache.log4j"/>
@@ -75,8 +81,8 @@
    </plugins>
 
    <configurations>
+      <plugin id="org.eclipse.core.runtime" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.ecf.discovery" autoStart="true" startLevel="3" />
-      <plugin id="org.eclipse.ecf.examples.remoteservices.quotes.consumer" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.ecf.osgi.services.distribution" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.ecf.remoteservice" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.ecf.sharedobject" autoStart="true" startLevel="1" />
