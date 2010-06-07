@@ -25,7 +25,8 @@ public class JGroupsContainerTest extends ContainerAbstractTestCase {
 	}
 
 	protected IContainer createServer() throws Exception {
-		return ContainerFactory.getDefault().createContainer(getServerContainerName(), new Object[] {getServerIdentity()});
+		return ContainerFactory.getDefault().createContainer(
+				getServerContainerName(), new Object[] { getServerIdentity() });
 	}
 
 	protected void setUp() throws Exception {
@@ -41,7 +42,9 @@ public class JGroupsContainerTest extends ContainerAbstractTestCase {
 
 	public void testConnectClient() throws Exception {
 		final IContainer client = getClients()[0];
-		final ID targetID = IDFactory.getDefault().createID(client.getConnectNamespace(), new Object[] {getServerIdentity()});
+		final ID targetID = IDFactory.getDefault().createID(
+				client.getConnectNamespace(),
+				new Object[] { getServerIdentity() });
 		client.connect(targetID, null);
 		Thread.sleep(3000);
 		final IContainer client1 = getClients()[1];
