@@ -1,6 +1,5 @@
 package org.eclipse.ecf.examples.remoteservices.quotes.consumer;
 
-import java.lang.reflect.Array;
 import java.lang.reflect.Method;
 
 import org.eclipse.ecf.services.quotes.QuoteService;
