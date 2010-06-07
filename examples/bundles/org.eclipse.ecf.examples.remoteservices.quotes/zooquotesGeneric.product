@@ -3,13 +3,12 @@
 
 <product name="Zookeeper Discoverable Quotes Service" uid="org.eclipse.ecf.examples.remoteservices.quotes" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
+
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-console -consoleLog -clean 
--containerType ecf.generic.server
--containerId ecftcp://localhost:5782/server</programArgs>
+      <programArgs>-console -consoleLog -clean</programArgs>
       <vmArgs>-Xms40m
 -Xmx512m
 -Declipse.ignoreApp=true
@@ -19,6 +18,7 @@
 
    <windowImages/>
 
+
    <launcher>
       <solaris/>
       <win useIco="false">
@@ -26,8 +26,10 @@
       </win>
    </launcher>
 
+
    <vm>
    </vm>
+
 
    <plugins>
       <plugin id="org.apache.log4j"/>
