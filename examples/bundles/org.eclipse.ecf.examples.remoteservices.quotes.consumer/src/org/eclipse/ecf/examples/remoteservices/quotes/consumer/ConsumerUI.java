@@ -20,6 +20,8 @@ import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
 import com.remainsoftware.osgilloscope.OSGilloscope;
+import org.eclipse.swt.widgets.TabFolder;
+import org.eclipse.swt.widgets.TabItem;
 
 public class ConsumerUI extends Shell {
 	private Text servers;
@@ -27,6 +29,7 @@ public class ConsumerUI extends Shell {
 	private StyledText styledText;
 	private OSGilloscope gilloscope;
 	private Dispatcher dispatcher;
+	private Text info;
 
 	/**
 	 * Launch the application.
@@ -46,7 +49,6 @@ public class ConsumerUI extends Shell {
 			}
 			getDisplay().dispose();
 		} catch (Exception e) {
-			e.printStackTrace();
 		}
 	}
 
@@ -80,30 +82,45 @@ public class ConsumerUI extends Shell {
 			}
 		});
 		btnConnect.setText("Connect");
-		
-		Composite composite_2 = new Composite(composite, SWT.NONE);
-		composite_2.setLayout(new GridLayout(1, false));
-		composite_2.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
-		
-				gilloscope = new OSGilloscope(composite_2, SWT.NONE);
-				GridData gd_gilloscope = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
-				gd_gilloscope.heightHint = 100;
-				gilloscope.setLayoutData(gd_gilloscope);
-				
-						Composite composite_1 = new Composite(composite_2, SWT.BORDER);
-						composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-						composite_1.setLayout(new GridLayout(1, false));
-						
-								label = (new Label(composite_1, SWT.NONE));
-								getLabel().setAlignment(SWT.CENTER);
-								getLabel().setFont(new Font(null, "Segoe UI", 15, SWT.BOLD));
-								getLabel().setLayoutData(
-										new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
-								getLabel().setText("New Label");
-																
-																		styledText = (new StyledText(composite_1, SWT.BORDER | SWT.WRAP));
-																		styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
-																		styledText.setEditable(false);
+																		
+																		TabFolder tabFolder = new TabFolder(composite, SWT.BOTTOM);
+																		tabFolder.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 3, 1));
+																		
+																		TabItem tbtmUi = new TabItem(tabFolder, SWT.NONE);
+																		tbtmUi.setText("UI");
+																		
+																		Composite composite_2 = new Composite(tabFolder, SWT.NONE);
+																		tbtmUi.setControl(composite_2);
+																		composite_2.setLayout(new GridLayout(1, false));
+																		
+																				gilloscope = new OSGilloscope(composite_2, SWT.NONE);
+																				GridData gd_gilloscope = new GridData(SWT.FILL, SWT.CENTER, true, false, 1, 1);
+																				gd_gilloscope.heightHint = 100;
+																				gilloscope.setLayoutData(gd_gilloscope);
+																				
+																						Composite composite_1 = new Composite(composite_2, SWT.BORDER);
+																						composite_1.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+																						composite_1.setLayout(new GridLayout(1, false));
+																						
+																								label = (new Label(composite_1, SWT.NONE));
+																								getLabel().setAlignment(SWT.CENTER);
+																								getLabel().setFont(new Font(null, "Segoe UI", 15, SWT.BOLD));
+																								getLabel().setLayoutData(
+																										new GridData(SWT.FILL, SWT.TOP, true, false, 1, 1));
+																								getLabel().setText("New Label");
+																								
+																										styledText = (new StyledText(composite_1, SWT.BORDER | SWT.WRAP));
+																										styledText.setLayoutData(new GridData(SWT.FILL, SWT.FILL, true, true, 1, 1));
+																										styledText.setEditable(false);
+																										
+																										TabItem tbtmInfo = new TabItem(tabFolder, SWT.NONE);
+																										tbtmInfo.setText("Info");
+																										
+																										Composite composite_3 = new Composite(tabFolder, SWT.NONE);
+																										tbtmInfo.setControl(composite_3);
+																										composite_3.setLayout(new FillLayout(SWT.HORIZONTAL));
+																										
+																										info =new Text(composite_3, SWT.BORDER | SWT.V_SCROLL | SWT.MULTI);
 		createContents();
 	}
 
@@ -116,8 +133,6 @@ public class ConsumerUI extends Shell {
 		} catch (ContainerCreateException e1) {
 		}
 
-		// ZooDiscoveryContainer singleton =
-		// ZooDiscoveryContainer.getSingleton();
 		if (singleton.getConnectedID() != null)
 			singleton.disconnect();
 
@@ -183,5 +198,9 @@ public class ConsumerUI extends Shell {
 
 	public Dispatcher getDispatcher() {
 		return dispatcher;
+	}
+
+	public Text getInfo() {
+		return info;
 	}
 }
