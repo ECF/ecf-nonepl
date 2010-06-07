@@ -151,7 +151,7 @@ public class ConsumerUI extends Shell {
 	 * Create contents of the shell.
 	 */
 	protected void createContents() {
-		setText("ECF Zookeeper Service Consumer Service");
+		setText("ECF Zookeeper Quote Service Consumer");
 		setSize(450, 381);
 
 		dispatcher = new Dispatcher() {
