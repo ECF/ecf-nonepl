@@ -74,9 +74,12 @@ public class JGroupsConfigTest extends JGroupsContainerTest {
 	}
 	
 	public void testBadStacks(){
-		assertFalse(testUri(stackNamesAvailable.length));
+		assertFalse(testUri(stackNamesAvailable.length-1));
 	}
 
+	/**
+	 * overrided to not run this test which is run in  {@link JGroupsContainerTest}
+	 */
 	@Override
 	public void testConnectClient() throws Exception {
 	}

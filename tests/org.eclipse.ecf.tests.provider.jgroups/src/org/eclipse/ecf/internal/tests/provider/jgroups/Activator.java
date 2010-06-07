@@ -21,11 +21,9 @@ public class Activator extends Plugin {
 
 	private static final String STACK_CONFIG_ID_ATTRIBUTE = "id";
 
-	private static final String STACK_CONFIG_EPOINT = Activator.PLUGIN_ID
-	+ ".stackConfig";
+	private static final String STACK_CONFIG_EPOINT = "org.eclipse.ecf.provider.jgroups.stackConfig";
 
-	public static final String STACK_CONFIG_ID = Activator.PLUGIN_ID
-	+ ".default";
+	public static final String STACK_CONFIG_ID = "org.eclipse.ecf.provider.jgroups.default";
 
 	private static final String STACK_CONFIG_FILE_ATTRIBUTE = "configFile";
 
