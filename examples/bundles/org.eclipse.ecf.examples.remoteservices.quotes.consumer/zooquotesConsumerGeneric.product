@@ -1,29 +1,24 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <?pde version="3.5"?>
 
-<product name="Zookeeper Discoverable Quotes Service" uid="org.eclipse.ecf.examples.remoteservices.quotes.consumer" version="1.0.0" useFeatures="false" includeLaunchers="false">
+<product name="Zookeeper Discoverable Quotes Service" uid="org.eclipse.ecf.examples.remoteservices.quotes.consumer" id="org.eclipse.ecf.examples.remoteservices.quotes.consumer.zooquotesgenericconsumer" application="org.eclipse.ecf.examples.remoteservices.quotes.consumer.id1" version="1.0.0" useFeatures="false" includeLaunchers="true">
 
    <configIni use="default">
    </configIni>
 
    <launcherArgs>
-      <programArgs>-console -consoleLog -clean -containerType ecf.generic.client</programArgs>
-      <vmArgs>-Xms40m
--Xmx512m
--Declipse.ignoreApp=true
--Dosgi.noShutdown=true
--Dzoodiscovery.flavor=zoodiscovery.flavor.centralized=yazafatutu.com:2181
--Dzooadiscovery.autoStart=defined
--Dzoodiscovery.dataDir=zoo2</vmArgs>
+      <programArgs>-containerType ecf.generic.client</programArgs>
+      <vmArgs>-Dzoodiscovery.flavor=zoodiscovery.flavor.centralized=yazafatutu.com:2181</vmArgs>
       <vmArgsMac>-XstartOnFirstThread -Dorg.eclipse.swt.internal.carbon.smallFonts</vmArgsMac>
    </launcherArgs>
 
    <windowImages/>
 
-   <launcher>
+   <launcher name="zooQuotes">
       <solaris/>
       <win useIco="false">
-         <bmp/>
+         <bmp
+            winSmallHigh="/org.eclipse.ecf.examples.remoteservices.quotes.consumer/images/quotes.bmp"/>
       </win>
    </launcher>
 
@@ -80,10 +75,9 @@
    </plugins>
 
    <configurations>
-      <plugin id="org.eclipse.ecf.discovery" autoStart="true" startLevel="4" />
-      <plugin id="org.eclipse.ecf.examples.remoteservices.quotes.consumer" autoStart="false" startLevel="3" />
+      <plugin id="org.eclipse.ecf.discovery" autoStart="true" startLevel="3" />
+      <plugin id="org.eclipse.ecf.examples.remoteservices.quotes.consumer" autoStart="true" startLevel="4" />
       <plugin id="org.eclipse.ecf.osgi.services.distribution" autoStart="true" startLevel="2" />
-      <plugin id="org.eclipse.ecf.provider.zookeeper" autoStart="false" startLevel="1" />
       <plugin id="org.eclipse.ecf.remoteservice" autoStart="true" startLevel="2" />
       <plugin id="org.eclipse.ecf.sharedobject" autoStart="true" startLevel="1" />
       <plugin id="org.eclipse.equinox.common" autoStart="true" startLevel="1" />
