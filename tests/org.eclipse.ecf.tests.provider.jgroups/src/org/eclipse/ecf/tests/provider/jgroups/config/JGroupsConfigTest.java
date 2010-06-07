@@ -18,8 +18,6 @@ import org.jgroups.JChannelFactory;
  */
 public class JGroupsConfigTest extends JGroupsContainerTest {
 
-	protected static final String JGROUPS_UDP_MCAST_PORT_PROPNAME = "jgroups.udp.mcast_port";
-	protected static final String JGROUPS_UDP_MCAST_ADDR_PROPNAME = "jgroups.udp.mcast_addr";
 
 	private final static String stackConfigID = "org.eclipse.ecf.provider.jgroups.default";
 
