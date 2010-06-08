@@ -10,12 +10,6 @@ import org.eclipse.ecf.provider.jgroups.identity.JGroupsID;
 import org.eclipse.ecf.provider.jgroups.identity.JGroupsNamespace;
 import org.jgroups.JChannelFactory;
 
-/**
- * 
- * @author pierre
- * 
- * 
- */
 public class JGroupsConfigTest extends JGroupsContainerTest {
 
 
@@ -30,8 +24,6 @@ public class JGroupsConfigTest extends JGroupsContainerTest {
 			"tcp", "tcp-sync", "tcp-nio", "tcp-nio-sync", "tunnel",
 			"encrypt_entire_message", "encrypt", "bad_config" };
 
-	protected String oldHost = null;
-	protected int oldPort = -1;
 
 	private String getServerIdentity(int index) {
 		String uri = JGroups.URI_CONFIG_NAME;
