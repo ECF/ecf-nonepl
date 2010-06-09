@@ -56,7 +56,7 @@
       <plugin id="org.eclipse.osgi.services"/>
       <plugin id="org.eclipse.pde.runtime"/>
       <plugin id="org.eclipse.swt"/>
-      <plugin id="org.eclipse.swt.cocoa.macosx" fragment="true"/>
+      <plugin id="org.eclipse.swt.cocoa.macosx.x86_64" fragment="true"/>
       <plugin id="org.eclipse.ui"/>
       <plugin id="org.eclipse.ui.cocoa" fragment="true"/>
       <plugin id="org.eclipse.ui.forms"/>
@@ -66,12 +66,15 @@
       <plugin id="org.eclipse.update.ui"/>
       <plugin id="org.hamcrest.core"/>
       <plugin id="org.jivesoftware.smack"/>
+      <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.app"/>
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.contacts"/>
+      <plugin id="org.remotercp.contacts.test" fragment="true"/>
       <plugin id="org.remotercp.ecf"/>
       <plugin id="org.remotercp.errorhandling"/>
+      <plugin id="org.remotercp.errorhandling.test" fragment="true"/>
       <plugin id="org.remotercp.filetransfer.sender"/>
       <plugin id="org.remotercp.libs.mockito"/>
       <plugin id="org.remotercp.login"/>
@@ -79,7 +82,9 @@
       <plugin id="org.remotercp.preferences.ui"/>
       <plugin id="org.remotercp.progress"/>
       <plugin id="org.remotercp.provisioning.ui"/>
+      <plugin id="org.remotercp.provisioning.ui.test" fragment="true"/>
       <plugin id="org.remotercp.util"/>
+      <plugin id="org.remotercp.util.test" fragment="true"/>
    </plugins>
 
    <configurations>
