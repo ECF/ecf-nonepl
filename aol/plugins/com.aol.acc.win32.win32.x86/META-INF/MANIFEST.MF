@@ -1,9 +1,0 @@
-Manifest-Version: 1.0
-Bundle-ManifestVersion: 2
-Bundle-Name: AOL ACC X86 Fragment
-Bundle-SymbolicName: com.aol.acc.win32.win32.x86;singleton:=true
-Bundle-Version: 1.0.0.qualifier
-Bundle-Vendor: AOL
-Fragment-Host: com.aol.acc;bundle-version="1.0.0"
-Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Eclipse-PlatformFilter: (& (osgi.ws=win32) (osgi.os=win32) (osgi.arch=x86))
