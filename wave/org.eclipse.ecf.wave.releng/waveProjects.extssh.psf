@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<psf version="2.0">
-<provider id="org.eclipse.team.cvs.core.cvsnature">
-<project reference="1.0,:extssh:ecf1.osuosl.org:/home/cvs/ecf,wave/org.eclipse.ecf.provider.wave.google,org.eclipse.ecf.provider.wave.google"/>
-<project reference="1.0,:extssh:ecf1.osuosl.org:/home/cvs/ecf,wave/org.eclipse.ecf.provider.wave.google.ui,org.eclipse.ecf.provider.wave.google.ui"/>
-<project reference="1.0,:extssh:ecf1.osuosl.org:/home/cvs/ecf,wave/org.eclipse.ecf.wave,org.eclipse.ecf.wave"/>
-<project reference="1.0,:extssh:ecf1.osuosl.org:/home/cvs/ecf,wave/org.eclipse.ecf.wave.releng,org.eclipse.ecf.wave.releng"/>
-</provider>
-</psf>
