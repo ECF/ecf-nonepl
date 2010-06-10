@@ -11,6 +11,7 @@ package org.eclipse.ecf.mgmt.p2.install.host;
 
 import java.io.IOException;
 import java.net.URI;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -127,7 +128,7 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 	}
 
 	public IStatus installFeature(IVersionedId featureId) {
-		return installFeature(featureId, null);
+		return installFeature(featureId, (URL[]) null);
 	}
 
 	public IStatus uninstallFeature(IVersionedId featureId, String profileId) {
@@ -185,7 +186,7 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 	}
 
 	public IStatus uninstallFeature(IVersionedId featureId) {
-		return uninstallFeature(featureId, null);
+		return uninstallFeature(featureId, (URL[]) null);
 	}
 
 	public Object getAdapter(Class adapter) {
@@ -351,6 +352,49 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 
 	public IVersionedId[] getInstallableFeatures() {
 		return getInstallableFeatures(null);
+	}
+
+	public IStatus installFeature(IVersionedId featureId, URL[] repoLocations,
+			String profileId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IStatus installFeature(IVersionedId featureId, URL[] repoLocations) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IStatus updateFeature(IVersionedId featureId, URL[] repoLocations,
+			String profileId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IStatus updateFeature(IVersionedId featureId, URL[] repoLocations) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IStatus updateFeature(IVersionedId featureId, String profileId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IStatus updateFeature(IVersionedId featureId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IStatus uninstallFeature(IVersionedId featureId,
+			URL[] repoLocations, String profileId) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public IStatus uninstallFeature(IVersionedId featureId, URL[] repoLocations) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
 }
