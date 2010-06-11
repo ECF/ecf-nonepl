@@ -117,8 +117,19 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 			targetID = container.getConnectNamespace().createInstance(
 					new Object[] { targetURI });
 
-			final IContainer container = ContainerFactory.getDefault().createContainer(containerType);
-			
+
+			container.addListener(new IContainerListener() {
+				public void handleEvent(IContainerEvent event) {
+					if (event instanceof IContainerConnectedEvent) {
+						Display.getDefault().asyncExec(new Runnable() {
+							public void run() {
+								openView();
+							}
+						});
+					}
+				}
+			});
+
 
 			client = new JoinGroupWizardAction(container, targetID, connectID);
 			
@@ -132,17 +143,6 @@ public class JoinGroupWizard extends Wizard implements IConnectWizard,
 
 		final IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) container
 				.getAdapter(IPresenceContainerAdapter.class);
-		container.addListener(new IContainerListener() {
-			public void handleEvent(IContainerEvent event) {
-				if (event instanceof IContainerConnectedEvent) {
-					Display.getDefault().asyncExec(new Runnable() {
-						public void run() {
-							openView();
-						}
-					});
-				}
-			}
-		});
 
 		final IChatManager icm = adapter.getChatManager();
 		icms = icm.getChatMessageSender();
