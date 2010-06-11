@@ -14,48 +14,42 @@ import org.eclipse.core.resources.IProject;
 import org.eclipse.core.resources.IResource;
 import org.eclipse.core.resources.ResourcesPlugin;
 import org.eclipse.core.runtime.IAdaptable;
-import org.eclipse.ecf.example.collab.share.EclipseCollabSharedObject;
-import org.eclipse.ecf.internal.example.collab.ClientEntry;
-import org.eclipse.ecf.internal.example.collab.CollabClient;
+import org.eclipse.ecf.core.ContainerConnectException;
+import org.eclipse.ecf.core.IContainer;
+import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.jface.action.IAction;
 import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.jface.viewers.IStructuredSelection;
-import org.eclipse.jface.wizard.WizardDialog;
-import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.IObjectActionDelegate;
 import org.eclipse.ui.IWorkbenchPart;
 import org.eclipse.ui.IWorkbenchWindow;
 import org.eclipse.ui.IWorkbenchWindowActionDelegate;
-import org.eclipse.ui.PlatformUI;
 
 public class JoinGroupWizardAction implements IObjectActionDelegate,
 		IWorkbenchWindowActionDelegate {
-
-	private static final String CONNECT_PROJECT_MENU_TEXT = "Connect Project to JGroups Channel...";
-	private static final String DISCONNECT_PROJECT_MENU_TEXT = "Disconnect JGroups Project";
 
 	private IResource resource;
 	private boolean connected = false;
 	private IWorkbenchPart targetPart;
 	private IWorkbenchWindow window;
 
-	private ClientEntry isConnected(IResource res) {
-		if (res == null)
-			return null;
-		final CollabClient client = CollabClient.getDefault();
-		final ClientEntry entry = client.isConnected(res,
-				CollabClient.GENERIC_CONTAINER_CLIENT_NAME);
-		return entry;
+	private ID targetID = null;
+	private String nickName;
+	private IContainer client;
+
+	public JoinGroupWizardAction() {
+		super();
+	}
+
+	public JoinGroupWizardAction(IContainer container, ID targetID,
+			String nickName) {
+		this();
+		this.client = container;
+		this.targetID = targetID;
+		this.nickName = nickName;
 	}
 
 	private void setAction(IAction action, IResource resource) {
-		if (isConnected(resource) != null) {
-			action.setText(DISCONNECT_PROJECT_MENU_TEXT);
-			connected = true;
-		} else {
-			action.setText(CONNECT_PROJECT_MENU_TEXT);
-			connected = false;
-		}
 		action.setEnabled(resource == null ? false : resource.isAccessible());
 	}
 
@@ -64,38 +58,21 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 	}
 
 	public void run(IAction action) {
-		if (!connected) {
-			final JoinGroupWizard wizard = new JoinGroupWizard(resource,
-					PlatformUI.getWorkbench());
-			Shell shell = null;
-			if (targetPart == null) {
-				shell = (window == null) ? null : window.getShell();
-			} else {
-				shell = targetPart.getSite().getShell();
-			}
-			// Create the wizard dialog
-			final WizardDialog dialog = new WizardDialog(shell, wizard);
-			// Open the wizard dialog
-			dialog.open();
-		} else {
-			final ClientEntry client = isConnected(resource);
-			if (client == null) {
-				connected = false;
-				action.setText(CONNECT_PROJECT_MENU_TEXT);
-			} else {
-				final EclipseCollabSharedObject collab = client
-						.getSharedObject();
-				if (collab != null) {
-					collab.chatGUIDestroy();
-				}
-			}
+
+		try {
+
+			client.connect(targetID, null);
+
+		} catch (ContainerConnectException e) {
+			e.printStackTrace();
 		}
+
 	}
 
 	public void selectionChanged(IAction action, ISelection selection) {
 		if (selection instanceof IStructuredSelection) {
-			final IStructuredSelection iss = (IStructuredSelection) selection;
-			final Object obj = iss.getFirstElement();
+			IStructuredSelection iss = (IStructuredSelection) selection;
+			Object obj = iss.getFirstElement();
 			if (obj instanceof IProject) {
 				resource = (IProject) obj;
 			} else if (obj instanceof IAdaptable) {
@@ -111,9 +88,15 @@ public class JoinGroupWizardAction implements IObjectActionDelegate,
 	}
 
 	public void dispose() {
+		// TODO Auto-generated method stub
+
 	}
 
 	public void init(IWorkbenchWindow window) {
 		this.window = window;
+	}
+
+	protected String getClientContainerName() {
+		return JGroups.CLIENT_CONTAINER_NAME;
 	}
 }
