@@ -11,18 +11,20 @@
 package org.eclipse.ecf.internal.provider.jgroups.ui.wizard;
 
 import org.eclipse.ecf.ui.SharedImages;
+import org.eclipse.ecf.ui.wizards.AbstractConnectWizardPage;
 import org.eclipse.jface.dialogs.IDialogSettings;
-import org.eclipse.jface.wizard.WizardPage;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.events.FocusAdapter;
 import org.eclipse.swt.events.FocusEvent;
+import org.eclipse.swt.events.ModifyEvent;
+import org.eclipse.swt.events.ModifyListener;
 import org.eclipse.swt.layout.GridData;
 import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Text;
 
-public class JoinGroupWizardPage extends WizardPage {
+public class JoinGroupWizardPage extends AbstractConnectWizardPage {
 
 	protected static final String CLASSNAME = JoinGroupWizardPage.class
 			.getName();
@@ -98,7 +100,17 @@ public class JoinGroupWizardPage extends WizardPage {
 			}
 		});
 
+		addListeners();
 		restoreDialogSettings();
+	}
+
+	private void addListeners() {
+		this.joinGroupText.addModifyListener(new ModifyListener() {
+
+			public void modifyText(ModifyEvent e) {
+				verify(false);
+			}
+		});
 	}
 
 	private void restoreDialogSettings() {
@@ -143,6 +155,44 @@ public class JoinGroupWizardPage extends WizardPage {
 		if (nicknameText == null)
 			return null;
 		return nicknameText.getText().trim();
+	}
+
+	@Override
+	public boolean shouldRequestUsername() {
+		return false;
+	}
+
+	@Override
+	public boolean shouldRequestPassword() {
+		return false;
+	}
+
+	@Override
+	public String getExampleID() {
+		return null;
+	}
+
+	/**
+	 * Verifies the user's input to the wizard. Optionally sets the password for
+	 * the specified email if one has been stored and is recognized.
+	 * 
+	 * @param restorePassword
+	 *            <tt>true</tt> if the password field should be set if a
+	 *            password can be found
+	 */
+	private void verify(boolean restorePassword) {
+		String jgt = joinGroupText.getText().trim();
+		if (jgt.equals("")) { //$NON-NLS-1$
+			setErrorMessage(Messages.JoinGroupWizardPage_GroupNameRequired);
+		} else {
+			// TODO [pierre] add a pattern verifier for jggroups uri scheme ?
+			setErrorMessage(null);
+		}
+	}
+
+	public void setErrorMessage(String message) {
+		super.setErrorMessage(message);
+		setPageComplete(message == null);
 	}
 
 }
