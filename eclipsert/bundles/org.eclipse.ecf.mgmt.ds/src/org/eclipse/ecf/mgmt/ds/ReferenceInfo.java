@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Composent, Inc. - initial API and implementation
-******************************************************************************/
+ * Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Composent, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.ecf.mgmt.ds;
 
 import java.io.Serializable;
@@ -17,7 +17,7 @@ import org.osgi.framework.ServiceReference;
 public class ReferenceInfo implements IReferenceInfo, Serializable {
 
 	private static final long serialVersionUID = -2100180202415162228L;
-	
+
 	private String name;
 	private String serviceName;
 	private long[] serviceReferenceIds;
@@ -35,10 +35,10 @@ public class ReferenceInfo implements IReferenceInfo, Serializable {
 		ServiceReference[] srefs = ref.getServiceReferences();
 		if (srefs != null) {
 			this.serviceReferenceIds = new long[srefs.length];
-			for(int i=0; i < srefs.length; i++) {
+			for (int i = 0; i < srefs.length; i++) {
 				this.serviceReferenceIds[i] = getServiceId(srefs[i]);
 			}
-			
+
 		}
 		this.isSatisfied = ref.isSatisfied();
 		this.isOptional = ref.isOptional();
@@ -51,7 +51,8 @@ public class ReferenceInfo implements IReferenceInfo, Serializable {
 
 	private long getServiceId(ServiceReference serviceReference) {
 		Object o = serviceReference.getProperty(Constants.SERVICE_ID);
-		if (o instanceof Long) return ((Long) o).longValue();
+		if (o instanceof Long)
+			return ((Long) o).longValue();
 		return 0;
 	}
 

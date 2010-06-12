@@ -11,17 +11,20 @@ public class Activator implements BundleActivator {
 	public static String PLUGIN_ID = "org.eclipse.ecf.mgmt.framework.host"; //$NON-NLS-1$
 
 	private static Activator instance;
-	
+
 	private ServiceTracker adapterManagerTracker;
 	private BundleContext context;
-	
+
 	public static Activator getDefault() {
 		return instance;
 	}
-	
+
 	/*
 	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext)
+	 * 
+	 * @see
+	 * org.osgi.framework.BundleActivator#start(org.osgi.framework.BundleContext
+	 * )
 	 */
 	public void start(BundleContext context) throws Exception {
 		instance = this;
@@ -31,10 +34,12 @@ public class Activator implements BundleActivator {
 	public IAdapterManager getAdapterManager() {
 		// First, try to get the adapter manager via
 		if (adapterManagerTracker == null) {
-			adapterManagerTracker = new ServiceTracker(this.context, IAdapterManager.class.getName(), null);
+			adapterManagerTracker = new ServiceTracker(this.context,
+					IAdapterManager.class.getName(), null);
 			adapterManagerTracker.open();
 		}
-		IAdapterManager adapterManager = (IAdapterManager) adapterManagerTracker.getService();
+		IAdapterManager adapterManager = (IAdapterManager) adapterManagerTracker
+				.getService();
 		// Then, if the service isn't there, try to get from Platform class via
 		// PlatformHelper class
 		if (adapterManager == null)
@@ -44,7 +49,9 @@ public class Activator implements BundleActivator {
 
 	/*
 	 * (non-Javadoc)
-	 * @see org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
+	 * 
+	 * @see
+	 * org.osgi.framework.BundleActivator#stop(org.osgi.framework.BundleContext)
 	 */
 	public void stop(BundleContext context) throws Exception {
 		if (adapterManagerTracker != null) {

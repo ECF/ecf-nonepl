@@ -46,7 +46,7 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 		this.context = context;
 		this.log = log;
 	}
-	
+
 	public ApplicationManager(BundleContext context) {
 		this(context, null);
 	}
@@ -54,10 +54,14 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 	public IApplicationInfo[] getApplications() {
 		ServiceReference[] appDescriptorServiceReferences = getApplicationDescriptorServiceReferences();
 		List results = new ArrayList();
-		if (appDescriptorServiceReferences == null || appDescriptorServiceReferences.length == 0) return (IApplicationInfo[]) results.toArray(new IApplicationInfo[] {});
-		for(int i=0; i < appDescriptorServiceReferences.length; i++) {
+		if (appDescriptorServiceReferences == null
+				|| appDescriptorServiceReferences.length == 0)
+			return (IApplicationInfo[]) results
+					.toArray(new IApplicationInfo[] {});
+		for (int i = 0; i < appDescriptorServiceReferences.length; i++) {
 			ApplicationDescriptor appDescriptor = getApplicationDescriptor(appDescriptorServiceReferences[i]);
-			if (appDescriptor != null) results.add(new ApplicationInfo(appDescriptor));
+			if (appDescriptor != null)
+				results.add(new ApplicationInfo(appDescriptor));
 			ungetServiceReference(appDescriptorServiceReferences[i]);
 		}
 		return (IApplicationInfo[]) results.toArray(new IApplicationInfo[] {});
@@ -65,34 +69,39 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 
 	private ApplicationDescriptor getApplicationDescriptor(
 			ServiceReference serviceReference) {
-		if (context == null) return null;
+		if (context == null)
+			return null;
 		return (ApplicationDescriptor) context.getService(serviceReference);
 	}
 
 	public IApplicationInstanceInfo[] getRunningApplications() {
 		ServiceReference[] appInstanceServiceReferences = getApplicationInstanceServiceReferences();
 		List results = new ArrayList();
-		if (appInstanceServiceReferences == null || appInstanceServiceReferences.length == 0) return (IApplicationInstanceInfo[]) results.toArray(new IApplicationInstanceInfo[] {});
-		for(int i=0; i < appInstanceServiceReferences.length; i++) {
+		if (appInstanceServiceReferences == null
+				|| appInstanceServiceReferences.length == 0)
+			return (IApplicationInstanceInfo[]) results
+					.toArray(new IApplicationInstanceInfo[] {});
+		for (int i = 0; i < appInstanceServiceReferences.length; i++) {
 			ApplicationHandle appInstanceHandle = getApplicationInstanceDescriptor(appInstanceServiceReferences[i]);
-			if (appInstanceHandle != null) results.add(new ApplicationInstanceInfo(appInstanceHandle));
+			if (appInstanceHandle != null)
+				results.add(new ApplicationInstanceInfo(appInstanceHandle));
 			ungetServiceReference(appInstanceServiceReferences[i]);
 		}
-		return (IApplicationInstanceInfo[]) results.toArray(new IApplicationInstanceInfo[] {});
+		return (IApplicationInstanceInfo[]) results
+				.toArray(new IApplicationInstanceInfo[] {});
 	}
 
 	private ApplicationHandle getApplicationInstanceDescriptor(
 			ServiceReference serviceReference) {
-		if (context == null) return null;
+		if (context == null)
+			return null;
 		return (ApplicationHandle) context.getService(serviceReference);
 	}
-
 
 	private ServiceReference[] getApplicationInstanceServiceReferences() {
 		synchronized (applicationInstancesLock) {
 			if (applicationInstancesTracker == null) {
-				applicationInstancesTracker = new ServiceTracker(
-						context,
+				applicationInstancesTracker = new ServiceTracker(context,
 						org.osgi.service.application.ApplicationHandle.class
 								.getName(), null);
 				applicationInstancesTracker.open();
@@ -101,78 +110,98 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 		return applicationInstancesTracker.getServiceReferences();
 	}
 
-	public IStatus start(String applicationId,
-			String[] applicationArgs) {
-		if (applicationId == null) return createErrorStatus("applicationId cannot be null"); //$NON-NLS-1$
+	public IStatus start(String applicationId, String[] applicationArgs) {
+		if (applicationId == null)
+			return createErrorStatus("applicationId cannot be null"); //$NON-NLS-1$
 		ServiceReference appServiceReference = getApplicationDescriptorServiceReference(applicationId);
-		if (appServiceReference == null) return createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appServiceReference == null)
+			return createErrorStatus("application descriptor cannot be found for applicationId=" + applicationId); //$NON-NLS-1$
 		ApplicationDescriptor appDescriptor = getApplicationDescriptor(appServiceReference);
-		if (appDescriptor == null) return createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appDescriptor == null)
+			return createErrorStatus("application descriptor cannot be found for applicationId=" + applicationId); //$NON-NLS-1$
 		HashMap args = new HashMap();
-		if (applicationArgs != null) args.put("application.args", applicationArgs); //$NON-NLS-1$
+		if (applicationArgs != null)
+			args.put("application.args", applicationArgs); //$NON-NLS-1$
 		try {
 			appDescriptor.launch(args);
 			return new SerializableStatus(Status.OK_STATUS);
 		} catch (Exception e) {
-			logException("start exception for applicationId="+applicationId,e); //$NON-NLS-1$
-			return createErrorStatus("Exception starting applicationId="+applicationId,e); //$NON-NLS-1$
+			logException(
+					"start exception for applicationId=" + applicationId, e); //$NON-NLS-1$
+			return createErrorStatus(
+					"Exception starting applicationId=" + applicationId, e); //$NON-NLS-1$
 		} finally {
 			ungetServiceReference(appServiceReference);
 		}
 	}
-	
+
 	private void ungetServiceReference(ServiceReference appServiceReference) {
-		if (context == null) return;
+		if (context == null)
+			return;
 		context.ungetService(appServiceReference);
 	}
 
 	public IStatus stop(String applicationInstanceId) {
-		if (applicationInstanceId == null) return createErrorStatus("applicationInstanceId cannot be null"); //$NON-NLS-1$
+		if (applicationInstanceId == null)
+			return createErrorStatus("applicationInstanceId cannot be null"); //$NON-NLS-1$
 		ServiceReference appInstanceServiceReference = getApplicationInstanceServiceReference(applicationInstanceId);
-		if (appInstanceServiceReference == null) return createErrorStatus("appInstance service reference not found for applicationInstanceId="+applicationInstanceId); //$NON-NLS-1$
-		
+		if (appInstanceServiceReference == null)
+			return createErrorStatus("appInstance service reference not found for applicationInstanceId=" + applicationInstanceId); //$NON-NLS-1$
+
 		ApplicationHandle appInstance = getApplicationInstanceDescriptor(appInstanceServiceReference);
-		if (appInstance == null) return createErrorStatus("appInstance not found for applicationInstanceId="+applicationInstanceId); //$NON-NLS-1$
+		if (appInstance == null)
+			return createErrorStatus("appInstance not found for applicationInstanceId=" + applicationInstanceId); //$NON-NLS-1$
 		try {
 			appInstance.destroy();
 			return new SerializableStatus(Status.OK_STATUS);
 		} catch (Exception e) {
-			logException("stop exception for applicationInstanceId="+applicationInstanceId,e); //$NON-NLS-1$
-			return createErrorStatus("could not destroy applicationInstanceId="+applicationInstanceId,e); //$NON-NLS-1$
+			logException(
+					"stop exception for applicationInstanceId=" + applicationInstanceId, e); //$NON-NLS-1$
+			return createErrorStatus(
+					"could not destroy applicationInstanceId=" + applicationInstanceId, e); //$NON-NLS-1$
 		} finally {
 			ungetServiceReference(appInstanceServiceReference);
 		}
 	}
 
 	public IStatus lock(String applicationId) {
-		if (applicationId == null) createErrorStatus("applicationId cannot be null"); //$NON-NLS-1$
+		if (applicationId == null)
+			createErrorStatus("applicationId cannot be null"); //$NON-NLS-1$
 		ServiceReference appServiceReference = getApplicationDescriptorServiceReference(applicationId);
-		if (appServiceReference == null) createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appServiceReference == null)
+			createErrorStatus("application descriptor cannot be found for applicationId=" + applicationId); //$NON-NLS-1$
 		ApplicationDescriptor appDescriptor = getApplicationDescriptor(appServiceReference);
-		if (appDescriptor == null) createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appDescriptor == null)
+			createErrorStatus("application descriptor cannot be found for applicationId=" + applicationId); //$NON-NLS-1$
 		try {
 			appDescriptor.lock();
 			return new SerializableStatus(Status.OK_STATUS);
 		} catch (Exception e) {
-			logException("lock exception for applicationId="+applicationId,e); //$NON-NLS-1$
-			return createErrorStatus("could not lock applicationId="+applicationId,e); //$NON-NLS-1$
+			logException("lock exception for applicationId=" + applicationId, e); //$NON-NLS-1$
+			return createErrorStatus(
+					"could not lock applicationId=" + applicationId, e); //$NON-NLS-1$
 		} finally {
 			ungetServiceReference(appServiceReference);
 		}
 	}
 
 	public IStatus unlock(String applicationId) {
-		if (applicationId == null) createErrorStatus("applicationId cannot be null"); //$NON-NLS-1$
+		if (applicationId == null)
+			createErrorStatus("applicationId cannot be null"); //$NON-NLS-1$
 		ServiceReference appServiceReference = getApplicationDescriptorServiceReference(applicationId);
-		if (appServiceReference == null) createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appServiceReference == null)
+			createErrorStatus("application descriptor cannot be found for applicationId=" + applicationId); //$NON-NLS-1$
 		ApplicationDescriptor appDescriptor = getApplicationDescriptor(appServiceReference);
-		if (appDescriptor == null) createErrorStatus("application descriptor cannot be found for applicationId="+applicationId); //$NON-NLS-1$
+		if (appDescriptor == null)
+			createErrorStatus("application descriptor cannot be found for applicationId=" + applicationId); //$NON-NLS-1$
 		try {
 			appDescriptor.unlock();
 			return new SerializableStatus(Status.OK_STATUS);
 		} catch (Exception e) {
-			logException("unlock exception for applicationId="+applicationId,e); //$NON-NLS-1$
-			return createErrorStatus("could not unlock applicationId="+applicationId,e); //$NON-NLS-1$
+			logException(
+					"unlock exception for applicationId=" + applicationId, e); //$NON-NLS-1$
+			return createErrorStatus(
+					"could not unlock applicationId=" + applicationId, e); //$NON-NLS-1$
 		} finally {
 			ungetServiceReference(appServiceReference);
 		}
@@ -223,19 +252,23 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 		if (log != null) {
 			log.log(LogService.LOG_ERROR, message, exception);
 		} else {
-			if (message != null) System.err.println(message);
-			if (exception != null) exception.printStackTrace(System.err);
+			if (message != null)
+				System.err.println(message);
+			if (exception != null)
+				exception.printStackTrace(System.err);
 		}
 	}
 
-	private ServiceReference getApplicationDescriptorServiceReference(String applicationId) {
+	private ServiceReference getApplicationDescriptorServiceReference(
+			String applicationId) {
 		ServiceReference[] appDescriptorServiceReferences = getApplicationDescriptorServiceReferences();
-		
+
 		if (appDescriptorServiceReferences == null || applicationId == null)
 			return null;
 		ServiceReference result = null;
 		for (int i = 0; i < appDescriptorServiceReferences.length; i++) {
-			String id = (String) appDescriptorServiceReferences[i].getProperty(Constants.SERVICE_PID);
+			String id = (String) appDescriptorServiceReferences[i]
+					.getProperty(Constants.SERVICE_PID);
 			if (applicationId.equals(id))
 				return appDescriptorServiceReferences[i];
 		}
@@ -245,11 +278,13 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 	private ServiceReference getApplicationInstanceServiceReference(
 			String applicationInstanceId) {
 		ServiceReference[] appInstanceServiceReferences = getApplicationInstanceServiceReferences();
-		if (appInstanceServiceReferences == null || applicationInstanceId == null)
+		if (appInstanceServiceReferences == null
+				|| applicationInstanceId == null)
 			return null;
 		ServiceReference result = null;
 		for (int i = 0; i < appInstanceServiceReferences.length; i++) {
-			String id = (String) appInstanceServiceReferences[i].getProperty(Constants.SERVICE_PID);
+			String id = (String) appInstanceServiceReferences[i]
+					.getProperty(Constants.SERVICE_PID);
 			if (applicationInstanceId.equals(id))
 				return appInstanceServiceReferences[i];
 		}
@@ -257,11 +292,12 @@ public class ApplicationManager implements IApplicationManager, IAdaptable {
 	}
 
 	private IStatus createErrorStatus(String message, Throwable e) {
-		return new SerializableStatus(IStatus.ERROR,Activator.PLUGIN_ID,message,e);
+		return new SerializableStatus(IStatus.ERROR, Activator.PLUGIN_ID,
+				message, e);
 	}
 
 	private IStatus createErrorStatus(String message) {
-		return createErrorStatus(message,null);
+		return createErrorStatus(message, null);
 	}
-	
+
 }

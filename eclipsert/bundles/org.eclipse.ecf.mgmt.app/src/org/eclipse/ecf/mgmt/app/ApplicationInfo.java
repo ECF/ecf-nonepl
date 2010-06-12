@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Composent, Inc. - initial API and implementation
-******************************************************************************/
+ * Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Composent, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.ecf.mgmt.app;
 
 import java.io.Serializable;
@@ -23,7 +23,7 @@ public class ApplicationInfo implements IApplicationInfo, Serializable {
 	private boolean isLocked;
 	private boolean isLaunchable;
 	private boolean isVisible;
-	
+
 	public ApplicationInfo(ApplicationDescriptor appDescriptor) {
 		this.id = appDescriptor.getApplicationId();
 		this.properties = appDescriptor.getProperties(null);
@@ -47,7 +47,7 @@ public class ApplicationInfo implements IApplicationInfo, Serializable {
 			this.isVisible = Boolean.getBoolean((String) visibleProperty);
 		}
 	}
-	
+
 	public String getId() {
 		return id;
 	}
@@ -55,7 +55,7 @@ public class ApplicationInfo implements IApplicationInfo, Serializable {
 	public String getName() {
 		return name;
 	}
-	
+
 	public Map getProperties() {
 		return properties;
 	}
@@ -67,11 +67,11 @@ public class ApplicationInfo implements IApplicationInfo, Serializable {
 	public boolean isLaunchable() {
 		return isLaunchable;
 	}
-	
+
 	public boolean isVisible() {
 		return isVisible;
 	}
-	
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("ApplicationInfo[id="); //$NON-NLS-1$

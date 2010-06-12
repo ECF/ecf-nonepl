@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Composent, Inc. - initial API and implementation
-******************************************************************************/
+ * Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Composent, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.ecf.mgmt.framework;
 
 import java.io.Serializable;
@@ -42,63 +42,78 @@ public class BundleInfo implements IBundleInfo, Serializable {
 	private boolean singleton;
 
 	public BundleInfo(Bundle bundle, BundleDescription bundleDescription) {
-		bundleId = new BundleId(bundle.getSymbolicName(),
-				bundle.getVersion().toString());
+		bundleId = new BundleId(bundle.getSymbolicName(), bundle.getVersion()
+				.toString());
 		location = bundle.getLocation();
 		bundleid = bundle.getBundleId();
 		state = bundle.getState();
 		lastModified = bundle.getLastModified();
 		manifest = convertDictionaryToMap(bundle.getHeaders());
-		
+
 		singleton = bundleDescription.isSingleton();
-		
+
 		// require bundles
-		BundleSpecification[] bdRequiredBundles = bundleDescription.getRequiredBundles();
+		BundleSpecification[] bdRequiredBundles = bundleDescription
+				.getRequiredBundles();
 		requireBundles = new RequireBundleInfo[bdRequiredBundles.length];
-		for (int i = 0; i < bdRequiredBundles.length; i++) requireBundles[i] = new RequireBundleInfo(bdRequiredBundles[i]);
+		for (int i = 0; i < bdRequiredBundles.length; i++)
+			requireBundles[i] = new RequireBundleInfo(bdRequiredBundles[i]);
 
 		// import packages
-		ImportPackageSpecification[] bdImportPackages = bundleDescription.getImportPackages();
+		ImportPackageSpecification[] bdImportPackages = bundleDescription
+				.getImportPackages();
 		importPackages = new ImportPackageInfo[bdImportPackages.length];
-		for (int i = 0; i < bdImportPackages.length; i++) importPackages[i] = new ImportPackageInfo(bdImportPackages[i]);
+		for (int i = 0; i < bdImportPackages.length; i++)
+			importPackages[i] = new ImportPackageInfo(bdImportPackages[i]);
 
 		// resolved required
-		BundleDescription bdResolvedRequires[] = bundleDescription.getResolvedRequires();
+		BundleDescription bdResolvedRequires[] = bundleDescription
+				.getResolvedRequires();
 		resolvedRequiredBundles = new ResolvedRequiredBundleInfo[bdResolvedRequires.length];
-		for (int i = 0; i < bdResolvedRequires.length; i++) resolvedRequiredBundles[i] = new ResolvedRequiredBundleInfo(bdResolvedRequires[i]);
+		for (int i = 0; i < bdResolvedRequires.length; i++)
+			resolvedRequiredBundles[i] = new ResolvedRequiredBundleInfo(
+					bdResolvedRequires[i]);
 
 		// resolved imports
-		ExportPackageDescription bdResolvedImports[] = bundleDescription.getResolvedImports();
+		ExportPackageDescription bdResolvedImports[] = bundleDescription
+				.getResolvedImports();
 		resolvedImportedPackages = new ResolvedImportedPackageInfo[bdResolvedImports.length];
-		for (int i = 0; i < bdResolvedImports.length; i++) resolvedImportedPackages[i] = new ResolvedImportedPackageInfo(bdResolvedImports[i]);
+		for (int i = 0; i < bdResolvedImports.length; i++)
+			resolvedImportedPackages[i] = new ResolvedImportedPackageInfo(
+					bdResolvedImports[i]);
 
 		// export packages
-		ExportPackageDescription bdExportPackage[] = bundleDescription.getExportPackages();
+		ExportPackageDescription bdExportPackage[] = bundleDescription
+				.getExportPackages();
 		exportPackages = new ExportPackageInfo[bdExportPackage.length];
-		for (int i = 0; i < bdExportPackage.length; i++) exportPackages[i] = new ExportPackageInfo(bdExportPackage[i]);
+		for (int i = 0; i < bdExportPackage.length; i++)
+			exportPackages[i] = new ExportPackageInfo(bdExportPackage[i]);
 
 		// dependents
 		BundleDescription bdDependents[] = bundleDescription.getDependents();
 		dependents = new BundleId[bdDependents.length];
-		for (int i = 0; i < bdDependents.length; i++) dependents[i] = new BundleId(bdDependents[i].getSymbolicName(),
-				bdDependents[i].getVersion().toString());
+		for (int i = 0; i < bdDependents.length; i++)
+			dependents[i] = new BundleId(bdDependents[i].getSymbolicName(),
+					bdDependents[i].getVersion().toString());
 
 		// selected export packages
-		ExportPackageDescription bdSelectedExports[] = bundleDescription.getSelectedExports();
+		ExportPackageDescription bdSelectedExports[] = bundleDescription
+				.getSelectedExports();
 		selectedExports = new ExportPackageInfo[bdSelectedExports.length];
-		for (int i = 0; i < bdSelectedExports.length; i++) selectedExports[i] = new ExportPackageInfo(bdSelectedExports[i]);
+		for (int i = 0; i < bdSelectedExports.length; i++)
+			selectedExports[i] = new ExportPackageInfo(bdSelectedExports[i]);
 
 	}
-	
+
 	private Map convertDictionaryToMap(Dictionary dict) {
 		Map result = new Properties();
-		for (Enumeration e = dict.keys(); e.hasMoreElements(); ) {
+		for (Enumeration e = dict.keys(); e.hasMoreElements();) {
 			String key = (String) e.nextElement();
 			result.put(key, dict.get(key));
 		}
 		return result;
 	}
-	
+
 	public IBundleId getBundleId() {
 		return bundleId;
 	}
@@ -129,7 +144,8 @@ public class BundleInfo implements IBundleInfo, Serializable {
 
 	public String getFragmentHost() {
 		Object result = manifest.get("Fragment-Host"); //$NON-NLS-1$
-		if (result instanceof String) return (String) result;
+		if (result instanceof String)
+			return (String) result;
 		return null;
 	}
 

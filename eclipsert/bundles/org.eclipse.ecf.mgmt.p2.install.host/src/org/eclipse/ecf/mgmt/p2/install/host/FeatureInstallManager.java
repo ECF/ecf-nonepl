@@ -11,7 +11,6 @@ package org.eclipse.ecf.mgmt.p2.install.host;
 
 import java.io.IOException;
 import java.net.URI;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -64,19 +63,8 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 		this.agent = agent;
 	}
 
-	public IStatus applyConfiguration() {
-		Configurator configurator = getConfigurator();
-		if (configurator == null)
-			return createErrorStatus("Configurator is null");
-		try {
-			configurator.applyConfiguration();
-			return new SerializableStatus(Status.OK_STATUS);
-		} catch (IOException e) {
-			return createErrorStatus("Could not apply configuration", e);
-		}
-	}
-
-	public IStatus installFeature(IVersionedId featureId, String profileId) {
+	public IStatus installFeature(IVersionedId featureId, URI[] repoLocations,
+			String profileId) {
 		if (featureId == null)
 			return createErrorStatus("featureid to install must not be null");
 		if (profileId == null || profileId.equals("this"))
@@ -92,8 +80,9 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 		IProgressMonitor monitor = new NullProgressMonitor();
 		String unitId = featureId.getId();
 		String unitVersion = featureId.getVersion();
-		IQueryResult ius = getInstallableUnits(agent, (URI) null, QueryUtil
-				.createIUQuery(unitId, Version.create(unitVersion)), monitor);
+		IQueryResult ius = getInstallableUnits(agent, (URI) null,
+				QueryUtil.createIUQuery(unitId, Version.create(unitVersion)),
+				monitor);
 		if (ius.isEmpty()) {
 			StringBuffer error = new StringBuffer();
 			error.append("Installable unit not found: " + unitId + ' '
@@ -116,7 +105,10 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 			return createErrorStatus("No engine available");
 
 		ProvisioningContext provContext = new ProvisioningContext(agent);
-
+		if (repoLocations != null) {
+			provContext.setArtifactRepositories(repoLocations);
+			provContext.setMetadataRepositories(repoLocations);
+		}
 		IProfileChangeRequest request = planner.createChangeRequest(profile);
 		request.addAll(ius.toUnmodifiableSet());
 		// Get provisioning plan
@@ -127,11 +119,39 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 		return new SerializableStatus(engineResult);
 	}
 
-	public IStatus installFeature(IVersionedId featureId) {
-		return installFeature(featureId, (URL[]) null);
+	public IStatus installFeature(IVersionedId featureId, URI[] repoLocations) {
+		return installFeature(featureId, repoLocations, null);
 	}
 
-	public IStatus uninstallFeature(IVersionedId featureId, String profileId) {
+	public IStatus installFeature(IVersionedId featureId, String profileId) {
+		return installFeature(featureId, null, profileId);
+	}
+
+	public IStatus installFeature(IVersionedId featureId) {
+		return installFeature(featureId, null, null);
+	}
+
+	public IStatus updateFeature(IVersionedId featureId, URI[] repoLocations,
+			String profileId) {
+		// TODO Auto-generated method stub
+		return new SerializableStatus(IStatus.ERROR, Activator.PLUGIN_ID,
+				"update not yet implemented");
+	}
+
+	public IStatus updateFeature(IVersionedId featureId, URI[] repoLocations) {
+		return updateFeature(featureId, repoLocations, null);
+	}
+
+	public IStatus updateFeature(IVersionedId featureId, String profileId) {
+		return updateFeature(featureId, null, profileId);
+	}
+
+	public IStatus updateFeature(IVersionedId featureId) {
+		return updateFeature(featureId, null, null);
+	}
+
+	public IStatus uninstallFeature(IVersionedId featureId,
+			URI[] repoLocations, String profileId) {
 		if (featureId == null)
 			return createErrorStatus("featureid to uninstall must not be null");
 		if (profileId == null || profileId.equals("this"))
@@ -148,8 +168,9 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 		IProgressMonitor monitor = new NullProgressMonitor();
 		String unitId = featureId.getId();
 		String unitVersion = featureId.getVersion();
-		IQueryResult units = profile.query(QueryUtil.createIUQuery(unitId,
-				Version.create(unitVersion)), monitor);
+		IQueryResult units = profile.query(
+				QueryUtil.createIUQuery(unitId, Version.create(unitVersion)),
+				monitor);
 
 		if (units.isEmpty()) {
 			StringBuffer error = new StringBuffer();
@@ -175,6 +196,11 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 
 		ProvisioningContext provContext = new ProvisioningContext(agent);
 
+		if (repoLocations != null) {
+			provContext.setArtifactRepositories(repoLocations);
+			provContext.setMetadataRepositories(repoLocations);
+		}
+
 		IProfileChangeRequest request = planner.createChangeRequest(profile);
 		request.removeAll(units.toUnmodifiableSet());
 		// Get provisioning plan
@@ -185,8 +211,28 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 		return new SerializableStatus(engineResult);
 	}
 
+	public IStatus uninstallFeature(IVersionedId featureId, URI[] repoLocations) {
+		return uninstallFeature(featureId, repoLocations, null);
+	}
+
+	public IStatus uninstallFeature(IVersionedId featureId, String profileId) {
+		return uninstallFeature(featureId, null, profileId);
+	}
+
 	public IStatus uninstallFeature(IVersionedId featureId) {
-		return uninstallFeature(featureId, (URL[]) null);
+		return uninstallFeature(featureId, null, null);
+	}
+
+	public IStatus applyConfiguration() {
+		Configurator configurator = getConfigurator();
+		if (configurator == null)
+			return createErrorStatus("Configurator is null");
+		try {
+			configurator.applyConfiguration();
+			return new SerializableStatus(Status.OK_STATUS);
+		} catch (IOException e) {
+			return createErrorStatus("Could not apply configuration", e);
+		}
 	}
 
 	public Object getAdapter(Class adapter) {
@@ -274,8 +320,8 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 
 	private IStatus executePlan(IProvisioningPlan result, IEngine engine,
 			ProvisioningContext context, IProgressMonitor progress) {
-		return executePlan(result, engine, PhaseSetFactory
-				.createDefaultPhaseSet(), context, progress);
+		return executePlan(result, engine,
+				PhaseSetFactory.createDefaultPhaseSet(), context, progress);
 	}
 
 	private IStatus executePlan(IProvisioningPlan result, IEngine engine,
@@ -285,8 +331,8 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 			return result.getStatus();
 
 		if (result.getInstallerPlan() != null) {
-			IStatus installerPlanStatus = engine.perform(result
-					.getInstallerPlan(), phaseSet, progress);
+			IStatus installerPlanStatus = engine.perform(
+					result.getInstallerPlan(), phaseSet, progress);
 			if (!installerPlanStatus.isOK())
 				return installerPlanStatus;
 		}
@@ -352,49 +398,6 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 
 	public IVersionedId[] getInstallableFeatures() {
 		return getInstallableFeatures(null);
-	}
-
-	public IStatus installFeature(IVersionedId featureId, URL[] repoLocations,
-			String profileId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IStatus installFeature(IVersionedId featureId, URL[] repoLocations) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IStatus updateFeature(IVersionedId featureId, URL[] repoLocations,
-			String profileId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IStatus updateFeature(IVersionedId featureId, URL[] repoLocations) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IStatus updateFeature(IVersionedId featureId, String profileId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IStatus updateFeature(IVersionedId featureId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IStatus uninstallFeature(IVersionedId featureId,
-			URL[] repoLocations, String profileId) {
-		// TODO Auto-generated method stub
-		return null;
-	}
-
-	public IStatus uninstallFeature(IVersionedId featureId, URL[] repoLocations) {
-		// TODO Auto-generated method stub
-		return null;
 	}
 
 }

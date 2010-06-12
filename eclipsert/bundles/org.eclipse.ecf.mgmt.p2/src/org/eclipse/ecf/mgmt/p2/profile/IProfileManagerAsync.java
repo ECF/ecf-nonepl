@@ -21,22 +21,32 @@ import org.eclipse.equinox.concurrent.future.IFuture;
 public interface IProfileManagerAsync extends IAsyncRemoteServiceProxy {
 
 	@SuppressWarnings("rawtypes")
-	public void addProfileAsync(String profileId, Map properties, IAsyncCallback<IStatus> callback);
+	public void addProfileAsync(String profileId, Map properties,
+			IAsyncCallback<IStatus> callback);
+
 	@SuppressWarnings("rawtypes")
 	public IFuture addProfileAsync(String profileId, Map properties);
 
-	public IStatus removeProfileAsync(String profileId, IAsyncCallback<IStatus> callback);
+	public IStatus removeProfileAsync(String profileId,
+			IAsyncCallback<IStatus> callback);
+
 	public IFuture removeProfileAsync(String profileId);
 
 	public void getProfileIdsAsync(IAsyncCallback<String[]> callback);
+
 	public IFuture getProfileIdsAsync();
 
-	public void getProfileAsync(String profileId, IAsyncCallback<IProfileInfo> callback);
+	public void getProfileAsync(String profileId,
+			IAsyncCallback<IProfileInfo> callback);
+
 	public IFuture getProfileAsync(String profileId);
 
 	public void getProfilesAsync(IAsyncCallback<IProfileInfo[]> callback);
+
 	public IFuture getProfilesAsync();
 
-	public void getInstalledFeaturesAsync(String profileId, IAsyncCallback<IInstallableUnitInfo[]> callback);
+	public void getInstalledFeaturesAsync(String profileId,
+			IAsyncCallback<IInstallableUnitInfo[]> callback);
+
 	public IFuture getInstalledFeaturesAsync(String profileId);
 }

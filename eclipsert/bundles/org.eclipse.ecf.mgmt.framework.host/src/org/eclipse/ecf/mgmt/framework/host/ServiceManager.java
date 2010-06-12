@@ -25,16 +25,17 @@ import org.osgi.framework.InvalidSyntaxException;
 import org.osgi.framework.ServiceReference;
 import org.osgi.service.log.LogService;
 
-public class ServiceManager extends AbstractFrameworkManager implements IServiceManager, IAdaptable {
+public class ServiceManager extends AbstractFrameworkManager implements
+		IServiceManager, IAdaptable {
 
 	public ServiceManager(BundleContext context, LogService logger) {
-		super(context,logger);
+		super(context, logger);
 	}
 
 	public ServiceManager(BundleContext context) {
 		this(context, null);
 	}
-	
+
 	private synchronized ServiceReference[] getAllServiceReferences() {
 		try {
 			return context.getAllServiceReferences(null, null);
@@ -60,7 +61,9 @@ public class ServiceManager extends AbstractFrameworkManager implements IService
 				String version = getBundleVersion(b);
 				String bundleIdVersion = bundleId.getVersion();
 				if (b.getSymbolicName().equals(bundleId.getSymbolicName())) {
-					if (bundleIdVersion == null || (version.equals(bundleIdVersion))) results.add(new ServiceInfo(srs[i], platformState));
+					if (bundleIdVersion == null
+							|| (version.equals(bundleIdVersion)))
+						results.add(new ServiceInfo(srs[i], platformState));
 				}
 			}
 
@@ -72,7 +75,8 @@ public class ServiceManager extends AbstractFrameworkManager implements IService
 	}
 
 	public IServiceInfo getService(Long serviceid) {
-		if (serviceid == null) return null;
+		if (serviceid == null)
+			return null;
 		ServiceReference srs[] = getAllServiceReferences();
 		if (srs == null)
 			return null;
@@ -80,11 +84,11 @@ public class ServiceManager extends AbstractFrameworkManager implements IService
 		if (platformState == null)
 			return null;
 
-		for(int i=0; i < srs.length; i++) {
+		for (int i = 0; i < srs.length; i++) {
 			Object o = srs[i].getProperty(Constants.SERVICE_ID);
-			long sid = (o instanceof Long) ? ((Long) o).longValue()
-					: 0L;
-			if (sid == serviceid.longValue()) return new ServiceInfo(srs[i],platformState);
+			long sid = (o instanceof Long) ? ((Long) o).longValue() : 0L;
+			if (sid == serviceid.longValue())
+				return new ServiceInfo(srs[i], platformState);
 		}
 		return null;
 	}

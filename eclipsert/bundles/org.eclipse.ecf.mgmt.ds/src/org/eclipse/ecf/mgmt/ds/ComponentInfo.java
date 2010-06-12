@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Composent, Inc. - initial API and implementation
-******************************************************************************/
+ * Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Composent, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.ecf.mgmt.ds;
 
 import java.io.ByteArrayOutputStream;
@@ -29,7 +29,7 @@ import org.osgi.service.component.ComponentInstance;
 public class ComponentInfo implements IComponentInfo, Serializable {
 
 	private static final long serialVersionUID = 8848557838339851546L;
-	
+
 	private long id;
 	private long componentId;
 	private String name;
@@ -52,13 +52,15 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	private String modified;
 	private String configurationPolicy;
 	private IServiceInfo serviceInstance;
-	
-	public ComponentInfo(long id, Component component, BundleDescription bd, IServiceInfo serviceInstance) {
+
+	public ComponentInfo(long id, Component component, BundleDescription bd,
+			IServiceInfo serviceInstance) {
 		this.id = id;
 		this.componentId = component.getId();
 		this.name = component.getName();
 		this.state = component.getState();
-		this.bundleId = new BundleId(bd.getSymbolicName(),bd.getVersion().toString());
+		this.bundleId = new BundleId(bd.getSymbolicName(), bd.getVersion()
+				.toString());
 		this.factory = component.getFactory();
 		this.isServiceFactory = component.isServiceFactory();
 		this.className = component.getClassName();
@@ -69,12 +71,12 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		org.apache.felix.scr.Reference[] cRefs = component.getReferences();
 		if (cRefs != null) {
 			this.referenceInfos = new ReferenceInfo[cRefs.length];
-			for(int i=0; i < cRefs.length; i++) {
+			for (int i = 0; i < cRefs.length; i++) {
 				referenceInfos[i] = new ReferenceInfo(cRefs[i]);
 			}
 		}
 		ComponentInstance componentInstance = component.getComponentInstance();
-		this.isActivated = (componentInstance == null)?false:true;
+		this.isActivated = (componentInstance == null) ? false : true;
 		this.activate = component.getActivate();
 		this.isActivateDeclared = component.isActivateDeclared();
 		this.deactivate = component.getDeactivate();
@@ -83,7 +85,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		this.configurationPolicy = component.getConfigurationPolicy();
 		this.serviceInstance = serviceInstance;
 	}
-	
+
 	private static boolean isSerializable(Object o) {
 		try {
 			ObjectOutputStream ois = new ObjectOutputStream(
@@ -98,7 +100,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	private Properties convertProperties(Dictionary dict) {
 		Properties result = new Properties();
-		for (Enumeration e = dict.keys(); e.hasMoreElements(); ) {
+		for (Enumeration e = dict.keys(); e.hasMoreElements();) {
 			String key = (String) e.nextElement();
 			Object value = dict.get(key);
 			if (isSerializable(value))
@@ -108,7 +110,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		}
 		return result;
 	}
-	
+
 	public long getId() {
 		return id;
 	}
@@ -116,7 +118,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	public long getComponentId() {
 		return componentId;
 	}
-	
+
 	public String getName() {
 		return name;
 	}
@@ -193,7 +195,7 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 	public IServiceInfo getActiveService() {
 		return serviceInstance;
 	}
-	
+
 	public String toString() {
 		StringBuffer buffer = new StringBuffer();
 		buffer.append("ComponentInfo[id=");
@@ -221,7 +223,8 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		buffer.append(", properties=");
 		buffer.append(properties);
 		buffer.append(", referenceInfos=");
-		buffer.append(referenceInfos != null ? Arrays.asList(referenceInfos) : null);
+		buffer.append(referenceInfos != null ? Arrays.asList(referenceInfos)
+				: null);
 		buffer.append(", isActivated=");
 		buffer.append(isActivated);
 		buffer.append(", activate=");
@@ -242,5 +245,4 @@ public class ComponentInfo implements IComponentInfo, Serializable {
 		return buffer.toString();
 	}
 
-	
 }

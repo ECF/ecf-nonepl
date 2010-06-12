@@ -54,7 +54,7 @@ public class ScrManager implements IAdaptable, IScrManager {
 	private static long curID = 0;
 
 	private ServiceTracker platformStateTracker;
-	
+
 	private synchronized long generateID() {
 		return curID++;
 	}
@@ -62,7 +62,7 @@ public class ScrManager implements IAdaptable, IScrManager {
 	class CompRef {
 		long bid;
 		String name;
-		long id=-1;
+		long id = -1;
 
 		public CompRef(long bundleId, String name) {
 			this.bid = bundleId;
@@ -91,10 +91,11 @@ public class ScrManager implements IAdaptable, IScrManager {
 	public ScrManager(BundleContext context) {
 		this(context, null);
 	}
-	
+
 	private CompRef getCompRef(long bid, String componentName) {
 		synchronized (compRefsLock) {
-			if (compRefs == null) compRefs = new Hashtable(101);
+			if (compRefs == null)
+				compRefs = new Hashtable(101);
 		}
 		CompRef cRef = new CompRef(bid, componentName);
 		synchronized (compRefs) {
@@ -118,8 +119,11 @@ public class ScrManager implements IAdaptable, IScrManager {
 		if (comp == null)
 			return null;
 		CompRef cRef = getCompRef(comp.getId(), comp.getName());
-		if (cRef == null) return null;
-		return new ComponentInfo(cRef.id, comp, getBundleDescription(comp.getBundle()), findServiceForComponent(comp));
+		if (cRef == null)
+			return null;
+		return new ComponentInfo(cRef.id, comp,
+				getBundleDescription(comp.getBundle()),
+				findServiceForComponent(comp));
 	}
 
 	private synchronized ServiceReference[] getAllServiceReferences() {
@@ -141,59 +145,73 @@ public class ScrManager implements IAdaptable, IScrManager {
 		}
 	}
 
-
 	private IServiceInfo findServiceForComponent(Component comp) {
 		// If it's not active we give up
-		if (comp.getState() != Component.STATE_ACTIVE) return null;
+		if (comp.getState() != Component.STATE_ACTIVE)
+			return null;
 		// If it's not exposing any service interfaces then we give up
 		String[] compServices = comp.getServices();
-		if (compServices == null || compServices.length < 1) return null;
+		if (compServices == null || compServices.length < 1)
+			return null;
 		// If it doesn't have a non-null component instance we give up
 		ComponentInstance compInstance = comp.getComponentInstance();
-		if (compInstance == null) return null;
+		if (compInstance == null)
+			return null;
 		// If it doesn't have an instance then we give up
 		Object compInstanceService = compInstance.getInstance();
-		if (compInstanceService == null) return null;
-		
+		if (compInstanceService == null)
+			return null;
+
 		// Now, we look for a service ref that has the same instance
 		ServiceReference[] serviceRefs = getAllServiceReferences();
-		if (serviceRefs == null) return null;
-		
+		if (serviceRefs == null)
+			return null;
+
 		State platformState = getPlatformState();
-		if (platformState == null) return null;
+		if (platformState == null)
+			return null;
 		try {
-		for(int i=0; i < serviceRefs.length; i++) {
-			// First make sure it's from the right bundle
-			if (serviceRefs[i].getBundle().getBundleId() == comp.getBundle().getBundleId()) {
-				Object svcRefObject = context.getService(serviceRefs[i]);
-				if (svcRefObject == null) continue;
-				if (svcRefObject.equals(compInstanceService)) return new ServiceInfo(serviceRefs[i], platformState);
+			for (int i = 0; i < serviceRefs.length; i++) {
+				// First make sure it's from the right bundle
+				if (serviceRefs[i].getBundle().getBundleId() == comp
+						.getBundle().getBundleId()) {
+					Object svcRefObject = context.getService(serviceRefs[i]);
+					if (svcRefObject == null)
+						continue;
+					if (svcRefObject.equals(compInstanceService))
+						return new ServiceInfo(serviceRefs[i], platformState);
+				}
 			}
-		}
 		} catch (Exception e) {
 			return null;
 		}
 		return null;
 	}
 
-	private Component[] getComponentsForBundle(ScrService scrService, Bundle bundle) {
+	private Component[] getComponentsForBundle(ScrService scrService,
+			Bundle bundle) {
 		List results = new ArrayList();
 		if (bundle == null) {
 			Bundle[] bundles = context.getBundles();
 			if (bundles != null) {
-				for(int i=0; i < bundles.length; i++) {
+				for (int i = 0; i < bundles.length; i++) {
 					Component[] comps = scrService.getComponents(bundles[i]);
-					if (comps != null) for(int j=0; j < comps.length; j++) results.add(comps[j]);
+					if (comps != null)
+						for (int j = 0; j < comps.length; j++)
+							results.add(comps[j]);
 				}
 			}
 		} else {
-            Component[] comps = scrService.getComponents(bundle);
-			if (comps != null) for(int j=0; j < comps.length; j++) results.add(comps[j]);
+			Component[] comps = scrService.getComponents(bundle);
+			if (comps != null)
+				for (int j = 0; j < comps.length; j++)
+					results.add(comps[j]);
 		}
 		return (Component[]) results.toArray(new Component[] {});
 	}
-	
-	private Collection getComponentInfoForBundle(ScrService scrService, Bundle bundle) {
+
+	private Collection getComponentInfoForBundle(ScrService scrService,
+			Bundle bundle) {
 		Component[] components = getComponentsForBundle(scrService, bundle);
 		if (components == null || components.length == 0)
 			return null;
@@ -205,7 +223,8 @@ public class ScrManager implements IAdaptable, IScrManager {
 			CompRef cRef = getCompRef(bundle.getBundleId(), componentName);
 			if (cRef != null) {
 				results.add(new ComponentInfo(cRef.id, components[i],
-						getBundleDescription(bundle),  findServiceForComponent(components[i])));
+						getBundleDescription(bundle),
+						findServiceForComponent(components[i])));
 			}
 		}
 		return results;
@@ -244,8 +263,8 @@ public class ScrManager implements IAdaptable, IScrManager {
 		ScrService scrService = getScrService();
 		if (scrService == null)
 			return null;
-		return (IComponentInfo[]) getComponentInfoForBundle(scrService, null).toArray(
-				new IComponentInfo[] {});
+		return (IComponentInfo[]) getComponentInfoForBundle(scrService, null)
+				.toArray(new IComponentInfo[] {});
 	}
 
 	private IStatus enableDisableComponent(Long id, boolean enable) {
@@ -328,8 +347,8 @@ public class ScrManager implements IAdaptable, IScrManager {
 		Bundle bundle = getBundle(bundleId);
 		if (bundle == null)
 			return null;
-		return (IComponentInfo[]) getComponentInfoForBundle(scrService, bundle).toArray(
-				new IComponentInfo[] {});
+		return (IComponentInfo[]) getComponentInfoForBundle(scrService, bundle)
+				.toArray(new IComponentInfo[] {});
 	}
 
 	private Bundle getBundle(IBundleId bundleId) {

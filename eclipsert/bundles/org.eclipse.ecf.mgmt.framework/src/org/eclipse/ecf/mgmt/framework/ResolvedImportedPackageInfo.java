@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Composent, Inc. - initial API and implementation
-******************************************************************************/
+ * Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Composent, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.ecf.mgmt.framework;
 
 import java.io.Serializable;
@@ -21,7 +21,8 @@ public class ResolvedImportedPackageInfo extends ResolvedDependencyInfo
 	public ResolvedImportedPackageInfo(
 			ExportPackageDescription exportPackageDescription) {
 		super(exportPackageDescription.getName());
-		this.bundleId = new BundleId(exportPackageDescription.getExporter().getSymbolicName(), exportPackageDescription.getExporter()
+		this.bundleId = new BundleId(exportPackageDescription.getExporter()
+				.getSymbolicName(), exportPackageDescription.getExporter()
 				.getVersion().toString());
 	}
 

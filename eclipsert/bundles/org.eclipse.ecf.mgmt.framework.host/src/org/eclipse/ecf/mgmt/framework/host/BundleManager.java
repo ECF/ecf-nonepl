@@ -33,10 +33,11 @@ import org.osgi.framework.BundleContext;
 import org.osgi.framework.BundleException;
 import org.osgi.service.log.LogService;
 
-public class BundleManager extends AbstractFrameworkManager implements IBundleManager, IAdaptable {
+public class BundleManager extends AbstractFrameworkManager implements
+		IBundleManager, IAdaptable {
 
 	public BundleManager(BundleContext context, LogService logger) {
-		super(context,logger);
+		super(context, logger);
 	}
 
 	public BundleManager(BundleContext context) {
@@ -56,8 +57,8 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 
 	public IBundleInfo[] getBundles(IBundleId bundleId) {
 		Bundle bundles[] = (bundleId == null) ? getAllBundles()
-				: internalGetBundles(bundleId.getSymbolicName(), bundleId
-						.getVersion());
+				: internalGetBundles(bundleId.getSymbolicName(),
+						bundleId.getVersion());
 		if (bundles == null)
 			return null;
 		State state = getPlatformState();
@@ -76,7 +77,8 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 	}
 
 	public IBundleInfo getBundle(Long bundleid) {
-		if (bundleid == null) return null;
+		if (bundleid == null)
+			return null;
 		Bundle bundles[] = getAllBundles();
 		if (bundles == null)
 			return null;
@@ -102,7 +104,7 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		if (bs.length > 1)
 			return createErrorStatus(symbolicId
 					+ " with version " + version + " resulted in multiple bundles"); //$NON-NLS-1$ //$NON-NLS-2$
-		
+
 		return start(bs[0]);
 	}
 
@@ -131,7 +133,7 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		}
 
 	}
-	
+
 	private IStatus stop(Bundle bundle) {
 		try {
 			bundle.stop();
@@ -151,34 +153,32 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 			return null;
 		String symbolicName = bundleId.getSymbolicName();
 		String version = bundleId.getVersion();
-		Bundle bs[] = internalGetBundles(symbolicName, bundleId
-				.getVersion());
+		Bundle bs[] = internalGetBundles(symbolicName, bundleId.getVersion());
 		if (bs == null || bs.length == 0)
 			return createErrorStatus(symbolicName
 					+ " with version " + version + " could not be found"); //$NON-NLS-1$//$NON-NLS-2$
 		if (bs.length > 1)
 			return createErrorStatus(symbolicName
 					+ " with version " + version + " resulted in multiple bundles"); //$NON-NLS-1$ //$NON-NLS-2$
-		BundleDescription desc = platformAdmin.getState(false)
-				.getBundle(bs[0].getBundleId());
+		BundleDescription desc = platformAdmin.getState(false).getBundle(
+				bs[0].getBundleId());
 		ResolverError resolverErrors[] = platformAdmin.getState(false)
 				.getResolverErrors(desc);
 		SerializableMultiStatus problems = new SerializableMultiStatus(
 				Activator.PLUGIN_ID, IStatus.INFO,
 				"The following problems were found:", null); //$NON-NLS-1$
 		for (int i = 0; i < resolverErrors.length; i++) {
-				SerializableStatus status = new SerializableStatus(IStatus.WARNING,
-						Activator.PLUGIN_ID,
-						resolverErrors[i].toString());
-				problems.add(status);
+			SerializableStatus status = new SerializableStatus(IStatus.WARNING,
+					Activator.PLUGIN_ID, resolverErrors[i].toString());
+			problems.add(status);
 		}
-		
-		VersionConstraint unsatisfied[] = platformAdmin
-				.getStateHelper().getUnsatisfiedConstraints(desc);
+
+		VersionConstraint unsatisfied[] = platformAdmin.getStateHelper()
+				.getUnsatisfiedConstraints(desc);
 		for (int i = 0; i < unsatisfied.length; i++) {
 			SerializableStatus status = new SerializableStatus(2,
-					Activator.PLUGIN_ID, MessageHelper
-							.getResolutionFailureMessage(unsatisfied[i]));
+					Activator.PLUGIN_ID,
+					MessageHelper.getResolutionFailureMessage(unsatisfied[i]));
 			problems.add(status);
 		}
 
@@ -210,7 +210,8 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		if (bundles == null)
 			return null;
 		for (int i = 0; i < bundles.length; i++) {
-			if (bundles[i].getBundleId() == bundleId) return bundles[i];
+			if (bundles[i].getBundleId() == bundleId)
+				return bundles[i];
 		}
 		return null;
 	}
@@ -219,7 +220,8 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		if (bundleId == null)
 			return createErrorStatus("bundleId parameter cannot be null"); //$NON-NLS-1$
 		Bundle b = internalGetBundle(bundleId.longValue());
-		if (b == null) createErrorStatus("Cannot find bundle with id="+bundleId); //$NON-NLS-1$
+		if (b == null)
+			createErrorStatus("Cannot find bundle with id=" + bundleId); //$NON-NLS-1$
 		return start(b);
 	}
 
@@ -227,7 +229,8 @@ public class BundleManager extends AbstractFrameworkManager implements IBundleMa
 		if (bundleId == null)
 			return createErrorStatus("bundleId parameter cannot be null"); //$NON-NLS-1$
 		Bundle b = internalGetBundle(bundleId.longValue());
-		if (b == null) createErrorStatus("Cannot find bundle with id="+bundleId); //$NON-NLS-1$
+		if (b == null)
+			createErrorStatus("Cannot find bundle with id=" + bundleId); //$NON-NLS-1$
 		return stop(b);
 	}
 

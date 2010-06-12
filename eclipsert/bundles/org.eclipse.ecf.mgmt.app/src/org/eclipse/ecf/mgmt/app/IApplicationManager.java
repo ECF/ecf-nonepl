@@ -18,10 +18,10 @@ public interface IApplicationManager {
 	public IApplicationInstanceInfo[] getRunningApplications();
 
 	public IStatus start(String applicationId, String[] applicationArgs);
-	
+
 	public IStatus stop(String applicationInstanceId);
-	
+
 	public IStatus lock(String applicationId);
-	
+
 	public IStatus unlock(String applicationId);
 }

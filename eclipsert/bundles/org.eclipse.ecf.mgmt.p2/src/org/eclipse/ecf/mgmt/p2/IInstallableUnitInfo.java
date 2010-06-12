@@ -12,7 +12,6 @@ package org.eclipse.ecf.mgmt.p2;
 import java.util.Collection;
 import java.util.Map;
 
-
 @SuppressWarnings("rawtypes")
 public interface IInstallableUnitInfo {
 

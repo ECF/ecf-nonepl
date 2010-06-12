@@ -1,12 +1,12 @@
 /*******************************************************************************
-* Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
-* program and the accompanying materials are made available under the terms of
-* the Eclipse Public License v1.0 which accompanies this distribution, and is
-* available at http://www.eclipse.org/legal/epl-v10.html
-*
-* Contributors:
-*   Composent, Inc. - initial API and implementation
-******************************************************************************/
+ * Copyright (c) 2010 Composent, Inc. and others. All rights reserved. This
+ * program and the accompanying materials are made available under the terms of
+ * the Eclipse Public License v1.0 which accompanies this distribution, and is
+ * available at http://www.eclipse.org/legal/epl-v10.html
+ *
+ * Contributors:
+ *   Composent, Inc. - initial API and implementation
+ ******************************************************************************/
 package org.eclipse.ecf.mgmt.app;
 
 import org.osgi.service.application.ApplicationHandle;
@@ -20,9 +20,10 @@ public class ApplicationInstanceInfo implements IApplicationInstanceInfo {
 	public ApplicationInstanceInfo(ApplicationHandle appInstance) {
 		this.id = appInstance.getInstanceId();
 		this.state = appInstance.getState();
-		this.application = new ApplicationInfo(appInstance.getApplicationDescriptor());
+		this.application = new ApplicationInfo(
+				appInstance.getApplicationDescriptor());
 	}
-	
+
 	public String getId() {
 		return id;
 	}
