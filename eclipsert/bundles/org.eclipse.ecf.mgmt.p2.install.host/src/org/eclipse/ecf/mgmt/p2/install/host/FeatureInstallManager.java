@@ -12,6 +12,8 @@ package org.eclipse.ecf.mgmt.p2.install.host;
 import java.io.IOException;
 import java.net.URI;
 import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Iterator;
 import java.util.List;
 
 import org.eclipse.core.runtime.IAdaptable;
@@ -65,52 +67,82 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 
 	public IStatus installFeature(IVersionedId featureId, URI[] repoLocations,
 			String profileId) {
+		// Parameter sanity checks
 		if (featureId == null)
-			return createErrorStatus("featureid to install must not be null");
+			return createErrorStatus("installFeature: featureid to install must not be null");
 		if (profileId == null || profileId.equals("this"))
 			profileId = IProfileRegistry.SELF;
-
+		// Must be able to get local profile registry...another sanity check
 		IProfileRegistry profileRegistry = (IProfileRegistry) agent
 				.getService(IProfileRegistry.SERVICE_NAME);
 		if (profileRegistry == null)
-			return createErrorStatus("no profile registry available");
+			return createErrorStatus("installFeature: no profile registry available");
+		// Must be able to get given profile, otherwise we're finished.
 		IProfile profile = profileRegistry.getProfile(profileId);
 		if (profile == null)
-			return createErrorStatus("no matching profile");
+			return createErrorStatus("installFeature: no profile matching profileId="
+					+ profileId);
+
 		IProgressMonitor monitor = new NullProgressMonitor();
 		String unitId = featureId.getId();
 		String unitVersion = featureId.getVersion();
-		IQueryResult ius = getInstallableUnits(agent, (URI) null,
-				QueryUtil.createIUQuery(unitId, Version.create(unitVersion)),
-				monitor);
-		if (ius.isEmpty()) {
-			StringBuffer error = new StringBuffer();
-			error.append("Installable unit not found: " + unitId + ' '
-					+ unitVersion + '\n');
-			error.append("Repositories searched:\n");
-			URI[] repos = getMetadataRepositories(agent);
-			if (repos != null) {
-				for (int i = 0; i < repos.length; i++)
-					error.append(repos[i] + "\n");
+		// Query available/specified repository locations for given installable
+		// unit id and unitVersion
+		List featuresToInstall = new ArrayList();
+		try {
+			IQueryResult[] qresults = getInstallableUnits(
+					agent,
+					repoLocations,
+					QueryUtil.createIUQuery(unitId, Version.create(unitVersion)),
+					monitor);
+			for (int i = 0; i < qresults.length; i++) {
+				for (Iterator it = qresults[i].iterator(); it.hasNext();) {
+					featuresToInstall.add(it.next());
+				}
 			}
-			return createErrorStatus("installable unit with id=" + unitId
-					+ " and version=" + unitVersion + " not found",
-					new ProvisionException(error.toString()));
+		} catch (ProvisionException e) {
+			// Could not load a metadata repository...report back in failed
+			String message = "installFeature: could not load metadata repository.  FeatureId="
+					+ featureId.getId() + ",v=" + featureId.getVersion();
+			logException(message, e);
+			return createErrorStatus(message, repoLocations, e);
 		}
+
+		if (featuresToInstall.isEmpty())
+			return createErrorStatus("installFeature: feature="
+					+ unitId
+					+ ",v="
+					+ unitVersion
+					+ " not found in repositories.  Cannot continue with install.");
+		
+		// We take the first one...if there are multiple returned from given set
+		// of repos This means that we take the feature to install from the first repo
+		// that has the given feature (with given version)
+		IInstallableUnit featureToInstall = (IInstallableUnit) featuresToInstall
+				.get(0);
+		List fToInstall = new ArrayList();
+		fToInstall.add(featureToInstall);
+		return installOrUninstallIUs(fToInstall, profile, monitor, true);
+	}
+
+	private IStatus installOrUninstallIUs(Collection features,
+			IProfile profile, IProgressMonitor monitor, boolean install) {
+		// Make sure we have planner
 		IPlanner planner = (IPlanner) agent.getService(IPlanner.SERVICE_NAME);
 		if (planner == null)
 			return createErrorStatus("no planner available");
+		// Make sure we have engine
 		IEngine engine = (IEngine) agent.getService(IEngine.SERVICE_NAME);
 		if (engine == null)
 			return createErrorStatus("No engine available");
 
+		// Create provisioning context
 		ProvisioningContext provContext = new ProvisioningContext(agent);
-		if (repoLocations != null) {
-			provContext.setArtifactRepositories(repoLocations);
-			provContext.setMetadataRepositories(repoLocations);
-		}
+		// Create profile change request
 		IProfileChangeRequest request = planner.createChangeRequest(profile);
-		request.addAll(ius.toUnmodifiableSet());
+		// Add feature to install
+		if (install) request.addAll(features);
+		else request.removeAll(features);
 		// Get provisioning plan
 		IProvisioningPlan result = planner.getProvisioningPlan(request,
 				provContext, monitor);
@@ -133,9 +165,105 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 
 	public IStatus updateFeature(IVersionedId featureId, URI[] repoLocations,
 			String profileId) {
-		// TODO Auto-generated method stub
-		return new SerializableStatus(IStatus.ERROR, Activator.PLUGIN_ID,
-				"update not yet implemented");
+		// Parameter sanity checks
+		if (featureId == null)
+			return createErrorStatus("featureid to update must not be null");
+		if (profileId == null || profileId.equals("this"))
+			profileId = IProfileRegistry.SELF;
+		// Must be able to get local profile registry...another sanity check
+		IProfileRegistry profileRegistry = (IProfileRegistry) agent
+				.getService(IProfileRegistry.SERVICE_NAME);
+		if (profileRegistry == null)
+			return createErrorStatus("no profile registry available");
+		// Must be able to get given profile, otherwise we're finished.
+		IProfile profile = profileRegistry.getProfile(profileId);
+		if (profile == null)
+			return createErrorStatus("no profile matching profileId="
+					+ profileId);
+
+		// For given profile, we should find some version to remove
+		IProgressMonitor monitor = new NullProgressMonitor();
+		IQueryResult installedFeatures = profile.query(
+				QueryUtil.createIUQuery(featureId.getId()), monitor);
+		// If no installed features for given featureId
+		if (installedFeatures.isEmpty())
+			return createErrorStatus("updateFeature: Feature="
+					+ featureId.getId() + " not found installed in profile="
+					+ profileId + " so it cannot be updated");
+
+		// We have some installed features...so we select the one with the
+		// highest version
+		IInstallableUnit maxInstalledFeature = null;
+		for (Iterator i = installedFeatures.iterator(); i.hasNext();) {
+			IInstallableUnit current = (IInstallableUnit) i.next();
+			if (maxInstalledFeature == null)
+				maxInstalledFeature = current;
+			else {
+				Version currentV = current.getVersion();
+				Version maxV = maxInstalledFeature.getVersion();
+				int compareV = currentV.compareTo(maxV);
+				if (compareV > 0)
+					maxInstalledFeature = current;
+			}
+		}
+
+		// Now have maxInstalledVersion
+		org.eclipse.equinox.p2.metadata.VersionedId p2VersionedId = new org.eclipse.equinox.p2.metadata.VersionedId(
+				featureId.getId(), featureId.getVersion());
+		Version updateVersion = p2VersionedId.getVersion();
+
+		Version maxInstalledFeatureVersion = maxInstalledFeature.getVersion();
+		// If the installed version is greater than the requested version, then
+		// we have nothing to do
+		if (maxInstalledFeatureVersion.compareTo(updateVersion) > 0)
+			return createErrorStatus("updateFeature: Nothing to update.  Feature="
+					+ featureId.getId()
+					+ ",v="
+					+ featureId.getVersion()
+					+ " is older than installed feature v="
+					+ p2VersionedId.getVersion());
+
+		// Now query metadata repositories for desired features
+		List possibleFeaturesToInstall = new ArrayList();
+		try {
+			IQueryResult[] qresults = getInstallableUnits(
+					agent,
+					repoLocations,
+					QueryUtil.createIUQuery(featureId.getId(),
+							p2VersionedId.getVersion()), monitor);
+			for (int i = 0; i < qresults.length; i++) {
+				for (Iterator it = qresults[i].iterator(); it.hasNext();) {
+					possibleFeaturesToInstall.add(it.next());
+				}
+			}
+		} catch (ProvisionException e) {
+			String message = "updateFeature: Could not load metadata repository.  FeatureId="
+					+ featureId.getId() + ",v=" + featureId.getVersion();
+			logException(message, e);
+			return createErrorStatus(message, repoLocations, e);
+
+		}
+		IInstallableUnit featureToUpdate = null;
+		// Find iu to update
+		for (Iterator i = possibleFeaturesToInstall.iterator(); i.hasNext();) {
+			IInstallableUnit current = (IInstallableUnit) i.next();
+			Version currentV = current.getVersion();
+			if ((currentV.compareTo(maxInstalledFeatureVersion) > 0)
+					&& (featureToUpdate == null || currentV
+							.compareTo(featureToUpdate.getVersion()) > 0))
+				featureToUpdate = current;
+		}
+
+		if (featureToUpdate == null)
+			return createErrorStatus("updateFeature: Nothing to update.  Could not find feature="
+					+ featureId.getId()
+					+ " with version="
+					+ featureId.getVersion()
+					+ " greater than in installed version in repositories");
+
+		List fToInstall = new ArrayList();
+		fToInstall.add(featureToUpdate);
+		return installOrUninstallIUs(fToInstall, profile, monitor, true);
 	}
 
 	public IStatus updateFeature(IVersionedId featureId, URI[] repoLocations) {
@@ -152,63 +280,34 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 
 	public IStatus uninstallFeature(IVersionedId featureId,
 			URI[] repoLocations, String profileId) {
+		// Parameter sanity checks
 		if (featureId == null)
-			return createErrorStatus("featureid to uninstall must not be null");
+			return createErrorStatus("featureid to install must not be null");
 		if (profileId == null || profileId.equals("this"))
 			profileId = IProfileRegistry.SELF;
-
+		// Must be able to get local profile registry...another sanity check
 		IProfileRegistry profileRegistry = (IProfileRegistry) agent
 				.getService(IProfileRegistry.SERVICE_NAME);
 		if (profileRegistry == null)
 			return createErrorStatus("no profile registry available");
+		// Must be able to get given profile, otherwise we're finished.
 		IProfile profile = profileRegistry.getProfile(profileId);
 		if (profile == null)
-			return createErrorStatus("no matching profile=" + profileId);
+			return createErrorStatus("no matching profileId=" + profileId);
 
 		IProgressMonitor monitor = new NullProgressMonitor();
 		String unitId = featureId.getId();
 		String unitVersion = featureId.getVersion();
+		// For given profile, we should find the specific version to remove
 		IQueryResult units = profile.query(
 				QueryUtil.createIUQuery(unitId, Version.create(unitVersion)),
 				monitor);
+		
+		// If we didn't find it installed then we can't uninstall it
+		if (units.isEmpty()) return createErrorStatus("uninstallFeature: Feature="+unitId+" with v="+unitVersion+" not found installed, so cannot be uninstalled");
 
-		if (units.isEmpty()) {
-			StringBuffer error = new StringBuffer();
-			error.append("Installable unit not found: " + unitId + ' '
-					+ unitVersion + '\n');
-			error.append("Repositories searched:\n");
-			URI[] repos = getMetadataRepositories(agent);
-			if (repos != null) {
-				for (int i = 0; i < repos.length; i++)
-					error.append(repos[i] + "\n");
-			}
-			return createErrorStatus("installable unit with id=" + unitId
-					+ " and version=" + unitVersion + " not found",
-					new ProvisionException(error.toString()));
-		}
+		return installOrUninstallIUs(units.toUnmodifiableSet(), profile, monitor, false);
 
-		IPlanner planner = (IPlanner) agent.getService(IPlanner.SERVICE_NAME);
-		if (planner == null)
-			return createErrorStatus("no planner available");
-		IEngine engine = (IEngine) agent.getService(IEngine.SERVICE_NAME);
-		if (engine == null)
-			return createErrorStatus("No engine available");
-
-		ProvisioningContext provContext = new ProvisioningContext(agent);
-
-		if (repoLocations != null) {
-			provContext.setArtifactRepositories(repoLocations);
-			provContext.setMetadataRepositories(repoLocations);
-		}
-
-		IProfileChangeRequest request = planner.createChangeRequest(profile);
-		request.removeAll(units.toUnmodifiableSet());
-		// Get provisioning plan
-		IProvisioningPlan result = planner.getProvisioningPlan(request,
-				provContext, monitor);
-		// Execute plan
-		IStatus engineResult = executePlan(result, engine, provContext, monitor);
-		return new SerializableStatus(engineResult);
 	}
 
 	public IStatus uninstallFeature(IVersionedId featureId, URI[] repoLocations) {
@@ -260,11 +359,27 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 	}
 
 	private IStatus createErrorStatus(String message, Throwable t) {
-		return new SerializableStatus(4, Activator.PLUGIN_ID, 4, message, t);
+		return createErrorStatus(message, null, t);
 	}
 
 	private IStatus createErrorStatus(String message) {
-		return createErrorStatus(message, null);
+		return new SerializableStatus(IStatus.ERROR, Activator.PLUGIN_ID,
+				IStatus.ERROR, message, null);
+	}
+
+	private IStatus createErrorStatus(String message, URI[] repoLocations,
+			Throwable t) {
+		repoLocations = (repoLocations == null) ? getMetadataRepositories(agent)
+				: repoLocations;
+		StringBuffer sb = new StringBuffer(message);
+		if (repoLocations != null) {
+			sb.append("\n\t").append("Repository locations accessed:\n");
+			for (int i = 0; i < repoLocations.length; i++)
+				sb.append("\t\t").append(repoLocations[i]).append("\n");
+		} else
+			sb.append("\n\t").append("No repositories accessed").append("\n");
+		return new SerializableStatus(IStatus.ERROR, Activator.PLUGIN_ID,
+				IStatus.ERROR, message, t);
 	}
 
 	protected void logException(String s, Throwable throwable) {
@@ -281,27 +396,46 @@ public class FeatureInstallManager implements IFeatureInstallManager,
 		return (Configurator) configuratorTracker.getService();
 	}
 
-	private IQueryResult getInstallableUnits(IProvisioningAgent agent,
-			URI location, IQuery query, IProgressMonitor monitor) {
-		IQueryable queryable = (location == null) ? (IQueryable) agent
-				.getService(IMetadataRepositoryManager.SERVICE_NAME)
-				: getMetadataRepository(agent, location, monitor);
-		if (queryable != null)
-			return queryable.query(query, monitor);
-		return Collector.emptyCollector();
+	private IQueryResult[] getInstallableUnits(IProvisioningAgent agent,
+			URI[] locations, IQuery query, IProgressMonitor monitor)
+			throws ProvisionException {
+		IQueryable[] queryables = (locations == null) ? new IQueryable[] { (IMetadataRepository) agent
+				.getService(IMetadataRepositoryManager.SERVICE_NAME) }
+				: getMetadataRepositories(agent, locations, monitor);
+		if (queryables != null) {
+			List queryResults = new ArrayList();
+			for (int i = 0; i < queryables.length; i++) {
+				IQueryResult queryResult = queryables[i].query(query, monitor);
+				if (queryResult != null)
+					queryResults.add(queryResult);
+			}
+			return (IQueryResult[]) queryResults.toArray(new IQueryResult[] {});
+		}
+		return new IQueryResult[] { Collector.emptyCollector() };
 	}
 
 	private IMetadataRepository getMetadataRepository(IProvisioningAgent agent,
-			URI location, IProgressMonitor monitor) {
+			URI location, IProgressMonitor monitor) throws ProvisionException {
 		IMetadataRepositoryManager manager = (IMetadataRepositoryManager) agent
 				.getService(IMetadataRepositoryManager.SERVICE_NAME);
 		if (manager == null)
-			throw new IllegalStateException(
-					"No metadata repository manager found");
-		try {
-			return manager.loadRepository(location, monitor);
-		} catch (ProvisionException e) {
-			return null;
+			throw new ProvisionException("No metadata repository manager found");
+		return manager.loadRepository(location, monitor);
+	}
+
+	private IMetadataRepository[] getMetadataRepositories(
+			IProvisioningAgent agent, URI[] locations, IProgressMonitor monitor)
+			throws ProvisionException {
+		if (locations == null)
+			return new IMetadataRepository[] { getMetadataRepository(agent,
+					null, monitor) };
+		else {
+			List results = new ArrayList();
+			for (int i = 0; i < locations.length; i++) {
+				results.add(getMetadataRepository(agent, locations[i], monitor));
+			}
+			return (IMetadataRepository[]) results
+					.toArray(new IMetadataRepository[] {});
 		}
 	}
 
