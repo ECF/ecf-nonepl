@@ -1,0 +1,8 @@
+Manifest-Version: 1.0
+Bundle-ManifestVersion: 2
+Bundle-Name: Domain
+Bundle-SymbolicName: org.remotercp.authorization.domain
+Bundle-Version: 1.0.0.qualifier
+Bundle-RequiredExecutionEnvironment: J2SE-1.5
+Import-Package: org.eclipse.ecf.core.identity;version="3.0.0"
+Export-Package: org.remotercp.authorization.domain.service
