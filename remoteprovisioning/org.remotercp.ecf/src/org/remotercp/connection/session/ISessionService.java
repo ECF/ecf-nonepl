@@ -1,4 +1,4 @@
-package org.remotercp.ecf.session;
+package org.remotercp.connection.session;
 
 import java.util.List;
 
@@ -11,7 +11,7 @@ import org.eclipse.ecf.presence.roster.IRosterManager;
 import org.eclipse.ecf.remoteservice.IRemoteCall;
 import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.ecf.connection.ConnectionDetails;
+import org.remotercp.connection.connection.ConnectionDetails;
 
 public interface ISessionService {
 

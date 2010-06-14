@@ -1,4 +1,4 @@
-package org.remotercp.ecf.images;
+package org.remotercp.connection.images;
 
 public class ImageKeys {
 

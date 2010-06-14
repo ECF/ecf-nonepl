@@ -5,6 +5,12 @@ import java.util.List;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.ecf.core.identity.ID;
 
+/**
+ * @deprecated Functionality moved to bundle org.remotercp.provisioning.service
+ * @author ereiswich
+ *
+ */
+@Deprecated
 public interface IInstallFeaturesService  {
 
 	public List<IStatus> installFeatures(SerializedFeatureWrapper[] features,

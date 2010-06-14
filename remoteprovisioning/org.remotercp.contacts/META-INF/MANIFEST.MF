@@ -1,7 +1,7 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Contacts Plug-in
-Bundle-SymbolicName: org.remotercp.contacts;singleton:=true
+Bundle-SymbolicName: org.remotercp.contacts.ui;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.contacts.ContactsActivator
 Require-Bundle: org.eclipse.ui,
@@ -17,7 +17,7 @@ Import-Package: org.eclipse.core.databinding,
  org.eclipse.ecf.core.user,
  org.eclipse.ecf.presence,
  org.eclipse.ecf.presence.roster,
- org.remotercp.ecf.session,
+ org.remotercp.connection.session,
  org.remotercp.util.osgi,
  org.remotercp.util.roster
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

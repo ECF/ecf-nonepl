@@ -4,10 +4,6 @@ Bundle-Name: Util Plug-in
 Bundle-SymbolicName: org.remotercp.util
 Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.util.UtilActivator
-Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.ui,
- org.eclipse.pde.runtime,
- org.remotercp.common;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Export-Package: org.remotercp.util.authorization,
  org.remotercp.util.dialogs,
@@ -18,7 +14,17 @@ Export-Package: org.remotercp.util.authorization,
  org.remotercp.util.roster,
  org.remotercp.util.status
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
-Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.ecf.core.identity;version="3.0.0",
  org.eclipse.ecf.core.user,
  org.eclipse.ecf.presence,
- org.eclipse.ecf.presence.roster
+ org.eclipse.ecf.presence.roster,
+ org.eclipse.jface.dialogs,
+ org.eclipse.jface.layout,
+ org.eclipse.jface.wizard,
+ org.eclipse.swt,
+ org.eclipse.swt.layout,
+ org.eclipse.swt.widgets,
+ org.osgi.framework;version="1.5.0",
+ org.osgi.util.tracker;version="1.4.0",
+ org.remotercp.authorization.domain.service

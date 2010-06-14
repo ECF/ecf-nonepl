@@ -22,19 +22,19 @@ import org.eclipse.core.runtime.preferences.IPreferenceFilter;
 import org.eclipse.core.runtime.preferences.IPreferencesService;
 import org.eclipse.core.runtime.preferences.InstanceScope;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.status.SerializableStatus;
 import org.eclipse.ecf.core.util.ECFException;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.remotercp.common.preferences.IRemotePreferenceService;
-import org.remotercp.common.status.SerializableStatus;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.connection.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
-import org.remotercp.util.authorization.AuthorizationUtil;
+import org.remotercp.preferences.domain.IRemotePreferenceService;
 import org.remotercp.util.preferences.PreferencesUtil;
 
 public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 	private IPreferencesService preferenceService;
+	
 
 	private final static Logger logger = Logger
 			.getLogger(RemotePreferencesServiceImpl.class.getName());
@@ -154,8 +154,10 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 			ID fromId) throws ECFException {
 		List<IStatus> statusCollector = new ArrayList<IStatus>();
 
-		boolean userAuthorized = AuthorizationUtil.checkAuthorization(fromId,
-				"setPreferences");
+		// FIXME: 11.06.2010: Switched to OSGi-Service
+//		boolean userAuthorized = AuthorizationUtil.checkAuthorization(fromId,
+//				"setPreferences");
+		boolean userAuthorized = true;
 
 		if (userAuthorized) {
 

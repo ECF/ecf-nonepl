@@ -20,7 +20,7 @@ import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.connection.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;

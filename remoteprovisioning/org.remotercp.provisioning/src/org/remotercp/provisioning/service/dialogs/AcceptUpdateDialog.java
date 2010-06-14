@@ -1,4 +1,4 @@
-package org.remotercp.provisioning.dialogs;
+package org.remotercp.provisioning.service.dialogs;
 
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.resource.ImageDescriptor;
@@ -16,8 +16,8 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
-import org.remotercp.provisioning.UpdateActivator;
-import org.remotercp.provisioning.images.ImageKeys;
+import org.remotercp.provisioning.service.UpdateActivator;
+import org.remotercp.provisioning.service.images.ImageKeys;
 
 public class AcceptUpdateDialog {
 

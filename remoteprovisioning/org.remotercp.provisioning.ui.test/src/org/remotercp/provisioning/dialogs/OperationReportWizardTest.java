@@ -3,13 +3,13 @@ package org.remotercp.provisioning.dialogs;
 import java.util.ArrayList;
 
 import org.eclipse.core.runtime.IStatus;
+import org.eclipse.ecf.core.status.SerializableStatus;
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.wizard.WizardDialog;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.Shell;
 import org.junit.Before;
 import org.junit.Test;
-import org.remotercp.common.status.SerializableStatus;
 
 public class OperationReportWizardTest {
 

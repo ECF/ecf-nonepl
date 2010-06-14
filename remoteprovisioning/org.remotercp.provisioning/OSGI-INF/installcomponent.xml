@@ -1,5 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.remotercp.provisioning.install">
-   <implementation class="org.remotercp.provisioning.install.InstallFeaturesServiceImpl"/>
-   <reference bind="bindSessionService" cardinality="1..1" interface="org.remotercp.ecf.session.ISessionService" name="ISessionService" policy="static"/>
+   <implementation class="org.remotercp.provisioning.service.install.InstallFeaturesServiceImpl"/>
+   <reference bind="bindSessionService" cardinality="1..1" interface="org.remotercp.connection.session.ISessionService" name="ISessionService" policy="static" unbind="unbindSessionService"/>
+   <reference bind="bindAuthorizationService" cardinality="1..1" interface="org.remotercp.authorization.domain.service.IAuthorizationService" name="IAuthorizationService" policy="static" unbind="unbindAuthorizationService"/>
+   <service>
+      <provide interface="org.remotercp.common.provisioning.IInstallFeaturesService"/>
+   </service>
+   <property name="service.exported.interfaces" type="String" value="*"/>
+   <property name="service.exported.configs" type="String" value="ecf.xmpp.smack"/>
+   <property name="org.eclipse.ecf.containerFactoryArgs" type="String" value="jabber-server.de"/>
+
 </scr:component>

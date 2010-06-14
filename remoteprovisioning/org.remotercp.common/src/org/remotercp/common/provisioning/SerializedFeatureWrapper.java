@@ -5,6 +5,12 @@ import java.net.URL;
 import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.VersionedIdentifier;
 
+/**
+ * @deprecated No more in use
+ * @author ereiswich
+ *
+ */
+@Deprecated
 public class SerializedFeatureWrapper implements
 		SerializedWrapper<SerializedFeatureWrapper> {
 

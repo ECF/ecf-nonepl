@@ -6,7 +6,7 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.chat.ChatActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.remotercp.ecf,
+ org.remotercp.connection,
  org.remotercp.provisioning.ui,
  org.eclipse.update.core
 Bundle-ActivationPolicy: lazy

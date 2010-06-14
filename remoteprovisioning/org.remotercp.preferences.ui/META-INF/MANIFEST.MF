@@ -8,11 +8,12 @@ Bundle-Vendor: Eugen Reiswich
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.remotercp.util,
- org.remotercp.ecf,
+ org.remotercp.connection,
  org.remotercp.common,
  org.remotercp.errorhandling
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
  org.eclipse.ecf.core.util,
- org.eclipse.ecf.presence.roster
+ org.eclipse.ecf.presence.roster,
+ org.remotercp.preferences.domain
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

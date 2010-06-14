@@ -24,7 +24,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.remotercp.chat.ChatActivator;
 import org.remotercp.chat.ChatEditorInput;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.connection.session.ISessionService;
 
 public class ChatEditor extends EditorPart {
 

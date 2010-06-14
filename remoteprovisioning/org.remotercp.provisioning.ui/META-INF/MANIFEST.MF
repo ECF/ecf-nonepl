@@ -7,7 +7,7 @@ Bundle-Activator: org.remotercp.provisioning.ProvisioningActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
  org.eclipse.update.core,
- org.remotercp.ecf,
+ org.remotercp.connection,
  org.remotercp.util,
  org.remotercp.errorhandling,
  org.remotercp.common,

@@ -69,6 +69,8 @@
       <plugin id="org.junit"/>
       <plugin id="org.junit4"/>
       <plugin id="org.remotercp.app"/>
+      <plugin id="org.remotercp.authorization.domain"/>
+      <plugin id="org.remotercp.authorization.service"/>
       <plugin id="org.remotercp.common"/>
       <plugin id="org.remotercp.contacts"/>
       <plugin id="org.remotercp.contacts.test" fragment="true"/>
@@ -78,7 +80,7 @@
       <plugin id="org.remotercp.filetransfer.sender"/>
       <plugin id="org.remotercp.libs.mockito"/>
       <plugin id="org.remotercp.login"/>
-      <plugin id="org.remotercp.preferences"/>
+      <plugin id="org.remotercp.preferences.domain"/>
       <plugin id="org.remotercp.preferences.ui"/>
       <plugin id="org.remotercp.progress"/>
       <plugin id="org.remotercp.provisioning.ui"/>

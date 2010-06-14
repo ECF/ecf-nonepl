@@ -1,6 +1,7 @@
-package org.remotercp.ecf.connection;
+package org.remotercp.connection.connection;
 
 import java.net.URISyntaxException;
+import java.util.Properties;
 import java.util.logging.Logger;
 
 import org.eclipse.ecf.core.ContainerConnectException;
@@ -12,9 +13,9 @@ import org.eclipse.ecf.core.security.ConnectContextFactory;
 import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.provider.xmpp.identity.XMPPID;
 import org.osgi.framework.BundleContext;
-import org.remotercp.ecf.ECFActivator;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.ecf.session.impl.SessionServiceImpl;
+import org.remotercp.connection.ECFActivator;
+import org.remotercp.connection.session.ISessionService;
+import org.remotercp.connection.session.impl.SessionServiceImpl;
 
 /**
  * This class can be used in headless application to log-in to a server.
@@ -68,6 +69,8 @@ public class HeadlessConnection {
 				server);
 
 		createSessionService(container, connectionDetails);
+		
+		
 
 		return container;
 
@@ -86,6 +89,13 @@ public class HeadlessConnection {
 
 		bundleContext.registerService(ISessionService.class.getName(),
 				sessionService, null);
+		
+		Properties props = new Properties();
+		props.put("username", connectionDetails.getUserName());
+		props.put("server", connectionDetails.getServer());
+		
+		bundleContext.registerService(IContainer.class.getName(), container, props);
+		logger.info(">>>  ContainerService registered");
 
 		logger.info(">>> SessionService registred");
 	}

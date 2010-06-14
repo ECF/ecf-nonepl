@@ -5,6 +5,13 @@ import java.util.Collection;
 import org.eclipse.ecf.core.identity.ID;
 import org.remotercp.common.servicelauncher.IRemoteServiceLauncher;
 
+/**
+ * 
+ * @deprecated function moved to IInstallFeatureService 
+ * @author ereiswich
+ *
+ */
+@Deprecated 
 public interface IInstalledFeaturesService {
 
 	/**

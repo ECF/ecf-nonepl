@@ -28,10 +28,10 @@ import org.eclipse.swt.events.KeyEvent;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.part.ViewPart;
+import org.remotercp.connection.session.ISessionService;
 import org.remotercp.contacts.ContactsActivator;
 import org.remotercp.contacts.ContactsContentProvider;
 import org.remotercp.contacts.ContactsLabelProvider;
-import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.roster.RosterUtil;
 

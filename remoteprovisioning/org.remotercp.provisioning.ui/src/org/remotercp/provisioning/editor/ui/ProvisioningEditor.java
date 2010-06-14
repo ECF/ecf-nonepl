@@ -34,7 +34,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstalledFeaturesService;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.connection.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.provisioning.editor.ProvisioningEditorInput;

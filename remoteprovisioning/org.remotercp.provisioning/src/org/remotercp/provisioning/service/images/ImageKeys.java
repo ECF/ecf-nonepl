@@ -1,4 +1,4 @@
-package org.remotercp.provisioning.images;
+package org.remotercp.provisioning.service.images;
 
 import java.io.File;
 

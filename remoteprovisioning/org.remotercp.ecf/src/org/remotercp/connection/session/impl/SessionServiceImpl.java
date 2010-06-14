@@ -1,4 +1,4 @@
-package org.remotercp.ecf.session.impl;
+package org.remotercp.connection.session.impl;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -23,8 +23,8 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.ecf.connection.ConnectionDetails;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.connection.connection.ConnectionDetails;
+import org.remotercp.connection.session.ISessionService;
 import org.remotercp.util.roster.RosterUtil;
 
 

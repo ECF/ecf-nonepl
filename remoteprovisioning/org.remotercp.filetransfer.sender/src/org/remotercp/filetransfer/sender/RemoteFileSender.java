@@ -29,7 +29,7 @@ import org.eclipse.swt.widgets.Display;
 import org.eclipse.swt.widgets.FileDialog;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.ui.PlatformUI;
-import org.remotercp.ecf.session.ISessionService;
+import org.remotercp.connection.session.ISessionService;
 import org.remotercp.progress.handler.ProgressViewHandler;
 import org.remotercp.util.dialogs.RemoteExceptionHandler;
 import org.remotercp.util.filesize.FilesizeConverterUtil;

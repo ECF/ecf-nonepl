@@ -1,4 +1,4 @@
-package org.remotercp.ecf.connection;
+package org.remotercp.connection.connection;
 
 public final class ECFConstants {
 

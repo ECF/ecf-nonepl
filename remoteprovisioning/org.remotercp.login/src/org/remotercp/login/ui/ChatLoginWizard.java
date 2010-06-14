@@ -23,8 +23,8 @@ import org.eclipse.swt.widgets.Listener;
 import org.eclipse.swt.widgets.Text;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.remotercp.ecf.connection.ECFConstants;
-import org.remotercp.ecf.connection.HeadlessConnection;
+import org.remotercp.connection.connection.ECFConstants;
+import org.remotercp.connection.connection.HeadlessConnection;
 import org.remotercp.login.ImageKeys;
 import org.remotercp.login.LoginActivator;
 

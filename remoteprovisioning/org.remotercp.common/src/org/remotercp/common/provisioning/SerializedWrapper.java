@@ -2,6 +2,13 @@ package org.remotercp.common.provisioning;
 
 import java.io.Serializable;
 
+/**
+ * @deprecated No mor in use
+ * @author ereiswich
+ *
+ * @param <T>
+ */
+@Deprecated
 public interface SerializedWrapper<T> extends Comparable<T>, Serializable {
 
 	public String getLabel();

@@ -1,19 +1,21 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Update Plug-in
-Bundle-SymbolicName: org.remotercp.provisioning;singleton:=true
+Bundle-SymbolicName: org.remotercp.provisioning.service;singleton:=true
 Bundle-Version: 1.0.0
-Bundle-Activator: org.remotercp.provisioning.UpdateActivator
+Bundle-Activator: org.remotercp.provisioning.service.UpdateActivator
 Require-Bundle: org.eclipse.core.runtime,
- org.eclipse.update.core,
- org.eclipse.ui
-Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
- org.remotercp.common.provisioning,
- org.remotercp.common.status,
- org.remotercp.ecf.session,
- org.remotercp.util.authorization,
- org.remotercp.util.osgi,
- org.remotercp.util.status
+ org.eclipse.ui,
+ org.remotercp.authorization.domain,
+ org.eclipse.equinox.p2.engine,
+ org.eclipse.ecf,
+ org.eclipse.equinox.p2.metadata,
+ org.remotercp.connection,
+ org.eclipse.equinox.p2.core,
+ org.remotercp.provisioning.domain,
+ org.eclipse.equinox.p2.operations
+Import-Package: org.remotercp.provisioning.domain.service,
+ org.remotercp.provisioning.domain.version
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/installedcomponent.xml, OSGI-INF/installcomponent.xml
 Bundle-ActivationPolicy: lazy
