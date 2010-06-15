@@ -24,7 +24,7 @@ import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.remotercp.chat.ChatActivator;
 import org.remotercp.chat.ChatEditorInput;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 
 public class ChatEditor extends EditorPart {
 
@@ -198,7 +198,7 @@ public class ChatEditor extends EditorPart {
 		// }
 
 		// locale Ausgabe im Editor
-		String from = this.session.getConnectionDetails().getUserName();
+		String from = this.session.getUserName();
 		this.textAusgabe.append("<" + from + ">" + text);
 		this.textAusgabe.append("\n");
 		scrollToEnd();

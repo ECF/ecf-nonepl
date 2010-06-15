@@ -1,4 +1,4 @@
-package org.remotercp.connection;
+package org.remotercp.ecf;
 
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;

@@ -4,17 +4,32 @@ Bundle-Name: Update Plug-in
 Bundle-SymbolicName: org.remotercp.provisioning.service;singleton:=true
 Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.provisioning.service.UpdateActivator
-Require-Bundle: org.eclipse.core.runtime,
+Import-Package: org.eclipse.core.runtime;version="3.4.0",
+ org.eclipse.ecf.core.identity;version="3.0.0",
+ org.eclipse.ecf.core.status;version="1.0.0",
+ org.eclipse.equinox.p2.core;version="2.0.0",
+ org.eclipse.equinox.p2.engine;version="2.0.0",
+ org.eclipse.equinox.p2.metadata;version="2.0.0",
+ org.eclipse.equinox.p2.operations;version="2.0.0",
+ org.eclipse.equinox.p2.query;version="2.0.0",
+ org.eclipse.jface.layout,
+ org.eclipse.jface.resource,
+ org.eclipse.swt,
+ org.eclipse.swt.events,
+ org.eclipse.swt.graphics,
+ org.eclipse.swt.layout,
+ org.eclipse.swt.widgets,
  org.eclipse.ui,
- org.remotercp.authorization.domain,
- org.eclipse.equinox.p2.engine,
- org.eclipse.ecf,
- org.eclipse.equinox.p2.metadata,
- org.remotercp.connection,
- org.eclipse.equinox.p2.core,
- org.remotercp.provisioning.domain,
- org.eclipse.equinox.p2.operations
-Import-Package: org.remotercp.provisioning.domain.service,
+ org.eclipse.ui.plugin,
+ org.eclipse.update.configuration,
+ org.eclipse.update.core,
+ org.osgi.framework;version="1.5.0",
+ org.osgi.util.tracker;version="1.4.0",
+ org.remotercp.authorization.domain.service,
+ org.remotercp.common.provisioning,
+ org.remotercp.ecf.session,
+ org.remotercp.provisioning.domain.exception,
+ org.remotercp.provisioning.domain.service,
  org.remotercp.provisioning.domain.version
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Service-Component: OSGI-INF/installedcomponent.xml, OSGI-INF/installcomponent.xml

@@ -18,7 +18,7 @@ import org.remotercp.common.provisioning.IInstalledFeaturesService;
 import org.remotercp.common.provisioning.SerializedBundleWrapper;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.provisioning.UpdateActivator;
+import org.remotercp.provisioning.service.UpdateActivator;
 
 public class InstalledFeaturesServiceImpl implements IInstalledFeaturesService {
 

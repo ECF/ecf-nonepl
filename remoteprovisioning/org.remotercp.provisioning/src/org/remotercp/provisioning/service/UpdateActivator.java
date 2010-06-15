@@ -1,5 +1,6 @@
 package org.remotercp.provisioning.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
@@ -71,6 +72,7 @@ public class UpdateActivator extends AbstractUIPlugin {
 
 		public ProvisioningAgentServiceTracker() {
 			super(bundlecontext, IProvisioningAgent.class.getName(), null);
+			listener = new ArrayList<IProvisioningAgentServiceListener>();
 		}
 
 		protected void addListener(IProvisioningAgentServiceListener listener) {

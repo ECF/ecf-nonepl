@@ -20,7 +20,7 @@ import org.eclipse.ui.IWorkbenchPage;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.domain.IRemotePreferenceService;
 import org.remotercp.preferences.ui.PreferencesUIActivator;

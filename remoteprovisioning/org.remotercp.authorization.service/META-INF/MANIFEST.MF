@@ -1,8 +1,10 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Service
-Bundle-SymbolicName: org.remotercp.authorization.service
+Bundle-SymbolicName: org.remotercp.authorization.service;singleton:=true
 Bundle-Version: 1.0.0.qualifier
 Bundle-RequiredExecutionEnvironment: JavaSE-1.6
 Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
  org.remotercp.authorization.domain.service
+Service-Component: OSGi-INF/authorizationservice.xml
+Bundle-ActivationPolicy: lazy

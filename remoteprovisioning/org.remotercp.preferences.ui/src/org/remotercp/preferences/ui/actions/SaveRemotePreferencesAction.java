@@ -14,7 +14,7 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IEditorActionDelegate;
 import org.eclipse.ui.IEditorPart;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.domain.IRemotePreferenceService;
 import org.remotercp.preferences.ui.EditableTableItem;

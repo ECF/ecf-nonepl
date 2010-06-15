@@ -1,4 +1,4 @@
-package org.remotercp.connection.session.impl;
+package org.remotercp.ecf.session.impl;
 
 import java.util.ArrayList;
 import java.util.Dictionary;
@@ -23,41 +23,30 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.connection.connection.ConnectionDetails;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.util.roster.RosterUtil;
-
 
 public class SessionServiceImpl implements ISessionService {
 
-	private ConnectionDetails connectionDetails;
-
-	private IContainer containter;
+	private IContainer container;
 
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
 
-	public SessionServiceImpl(ConnectionDetails connectionDetails,
-			IContainer container) {
-		assert connectionDetails != null : "connectionDetails != null";
-		assert container != null : "container != null";
-		this.connectionDetails = connectionDetails;
-		this.containter = container;
-	}
+	public void bindContainer(IContainer container) {
+		this.container = container;
 
-	public ConnectionDetails getConnectionDetails() {
-		return connectionDetails;
 	}
 
 	private IPresenceContainerAdapter getPresenceContainerAdapter() {
-		IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) this.containter
+		IPresenceContainerAdapter adapter = (IPresenceContainerAdapter) this.container
 				.getAdapter(IPresenceContainerAdapter.class);
 		assert adapter != null : "adapter != null";
 		return adapter;
 	}
 
 	protected synchronized IRemoteServiceContainerAdapter getRemoteServiceContainerAdapter() {
-		IRemoteServiceContainerAdapter adapter = (IRemoteServiceContainerAdapter) this.containter
+		IRemoteServiceContainerAdapter adapter = (IRemoteServiceContainerAdapter) this.container
 				.getAdapter(IRemoteServiceContainerAdapter.class);
 		assert adapter != null : "adapter != null";
 
@@ -93,8 +82,9 @@ public class SessionServiceImpl implements ISessionService {
 	 * @throws ECFException
 	 * @throws InvalidSyntaxException
 	 */
-	public synchronized <T> List<T> getRemoteService(Class<T> service, ID[] filterIDs,
-			String filter) throws ECFException, InvalidSyntaxException {
+	public synchronized <T> List<T> getRemoteService(Class<T> service,
+			ID[] filterIDs, String filter) throws ECFException,
+			InvalidSyntaxException {
 		List<T> remoteServices = new ArrayList<T>();
 
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
@@ -142,8 +132,9 @@ public class SessionServiceImpl implements ISessionService {
 	 * @return An array of remote services for given user and filter
 	 * @throws InvalidSyntaxException
 	 */
-	public synchronized IRemoteService[] getRemoteServiceReference(Class<?> service,
-			ID[] filterIDs, String filter) throws InvalidSyntaxException {
+	public synchronized IRemoteService[] getRemoteServiceReference(
+			Class<?> service, ID[] filterIDs, String filter)
+			throws InvalidSyntaxException {
 		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
 
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
@@ -186,8 +177,8 @@ public class SessionServiceImpl implements ISessionService {
 	}
 
 	public IContainer getContainer() {
-		assert containter != null : "container != null";
-		return this.containter;
+		assert container != null : "container != null";
+		return this.container;
 	}
 
 	/**
@@ -201,8 +192,8 @@ public class SessionServiceImpl implements ISessionService {
 	 *            Buddies, who are to receive service registration. If
 	 *            <code>null</code> all buddies in roster will be taken
 	 */
-	public synchronized void registerRemoteService(String serviceName, Object impl,
-			ID[] targetIDs) {
+	public synchronized void registerRemoteService(String serviceName,
+			Object impl, ID[] targetIDs) {
 
 		Dictionary<String, ID[]> props = new Hashtable<String, ID[]>();
 		if (targetIDs == null) {
@@ -230,10 +221,11 @@ public class SessionServiceImpl implements ISessionService {
 	 * @throws ECFException
 	 * @throws InvalidSyntaxException
 	 */
-	public synchronized void ungetRemoteService(ID[] idFilter, String serviceName,
-			String filter) throws ECFException, InvalidSyntaxException {
+	public synchronized void ungetRemoteService(ID[] idFilter,
+			String serviceName, String filter) throws ECFException,
+			InvalidSyntaxException {
 
-		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = (IRemoteServiceContainerAdapter) this.containter
+		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = (IRemoteServiceContainerAdapter) this.container
 				.getAdapter(IRemoteServiceContainerAdapter.class);
 
 		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
@@ -257,12 +249,12 @@ public class SessionServiceImpl implements ISessionService {
 	}
 
 	public ID getContainerID() {
-		return containter.getID();
+		return container.getID();
 	}
 
 	public ID getConnectedID() {
-		assert containter.getConnectedID() != null : "containter.getConnectedID() != null";
-		return containter.getConnectedID();
+		assert container.getConnectedID() != null : "containter.getConnectedID() != null";
+		return container.getConnectedID();
 	}
 
 	public void addMessageListener(IIMMessageListener listener) {
@@ -275,7 +267,7 @@ public class SessionServiceImpl implements ISessionService {
 	}
 
 	public String getUserName() {
-		return getConnectionDetails().getUserName();
+		return container.getID().getName();
 	}
 
 }

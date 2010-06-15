@@ -29,7 +29,6 @@ import org.eclipse.swt.SWT;
 import org.eclipse.swt.widgets.Display;
 import org.eclipse.ui.PlatformUI;
 import org.remotercp.authorization.domain.service.IAuthorizationService;
-import org.remotercp.connection.session.ISessionService;
 import org.remotercp.provisioning.domain.exception.RemoteOperationException;
 import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
 import org.remotercp.provisioning.domain.version.IVersionedId;
@@ -61,8 +60,6 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 
 	private IAuthorizationService authorizationService;
 
-	private ISessionService sessionService;
-
 	private IProvisioningAgent agent;
 
 	private final IStatus authorizationError = createStatus(Status.ERROR,
@@ -72,6 +69,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 			"Administration operation already in progress", null);
 
 	public InstallFeaturesServiceImpl() {
+		System.out
+				.println("InstallFeaturesServiceImpl.InstallFeaturesServiceImpl()");
 		UpdateActivator.getDefault().registerServiceListener(this);
 	}
 
@@ -79,6 +78,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 	 * DS stuff
 	 */
 	public void bindProvisioningAgent(IProvisioningAgent agent) {
+		System.out
+				.println("InstallFeaturesServiceImpl.bindProvisioningAgent()");
 		this.agent = agent;
 
 	}
@@ -94,24 +95,10 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 	/**
 	 * DS stuff
 	 */
-	public void bindSessionService(ISessionService sessionService) {
-		this.sessionService = sessionService;
-
-	}
-
-	/**
-	 * DS stuff
-	 */
-	public void unbindSessionService(ISessionService sessionService) {
-		sessionService = null;
-
-	}
-
-	/**
-	 * DS stuff
-	 */
 	public void bindAuthorizationService(
 			IAuthorizationService authorizationService) {
+		System.out
+				.println("InstallFeaturesServiceImpl.bindAuthorizationService()");
 		this.authorizationService = authorizationService;
 
 	}
@@ -173,7 +160,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 				if (profileRegistry == null) {
 					throw new RemoteOperationException(
 							"No profile registry found for: "
-									+ sessionService.getUserName());
+									);
 				}
 
 				IProfile profile = profileRegistry
@@ -350,11 +337,9 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 			Exception e) {
 		LOGGER.info(message);
 		if (e == null) {
-			return new SerializableStatus(severity, sessionService
-					.getUserName(), message);
+			return new SerializableStatus(severity, "ID needed here", message);
 		} else {
-			return new SerializableStatus(severity, sessionService
-					.getUserName(), message, e);
+			return new SerializableStatus(severity, "ID needed here", message, e);
 		}
 
 	}

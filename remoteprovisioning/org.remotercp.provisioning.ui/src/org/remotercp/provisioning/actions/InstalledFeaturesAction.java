@@ -4,7 +4,6 @@ import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.jface.action.IAction;

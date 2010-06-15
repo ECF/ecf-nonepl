@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.remotercp.authorization.service">
+   <implementation class="org.remotercp.authorization.service.impl.AuthorizationServiceImpl"/>
+   <service>
+      <provide interface="org.remotercp.authorization.domain.service.IAuthorizationService"/>
+   </service>
+</scr:component>

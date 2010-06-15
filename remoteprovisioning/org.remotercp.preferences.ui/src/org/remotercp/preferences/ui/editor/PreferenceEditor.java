@@ -37,7 +37,7 @@ import org.eclipse.ui.IEditorSite;
 import org.eclipse.ui.PartInitException;
 import org.eclipse.ui.part.EditorPart;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.preferences.domain.IRemotePreferenceService;
 import org.remotercp.preferences.ui.EditableTableItem;

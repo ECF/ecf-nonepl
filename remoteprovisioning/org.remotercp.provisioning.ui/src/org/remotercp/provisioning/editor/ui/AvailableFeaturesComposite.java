@@ -51,7 +51,7 @@ import org.remotercp.common.constants.UpdateConstants;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.RemoteMethodConstants;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.progress.handler.ProgressViewHandler;
 import org.remotercp.provisioning.ProvisioningActivator;

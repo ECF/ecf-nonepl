@@ -26,7 +26,7 @@ import org.eclipse.ecf.core.status.SerializableStatus;
 import org.eclipse.ecf.core.util.ECFException;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
 import org.remotercp.preferences.domain.IRemotePreferenceService;
 import org.remotercp.util.preferences.PreferencesUtil;

@@ -6,10 +6,10 @@ Bundle-Version: 1.0.0
 Bundle-Activator: org.remotercp.filetransfer.sender.FiletransferSenderActivator
 Require-Bundle: org.eclipse.ui,
  org.eclipse.core.runtime,
- org.remotercp.connection,
  org.remotercp.util,
  org.remotercp.errorhandling,
- org.remotercp.progress
+ org.remotercp.progress,
+ org.remotercp.ecf;bundle-version="1.0.0"
 Bundle-ActivationPolicy: lazy
 Import-Package: org.eclipse.ecf.core.identity;version="3.0.0",
  org.eclipse.ecf.core.util,

@@ -1,13 +1,13 @@
 Manifest-Version: 1.0
 Bundle-ManifestVersion: 2
 Bundle-Name: Hyperbola Plug-in
-Bundle-SymbolicName: org.remotercp.connection;singleton:=true
+Bundle-SymbolicName: org.remotercp.ecf;singleton:=true
 Bundle-Version: 1.0.0
-Export-Package: org.remotercp.connection,
- org.remotercp.connection.connection,
- org.remotercp.connection.session
+Export-Package: org.remotercp.ecf,
+ org.remotercp.ecf.connection,
+ org.remotercp.ecf.session
 Bundle-ActivationPolicy: lazy
-Bundle-Activator: org.remotercp.connection.ECFActivator
+Bundle-Activator: org.remotercp.ecf.ECFActivator
 Bundle-RequiredExecutionEnvironment: J2SE-1.5
 Import-Package: org.eclipse.ecf.core;version="3.0.0",
  org.eclipse.ecf.core.identity;version="3.0.0",
@@ -21,3 +21,4 @@ Import-Package: org.eclipse.ecf.core;version="3.0.0",
  org.eclipse.ecf.remoteservice.events,
  org.osgi.framework;version="1.5.0",
  org.remotercp.util.roster
+Service-Component: OSGI-INF/provisioning-component.xml

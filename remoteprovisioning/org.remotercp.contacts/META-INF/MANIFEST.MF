@@ -17,7 +17,7 @@ Import-Package: org.eclipse.core.databinding,
  org.eclipse.ecf.core.user,
  org.eclipse.ecf.presence,
  org.eclipse.ecf.presence.roster,
- org.remotercp.connection.session,
+ org.remotercp.ecf.session,
  org.remotercp.util.osgi,
  org.remotercp.util.roster
 Bundle-RequiredExecutionEnvironment: J2SE-1.5

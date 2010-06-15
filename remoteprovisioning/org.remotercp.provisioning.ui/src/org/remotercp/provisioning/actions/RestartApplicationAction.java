@@ -5,7 +5,6 @@ import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
 import java.util.List;
 
-import org.eclipse.core.runtime.Assert;
 import org.eclipse.core.runtime.IProgressMonitor;
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
@@ -20,7 +19,7 @@ import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.provisioning.IInstallFeaturesService;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
