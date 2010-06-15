@@ -9,7 +9,7 @@ import org.osgi.framework.BundleContext;
 public class ContactsActivator extends AbstractUIPlugin {
 
 	// The plug-in ID
-	public static final String PLUGIN_ID = "org.remotercp.contacts";
+	public static final String PLUGIN_ID = "org.remotercp.contacts.ui";
 
 	// The shared instance
 	private static ContactsActivator plugin;
