@@ -1,5 +1,6 @@
 package org.remotercp.ecf.session;
 
+import java.net.URISyntaxException;
 import java.util.List;
 
 import org.eclipse.ecf.core.identity.ID;
@@ -8,13 +9,17 @@ import org.eclipse.ecf.presence.IIMMessageListener;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
-import org.eclipse.ecf.remoteservice.IRemoteCall;
-import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.ecf.connection.ConnectionDetails;
 
-@Deprecated
 public interface ISessionService {
+
+	/**
+	 * Connects to an XMPP-Server with the provided credentials
+	 * 
+	 * @throws ECFException
+	 */
+	public void connect(String userName, String password, String server)
+			throws URISyntaxException, ECFException;
 
 	public IRosterManager getRosterManager();
 
@@ -80,31 +85,8 @@ public interface ISessionService {
 			String filter) throws ECFException, InvalidSyntaxException;
 
 	/**
-	 * The above method getRemoteService(...) is easy to use as methods can be
-	 * performed directly on the returned Interface. However in some scenarios
-	 * e.g. update, install operations it might take a long time to perform a
-	 * remote operation (features have to be downloaded first etc). Methods
-	 * performed on a proxy have a default time out of 30 sec. which is not
-	 * customizable. Therefore the above method can't be used in some scenarios
-	 * and we have to use this method to get a service reference and perform an
-	 * {@link IRemoteCall} with a user defined time out.
-	 * 
-	 * @param service
-	 *            The service name to get a remote service of
-	 * @param filterIDs
-	 *            User Ids to get a remote service for
-	 * @param filter
-	 *            Additional filter which checks if the service properties do
-	 *            match the given filer. May be null if all services should be
-	 *            found
-	 * @return An array of remote services for given user and filter
-	 * @throws InvalidSyntaxException
-	 */
-	public IRemoteService[] getRemoteServiceReference(Class<?> service,
-			ID[] filterIDs, String filter) throws InvalidSyntaxException;
-
-	/**
 	 * Returns the currently logged-in user.
+	 * 
 	 * @return
 	 */
 	public String getUserName();

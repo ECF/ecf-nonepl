@@ -23,7 +23,9 @@ import org.remotercp.ecf.session.impl.SessionServiceImpl;
  * @author Eugen Reiswich
  * @date 16.09.2008
  * 
+ * @deprecated use IsessionService to connect headless
  */
+@Deprecated 
 public class HeadlessConnection {
 
 	private final static Logger logger = Logger
@@ -68,7 +70,7 @@ public class HeadlessConnection {
 		ConnectionDetails connectionDetails = new ConnectionDetails(userName,
 				server);
 
-		createSessionService(container, connectionDetails);
+//		createSessionService(container, connectionDetails);
 
 		return container;
 

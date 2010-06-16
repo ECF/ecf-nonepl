@@ -32,9 +32,9 @@ import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.connection.connection.ConnectionDetails;
-import org.remotercp.connection.connection.ECFConstants;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.connection.ConnectionDetails;
+import org.remotercp.ecf.connection.ECFConstants;
+import org.remotercp.ecf.session.ISessionService;
 
 public class SessionServiceImpl implements ISessionService {
 
