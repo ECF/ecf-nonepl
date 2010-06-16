@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<launchConfiguration type="org.eclipse.pde.ui.EquinoxLauncher">
+<booleanAttribute key="append.args" value="true"/>
+<booleanAttribute key="automaticAdd" value="false"/>
+<booleanAttribute key="automaticValidate" value="false"/>
+<stringAttribute key="bootstrap" value=""/>
+<stringAttribute key="checked" value="[NONE]"/>
+<booleanAttribute key="clearConfig" value="false"/>
+<stringAttribute key="configLocation" value="${workspace_loc}/.metadata/.plugins/org.eclipse.pde.core/Remote RCP Server"/>
+<booleanAttribute key="default" value="true"/>
+<booleanAttribute key="default_auto_start" value="true"/>
+<intAttribute key="default_start_level" value="4"/>
+<booleanAttribute key="includeOptional" value="false"/>
+<stringAttribute key="org.eclipse.jdt.launching.PROGRAM_ARGUMENTS" value="-os ${target.os} -ws ${target.ws} -arch ${target.arch} -nl ${target.nl} -consoleLog -console -clean"/>
+<stringAttribute key="org.eclipse.jdt.launching.SOURCE_PATH_PROVIDER" value="org.eclipse.pde.ui.workbenchClasspathProvider"/>
+<stringAttribute key="org.eclipse.jdt.launching.VM_ARGUMENTS" value="-Declipse.ignoreApp=true -Dosgi.noShutdown=true -Dequinox.ds.print=true"/>
+<stringAttribute key="pde.version" value="3.3"/>
+<booleanAttribute key="show_selected_only" value="false"/>
+<stringAttribute key="target_bundles" value="org.eclipse.osgi.services@default:default,org.eclipse.equinox.p2.director@default:default,org.eclipse.equinox.preferences@default:default,org.eclipse.jface@default:default,org.eclipse.core.runtime.compatibility.registry@default:false,org.eclipse.osgi@-1:true,org.eclipse.equinox.app@default:default,org.eclipse.core.runtime@default:true,org.sat4j.pb@default:default,org.eclipse.equinox.security.macosx@default:false,org.eclipse.equinox.p2.engine@default:default,org.eclipse.swt@default:default,org.eclipse.equinox.simpleconfigurator@1:true,org.eclipse.equinox.p2.core@default:default,org.eclipse.equinox.security@default:default,org.eclipse.equinox.common@2:true,org.eclipse.equinox.ds@default:true,org.junit*4.8.1.v4_8_1_v20100427-1100@default:default,org.eclipse.core.commands@default:default,org.eclipse.ant.core@default:default,org.eclipse.core.contenttype@default:default,org.hamcrest.core@default:default,org.eclipse.equinox.p2.operations@default:default,org.eclipse.swt.cocoa.macosx.x86_64@default:false,org.eclipse.equinox.p2.metadata.repository@default:default,org.eclipse.core.variables@default:default,org.eclipse.equinox.registry@default:default,org.eclipse.core.jobs@default:default,org.eclipse.equinox.p2.repository@default:default,org.eclipse.equinox.util@default:default,org.sat4j.core@default:default,org.eclipse.equinox.p2.metadata@default:default"/>
+<stringAttribute key="timestamp" value="1276678783790"/>
+<booleanAttribute key="tracing" value="false"/>
+<booleanAttribute key="useCustomFeatures" value="false"/>
+<booleanAttribute key="useDefaultConfigArea" value="true"/>
+<stringAttribute key="workspace_bundles" value="org.eclipse.ecf.provider.filetransfer.ssl@default:false,org.eclipse.ecf.remoteservice@default:default,org.eclipse.ecf.osgi.services.discovery@default:default,org.remotercp.util.test@default:false,org.eclipse.ecf.discovery@default:default,org.eclipse.ecf.provider.filetransfer@default:default,org.remotercp.util@default:default,org.eclipse.ecf.provider@default:default,org.remotercp.provisioning.service@default:default,org.eclipse.ecf.ssl@default:false,org.remotercp.serviceprovider@default:default,org.remotercp.authorization.service@default:default,org.remotercp.ecf@default:default,org.remotercp.authorization.domain@default:default,org.eclipse.ecf.presence@default:default,org.eclipse.ecf.provider.datashare@default:default,org.remotercp.libs.mockito@default:default,org.eclipse.ecf.provider.remoteservice@default:default,org.eclipse.ecf.filetransfer@default:default,org.eclipse.ecf.identity@default:default,org.remotercp.provisioning.domain@default:default,org.eclipse.ecf.datashare@default:default,org.eclipse.ecf@default:default,org.eclipse.ecf.osgi.services.distribution@default:default,org.eclipse.ecf.sharedobject@default:default,org.remotercp.preferences.domain@default:default,org.eclipse.ecf.provider.xmpp@default:default,org.remotercp.preferences.service@default:default,org.eclipse.equinox.concurrent@default:default,org.jivesoftware.smack@default:default"/>
+</launchConfiguration>
