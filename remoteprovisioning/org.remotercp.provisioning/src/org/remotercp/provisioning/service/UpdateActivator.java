@@ -4,8 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.eclipse.equinox.p2.core.IProvisioningAgent;
-import org.eclipse.jface.resource.ImageDescriptor;
-import org.eclipse.ui.plugin.AbstractUIPlugin;
+import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceReference;
 import org.osgi.util.tracker.ServiceTracker;
@@ -14,7 +13,7 @@ import org.remotercp.provisioning.service.listener.IProvisioningAgentServiceList
 /**
  * The activator class controls the plug-in life cycle
  */
-public class UpdateActivator extends AbstractUIPlugin {
+public class UpdateActivator implements BundleActivator {
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "org.remotercp.provisioning";
@@ -39,7 +38,6 @@ public class UpdateActivator extends AbstractUIPlugin {
 	 * org.eclipse.core.runtime.Plugins#start(org.osgi.framework.BundleContext)
 	 */
 	public void start(BundleContext context) throws Exception {
-		super.start(context);
 		plugin = this;
 		bundlecontext = context;
 
@@ -57,7 +55,6 @@ public class UpdateActivator extends AbstractUIPlugin {
 	public void stop(BundleContext context) throws Exception {
 		provisioningAgentServiceTracker.close();
 		plugin = null;
-		super.stop(context);
 	}
 
 	public void registerServiceListener(
@@ -67,12 +64,11 @@ public class UpdateActivator extends AbstractUIPlugin {
 
 	private class ProvisioningAgentServiceTracker extends ServiceTracker {
 
-		private List<IProvisioningAgentServiceListener> listener;
+		private List<IProvisioningAgentServiceListener> listener = new ArrayList<IProvisioningAgentServiceListener>();
 		private IProvisioningAgent provisioningAgent;
 
 		public ProvisioningAgentServiceTracker() {
 			super(bundlecontext, IProvisioningAgent.class.getName(), null);
-			listener = new ArrayList<IProvisioningAgentServiceListener>();
 		}
 
 		protected void addListener(IProvisioningAgentServiceListener listener) {
@@ -118,9 +114,5 @@ public class UpdateActivator extends AbstractUIPlugin {
 
 	public static BundleContext getBundleContext() {
 		return bundlecontext;
-	}
-
-	public static ImageDescriptor getImageDescriptor(String imagePath) {
-		return imageDescriptorFromPlugin(PLUGIN_ID, imagePath);
 	}
 }

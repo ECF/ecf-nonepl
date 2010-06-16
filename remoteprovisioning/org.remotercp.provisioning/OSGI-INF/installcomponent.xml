@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.remotercp.provisioning.install">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.remotercp.provisioning.service">
    <implementation class="org.remotercp.provisioning.service.install.InstallFeaturesServiceImpl"/>
    <reference bind="bindAuthorizationService" cardinality="1..1" interface="org.remotercp.authorization.domain.service.IAuthorizationService" name="IAuthorizationService" policy="static" unbind="unbindAuthorizationService"/>
    <service>
       <provide interface="org.remotercp.provisioning.domain.service.IInstallFeaturesService"/>
    </service>
+   <reference bind="bindAdministrationService" cardinality="0..1" interface="org.remotercp.provisioning.domain.service.IAdministrationService" name="IAdministrationService" policy="static"/>
 
 </scr:component>

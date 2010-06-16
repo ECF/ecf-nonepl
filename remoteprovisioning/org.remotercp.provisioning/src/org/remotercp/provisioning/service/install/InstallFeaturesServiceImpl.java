@@ -25,16 +25,13 @@ import org.eclipse.equinox.p2.operations.UninstallOperation;
 import org.eclipse.equinox.p2.operations.UpdateOperation;
 import org.eclipse.equinox.p2.query.IQueryResult;
 import org.eclipse.equinox.p2.query.QueryUtil;
-import org.eclipse.swt.SWT;
-import org.eclipse.swt.widgets.Display;
-import org.eclipse.ui.PlatformUI;
 import org.remotercp.authorization.domain.service.IAuthorizationService;
 import org.remotercp.provisioning.domain.exception.RemoteOperationException;
+import org.remotercp.provisioning.domain.service.IAdministrationService;
 import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
 import org.remotercp.provisioning.domain.version.IVersionedId;
 import org.remotercp.provisioning.domain.version.VersionedId;
 import org.remotercp.provisioning.service.UpdateActivator;
-import org.remotercp.provisioning.service.dialogs.AcceptUpdateDialog;
 import org.remotercp.provisioning.service.listener.IProvisioningAgentServiceListener;
 
 /**
@@ -68,6 +65,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 	private final IStatus concurrentOperationError = createStatus(Status.ERROR,
 			"Administration operation already in progress", null);
 
+	private IAdministrationService administrationService;
+
 	public InstallFeaturesServiceImpl() {
 		System.out
 				.println("InstallFeaturesServiceImpl.InstallFeaturesServiceImpl()");
@@ -81,6 +80,12 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 		System.out
 				.println("InstallFeaturesServiceImpl.bindProvisioningAgent()");
 		this.agent = agent;
+
+	}
+
+	public void bindAdministrationService(
+			IAdministrationService administrationService) {
+		this.administrationService = administrationService;
 
 	}
 
@@ -121,15 +126,11 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 		if (lock.tryLock()) {
 
 			if (authorizationService.isAdmin(adminId)) {
-				Display.getDefault().asyncExec(new Runnable() {
-					public void run() {
-						PlatformUI.getWorkbench().restart();
-
-					}
-				});
-
-				result = createStatus(Status.OK,
-						"Application has been sucessfully restarted", null);
+				if (this.administrationService != null) {
+					administrationService.restartApplication();
+					result = createStatus(Status.OK,
+							"Application has been sucessfully restarted", null);
+				}
 
 			} else {
 				result = createStatus(Status.ERROR,
@@ -159,19 +160,15 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 						.getService(IProfileRegistry.SERVICE_NAME);
 				if (profileRegistry == null) {
 					throw new RemoteOperationException(
-							"No profile registry found for: "
-									);
+							"No profile registry found");
 				}
 
 				IProfile profile = profileRegistry
 						.getProfile(IProfileRegistry.SELF);
 				if (profile == null)
 					return null;
-//				IInstallableUnit[] ius = (IInstallableUnit[]) profile.query(
-//						QueryUtil.createIUGroupQuery(), null).toArray(
-//						IInstallableUnit.class);
 				IInstallableUnit[] ius = (IInstallableUnit[]) profile.query(
-						QueryUtil.createIUAnyQuery(), null).toArray(
+						QueryUtil.createIUGroupQuery(), null).toArray(
 						IInstallableUnit.class);
 
 				featureids = new IVersionedId[ius.length];
@@ -340,35 +337,27 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 			Exception e) {
 		LOGGER.info(message);
 		if (e == null) {
-			return new SerializableStatus(severity, "ID needed here", message);
+			return new SerializableStatus(severity, "User needed here?",
+					message);
 		} else {
-			return new SerializableStatus(severity, "ID needed here", message, e);
+			return new SerializableStatus(severity, "User needed here?",
+					message, e);
 		}
 
 	}
 
-	// if (result == SWT.OK) {
-	// return true;
-	// // statusResult.add(createStatus(Status.OK, userName
-	// // + " has accepted update", null));
-	// } else {
-	// // statusResult.add(createStatus(Status.CANCEL, userName
-	// // + " cancelled update", null));
-	// }
-
 	public synchronized boolean acceptUpdate(ID fromId) {
-		final boolean[] result = new boolean[1];
+		boolean result = true;
 
-		Display.getDefault().syncExec(new Runnable() {
-			public void run() {
-				AcceptUpdateDialog restartDialog = new AcceptUpdateDialog();
-				int dialogOpen = restartDialog.open();
+		if (lock.tryLock()) {
+			if (authorizationService.isAdmin(fromId)) {
 
-				result[0] = dialogOpen == SWT.OK;
-
+				if (administrationService != null) {
+					result = administrationService.acceptUpdate();
+				}
 			}
-		});
+		}
 
-		return result[0];
+		return result;
 	}
 }
