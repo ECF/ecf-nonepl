@@ -1,0 +1,29 @@
+K 25
+svn:wc:ra_dav:version-url
+V 49
+/svn/!svn/ver/5124/InterneProjekte/P2/TestFeature
+END
+compile.TestFeature.xml
+K 25
+svn:wc:ra_dav:version-url
+V 73
+/svn/!svn/ver/5125/InterneProjekte/P2/TestFeature/compile.TestFeature.xml
+END
+.project
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svn/!svn/ver/5125/InterneProjekte/P2/TestFeature/.project
+END
+build.properties
+K 25
+svn:wc:ra_dav:version-url
+V 66
+/svn/!svn/ver/5125/InterneProjekte/P2/TestFeature/build.properties
+END
+feature.xml
+K 25
+svn:wc:ra_dav:version-url
+V 61
+/svn/!svn/ver/5125/InterneProjekte/P2/TestFeature/feature.xml
+END
