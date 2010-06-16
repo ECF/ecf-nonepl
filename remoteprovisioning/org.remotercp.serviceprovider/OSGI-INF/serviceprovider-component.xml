@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.remotercp.serviceprovider">
+   <implementation class="org.remotercp.serviceprovider.RemoteServiceProvider"/>
+   <reference bind="bindAuthorizationService" cardinality="0..1" interface="org.remotercp.authorization.domain.service.IAuthorizationService" name="IAuthorizationService" policy="static"/>
+   <reference bind="bindInstallFeatureService" cardinality="0..1" interface="org.remotercp.provisioning.domain.service.IInstallFeaturesService" name="IInstallFeaturesService" policy="static"/>
+   <reference bind="bindPreferenceService" cardinality="0..1" interface="org.remotercp.preferences.domain.IRemotePreferenceService" name="IRemotePreferenceService" policy="static"/>
+   <reference bind="bindSessionService" cardinality="1..1" interface="org.remotercp.connection.session.ISessionService" name="ISessionService" policy="static" unbind="unbindSessionService"/>
+</scr:component>
