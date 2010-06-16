@@ -10,6 +10,8 @@ import org.remotercp.provisioning.domain.version.IVersionedId;
 public interface IInstallFeaturesService {
 
 	public IStatus restartApplication(ID adminId);
+	
+	public boolean acceptUpdate(ID adminId);
 
 	public IVersionedId[] getInstalledFeatures(ID adminId) throws RemoteOperationException;
 
