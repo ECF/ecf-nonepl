@@ -6,8 +6,6 @@ import java.util.PropertyResourceBundle;
 
 import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
-import org.eclipse.ecf.core.ContainerConnectException;
-import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.util.ECFException;
 import org.remotercp.authorization.domain.service.IAuthorizationService;
 import org.remotercp.connection.session.ISessionService;
