@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="true" name="org.remotercp.preferences">
+<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" immediate="false" name="org.remotercp.preferences">
    <implementation class="org.remotercp.preferences.service.RemotePreferencesServiceImpl"/>
-   <reference bind="bindSessionService" cardinality="1..1" interface="org.remotercp.ecf.session.ISessionService" name="ISessionService" policy="static"/>
+   <service>
+      <provide interface="org.remotercp.preferences.domain.IRemotePreferenceService"/>
+   </service>
 </scr:component>

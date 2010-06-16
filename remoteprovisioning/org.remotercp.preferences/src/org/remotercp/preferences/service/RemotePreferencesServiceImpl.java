@@ -26,7 +26,6 @@ import org.eclipse.ecf.core.status.SerializableStatus;
 import org.eclipse.ecf.core.util.ECFException;
 import org.osgi.service.prefs.BackingStoreException;
 import org.osgi.service.prefs.Preferences;
-import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.PreferencesActivator;
 import org.remotercp.preferences.domain.IRemotePreferenceService;
 import org.remotercp.util.preferences.PreferencesUtil;
@@ -38,13 +37,6 @@ public class RemotePreferencesServiceImpl implements IRemotePreferenceService {
 
 	private final static Logger logger = Logger
 			.getLogger(RemotePreferencesServiceImpl.class.getName());
-
-	public void bindSessionService(ISessionService sessionService) {
-		logger.info("+++++ Starting service: "
-				+ RemotePreferencesServiceImpl.class.getName() + " +++++");
-		sessionService.registerRemoteService(IRemotePreferenceService.class
-				.getName(), this, null);
-	}
 
 	public SortedMap<String, String> getPreferences(String[] preferenceFilter)
 			throws ECFException {
