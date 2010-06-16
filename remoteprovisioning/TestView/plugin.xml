@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?eclipse version="3.4"?>
+<plugin>
+
+   <extension
+         point="org.eclipse.ui.views">
+      <category
+            name="Sample Category"
+            id="TestView">
+      </category>
+      <view
+            name="TestView"
+            icon="icons/sample.gif"
+            category="TestView"
+            class="testview.views.SampleView"
+            id="testview.views.SampleView">
+      </view>
+   </extension>
+   <extension
+         point="org.eclipse.ui.perspectiveExtensions">
+      <perspectiveExtension
+            targetID="TestApplication.perspective">
+         <view
+               id="testview.views.SampleView"
+               minimized="false"
+               ratio="0.5"
+               relationship="right"
+               relative="org.eclipse.ui.editorss">
+         </view>
+      </perspectiveExtension>
+   </extension>
+
+</plugin>
