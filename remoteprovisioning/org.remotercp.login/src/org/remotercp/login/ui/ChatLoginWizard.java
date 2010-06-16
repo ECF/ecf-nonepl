@@ -80,6 +80,7 @@ public class ChatLoginWizard extends Wizard {
 
 		try {
 			/*
+			 * FIXME: use ISessionService instead!!!
 			 * Establish the server connection
 			 */
 			HeadlessConnection.connect(userName, password, server,
