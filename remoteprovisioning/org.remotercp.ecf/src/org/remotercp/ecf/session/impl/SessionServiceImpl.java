@@ -1,41 +1,82 @@
 package org.remotercp.ecf.session.impl;
 
+import java.net.URISyntaxException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.Dictionary;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.logging.Logger;
 
+import org.eclipse.ecf.core.ContainerFactory;
 import org.eclipse.ecf.core.IContainer;
 import org.eclipse.ecf.core.identity.ID;
+import org.eclipse.ecf.core.security.ConnectContextFactory;
+import org.eclipse.ecf.core.security.IConnectContext;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.presence.IIMMessageListener;
+import org.eclipse.ecf.presence.IPresence;
+import org.eclipse.ecf.presence.IPresence.Type;
 import org.eclipse.ecf.presence.IPresenceContainerAdapter;
+import org.eclipse.ecf.presence.IPresenceListener;
+import org.eclipse.ecf.presence.Presence;
 import org.eclipse.ecf.presence.im.IChatManager;
 import org.eclipse.ecf.presence.im.IChatMessageSender;
 import org.eclipse.ecf.presence.roster.IRoster;
 import org.eclipse.ecf.presence.roster.IRosterManager;
+import org.eclipse.ecf.provider.xmpp.identity.XMPPID;
 import org.eclipse.ecf.remoteservice.Constants;
-import org.eclipse.ecf.remoteservice.IRemoteCall;
 import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.ecf.remoteservice.IRemoteServiceContainerAdapter;
 import org.eclipse.ecf.remoteservice.IRemoteServiceListener;
 import org.eclipse.ecf.remoteservice.IRemoteServiceReference;
 import org.eclipse.ecf.remoteservice.events.IRemoteServiceEvent;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.ecf.session.ISessionService;
-import org.remotercp.util.roster.RosterUtil;
+import org.remotercp.connection.connection.ConnectionDetails;
+import org.remotercp.connection.connection.ECFConstants;
+import org.remotercp.connection.session.ISessionService;
 
 public class SessionServiceImpl implements ISessionService {
+
+	private ConnectionDetails connectionDetails;
 
 	private IContainer container;
 
 	private static final Logger logger = Logger
 			.getLogger(SessionServiceImpl.class.getName());
 
-	public void bindContainer(IContainer container) {
-		this.container = container;
+	private List<XMPPID> targetIDs = Collections
+			.synchronizedList(new ArrayList<XMPPID>());
 
+	/**
+	 * Connects to an XMPP-Server with the provided credentials
+	 * 
+	 * @throws ECFException
+	 */
+	public void connect(String userName, String password, String server)
+			throws URISyntaxException, ECFException {
+		container = ContainerFactory.getDefault().createContainer(
+				ECFConstants.XMPP);
+
+		XMPPID xmppid = new XMPPID(container.getConnectNamespace(), userName
+				+ "@" + server);
+		xmppid.setResourceName("" + System.currentTimeMillis());
+
+		IConnectContext connectContext = ConnectContextFactory
+				.createUsernamePasswordConnectContext(userName, password);
+
+		container.connect(xmppid, connectContext);
+
+		// update existing clients
+		IPresence presence = new Presence(IPresence.Type.AVAILABLE);
+		getRosterManager().getPresenceSender().sendPresenceUpdate(xmppid,
+				presence);
+
+		registerRosterListener();
+	}
+
+	public ConnectionDetails getConnectionDetails() {
+		return connectionDetails;
 	}
 
 	private IPresenceContainerAdapter getPresenceContainerAdapter() {
@@ -109,53 +150,6 @@ public class SessionServiceImpl implements ISessionService {
 		return remoteServices;
 	}
 
-	/**
-	 * The above method getRemoteService(...) is easy to use as methods can be
-	 * performed directly on the returned proxy. However in some scenarios e.g.
-	 * update, install operations it might take a long time to perform a remote
-	 * operation (features have to be downloaded first etc). Methods performed
-	 * on a proxy have a default time out of 30 sec. which is not customizable.
-	 * Therefore the above method can't be used in some scenarios and we have to
-	 * use this method to get a service reference and perform an
-	 * {@link IRemoteCall} with a user defined time out.
-	 * 
-	 * XXX: this method contains same workarounds as the above mentioned method.
-	 * 
-	 * @param service
-	 *            The service name to get a remote service of
-	 * @param filterIDs
-	 *            User Ids to get a remote service for
-	 * @param filter
-	 *            Additional filter which checks if the service properties do
-	 *            match the given filer. May be null if all services should be
-	 *            found
-	 * @return An array of remote services for given user and filter
-	 * @throws InvalidSyntaxException
-	 */
-	public synchronized IRemoteService[] getRemoteServiceReference(
-			Class<?> service, ID[] filterIDs, String filter)
-			throws InvalidSyntaxException {
-		IRemoteServiceContainerAdapter remoteServiceContainerAdapter = getRemoteServiceContainerAdapter();
-
-		IRemoteServiceReference[] refs = remoteServiceContainerAdapter
-				.getRemoteServiceReferences(filterIDs, service.getName(),
-						filter);
-
-		IRemoteService serviceReferences[] = new IRemoteService[refs.length];
-
-		for (int serviceNumber = 0; serviceNumber < refs.length; serviceNumber++) {
-
-			IRemoteService remoteService = remoteServiceContainerAdapter
-					.getRemoteService(refs[serviceNumber]);
-			assert remoteService != null : "remoteService != null";
-
-			serviceReferences[serviceNumber] = remoteService;
-
-		}
-
-		return serviceReferences;
-	}
-
 	public IRosterManager getRosterManager() {
 		IRosterManager rosterManager = this.getPresenceContainerAdapter()
 				.getRosterManager();
@@ -197,7 +191,7 @@ public class SessionServiceImpl implements ISessionService {
 
 		Dictionary<String, ID[]> props = new Hashtable<String, ID[]>();
 		if (targetIDs == null) {
-			targetIDs = RosterUtil.getUserIDs(getRoster());
+			targetIDs = this.targetIDs.toArray(new XMPPID[0]);
 		}
 		props.put(Constants.SERVICE_REGISTRATION_TARGETS, targetIDs);
 
@@ -267,7 +261,56 @@ public class SessionServiceImpl implements ISessionService {
 	}
 
 	public String getUserName() {
-		return container.getID().getName();
+		return getConnectionDetails().getUserName();
 	}
 
+	/**
+	 * This listener will listen for user availability changes and update the
+	 * internal user list
+	 */
+	private void registerRosterListener() {
+
+		getRoster().getPresenceContainerAdapter().getRosterManager()
+				.addPresenceListener(new IPresenceListener() {
+
+					public void handlePresence(ID fromID, IPresence presence) {
+						if (fromID instanceof XMPPID) {
+							XMPPID sender = (XMPPID) fromID;
+							System.out.println("roster: "
+									+ sender.getUsernameAtHost());
+						}
+
+					}
+				});
+
+		getRosterManager().addPresenceListener(new IPresenceListener() {
+
+			public void handlePresence(ID fromID, IPresence presence) {
+				System.out.println("Presence: " + presence.getType());
+				if (fromID instanceof XMPPID) {
+					XMPPID xmppId = (XMPPID) fromID;
+
+					if (presence.getType().equals(Type.AVAILABLE)) {
+						if (!targetIDs.contains(xmppId)) {
+							targetIDs.add(xmppId);
+							logger.info("Target IDs changed: "
+									+ targetIDs.size() + " new user: "
+									+ xmppId.getUsernameAtHost());
+						}
+					}
+					if (presence.getType().equals(Type.UNAVAILABLE)) {
+						if (targetIDs.contains(xmppId)) {
+							targetIDs.remove(xmppId);
+							logger.info("Target IDs changed: "
+									+ targetIDs.size() + " new user: "
+									+ xmppId.getUsernameAtHost());
+						}
+					}
+				} else {
+					logger.warning("User is not of type XMPP user");
+				}
+			}
+		});
+	}
 }
+
