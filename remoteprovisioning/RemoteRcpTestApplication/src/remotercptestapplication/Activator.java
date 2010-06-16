@@ -21,6 +21,7 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 
 	// The plug-in ID
 	public static final String PLUGIN_ID = "ScottTestApplication"; //$NON-NLS-1$
+	public static ID ADMIN_ID = new StringIDNamespace("Test", "RemoteRcp").createInstance(new String[] {"Mein Test"});
 
 	// The shared instance
 	private static Activator plugin;
@@ -32,8 +33,6 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 	private URI[] locations;
 	
 	private IInstallFeaturesService installService;
-
-	private ID adminId = new StringIDNamespace("Test", "RemoteRcp").createInstance(new String[] {"Mein Test"});
 	
 	private InstallServiceTracker tracker;
 	
@@ -109,7 +108,7 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 		System.out.println("Activator.install(" + id.getId() + ")");
 		IStatus installStatus = Status.CANCEL_STATUS;
 		if (installService != null) {
-			installStatus = installService.installFeature(id, locations, adminId);
+			installStatus = installService.installFeature(id, locations, ADMIN_ID);
 			System.out.println("	Installation "+installStatus);
 		} else {
 			System.out.println("No InstallService available");
@@ -121,7 +120,7 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 		IStatus result = new Status(IStatus.ERROR, PLUGIN_ID,
 			"Couldn't update the Feature");
 		IVersionedId[] ids = new IVersionedId[] {new VersionedId(FEATURE_TO_INSTALL)};
-		result = installService.updateFeature(ids, locations, adminId);
+		result = installService.updateFeature(ids, locations, ADMIN_ID);
 		
 		return result;
 	}
@@ -130,10 +129,10 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 		IStatus result = new Status(IStatus.ERROR, PLUGIN_ID,
 			"Couldn't uninstall the Feature");
 		try {
-			IVersionedId[] installedFeatures = installService.getInstalledFeatures(adminId);
+			IVersionedId[] installedFeatures = installService.getInstalledFeatures(ADMIN_ID);
 			for (IVersionedId id : installedFeatures) {
 				if (id.getId().equals(FEATURE_TO_INSTALL)) {
-					result = installService.uninstallFeature(id, adminId);
+					result = installService.uninstallFeature(id, ADMIN_ID);
 					break;
 				}
 			}
@@ -151,5 +150,9 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 	public void unbindInstallService() {
 		System.out.println("Activator.unbindInstallService()");
 		installService = null;
+	}
+	
+	public void registerServiceListener(IInstallServiceListener listener) {
+		tracker.addInstallServiceListener(listener);
 	}
 }

@@ -1,50 +1,29 @@
 package remotercptestapplication;
 
-import org.eclipse.jface.viewers.IStructuredContentProvider;
+import org.eclipse.jface.viewers.ArrayContentProvider;
 import org.eclipse.jface.viewers.ITableLabelProvider;
 import org.eclipse.jface.viewers.LabelProvider;
 import org.eclipse.jface.viewers.TableViewer;
-import org.eclipse.jface.viewers.Viewer;
 import org.eclipse.swt.SWT;
 import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.ui.ISharedImages;
 import org.eclipse.ui.PlatformUI;
 import org.eclipse.ui.part.ViewPart;
+import org.remotercp.provisioning.domain.exception.RemoteOperationException;
+import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
 
-public class View extends ViewPart {
+public class View extends ViewPart implements IInstallServiceListener {
 	public static final String ID = "ScottTestApplication.view";
 
 	private TableViewer viewer;
-
-	/**
-	 * The content provider class is responsible for providing objects to the
-	 * view. It can wrap existing objects in adapters or simply return objects
-	 * as-is. These objects may be sensitive to the current input of the view,
-	 * or ignore it and always show the same content (like Task List, for
-	 * example).
-	 */
-	class ViewContentProvider implements IStructuredContentProvider {
-		public void inputChanged(Viewer v, Object oldInput, Object newInput) {
-		}
-
-		public void dispose() {
-		}
-
-		public Object[] getElements(Object parent) {
-			if (parent instanceof Object[]) {
-				return (Object[]) parent;
-			}
-	        return new Object[0];
-		}
-	}
 
 	class ViewLabelProvider extends LabelProvider implements
 			ITableLabelProvider {
 		public String getColumnText(Object obj, int index) {
 			return getText(obj);
 		}
-
+		
 		public Image getColumnImage(Object obj, int index) {
 			return getImage(obj);
 		}
@@ -62,10 +41,12 @@ public class View extends ViewPart {
 	public void createPartControl(Composite parent) {
 		viewer = new TableViewer(parent, SWT.MULTI | SWT.H_SCROLL
 				| SWT.V_SCROLL);
-		viewer.setContentProvider(new ViewContentProvider());
+		viewer.setContentProvider(new ArrayContentProvider());
 		viewer.setLabelProvider(new ViewLabelProvider());
 		// Provide the input to the ContentProvider
-		viewer.setInput(new String[] {"One", "Two", "Three"});
+		viewer.setInput(new String[] {"Nothing to show"});
+		
+		Activator.getDefault().registerServiceListener(this);
 	}
 
 	/**
@@ -74,4 +55,21 @@ public class View extends ViewPart {
 	public void setFocus() {
 		viewer.getControl().setFocus();
 	}
+
+	public void bindInstallService(IInstallFeaturesService service) {
+		System.out.println("View.bindInstallService()");
+		try {
+			viewer.setInput(service.getInstalledFeatures(Activator.ADMIN_ID));
+		} catch (RemoteOperationException e) {
+			viewer.setInput(new String[] {"Error occured"});
+			e.printStackTrace();
+		}
+	}
+
+	public void unbindInstallService() {
+		if (!viewer.getTable().isDisposed() && viewer.getContentProvider() != null) {
+			viewer.setInput(new String[] {"Nothing to show"});
+		}
+	}
+
 }

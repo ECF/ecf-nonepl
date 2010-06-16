@@ -167,8 +167,11 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 						.getProfile(IProfileRegistry.SELF);
 				if (profile == null)
 					return null;
+//				IInstallableUnit[] ius = (IInstallableUnit[]) profile.query(
+//						QueryUtil.createIUGroupQuery(), null).toArray(
+//						IInstallableUnit.class);
 				IInstallableUnit[] ius = (IInstallableUnit[]) profile.query(
-						QueryUtil.createIUGroupQuery(), null).toArray(
+						QueryUtil.createIUAnyQuery(), null).toArray(
 						IInstallableUnit.class);
 
 				featureids = new IVersionedId[ius.length];
