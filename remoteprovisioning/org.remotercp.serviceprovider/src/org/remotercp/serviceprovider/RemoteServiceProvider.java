@@ -8,7 +8,7 @@ import org.eclipse.core.runtime.FileLocator;
 import org.eclipse.core.runtime.Path;
 import org.eclipse.ecf.core.util.ECFException;
 import org.remotercp.authorization.domain.service.IAuthorizationService;
-import org.remotercp.connection.session.ISessionService;
+import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.preferences.domain.IRemotePreferenceService;
 import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
 
