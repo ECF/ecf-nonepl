@@ -60,10 +60,13 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 	private IProvisioningAgent agent;
 
 	private final IStatus authorizationError = createStatus(Status.ERROR,
-			"Administration operation already in progress", null);
+			"Not authorized for remote update", null);
 
 	private final IStatus concurrentOperationError = createStatus(Status.ERROR,
 			"Administration operation already in progress", null);
+
+	private final IStatus userDeniesCancel = createStatus(Status.CANCEL,
+			"User denies remote administration", null);
 
 	private IAdministrationService administrationService;
 
@@ -85,8 +88,9 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 
 	public void bindAdministrationService(
 			IAdministrationService administrationService) {
+		System.out
+				.println("InstallFeaturesServiceImpl.bindAdministrationService()");
 		this.administrationService = administrationService;
-
 	}
 
 	/**
@@ -126,10 +130,13 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 		if (lock.tryLock()) {
 
 			if (authorizationService.isAdmin(adminId)) {
-				if (this.administrationService != null) {
+				if (this.administrationService != null
+						&& administrationService.acceptUpdate(false)) {
 					administrationService.restartApplication();
 					result = createStatus(Status.OK,
 							"Application has been sucessfully restarted", null);
+				} else {
+					result = userDeniesCancel;
 				}
 
 			} else {
@@ -193,35 +200,41 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 	public IStatus installFeature(IVersionedId featureId, URI[] repoLocations,
 			ID adminId) {
 
-		// TODO: ask user
 		IStatus result = new SerializableStatus(Status.OK_STATUS);
 
 		if (lock.tryLock()) {
 
 			if (authorizationService.isAdmin(adminId)) {
 
-				final IProgressMonitor monitor = new NullProgressMonitor();
-				ProvisioningSession session = new ProvisioningSession(agent);
-				ProvisioningContext context = new ProvisioningContext(agent);
+				if (this.administrationService == null
+						|| administrationService.acceptUpdate(false)) {
 
-				updateRepositories(context, repoLocations);
+					final IProgressMonitor monitor = new NullProgressMonitor();
+					ProvisioningSession session = new ProvisioningSession(agent);
+					ProvisioningContext context = new ProvisioningContext(agent);
 
-				Version version = Version.create(featureId.getVersion());
-				IQueryResult<IInstallableUnit> ius = context.getMetadata(
-						monitor).query(
-						QueryUtil.createIUQuery(featureId.getId(), version),
-						monitor);
+					updateRepositories(context, repoLocations);
 
-				final InstallOperation operation = new InstallOperation(
-						session, ius.toSet());
-				operation.setProvisioningContext(context);
-				// operation.setProfileId(profileId);
+					Version version = Version.create(featureId.getVersion());
+					IQueryResult<IInstallableUnit> ius = context.getMetadata(
+							monitor)
+							.query(
+									QueryUtil.createIUQuery(featureId.getId(),
+											version), monitor);
 
-				result = operation.resolveModal(monitor);
-				if (result.isOK()) {
-					final ProvisioningJob installJob = operation
-							.getProvisioningJob(monitor);
-					result = installJob.runModal(monitor);
+					final InstallOperation operation = new InstallOperation(
+							session, ius.toSet());
+					operation.setProvisioningContext(context);
+					// operation.setProfileId(profileId);
+
+					result = operation.resolveModal(monitor);
+					if (result.isOK()) {
+						final ProvisioningJob installJob = operation
+								.getProvisioningJob(monitor);
+						result = installJob.runModal(monitor);
+					}
+				} else {
+					result = userDeniesCancel;
 				}
 			} else {
 				result = authorizationError;
@@ -238,7 +251,6 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 
 	public IStatus updateFeature(IVersionedId[] versionIds,
 			URI[] repoLocations, ID adminId) {
-		// TODO: ask user
 
 		IStatus result = new SerializableStatus(Status.OK_STATUS);
 
@@ -246,38 +258,44 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 
 			if (authorizationService.isAdmin(adminId)) {
 
-				final IProgressMonitor monitor = new NullProgressMonitor();
-				ProvisioningSession session = new ProvisioningSession(agent);
-				ProvisioningContext context = new ProvisioningContext(agent);
+				if (this.administrationService == null
+						|| administrationService.acceptUpdate(false)) {
 
-				updateRepositories(context, repoLocations);
+					final IProgressMonitor monitor = new NullProgressMonitor();
+					ProvisioningSession session = new ProvisioningSession(agent);
+					ProvisioningContext context = new ProvisioningContext(agent);
 
-				IProfileRegistry profileRegistry = (IProfileRegistry) agent
-						.getService(IProfileRegistry.SERVICE_NAME);
-				String profileId = IProfileRegistry.SELF;
+					updateRepositories(context, repoLocations);
 
-				IProfile profile = profileRegistry.getProfile(profileId);
-				IQueryResult<IInstallableUnit> queryResult = profile.query(
-						QueryUtil.createIUGroupQuery(), monitor);
+					IProfileRegistry profileRegistry = (IProfileRegistry) agent
+							.getService(IProfileRegistry.SERVICE_NAME);
+					String profileId = IProfileRegistry.SELF;
 
-				Set<IInstallableUnit> unitsToUpdate = new HashSet<IInstallableUnit>();
-				for (IVersionedId id : versionIds) {
-					for (IInstallableUnit unit : queryResult.toSet()) {
-						if (id.getId().equals(unit.getId())) {
-							unitsToUpdate.add(unit);
+					IProfile profile = profileRegistry.getProfile(profileId);
+					IQueryResult<IInstallableUnit> queryResult = profile.query(
+							QueryUtil.createIUGroupQuery(), monitor);
+
+					Set<IInstallableUnit> unitsToUpdate = new HashSet<IInstallableUnit>();
+					for (IVersionedId id : versionIds) {
+						for (IInstallableUnit unit : queryResult.toSet()) {
+							if (id.getId().equals(unit.getId())) {
+								unitsToUpdate.add(unit);
+							}
 						}
 					}
-				}
 
-				final UpdateOperation operation = new UpdateOperation(session,
-						unitsToUpdate);
-				operation.setProvisioningContext(context);
+					final UpdateOperation operation = new UpdateOperation(
+							session, unitsToUpdate);
+					operation.setProvisioningContext(context);
 
-				result = operation.resolveModal(monitor);
-				if (result.isOK()) {
-					final ProvisioningJob updateJob = operation
-							.getProvisioningJob(monitor);
-					result = updateJob.runModal(monitor);
+					result = operation.resolveModal(monitor);
+					if (result.isOK()) {
+						final ProvisioningJob updateJob = operation
+								.getProvisioningJob(monitor);
+						result = updateJob.runModal(monitor);
+					}
+				} else {
+					result = userDeniesCancel;
 				}
 			} else {
 				result = authorizationError;
@@ -291,27 +309,33 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 	}
 
 	public IStatus uninstallFeature(IVersionedId featureId, ID adminId) {
-		// TODO: ask user
 		IStatus result = new SerializableStatus(Status.OK_STATUS);
 		if (lock.tryLock()) {
 
 			if (authorizationService.isAdmin(adminId)) {
 
-				final IProgressMonitor monitor = new NullProgressMonitor();
-				ProvisioningSession session = new ProvisioningSession(agent);
-				ProvisioningContext context = new ProvisioningContext(agent);
+				if (this.administrationService == null
+						|| administrationService.acceptUpdate(false)) {
 
-				IQueryResult<IInstallableUnit> ius = context.getMetadata(
-						monitor).query(
-						QueryUtil.createIUQuery(featureId.getId()), monitor);
-				final UninstallOperation operation = new UninstallOperation(
-						session, ius.toSet());
-				operation.setProvisioningContext(context);
-				result = operation.resolveModal(monitor);
-				if (result.isOK()) {
-					final ProvisioningJob uninstallJob = operation
-							.getProvisioningJob(monitor);
-					result = uninstallJob.runModal(monitor);
+					final IProgressMonitor monitor = new NullProgressMonitor();
+					ProvisioningSession session = new ProvisioningSession(agent);
+					ProvisioningContext context = new ProvisioningContext(agent);
+
+					IQueryResult<IInstallableUnit> ius = context.getMetadata(
+							monitor)
+							.query(QueryUtil.createIUQuery(featureId.getId()),
+									monitor);
+					final UninstallOperation operation = new UninstallOperation(
+							session, ius.toSet());
+					operation.setProvisioningContext(context);
+					result = operation.resolveModal(monitor);
+					if (result.isOK()) {
+						final ProvisioningJob uninstallJob = operation
+								.getProvisioningJob(monitor);
+						result = uninstallJob.runModal(monitor);
+					}
+				} else {
+					result = userDeniesCancel;
 				}
 			} else {
 				result = authorizationError;
@@ -353,7 +377,7 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 			if (authorizationService.isAdmin(fromId)) {
 
 				if (administrationService != null) {
-					result = administrationService.acceptUpdate();
+					result = administrationService.acceptUpdate(true);
 				}
 			}
 		}

@@ -20,9 +20,11 @@ import org.eclipse.ui.application.IActionBarConfigurer;
  */
 public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
+	private Action updateAllowedAction;
 	private Action uninstallAction;
 	private Action installAction;
 	private Action updateAction;
+	private Action restartAction;
 	private IContributionItem viewsAction;
 
 	// Actions - important to allocate these only in makeActions, and then use
@@ -32,7 +34,6 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 
 	public ApplicationActionBarAdvisor(IActionBarConfigurer configurer) {
 		super(configurer);
-		
 	}
 	
 	@Override
@@ -40,6 +41,21 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		super.makeActions(window);
 		
 		viewsAction = ContributionItemFactory.VIEWS_SHORTLIST.create(window);
+		
+		updateAllowedAction = new Action() {
+			public void run() {
+				boolean result = Activator.getDefault().updateAllowed();
+				System.out.println("	Update Allowed: "+result);
+				if (result) {
+					MessageDialog.openInformation(window.getShell(), "Update allowed", "The user allows the remote administration");
+				} else {
+					MessageDialog.openWarning(window.getShell(), "Update denied", "The user denies the remote administration");
+				}
+			};
+		};
+		updateAllowedAction.setText("Update Allowed?");
+		updateAllowedAction.setId("de.c1wps.UpdateAllowedAction");
+		register(updateAllowedAction);
 		
 		installAction = new Action() {
 			public void run() {
@@ -54,6 +70,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		};
 		installAction.setText("Install");
 		installAction.setId("de.c1wps.InstallAction");
+		register(installAction);
 		
 		updateAction = new Action() {
 			public void run() {
@@ -68,6 +85,7 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		};
 		updateAction.setText("Update");
 		updateAction.setId("de.c1wps.UpdateAction");
+		register(updateAction);
 		
 		uninstallAction = new Action() {
 			public void run() {
@@ -82,8 +100,22 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		};
 		uninstallAction.setText("Uninstall");
 		uninstallAction.setId("de.c1wps.UninstallAction");
+		register(uninstallAction);
 		
-		register(updateAction);
+		restartAction = new Action() {
+			public void run() {
+				IStatus result = Activator.getDefault().restart();
+				System.out.println("	Restart "+result.getMessage());
+				if (result.isOK()) {
+					MessageDialog.openInformation(window.getShell(), "Restart successfully triggered", "The application will restart now.");
+				} else {
+					showError(window, "Restart failed", result);
+				}
+			};
+		};
+		restartAction.setText("Restart");
+		restartAction.setId("de.c1wps.RestartAction");
+		register(restartAction);
 	}
 	
 	private void showMessage(IWorkbenchWindow window, String title) {
@@ -98,11 +130,15 @@ public class ApplicationActionBarAdvisor extends ActionBarAdvisor {
 		MenuManager fileMenu = new MenuManager("&File",
 				IWorkbenchActionConstants.M_FILE);
 		menuBar.add(fileMenu);
+		fileMenu.add(updateAllowedAction);
+		fileMenu.add(new Separator());
 		fileMenu.add(installAction);
 		fileMenu.add(new Separator());
 		fileMenu.add(updateAction);
 		fileMenu.add(new Separator());
 		fileMenu.add(uninstallAction);
+		fileMenu.add(new Separator());
+		fileMenu.add(restartAction);
 		fileMenu.add(new Separator());
 		fileMenu.add(viewsAction);
 	}

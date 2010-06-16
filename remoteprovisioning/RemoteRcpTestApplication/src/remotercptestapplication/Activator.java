@@ -141,6 +141,14 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 		}
 		return result;
 	}
+	
+	public IStatus restart() {
+		return installService.restartApplication(ADMIN_ID);
+	}
+	
+	public boolean updateAllowed() {
+		return installService.acceptUpdate(ADMIN_ID);
+	}
 
 	public void bindInstallService(IInstallFeaturesService service) {
 		System.out.println("Activator.bindInstallService()");
@@ -155,4 +163,6 @@ public class Activator extends AbstractUIPlugin implements IInstallServiceListen
 	public void registerServiceListener(IInstallServiceListener listener) {
 		tracker.addInstallServiceListener(listener);
 	}
+
+	
 }
