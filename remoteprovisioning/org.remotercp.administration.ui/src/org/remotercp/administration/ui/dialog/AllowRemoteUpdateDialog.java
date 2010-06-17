@@ -5,7 +5,10 @@ import java.util.TimerTask;
 
 import org.eclipse.jface.dialogs.Dialog;
 import org.eclipse.jface.dialogs.IDialogConstants;
+import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.swt.SWT;
+import org.eclipse.swt.graphics.Image;
+import org.eclipse.swt.layout.GridLayout;
 import org.eclipse.swt.widgets.Composite;
 import org.eclipse.swt.widgets.Control;
 import org.eclipse.swt.widgets.Label;
@@ -32,9 +35,22 @@ public class AllowRemoteUpdateDialog extends Dialog {
 	
 	@Override
 	protected Control createDialogArea(Composite parent) {
-		Composite main = (Composite) super.createDialogArea(parent);
+		Composite area = (Composite) super.createDialogArea(parent);
 		
-		Label label = new Label(main, SWT.WRAP);
+		Composite main = new Composite(area, SWT.NONE);
+		main.setLayout(new GridLayout(2, false));
+		
+		Label label = new Label(main, SWT.NONE);
+		
+		Image image = label.getDisplay().getSystemImage(SWT.ICON_QUESTION);
+		if (image != null) {
+			image.setBackground(label.getBackground());
+			label.setImage(image);
+			GridDataFactory.fillDefaults().align(SWT.CENTER, SWT.BEGINNING).span(1, 2)
+					.applyTo(label);
+		}
+		
+		label = new Label(main, SWT.WRAP);
 		label.setText(_adminName + " wants to update your system.\nAfter the update a restart is necessary.\n\nDo you allow this process?");
 		
 		final Label remainingTimeLabel = new Label(main, SWT.WRAP);
