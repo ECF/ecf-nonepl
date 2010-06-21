@@ -380,6 +380,8 @@ public class InstallFeaturesServiceImpl implements IInstallFeaturesService,
 					result = administrationService.acceptUpdate(true);
 				}
 			}
+		} else {
+			result = false;
 		}
 
 		return result;

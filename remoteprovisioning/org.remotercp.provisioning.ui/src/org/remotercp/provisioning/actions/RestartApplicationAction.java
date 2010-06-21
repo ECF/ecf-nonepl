@@ -18,10 +18,10 @@ import org.eclipse.jface.viewers.ISelection;
 import org.eclipse.ui.IViewActionDelegate;
 import org.eclipse.ui.IViewPart;
 import org.osgi.framework.InvalidSyntaxException;
-import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
+import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
 import org.remotercp.util.osgi.OsgiServiceLocatorUtil;
 import org.remotercp.util.roster.RosterUtil;
 
@@ -84,16 +84,16 @@ public class RestartApplicationAction implements IViewActionDelegate {
 				Job restartJob = new Job("Restart remote application") {
 					@Override
 					protected IStatus run(IProgressMonitor monitor) {
-						IStatus acceptUpdate = featuresService
+						boolean result = featuresService
 								.acceptUpdate(fromId);
-						if (acceptUpdate.getSeverity() == Status.OK) {
-							List<IStatus> restartResults = featuresService
+						if (result) {
+							IStatus restartResults = featuresService
 									.restartApplication(fromId);
 							ErrorView.addError(restartResults);
 						} else {
-							ErrorView.addError(acceptUpdate);
+							ErrorView.addError(new Status(IStatus.CANCEL, "Anonym", "User denies remote administration"));
 						}
-						return acceptUpdate;
+						return Status.OK_STATUS;
 					}
 				};
 				restartJob.setUser(false);

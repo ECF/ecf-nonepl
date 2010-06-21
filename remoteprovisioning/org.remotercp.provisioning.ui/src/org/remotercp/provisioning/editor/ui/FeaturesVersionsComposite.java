@@ -2,6 +2,8 @@ package org.remotercp.provisioning.editor.ui;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -20,7 +22,6 @@ import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
 import org.eclipse.ecf.remoteservice.IRemoteCall;
-import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckStateChangedEvent;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -43,14 +44,17 @@ import org.eclipse.update.core.IFeature;
 import org.eclipse.update.core.ISite;
 import org.eclipse.update.core.ISiteFeatureReference;
 import org.eclipse.update.core.SiteManager;
+import org.eclipse.update.core.VersionedIdentifier;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
-import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.RemoteMethodConstants;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
+import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
+import org.remotercp.provisioning.domain.version.IVersionedId;
+import org.remotercp.provisioning.domain.version.VersionedId;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesUserTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
@@ -304,12 +308,12 @@ public class FeaturesVersionsComposite {
 					filterIds[0] = userId;
 
 					/* retrieve remote update service for user */
-					IRemoteService[] remoteServiceReference = sessionService
-							.getRemoteServiceReference(
+					List<IInstallFeaturesService> remoteServiceReference = sessionService
+							.getRemoteService(
 									IInstallFeaturesService.class, filterIds,
 									null);
-					Assert.isTrue(remoteServiceReference.length == 1);
-					IRemoteService remoteUpdateService = remoteServiceReference[0];
+					Assert.isTrue(remoteServiceReference.size() == 1);
+					IInstallFeaturesService remoteUpdateService = remoteServiceReference.get(0);
 
 					/* as IFeature is not serializable we have to wrap them */
 					final SerializedFeatureWrapper[] featuresToUpdate = new SerializedFeatureWrapper[1];
@@ -318,42 +322,49 @@ public class FeaturesVersionsComposite {
 
 					final ID fromId = sessionService.getConnectedID();
 
-					IRemoteCall updateFeaturesCall = new IRemoteCall() {
-
-						public String getMethod() {
-							return RemoteMethodConstants.UPDATE_METHOD;
-						}
-
-						public Object[] getParameters() {
-							return new Object[] { featuresToUpdate, fromId };
-						}
-
-						public long getTimeout() {
-							/*
-							 * The timeout depends on the feature download size.
-							 * Assume a slow download rate of 10kB/sec
-							 */
-							long kBSize = feature.getDownloadSize() / 1024;
-							long timeout = kBSize / 10;
-
-							if (timeout == 0) {
-								// feature size not available, set timeout
-								// to 5 min - is just a guess
-								timeout = 300000;
-							}
-							return timeout;
-						}
-
-					};
-
-					/* perform remote call */
-					List<IStatus> updateResults = (List<IStatus>) remoteUpdateService
-							.callSync(updateFeaturesCall);
+//					IRemoteCall updateFeaturesCall = new IRemoteCall() {
+//
+//						public String getMethod() {
+//							return RemoteMethodConstants.UPDATE_METHOD;
+//						}
+//
+//						public Object[] getParameters() {
+//							return new Object[] { featuresToUpdate, fromId };
+//						}
+//
+//						public long getTimeout() {
+//							/*
+//							 * The timeout depends on the feature download size.
+//							 * Assume a slow download rate of 10kB/sec
+//							 */
+//							long kBSize = feature.getDownloadSize() / 1024;
+//							long timeout = kBSize / 10;
+//
+//							if (timeout == 0) {
+//								// feature size not available, set timeout
+//								// to 5 min - is just a guess
+//								timeout = 300000;
+//							}
+//							return timeout;
+//						}
+//
+//					};
+//
+//					/* perform remote call */
+//					List<IStatus> updateResults = (List<IStatus>) remoteUpdateService
+//							.callSync(updateFeaturesCall);
+					
+					VersionedIdentifier identifier = feature.getVersionedIdentifier();
+					
+					IVersionedId[] versionIds = new IVersionedId[] {new VersionedId(identifier.getIdentifier())};
+					ID adminId = null;
+					// TODO 2010-06-21 kmeyer: AdminId besorgen
+					IStatus status = remoteUpdateService.updateFeature(versionIds, getUpdateSiteURIs(), adminId);
 
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
 					resultUserNode.setParent(resultFeatureNode);
-					resultUserNode.setUpdateResults(updateResults);
+					resultUserNode.setUpdateResult(status);
 
 					// add child to parent
 					resultFeatureNode.addChild(resultUserNode);
@@ -387,6 +398,18 @@ public class FeaturesVersionsComposite {
 								resultNodes);
 					}
 				});
+	}
+	
+	private URI[] getUpdateSiteURIs() {
+		//TODO 2010-06-21 kmeyer: Update-Sites von geeigneter Stelle beziehen
+		URI[] result = new URI[1];
+		String repositorylocation = "file:/C:/UpdateSite";
+		try {
+			result[0] = new URI(repositorylocation);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return result;
 	}
 
 	/*

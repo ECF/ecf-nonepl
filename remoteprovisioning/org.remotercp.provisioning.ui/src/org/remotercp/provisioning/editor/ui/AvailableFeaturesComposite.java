@@ -2,6 +2,8 @@ package org.remotercp.provisioning.editor.ui;
 
 import java.beans.PropertyChangeListener;
 import java.beans.PropertyChangeSupport;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
@@ -14,8 +16,6 @@ import org.eclipse.core.runtime.Status;
 import org.eclipse.core.runtime.jobs.Job;
 import org.eclipse.ecf.core.identity.ID;
 import org.eclipse.ecf.core.util.ECFException;
-import org.eclipse.ecf.remoteservice.IRemoteCall;
-import org.eclipse.ecf.remoteservice.IRemoteService;
 import org.eclipse.jface.dialogs.MessageDialog;
 import org.eclipse.jface.layout.GridDataFactory;
 import org.eclipse.jface.viewers.CheckboxTreeViewer;
@@ -48,13 +48,13 @@ import org.eclipse.update.internal.ui.model.UpdateModel;
 import org.eclipse.update.internal.ui.wizards.NewUpdateSiteDialog;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
-import org.remotercp.common.provisioning.IInstallFeaturesService;
-import org.remotercp.common.provisioning.RemoteMethodConstants;
-import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.progress.handler.ProgressViewHandler;
 import org.remotercp.provisioning.ProvisioningActivator;
+import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
+import org.remotercp.provisioning.domain.version.IVersionedId;
+import org.remotercp.provisioning.domain.version.VersionedId;
 import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.nodes.AbstractTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.CategoryTreeNode;
@@ -319,6 +319,18 @@ public class AvailableFeaturesComposite {
 				sitesToVisit.length);
 		return all;
 	}
+	
+	private URI[] getUpdateSiteURIs() {
+		//TODO 2010-06-21 kmeyer: Update-Sites von geeigneter Stelle beziehen
+		URI[] result = new URI[1];
+		String repositorylocation = "file:/C:/UpdateSite";
+		try {
+			result[0] = new URI(repositorylocation);
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return result;
+	}
 
 	@SuppressWarnings("restriction")
 	private void addBookmarkSite() {
@@ -397,23 +409,23 @@ public class AvailableFeaturesComposite {
 			// get the feature to install
 			final FeatureTreeNode featureNode = (FeatureTreeNode) checkedElements[0];
 			final Feature feature = (Feature) featureNode.getValue();
+			IVersionedId featureId = new VersionedId(feature.getFeatureIdentifier(), feature.getFeatureVersion());
 
 			// XXX: this method will support more than one feature installation.
-			performInstallation(feature, userIDs);
+			performInstallation(featureId, userIDs);
 		}
 	}
 
 	/*
 	 * This method will install one feature on a remote user's machine
 	 */
-	private void performInstallation(final Feature feature, final ID[] userIDs) {
+	private void performInstallation(final IVersionedId featureId, final ID[] userIDs) {
 
 		Job installJob = new Job("Install feature") {
-			@SuppressWarnings("unchecked")
 			@Override
 			protected IStatus run(IProgressMonitor monitor) {
 				final ResultFeatureTreeNode resultFeatureNode = new ResultFeatureTreeNode(
-						SerializedFeatureWrapper.createFeatureWrapper(feature));
+						featureId);
 
 				// TODO: show real progress if possible
 				monitor
@@ -426,55 +438,56 @@ public class AvailableFeaturesComposite {
 						monitor.subTask("Installing features on machine: "
 								+ userId.getName());
 
-						IRemoteService[] remoteServiceReference = sessionService
-								.getRemoteServiceReference(
-										IInstallFeaturesService.class,
+						List<IInstallFeaturesService> remoteServiceReference = sessionService
+								.getRemoteService(IInstallFeaturesService.class,
 										new ID[] { userId }, null);
 
-						Assert.isTrue(remoteServiceReference.length == 1);
-						IRemoteService remoteInstallService = remoteServiceReference[0];
+						Assert.isTrue(remoteServiceReference.size() == 1);
+						IInstallFeaturesService remoteInstallService = remoteServiceReference.get(0);
 
-						/* as IFeature is not serializable we have to wrap them */
-						final SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
-						featuresToInstall[0] = SerializedFeatureWrapper
-								.createFeatureWrapper(feature);
-						final ID fromId = sessionService.getConnectedID();
+//						/* as IFeature is not serializable we have to wrap them */
+//						final SerializedFeatureWrapper[] featuresToInstall = new SerializedFeatureWrapper[1];
+//						featuresToInstall[0] = SerializedFeatureWrapper
+//								.createFeatureWrapper(feature);
+//						final ID fromId = sessionService.getConnectedID();
+//
+//						IRemoteCall installFeaturesCall = new IRemoteCall() {
+//
+//							public String getMethod() {
+//								return RemoteMethodConstants.INSTALL_METHOD;
+//							}
+//
+//							public Object[] getParameters() {
+//								return new Object[] { featuresToInstall, fromId };
+//							}
+//
+//							public long getTimeout() {
+//								/*
+//								 * The timeout depends on the feature download
+//								 * size. Assume a slow download rate of 10kB/sec
+//								 */
+//								long kBSize = feature.getDownloadSize() / 1024;
+//								long timeout = kBSize / 10;
+//
+//								if (timeout == 0) {
+//									// feature size not available, set timeout
+//									// to 5 min - is just a guess
+//									timeout = 300000;
+//								}
+//								return timeout;
+//							}
+//						};
+//
+//						/* perform remote call */
+//						List<IStatus> results = (List<IStatus>) remoteInstallService
+//								.callSync(installFeaturesCall);
 
-						IRemoteCall installFeaturesCall = new IRemoteCall() {
-
-							public String getMethod() {
-								return RemoteMethodConstants.INSTALL_METHOD;
-							}
-
-							public Object[] getParameters() {
-								return new Object[] { featuresToInstall, fromId };
-							}
-
-							public long getTimeout() {
-								/*
-								 * The timeout depends on the feature download
-								 * size. Assume a slow download rate of 10kB/sec
-								 */
-								long kBSize = feature.getDownloadSize() / 1024;
-								long timeout = kBSize / 10;
-
-								if (timeout == 0) {
-									// feature size not available, set timeout
-									// to 5 min - is just a guess
-									timeout = 300000;
-								}
-								return timeout;
-							}
-						};
-
-						/* perform remote call */
-						List<IStatus> results = (List<IStatus>) remoteInstallService
-								.callSync(installFeaturesCall);
-
+						IStatus status = remoteInstallService.installFeature(featureId, getUpdateSiteURIs(), sessionService.getConnectedID());
+						
 						// create result nodes
 						ResultUserTreeNode userNode = new ResultUserTreeNode(
 								userId);
-						userNode.setUpdateResults(results);
+						userNode.setUpdateResult(status);
 						userNode.setParent(resultFeatureNode);
 
 						// add node to parent

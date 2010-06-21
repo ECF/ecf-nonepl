@@ -40,11 +40,13 @@ import org.eclipse.swt.widgets.TreeColumn;
 import org.eclipse.ui.PlatformUI;
 import org.osgi.framework.InvalidSyntaxException;
 import org.remotercp.common.constants.UpdateConstants;
-import org.remotercp.common.provisioning.IInstallFeaturesService;
 import org.remotercp.common.provisioning.SerializedFeatureWrapper;
 import org.remotercp.ecf.session.ISessionService;
 import org.remotercp.errorhandling.ui.ErrorView;
 import org.remotercp.provisioning.ProvisioningActivator;
+import org.remotercp.provisioning.domain.service.IInstallFeaturesService;
+import org.remotercp.provisioning.domain.version.IVersionedId;
+import org.remotercp.provisioning.domain.version.VersionedId;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.CommonFeaturesUserTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.DifferentFeaturesTreeNode;
@@ -356,34 +358,21 @@ public class InstalledFeaturesComposite {
 						ErrorView.addError(error);
 					}
 
-					String[] uninstallIds = new String[1];
-					uninstallIds[0] = featureToUninstall.getIdentifier();
+					IVersionedId uninstallId = new VersionedId(featureToUninstall.getIdentifier());
 
 					IInstallFeaturesService remoteUninstallService = remoteUninstallServices
 							.get(0);
 
-					// List<IStatus> uninstallResult = null;
-					// // ask client if updates can be performed
-					// IStatus acceptUpdate = remoteUninstallService
-					// .acceptUpdate();
-					// if (acceptUpdate.getSeverity() == Status.OK) {
-					//
-					// } else {
-					// // update has been cancelled by user
-					// uninstallResult = new ArrayList<IStatus>();
-					// uninstallResult.add(acceptUpdate);
-					// }
-
 					// perform uninstall operation
-					List<IStatus> uninstallResult = remoteUninstallService
-							.uninstallFeatures(uninstallIds, sessionService
+					IStatus uninstallResult = remoteUninstallService
+							.uninstallFeature(uninstallId, sessionService
 									.getConnectedID());
 
 					/* create child nodes for diplaying results */
 					ResultUserTreeNode resultUserNode = new ResultUserTreeNode(
 							userId);
 					resultUserNode.setParent(resultNode);
-					resultUserNode.setUpdateResults(uninstallResult);
+					resultUserNode.setUpdateResult(uninstallResult);
 					resultNode.addChild(resultUserNode);
 				} catch (ECFException e) {
 					IStatus error = createStatus(Status.ERROR,

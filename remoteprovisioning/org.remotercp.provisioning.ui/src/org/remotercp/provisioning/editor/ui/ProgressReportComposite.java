@@ -1,7 +1,5 @@
 package org.remotercp.provisioning.editor.ui;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.ecf.core.identity.ID;
@@ -33,7 +31,6 @@ import org.remotercp.provisioning.editor.ui.tree.FeaturesTreeContentProvider;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultFeatureTreeNode;
 import org.remotercp.provisioning.editor.ui.tree.nodes.ResultUserTreeNode;
 import org.remotercp.provisioning.images.ImageKeys;
-import org.remotercp.util.status.StatusUtil;
 
 public class ProgressReportComposite {
 
@@ -133,7 +130,7 @@ public class ProgressReportComposite {
 		if (selection.getFirstElement() instanceof ResultUserTreeNode) {
 			ResultUserTreeNode node = (ResultUserTreeNode) selection
 					.getFirstElement();
-			List<IStatus> updateResults = node.getUpdateResults();
+			IStatus updateResults = node.getUpdateResult();
 
 			Display display = this.resultTreeViewer.getTree().getDisplay();
 			Shell shell = new Shell(display);
@@ -220,8 +217,7 @@ public class ProgressReportComposite {
 			case COLUMN_STATUS:
 				if (element instanceof ResultUserTreeNode) {
 					ResultUserTreeNode node = (ResultUserTreeNode) element;
-					int result = StatusUtil
-							.checkStatus(node.getUpdateResults());
+					int result = node.getUpdateResult().getSeverity();
 
 					if (result == Status.OK) {
 						image = ok;
@@ -270,8 +266,7 @@ public class ProgressReportComposite {
 				if (element instanceof ResultUserTreeNode) {
 
 					ResultUserTreeNode node = (ResultUserTreeNode) element;
-					int result = StatusUtil
-							.checkStatus(node.getUpdateResults());
+					int result = node.getUpdateResult().getSeverity();
 
 					if (result == Status.OK) {
 						text = "SUCCESSFUL";

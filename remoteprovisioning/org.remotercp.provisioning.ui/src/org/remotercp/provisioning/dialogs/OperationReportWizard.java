@@ -1,7 +1,5 @@
 package org.remotercp.provisioning.dialogs;
 
-import java.util.List;
-
 import org.eclipse.core.runtime.IStatus;
 import org.eclipse.core.runtime.Status;
 import org.eclipse.jface.layout.GridDataFactory;
@@ -23,8 +21,8 @@ public class OperationReportWizard extends Wizard {
 
 	private ReportPage reportPage;
 
-	public OperationReportWizard(List<IStatus> operationReports) {
-		this.reportPage = new ReportPage("Operation Report", operationReports);
+	public OperationReportWizard(IStatus operationReport) {
+		this.reportPage = new ReportPage("Operation Report", operationReport);
 		this.addPage(reportPage);
 	}
 
@@ -34,13 +32,13 @@ public class OperationReportWizard extends Wizard {
 	}
 
 	private class ReportPage extends WizardPage {
-		private List<IStatus> operationReports;
+		private IStatus operationReport;
 
-		protected ReportPage(String pageName, List<IStatus> operationReports) {
+		protected ReportPage(String pageName, IStatus operationReport) {
 			super(pageName);
 			setTitle("Remote operation results");
 			setDescription("This page lists the results of the remote performed operations");
-			this.operationReports = operationReports;
+			this.operationReport = operationReport;
 		}
 
 		public void createControl(Composite parent) {
@@ -52,24 +50,22 @@ public class OperationReportWizard extends Wizard {
 				Text report = new Text(main, SWT.BORDER | SWT.MULTI);
 				GridDataFactory.fillDefaults().grab(true, true).applyTo(report);
 
-				for (IStatus operationReport : operationReports) {
-					int severity = operationReport.getSeverity();
-					String text = null;
+				int severity = operationReport.getSeverity();
+				String text = null;
 
-					if (severity == Status.OK) {
-						text = "SUCCESSFUL";
-					} else if (severity == Status.WARNING) {
-						text = "WARNING";
-					} else if (severity == Status.ERROR) {
-						text = "FAILED";
-					} else if (severity == Status.CANCEL) {
-						text = "ABORTED";
-					} else {
-						text = "UNKNOWN";
-					}
-					report.append(text + ": " + operationReport.getMessage());
-					report.append("\n");
+				if (severity == Status.OK) {
+					text = "SUCCESSFUL";
+				} else if (severity == Status.WARNING) {
+					text = "WARNING";
+				} else if (severity == Status.ERROR) {
+					text = "FAILED";
+				} else if (severity == Status.CANCEL) {
+					text = "ABORTED";
+				} else {
+					text = "UNKNOWN";
 				}
+				report.append(text + ": " + operationReport.getMessage());
+				report.append("\n");
 			}
 			setControl(main);
 		}
