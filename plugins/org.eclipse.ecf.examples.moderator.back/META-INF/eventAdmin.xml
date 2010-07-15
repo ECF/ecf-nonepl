@@ -1,8 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<scr:component xmlns:scr="http://www.osgi.org/xmlns/scr/v1.1.0" name="org.eclipse.ecf.examples.moderator">
-   <implementation class="org.eclipse.ecf.examples.internal.eventadmin.app.TestEventHandler"/>
-   <reference cardinality="1..1" interface="org.eclipse.ecf.remoteservice.eventadmin.DistributedEventAdmin" name="DistributedEventAdmin" policy="static"/>
-   <service>
-      <provide interface="org.osgi.service.event.EventAdmin"/>
-   </service>
-</scr:component>
