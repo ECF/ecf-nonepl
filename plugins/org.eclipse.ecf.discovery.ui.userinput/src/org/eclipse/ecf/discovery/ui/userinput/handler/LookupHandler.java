@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Markus Alexander Kuppe.
+ * Copyright (c) 2009 Versant Corp and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -45,7 +45,7 @@ import org.eclipse.ui.handlers.HandlerUtil;
 
 public class LookupHandler extends AbstractHandler {
 
-	private static final String MANUAL_LOOKUP_HANDLER = "ManualLookupHandler";
+	private static final String MANUAL_LOOKUP_HANDLER = "ManualLookupHandler"; //$NON-NLS-1$
 	private static final String HOST_DOMAIN_TLD_PORT = "scheme://host.domain.tld:port"; //$NON-NLS-1$
 	private static IInputValidator VALIDATOR = new MyInputValidator();
 	
@@ -105,7 +105,7 @@ public class LookupHandler extends AbstractHandler {
 		private URI uri;
 
 		public LookupJob(URI anURI) throws ContainerCreateException, IDCreateException {
-			super("Resolving...");
+			super(Messages.LookupHandler_RESOLVING);
 			uri = anURI;
 			container = (UserInputDiscoveryLocator) ContainerFactory.getDefault().createContainer(UserInputDiscoveryContainerInstantiator.NAME);
 			Namespace namespace = IDFactory.getDefault().getNamespaceByName(uri.getScheme());

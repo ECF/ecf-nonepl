@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Markus Alexander Kuppe.
+ * Copyright (c) 2009 Versant Corp and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -47,14 +47,14 @@ public class UserInputDiscoveryLocator extends
 	 * @see org.eclipse.ecf.discovery.IDiscoveryLocator#getServiceInfo(org.eclipse.ecf.discovery.identity.IServiceID)
 	 */
 	public IServiceInfo getServiceInfo(IServiceID aServiceId) {
-		throw new UnsupportedOperationException("not implemented");
+		throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.discovery.IDiscoveryLocator#getServiceTypes()
 	 */
 	public IServiceTypeID[] getServiceTypes() {
-		throw new UnsupportedOperationException("not implemented");
+		throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
@@ -68,21 +68,21 @@ public class UserInputDiscoveryLocator extends
 	 * @see org.eclipse.ecf.discovery.IDiscoveryLocator#getServices(org.eclipse.ecf.discovery.identity.IServiceTypeID)
 	 */
 	public IServiceInfo[] getServices(IServiceTypeID aServiceTypeId) {
-		throw new UnsupportedOperationException("not implemented");
+		throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.discovery.IDiscoveryAdvertiser#registerService(org.eclipse.ecf.discovery.IServiceInfo)
 	 */
 	public void registerService(IServiceInfo serviceInfo) {
-		throw new UnsupportedOperationException("not implemented");
+		throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.discovery.IDiscoveryAdvertiser#unregisterService(org.eclipse.ecf.discovery.IServiceInfo)
 	 */
 	public void unregisterService(IServiceInfo serviceInfo) {
-		throw new UnsupportedOperationException("not implemented");
+		throw new UnsupportedOperationException("not implemented"); //$NON-NLS-1$
 	}
 
 	/* (non-Javadoc)
@@ -111,14 +111,14 @@ public class UserInputDiscoveryLocator extends
 	}
 
 	public void fireServiceResolved(URI anURI, IServiceTypeID id) {
-		IServiceInfo iinfo = new ServiceInfo(anURI, "", id);
+		IServiceInfo iinfo = new ServiceInfo(anURI, "", id); //$NON-NLS-1$
 		if(knownServices.add(iinfo)) {
 			fireServiceDiscovered(new ServiceContainerEvent(iinfo, getID()));
 		}
 	}
 
 	public void fireServiceRemoved(URI anURI, IServiceTypeID id) {
-		IServiceInfo iinfo = new ServiceInfo(anURI, "", id);
+		IServiceInfo iinfo = new ServiceInfo(anURI, "", id); //$NON-NLS-1$
 		if(knownServices.remove(iinfo)) {
 			fireServiceUndiscovered(new ServiceContainerEvent(iinfo, getID()));
 		}

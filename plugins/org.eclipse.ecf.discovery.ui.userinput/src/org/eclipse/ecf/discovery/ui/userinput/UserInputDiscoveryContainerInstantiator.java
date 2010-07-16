@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Markus Alexander Kuppe.
+ * Copyright (c) 2009 Versant Corp and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -13,33 +13,23 @@ package org.eclipse.ecf.discovery.ui.userinput;
 import org.eclipse.ecf.core.ContainerCreateException;
 import org.eclipse.ecf.core.ContainerTypeDescription;
 import org.eclipse.ecf.core.IContainer;
-import org.eclipse.ecf.core.identity.IDCreateException;
 import org.eclipse.ecf.core.provider.IContainerInstantiator;
 import org.eclipse.ecf.discovery.IDiscoveryLocator;
 
 public class UserInputDiscoveryContainerInstantiator implements IContainerInstantiator {
 
-	public static final String NAME = "ecf.discovery.userinput.locator";
+	public static final String NAME = "ecf.discovery.userinput.locator";//$NON-NLS-1$
 
-	private UserInputDiscoveryLocator INSTANCE;
+	private static class SingletonHolder {
+		public static IContainer instance = new UserInputDiscoveryLocator();
+	}
 
 	/* (non-Javadoc)
 	 * @see org.eclipse.ecf.core.provider.IContainerInstantiator#createInstance(org.eclipse.ecf.core.ContainerTypeDescription, java.lang.Object[])
 	 */
 	public IContainer createInstance(ContainerTypeDescription description,
 			Object[] parameters) throws ContainerCreateException {
-		if(INSTANCE == null) {
-			synchronized (this) {
-				if(INSTANCE == null) {
-					try {
-						INSTANCE = new UserInputDiscoveryLocator();
-					} catch (IDCreateException e) {
-						throw new ContainerCreateException(e);
-					}
-				}
-			}
-		}
-		return INSTANCE;
+		return SingletonHolder.instance ;
 	}
 
 	/* (non-Javadoc)

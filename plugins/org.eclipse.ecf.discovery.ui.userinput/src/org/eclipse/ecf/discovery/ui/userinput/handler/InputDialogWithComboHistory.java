@@ -1,12 +1,14 @@
 /*******************************************************************************
- * Copyright (c) 2009 Markus Alexander Kuppe.
+ * Copyright (c) 2000, 2008 IBM Corporation and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
  * http://www.eclipse.org/legal/epl-v10.html
  *
  * Contributors:
- *     Markus Alexander Kuppe (ecf-dev_eclipse.org <at> lemmster <dot> de) - initial API and implementation
+ *     IBM Corporation - initial API and implementation
+ *     Versant Corp - Additions
+ *     Markus Alexander Kuppe (ecf-dev_eclipse.org <at> lemmster <dot> de) - Additions
  ******************************************************************************/
 package org.eclipse.ecf.discovery.ui.userinput.handler;
 
@@ -26,6 +28,7 @@ import org.eclipse.swt.widgets.Label;
 import org.eclipse.swt.widgets.Shell;
 import org.eclipse.swt.widgets.Text;
 
+// This is a customized copy of org.eclipse.jface.dialogs.InputDialog
 public class InputDialogWithComboHistory extends Dialog {
     /**
      * The title of the dialog.

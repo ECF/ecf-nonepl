@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2009 Markus Alexander Kuppe.
+ * Copyright (c) 2009 Versant Corp and others.
  * All rights reserved. This program and the accompanying materials
  * are made available under the terms of the Eclipse Public License v1.0
  * which accompanies this distribution, and is available at
@@ -24,9 +24,9 @@ public class UserInputNamespace extends Namespace {
 	 */
 	public ID createInstance(Object[] parameters) throws IDCreateException {
 		if(parameters == null || parameters.length == 0 || parameters.length > 2) {
-			throw new IDCreateException("Invalid parameters");
+			throw new IDCreateException(Messages.UserInputNameSpace_INVALID_PARAMS);
 		} else{
-			throw new IDCreateException("Invalid parameters");
+			throw new IDCreateException(Messages.UserInputNameSpace_INVALID_PARAMS);
 		}
 	}
 
@@ -34,6 +34,6 @@ public class UserInputNamespace extends Namespace {
 	 * @see org.eclipse.ecf.core.identity.Namespace#getScheme()
 	 */
 	public String getScheme() {
-		return "userinput";
+		return "userinput"; //$NON-NLS-1$
 	}
 }
